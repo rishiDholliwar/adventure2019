@@ -7,6 +7,7 @@
 
 
 #include "Server.h"
+#include "../../lib/MessageDispatcher/include/MessageDispatcher.h"
 
 #include <experimental/filesystem>
 #include <fstream>
@@ -38,11 +39,9 @@ onDisconnect(Connection c) {
 }
 
 
-std::string
-processMessages(Server &server,
-                const std::deque<Message> &incoming,
-                bool &quit) {
-  std::ostringstream result;
+std::deque<Message>
+processMessages(Server &server, MessageDispatcher &messageDispatcher, const std::deque<Message> &incoming, bool &quit) {
+  std::deque<Message> result{};
   for (auto& message : incoming) {
     if (message.text == "quit") {
       server.disconnect(message.connection);
@@ -50,20 +49,10 @@ processMessages(Server &server,
       std::cout << "Shutting down.\n";
       quit = true;
     } else {
-      result << message.connection.id << "> " << message.text << "\n";
+        messageDispatcher.onReceive(message.text, message.connection);
     }
   }
-  return result.str();
-}
-
-
-std::deque<Message>
-buildOutgoing(const std::string& log) {
-  std::deque<Message> outgoing;
-  for (auto client : clients) {
-    outgoing.push_back({client, log});
-  }
-  return outgoing;
+  return messageDispatcher.pour();
 }
 
 
@@ -93,20 +82,20 @@ main(int argc, char* argv[]) {
   bool done = false;
   unsigned short port = std::stoi(argv[1]);
   Server server{port, getHTTPMessage(argv[2]), onConnect, onDisconnect};
+  auto msgDispatcher = MessageDispatcher{};
 
   while (!done) {
     try {
       server.update();
     } catch (std::exception& e) {
-      std::cerr << "Exception from Server update:\n"
+      std::cerr << "Exception from Server feedUpdate:\n"
                 << " " << e.what() << "\n\n";
       done = true;
     }
 
     auto incoming = server.receive();
-    auto log      = processMessages(server, incoming, done);
-    auto outgoing = buildOutgoing(log);
-    server.send(outgoing);
+    auto log = processMessages(server, msgDispatcher, incoming, done);
+    server.send(log);
     sleep(1);
   }
 
