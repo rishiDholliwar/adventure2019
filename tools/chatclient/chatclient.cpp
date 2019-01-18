@@ -37,7 +37,7 @@ main(int argc, char* argv[]) {
     try {
       client.update();
     } catch (std::exception& e) {
-      chatWindow.displayText("Exception from Client update:");
+      chatWindow.displayText("Exception from Client feedUpdate:");
       chatWindow.displayText(e.what());
       done = true;
     }

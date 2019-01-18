@@ -4,7 +4,7 @@
 This repository contains an example library for single threaded client/server
 programs based on web sockets using boost beast. Multiple clients and the server
 can transfer simple string messages back and forth. Because the API is single
-threaded, it integrates easily into a main update loop, e.g. for a game.
+threaded, it integrates easily into a main feedUpdate loop, e.g. for a game.
 Because it is web socket based, it supports both native and browser based
 clients at the same time. Examples of both are provided.
 
