@@ -12,16 +12,16 @@ long User::getConnectionId() const {
 	return _connectionId;
 }
 
-void User::clearConnection() {
+void User::clearConnection() const {
 	setConnection(0);
 }
 
-bool User::isUsernameEqual(std::string userName) const {
-	return getUsername() == userName;
+bool User::isUsernameEqual(const std::string userName) const {
+	return _userName == userName;
 }
 
-bool User::isHashedPasswordEqual(size_t hashedPassword) const {
-	return getHashedPassword() == hashedPassword;
+bool User::isHashedPasswordEqual(const size_t hashedPassword) const {
+	return _hashedPassword == hashedPassword;
 }
 
 std::string User::getUsername() const {
