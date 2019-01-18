@@ -9,25 +9,6 @@
 //     return User(networking::Connection{1}, "b", "b");
 // }
 
-std::set<User>::iterator findUsername(std::string username) {
-	User tempUser(username);
-
-	std::set<User>::iterator it = UserManager::users.find(tempUser);
-
-	return it;
-}
-
-bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::iterator it) {
-
-	auto hashedPassword = std::hash<std::string>{}(password);
-
-	if (*it.isHashedPasswordEqual(hashedPassword)) {
-		return true;
-	}
-
-	return false;
-}
-
 // bool UserManager::userExists(std::string username, std::string password) {
 
 // 	std::set<User>::iterator it = users.find(username);
@@ -47,7 +28,29 @@ void UserManager::tryLoginAgain() {
 	// Output to screen
 }
 
+// Return iterator to user with matching username, if exists
+std::set<User>::iterator UserManager::findUsername(std::string username) {
+	User tempUser(username);
+
+	std::set<User>::iterator it = UserManager::users.find(tempUser);
+
+	return it;
+}
+
+bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::iterator it) {
+
+	auto hashedPassword = std::hash<std::string>{}(password);
+
+	if (*it.isHashedPasswordEqual(hashedPassword)) {
+		return true;
+	}
+
+	return false;
+}
+
+
 void UserManager::login(long connectionId, std::string userName, std::string password) {
+	
 	std::set<User>::iterator it = findUsername(userName);
 
 	if (it != UserManager::users.end()) {
@@ -56,23 +59,12 @@ void UserManager::login(long connectionId, std::string userName, std::string pas
 
 			*it.startSession(connectionId);
 		} else {
-			// throw e //planning to write a custom error class: login invalid
+			throw std::invalid_argument("Account does not exist"); // TBD custom exception class
 		}
 				
 	} else {
-		//username does not exist
-		// throw e; //might not be syntatically correct rn
+		throw std::invalid_argument("Account does not exist");
 	}
-
-	// if (userExists(username, password)) {
-
-	// 	std::set<User>::iterator it = users.find(username);
-
-	// 	*it.startSession(connectionId);
-
-	// } else {
-	// 	tryLoginAgain();
-	// }
 }
 
 void UserManager::createUser(long connectionId, std::string userName, std::string password) {
@@ -80,8 +72,7 @@ void UserManager::createUser(long connectionId, std::string userName, std::strin
 	std::set<User>::iterator it = findUsername(userName);
 
 	if (it != UserManager::users.end()) {
-		//username exists
-		// throw e;	
+		throw std::invalid_argument("Username is taken")
 	} else {
 		//username does not exist
 		auto hashedPassword = std::hash<std::string>{}(password);
