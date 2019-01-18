@@ -18,6 +18,8 @@ class Area
 public:
     Area();
 private:
+    string name;
+    unsigned id;
     vector<Room> rooms;
 };
 #endif //OOP_AREA_H

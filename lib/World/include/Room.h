@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include <Room.h>
-
+#include <Door.h>
 using namespace std;
 
 class Room
@@ -14,6 +14,11 @@ class Room
 public:
     Room();
 private:
+    unsigned id;
+    string name;
+    vector<string> descriptions;
+    vector<string> extendedDescriptions;
+    vector<Door> doors;
 
 };
 
