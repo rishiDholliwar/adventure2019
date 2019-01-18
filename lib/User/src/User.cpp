@@ -24,11 +24,11 @@ bool User::isHashedPasswordEqual(size_t hashedPassword) {
 	return _hashedPassword == hashedPassword;
 }
 
-std::string getUsername() {
+std::string User::getUsername() const {
 	return _userName;
 }
 
-std::size_t getHashedPassword() {
+std::size_t User::getHashedPassword() const {
 	return _hashedPassword;
 }
 
@@ -36,8 +36,8 @@ void User::startSession(long connectionId) {
 
 }
 
-bool operator<(const User& other) {
-	return (getUsername() < other.getUsername);
+bool User::operator<(const User& other) {
+	return (User::getUsername() < other.getUsername());
 }
 
 void User::moveToRoom(int roomNumber) {

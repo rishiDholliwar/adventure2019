@@ -13,10 +13,10 @@ public:
     User(){};
 
     User(std::string userName)
-    :_userName{std::move(userName)};
+    :_userName(userName) { };
     
-    User(networking::Connection connection, std::string userName, size_t hashedPassword)
-    :_connection{connection},_userName{std::move(userName)},_hashedPassword{std::move(hashedPassword)},_roomNumber(0){};
+    User(long connectionId, std::string userName, size_t hashedPassword)
+    :_connectionId(connectionId),_userName(userName),_hashedPassword(hashedPassword),_roomNumber(0) { };
 
     void setConnection(const long connectionId);
 
@@ -28,9 +28,9 @@ public:
 
     bool isHashedPasswordEqual(size_t hashedPassword);
 
-    std::string getUsername();
+    std::string getUsername() const;
 
-    std::size_t getHashedPassword();
+    std::size_t getHashedPassword() const;
 
     bool isSameUser(User user);
 

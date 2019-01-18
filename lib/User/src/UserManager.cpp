@@ -1,18 +1,20 @@
 #include "../include/UserManager.h"
 
-User UserManager::findUser(std::string userName, std::size_t hashedPassword) {
-    if(userName == "a"){
-        User a{networking::Connection{2}, "a", "b"};
-        a.moveToRoom(5);
-        return a;
-    }
-    return User{networking::Connection{1}, "b", "b"};
-}
+// User UserManager::findUser(std::string userName, std::size_t hashedPassword) {
+//     if(userName == "a"){
+//         User a(networking::Connection{2}, "a", "b");
+//         a.moveToRoom(5);
+//         return a;
+//     }
+//     return User(networking::Connection{1}, "b", "b");
+// }
 
 std::set<User>::iterator findUsername(std::string username) {
 	User tempUser(username);
 
-	return users.find(tempUser);
+	std::set<User>::iterator it = UserManager::users.find(tempUser);
+
+	return it;
 }
 
 bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::iterator it) {
@@ -45,10 +47,10 @@ void UserManager::tryLoginAgain() {
 	// Output to screen
 }
 
-void UserManager::login(long connectionId, std::string username, std::string password) {
-	std::set<User>::iterator it = findUsername(username);
+void UserManager::login(long connectionId, std::string userName, std::string password) {
+	std::set<User>::iterator it = findUsername(userName);
 
-	if (it != users.end()) {
+	if (it != UserManager::users.end()) {
 		//username exists
 		if (passwordMatchesUsername(password, it)) {
 
@@ -75,19 +77,23 @@ void UserManager::login(long connectionId, std::string username, std::string pas
 
 void UserManager::createUser(long connectionId, std::string userName, std::string password) {
 
-	std::set<User>::iterator it = findUsername(username);
+	std::set<User>::iterator it = findUsername(userName);
 
-	if (it != users.end()) {
+	if (it != UserManager::users.end()) {
 		//username exists
 		// throw e;	
 	} else {
 		//username does not exist
 		auto hashedPassword = std::hash<std::string>{}(password);
 		User newUser(connectionId, username, hashedPassword);
-		users.
+		UserManager::users.insert(newUser);
 	}
 }
 
 void UserManager::loadUsers() {
+	//
+}
+
+User UserManager::lookUpUser(std::string userName, std::string password) {
 	//
 }
