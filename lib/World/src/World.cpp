@@ -1,8 +1,9 @@
-#include <iostream>
-#include "World.h"
+#include <World.h>
 
-using namespace std;
+World::World() {
 
-World::World(){
-    cout << "World Created\n";
+}
+
+void World::addArea(Area &area) {
+    World::areas.push_back(area);
 }

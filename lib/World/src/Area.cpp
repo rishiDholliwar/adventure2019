@@ -1,8 +1,11 @@
-#include <iostream>
-#include "Area.h"
+#include <algorithm>
+#include <Area.h>
 
-using namespace std;
+Area::Area(unsigned int id, string name) {
+    Area::id = id;
+    Area::name = name;
+}
 
-Area::Area(){
-    cout << "Area Created\n";
+void Area::addRoom(Room &room) {
+    Area::rooms.push_back(room);
 }

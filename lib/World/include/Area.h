@@ -5,7 +5,6 @@
 #ifndef OOP_AREA_H
 #define OOP_AREA_H
 
-#include <iostream>
 #include <vector>
 #include <string>
 #include <Area.h>
@@ -16,7 +15,8 @@ using namespace std;
 class Area
 {
 public:
-    Area();
+    Area(unsigned int id, string name);
+    void addRoom(Room& room);
 private:
     string name;
     unsigned id;
