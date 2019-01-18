@@ -5,22 +5,22 @@
 #include "../include/User.h"
 
 void User::setConnection(const long connectionId) {
-	this -> _connectionId = connectionId;
+	_connectionId = connectionId;
 }
 
-long User::getConnectionId() {
+long User::getConnectionId() const {
 	return _connectionId;
 }
 
-void User::clearConnection() {
+void User::clearConnection() const {
 	setConnection(0);
 }
 
-bool User::isUsernameEqual(std::string userName) {
+bool User::isUsernameEqual(const std::string userName) const {
 	return _userName == userName;
 }
 
-bool User::isHashedPasswordEqual(size_t hashedPassword) {
+bool User::isHashedPasswordEqual(const size_t hashedPassword) const {
 	return _hashedPassword == hashedPassword;
 }
 
@@ -33,7 +33,8 @@ std::size_t User::getHashedPassword() const {
 }
 
 void User::startSession(long connectionId) {
-
+	_connectionId = connectionId;
+	// moveToRoom(..)
 }
 
 bool User::operator<(const User& other) {
@@ -41,5 +42,5 @@ bool User::operator<(const User& other) {
 }
 
 void User::moveToRoom(int roomNumber) {
-    this->_roomNumber = roomNumber;
+    _roomNumber = roomNumber;
 }
