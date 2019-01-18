@@ -11,7 +11,9 @@ class UserManager {
 
 public:
 
-	std::set<User> users = {};
+	std::set<User> getUsers();
+
+	void addUser(User user);
 
 	// User findUser(std::string userName, std::size_t hashedPassword);
 
@@ -31,6 +33,10 @@ public:
 
     User lookUpUser(std::string userName, std::string password);
 
+    User getUserByUsername(std::string userName);
+
+private:
+	std::set<User> users = {};
 };
 
 

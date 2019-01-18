@@ -18,15 +18,15 @@ public:
     User(long connectionId, std::string userName, size_t hashedPassword)
     :_connectionId(connectionId),_userName(userName),_hashedPassword(hashedPassword),_roomNumber(0) { };
 
-    void setConnection(const long connectionId);
+    void setConnection(const long connectionId) const;
 
-    long getConnectionId();
+    long getConnectionId() const;
 
     void clearConnection();
 
-    bool isUsernameEqual(std::string userName);
+    bool isUsernameEqual(std::string userName) const;
 
-    bool isHashedPasswordEqual(size_t hashedPassword);
+    bool isHashedPasswordEqual(size_t hashedPassword) const;
 
     std::string getUsername() const;
 
@@ -34,22 +34,24 @@ public:
 
     bool isSameUser(User user);
 
-    void startSession(long connectionId);
+    void startSession(const long connectionId) const;
 
     void moveToRoom(int roomNumber);
 
-    bool operator<(const User& other);
-
-    int _roomNumber;
+    int getRoomNumber() const;
 
 private:
-    long _connectionId;
+    mutable long _connectionId;
 
     std::string _userName;
     
     std::size_t _hashedPassword;
 
+    mutable int _roomNumber;
+
 };
+
+bool operator<(const User& t, const User& o);
 
 
 #endif //WEBSOCKETNETWORKING_USER_H

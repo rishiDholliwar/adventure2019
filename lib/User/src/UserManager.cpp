@@ -9,10 +9,19 @@
 //     return User(networking::Connection{1}, "b", "b");
 // }
 
-std::set<User>::iterator findUsername(std::string username) {
+std::set<User> UserManager::getUsers() {
+	return users;
+}
+
+void UserManager::addUser(User user) {
+	users.insert(user);
+}
+
+
+std::set<User>::iterator UserManager::findUsername(std::string username) {
 	User tempUser(username);
 
-	std::set<User>::iterator it = UserManager::users.find(tempUser);
+	std::set<User>::iterator it = users.find(tempUser);
 
 	return it;
 }
@@ -21,7 +30,7 @@ bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::
 
 	auto hashedPassword = std::hash<std::string>{}(password);
 
-	if (*it.isHashedPasswordEqual(hashedPassword)) {
+	if ((*it).User::isHashedPasswordEqual(hashedPassword)) {
 		return true;
 	}
 
@@ -54,7 +63,7 @@ void UserManager::login(long connectionId, std::string userName, std::string pas
 		//username exists
 		if (passwordMatchesUsername(password, it)) {
 
-			*it.startSession(connectionId);
+			(*it).User::startSession(connectionId);
 		} else {
 			// throw e //planning to write a custom error class: login invalid
 		}
@@ -85,7 +94,7 @@ void UserManager::createUser(long connectionId, std::string userName, std::strin
 	} else {
 		//username does not exist
 		auto hashedPassword = std::hash<std::string>{}(password);
-		User newUser(connectionId, username, hashedPassword);
+		User newUser(connectionId, userName, hashedPassword);
 		UserManager::users.insert(newUser);
 	}
 }
@@ -96,4 +105,10 @@ void UserManager::loadUsers() {
 
 User UserManager::lookUpUser(std::string userName, std::string password) {
 	//
+}
+
+User UserManager::getUserByUsername(std::string userName) {
+	std::set<User>::iterator it = findUsername(userName);
+
+	return *it;
 }
