@@ -1,9 +1,5 @@
 #include <utility>
 
-//
-// Created by ximinz on 16/01/19.
-//
-
 #ifndef WEBSOCKETNETWORKING_USER_H
 #define WEBSOCKETNETWORKING_USER_H
 
