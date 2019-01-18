@@ -9,10 +9,15 @@
 #include <deque>
 #include <vector>
 #include "../../User/include/User.h"
+#include <map>
 
 class WorldManager {
+
+    using FunctionMap = std::map<std::string, bool(WorldManager::*)(uintptr_t, std::string, std::string&)>;
+
 private:
     std::vector<User> _users;
+    static FunctionMap _funcMap;
     //Areas
     //other objects
 
@@ -20,7 +25,10 @@ public:
     WorldManager()
     :_users{}{}
     //handles real user input
-    void receiveText(User user, std::string input, std::function<void (const User user, const std::string feedback)> callBack);
+    void receiveText(const uintptr_t conn_id, std::string input, std::function<void (const uintptr_t conn_id, std::string message)> callBack);
+    bool login(const uintptr_t conn_id, std::string input, std::string& output);
+    bool say(const uintptr_t conn_id, std::string input, std::string& output);
+
 };
 
 

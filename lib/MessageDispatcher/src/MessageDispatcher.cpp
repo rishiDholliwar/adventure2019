@@ -7,25 +7,32 @@
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 void MessageDispatcher::onReceive(std::string text, networking::Connection connection) {
-    User found_user{};
-    bool existingUser;
-    for(const auto &each : this->_userPools){
-        if(each.first.id == connection.id){
-            existingUser = true;
-            break;
-        }
-    }
-    if(text.find("!login ") != std::string::npos || !existingUser){
-        std::vector<std::string> textParts;
-        boost::split(textParts, text, [](char c){return ' ' == c;});
-        found_user = this->_userManager.lookUpUser(textParts[1], textParts[2]);
-        this->_userPools.emplace_back(connection, found_user);
-    }
 
+    auto it = this->_connectionPool.find(connection.id);
+    // std::map<uintptr_t, networking::Connection>::iterator it = this->connectionPool.find(connection.id);
+    if( it == this->_connectionPool.end() )
+    {
+        this->_connectionPool.insert( std::pair<uintptr_t, networking::Connection>(connection.id, connection) );
+    }
+    _worldManager.receiveText(connection.id, text, [&](const uintptr_t conn_id, std::string message){addMessage(conn_id, message);});
+}
 
-    _worldManager.receiveText(found_user, text, [&](const User user, const std::string feedback){_messagePool.push_back(networking::Message{this->_userPools.front().first, feedback});});
+void MessageDispatcher::addMessage(const uintptr_t conn_id, std::string message)
+{
+    networking::Connection conn;
+    auto it = this->_connectionPool.find(conn_id);
+    if( it == this->_connectionPool.end() )
+    {
+        std::cout << "Connection could not be found" << std::endl;
+        return;
+    }
+    conn = (*it).second;
+    networking::Message msg = {.connection = conn, .text = message};
+    this->_messagePool.push_back(msg);
 }
 
 std::deque<networking::Message> MessageDispatcher::pour() {
-    return std::deque<networking::Message>{_messagePool};
+    auto dq = std::deque<networking::Message>{_messagePool};
+    _messagePool.clear();
+    return dq;
 }
