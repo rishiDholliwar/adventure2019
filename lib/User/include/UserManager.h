@@ -11,19 +11,19 @@ class UserManager {
 
 public:
 
-	std::set<std::string, User> users; 
+	std::set<User> users;
 
-	User findUser(std::string userName, std::string hashedPassword);
+	User findUser(std::string userName, std::size_t hashedPassword);
 
 	bool userExists(std::string username, std::string password);
 
 	void tryLoginAgain();
 
-	void login(std::string userName, std::string password);
+	void login(long connectionId, std::string userName, std::string password);
+
+	void createUser(long connectionId, std::string userName, std::string password);
 
     void loadUsers();
-
-    
 
 };
 

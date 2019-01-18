@@ -5,14 +5,18 @@
 
 
 #include <Server.h>
+#include <string>
 
 class User {
 
 public:
     User(){};
+
+    User(std::string userName)
+    :_userName{std::move(userName)};
     
-    User(networking::Connection connection, std::string userName, std::string hashedPassword)
-    :_connection{connection},_userName{std::move(userName)},_hashedPassword{std::move(hashedPassword)},_roomNumber(0) { }
+    User(networking::Connection connection, std::string userName, size_t hashedPassword)
+    :_connection{connection},_userName{std::move(userName)},_hashedPassword{std::move(hashedPassword)},_roomNumber(0){};
 
     void setConnection(const long connectionId);
 
@@ -22,15 +26,19 @@ public:
 
     bool isUsernameEqual(std::string userName);
 
-    bool isHashedPasswordEqual(std::string hashedPassword);
+    bool isHashedPasswordEqual(size_t hashedPassword);
 
     std::string getUsername();
 
-    std::string getHashedPassword();
+    std::size_t getHashedPassword();
 
     bool isSameUser(User user);
 
+    void startSession(long connectionId);
+
     void moveToRoom(int roomNumber);
+
+    bool operator<(const User& other);
 
     int _roomNumber;
 
@@ -39,7 +47,7 @@ private:
 
     std::string _userName;
     
-    std::string _hashedPassword;
+    std::size_t _hashedPassword;
 
 };
 
