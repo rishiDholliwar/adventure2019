@@ -10,7 +10,7 @@ void Room::addDescription(std::string& description) {
     Room::descriptions.push_back(description);
 }
 
-void Room::addDoor(std::unique_ptr<Door> door) {
+void Room::addDoor(std::unique_ptr<Door,DoorDeleter> door) {
     Room::doors.push_back(std::move(door));
 }
 void Room::addExtendedDescription(std::string& extDescription) {

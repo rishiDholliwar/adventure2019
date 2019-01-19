@@ -11,15 +11,19 @@
 #include <Room.h>
 #include <memory>
 
+struct RoomDeleter {
+    void operator()(Room* room);
+};
+
 class Area
 {
 public:
     Area(unsigned int& id, std::string& name);
-    void addRoom(std::unique_ptr<Room> room);
-    const std::vector<std::unique_ptr<Room>>& getRooms(){return rooms;};
+    void addRoom(std::unique_ptr<Room,RoomDeleter> room);
+    const std::vector<std::unique_ptr<Room,RoomDeleter>>& getRooms(){return rooms;};
 private:
     std::string name;
     unsigned id;
-    std::vector<std::unique_ptr<Room>> rooms;
+    std::vector<std::unique_ptr<Room,RoomDeleter>> rooms;
 };
 #endif //OOP_AREA_H

@@ -8,6 +8,10 @@
 #include <Door.h>
 #include <memory>
 
+struct DoorDeleter {
+    void operator()(Door* door);
+};
+
 class Room
 {
 public:
@@ -16,17 +20,17 @@ public:
     void addExtendedDescription(std::string& extDescription);
     const std::vector<std::string>& getDescriptions(){return descriptions;};
     const std::vector<std::string>& getExtendedDescriptions(){return extendedDescriptions;};
-    const std::vector<std::unique_ptr<Door>>& getDoors(){return doors;};
+    const std::vector<std::unique_ptr<Door,DoorDeleter>>& getDoors(){return doors;};
     void join(int& objectId);
     void quit(int& objectId);
-    void addDoor(std::unique_ptr<Door> door);
+    void addDoor(std::unique_ptr<Door, DoorDeleter> door);
 
 private:
     unsigned int id;
     std::string name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
-    std::vector<std::unique_ptr<Door>> doors;
+    std::vector<std::unique_ptr<Door, DoorDeleter>> doors;
     std::vector<unsigned> objectIdList;
 
 };

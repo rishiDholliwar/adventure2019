@@ -6,6 +6,6 @@ Area::Area(unsigned int& id, std::string& name) {
     Area::name = name;
 }
 
-void Area::addRoom(std::unique_ptr<Room> room) {
+void Area::addRoom(std::unique_ptr<Room,RoomDeleter> room) {
     Area::rooms.push_back(std::move(room));
 }
