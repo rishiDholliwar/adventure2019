@@ -2,7 +2,8 @@ add_library(world
             src/Area.cpp
             src/Room.cpp
             src/World.cpp
-            src/Door.cpp)
+            src/Door.cpp test/WorldTest.cpp)
+
 
 target_include_directories(world
         PUBLIC
