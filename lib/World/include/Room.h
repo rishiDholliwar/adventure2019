@@ -22,7 +22,7 @@ public:
     void addDoor(std::unique_ptr<Door> door);
 
 private:
-    unsigned id;
+    unsigned int id;
     std::string name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
