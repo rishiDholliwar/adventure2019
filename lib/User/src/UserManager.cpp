@@ -36,21 +36,6 @@ bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::
 	return false;
 }
 
-// bool UserManager::userExists(std::string username, std::string password) {
-
-// 	std::set<User>::iterator it = users.find(username);
-
-// 	if (it != users.end()) {
-
-// 		auto hashedPassword = std::hash<std::string>{}(password);
-
-// 		if (*it.isHashedPasswordEqual(hashedPassword)) {
-// 			return true;
-// 		}
-// 	}
-// 	return false;
-// }
-
 void UserManager::tryLoginAgain() {
 	// Output to screen
 }
