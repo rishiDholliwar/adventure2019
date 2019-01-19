@@ -19,7 +19,7 @@ public:
 
 	std::set<User>::iterator findUsername(std::string username);
 
-	bool passwordMatchesUsername(std::string password, std::set<User>::iterator it);
+	bool passwordMatchesUsername(std::string password, const std::set<User>::iterator it);
 
 	// bool userExists(std::string username, std::string password);
 

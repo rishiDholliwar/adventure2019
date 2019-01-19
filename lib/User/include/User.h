@@ -42,6 +42,7 @@ private:
 
 };
 
+//UserManager uses set<User> and requires a < operator overload for comparison purposes.
 bool operator<(const User& t, const User& o);
 
 

@@ -25,7 +25,7 @@ std::set<User>::iterator UserManager::findUsername(std::string username) {
 	return it;
 }
 
-bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::iterator it) {
+bool UserManager::passwordMatchesUsername(std::string password, const std::set<User>::iterator it) {
 
 	auto hashedPassword = std::hash<std::string>{}(password);
 
@@ -38,18 +38,17 @@ bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::
 
 bool UserManager::login(std::string userName, std::string password) {
 	
-	std::set<User>::iterator it = findUsername(userName);
+	const std::set<User>::iterator it = findUsername(userName);
 
-	if (it != UserManager::users.end()) {
-		//username exists
-		if (passwordMatchesUsername(password, it)) {
-			return true;
-			//return success_return_code
-		} else {
-			return false;
-			//return error_return_code
-		}
-				
+	//username doesn't exist
+	if (it == UserManager::users.end()) {
+		return false;
+		//return error_return_code
+	}
+
+	if (passwordMatchesUsername(password, it)) {
+		return true;
+		//return success_return_code
 	} else {
 		return false;
 		//return error_return_code
@@ -60,22 +59,23 @@ bool UserManager::createUser(std::string userName, std::string password) {
 
 	std::set<User>::iterator it = findUsername(userName);
 
+	//username already exists
 	if (it != UserManager::users.end()) {
 		return false;
 		//return error_return_code
-	} else {
-		//username does not exist
-		auto hashedPassword = std::hash<std::string>{}(password);
-		User newUser(userName, hashedPassword);
-		UserManager::users.insert(newUser);
+	}
+	
+	//username does not exist
+	auto hashedPassword = std::hash<std::string>{}(password);
+	User newUser(userName, hashedPassword);
+	UserManager::users.insert(newUser);
 
-		if (findUsername(userName) != users.end()) {
-			return true;
-			//return success_return_code
-		} else {
-			return false;
-			//return error_return_code
-		}
+	if (findUsername(userName) != users.end()) {
+		return true;
+		//return success_return_code
+	} else {
+		return false;
+		//return error_return_code
 	}
 }
 
