@@ -64,7 +64,7 @@ bool UserManager::createUser(std::string userName, std::string password) {
 		return false;
 		//return error_return_code
 	}
-	
+
 	//username does not exist
 	auto hashedPassword = std::hash<std::string>{}(password);
 	User newUser(userName, hashedPassword);
@@ -84,7 +84,10 @@ void UserManager::loadUsers() {
 }
 
 User UserManager::lookUpUser(std::string userName, std::string password) {
-	//
+	//just a dummy user for stableness
+	User tempUser(userName);
+
+	return tempUser;
 }
 
 User UserManager::getUserByUsername(std::string userName) {
