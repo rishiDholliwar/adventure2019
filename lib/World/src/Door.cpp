@@ -2,11 +2,11 @@
 // Created by evan on 17/01/19.
 //
 
-#include <Door.h>
+#include "Door.h"
 #include <iostream>
 
 
-Door::Door(unsigned int id, unsigned destinatedRoomId, std::unique_ptr<std::string> direction) {
+Door::Door(unsigned int id, unsigned destinatedRoomId, std::string direction) {
     Door::id = id;
     Door::destinatedRoomId = destinatedRoomId;
     Door::direction = std::move(direction);

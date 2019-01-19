@@ -11,13 +11,13 @@
 
 class Door {
 public:
-    Door(unsigned int  id, unsigned int  destinatedRoomId, std::unique_ptr<std::string>  direction);
+    Door(unsigned int  id, unsigned int  destinatedRoomId, std::string direction);
     void addDescription(std::string description);
     void addKeyword(std::string keyword);
 private:
     unsigned int  id;
     unsigned int  destinatedRoomId;
-    std::unique_ptr<std::string>  direction;
+    std::string  direction;
     std::vector<std::string> descriptions;
     std::vector<std::string> keywords;
 

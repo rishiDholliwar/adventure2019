@@ -4,6 +4,8 @@ add_library(world
             src/World.cpp
             src/Door.cpp test/WorldTest.cpp)
 
+add_executable(test
+            test/WorldTest.cpp)
 
 target_include_directories(world
         PUBLIC
