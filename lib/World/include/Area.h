@@ -19,7 +19,7 @@ public:
     const std::vector<std::unique_ptr<Room>>& getRooms(){return rooms;};
 private:
     std::string name;
-    unsigned id;
+    unsigned int id;
     std::vector<std::unique_ptr<Room>> rooms;
 };
 #endif //OOP_AREA_H
