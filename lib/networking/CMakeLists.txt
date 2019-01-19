@@ -2,7 +2,7 @@
 add_library(networking
   src/Server.cpp
   src/Client.cpp
-        ../MessageDispatcher/src/MessageDispatcher.cpp ../MessageDispatcher/include/MessageDispatcher.h ../WorldManager/src/WorldManager.cpp ../WorldManager/include/WorldManager.h ../User/src/User.cpp ../User/include/User.h ../User/src/UserManager.cpp ../User/include/UserManager.h ../Ultility/Ultility.cpp ../Ultility/Ultility.h)
+        ../MessageDispatcher/src/MessageDispatcher.cpp ../MessageDispatcher/include/MessageDispatcher.h ../WorldManager/src/WorldManager.cpp ../WorldManager/include/WorldManager.h ../User/src/User.cpp ../User/include/User.h ../User/src/UserManager.cpp ../User/include/UserManager.h ../Ultility/Ultility.cpp ../Ultility/Ultility.h ../Ultility/CommandUtil.hpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 

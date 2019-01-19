@@ -13,7 +13,7 @@
 
 class WorldManager {
 
-    using FunctionMap = std::map<std::string, bool(WorldManager::*)(uintptr_t, std::string, std::string&)>;
+    using FunctionMap = std::map<std::string, std::string(WorldManager::*)(std::string, std::string)>;
 
 private:
     std::vector<User> _users;
@@ -25,9 +25,8 @@ public:
     WorldManager()
     :_users{}{}
     //handles real user input
-    void receiveText(const uintptr_t conn_id, std::string input, std::function<void (const uintptr_t conn_id, std::string message)> callBack);
-    bool login(const uintptr_t conn_id, std::string input, std::string& output);
-    bool say(const uintptr_t conn_id, std::string input, std::string& output);
+    void receiveText(std::string input,std::string userName, std::function<void (std::string userName, std::string message)> callBack);
+    std::string say(std::string userName, std::string input);
 
 };
 

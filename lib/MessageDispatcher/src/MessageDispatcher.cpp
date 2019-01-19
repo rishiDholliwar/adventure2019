@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by ximinz on 16/01/19.
 //
@@ -5,34 +7,48 @@
 #include "../include/MessageDispatcher.h"
 #include "../../Ultility/Ultility.h"
 #include <boost/algorithm/string.hpp>
+#include "../../Ultility/CommandUtil.hpp"
 #include <iostream>
 void MessageDispatcher::onReceive(std::string text, networking::Connection connection) {
-
-    auto it = this->_connectionPool.find(connection.id);
-    // std::map<uintptr_t, networking::Connection>::iterator it = this->connectionPool.find(connection.id);
-    if( it == this->_connectionPool.end() )
-    {
-        this->_connectionPool.insert( std::pair<uintptr_t, networking::Connection>(connection.id, connection) );
-    }
-    _worldManager.receiveText(connection.id, text, [&](const uintptr_t conn_id, std::string message){addMessage(conn_id, message);});
-}
-
-void MessageDispatcher::addMessage(const uintptr_t conn_id, std::string message)
-{
-    networking::Connection conn;
-    auto it = this->_connectionPool.find(conn_id);
-    if( it == this->_connectionPool.end() )
-    {
-        std::cout << "Connection could not be found" << std::endl;
+    std::string userName;
+    if (getBeforeFirstSpace(text) == "!login") {
+        userName = login(getBeforeFirstSpace(getAfterFirstSpace(text)), "");
+        _connectionPool.insert(std::pair<networking::Connection, std::string>{connection, userName});
+        _messagePool.emplace_back(networking::Message{connection, "You have logged in as "+ userName});
         return;
     }
-    conn = (*it).second;
-    networking::Message msg = {.connection = conn, .text = message};
-    this->_messagePool.push_back(msg);
+
+    auto it = this->_connectionPool.find(connection);
+    if( it == this->_connectionPool.end() )
+    {
+        addNotLoginMessage(connection);
+        return;
+    }
+    _worldManager.receiveText(
+            std::move(text), it->second, [&](std::string userName, std::string message){addMessage(userName, message);});
+}
+
+void MessageDispatcher::addMessage(std::string userName, std::string message)
+{
+    auto iterator = _connectionPool.begin();
+    while(iterator != _connectionPool.end()){
+        if (iterator->second == userName){
+            this->_messagePool.push_back(networking::Message{iterator->first, message});
+        }
+        iterator++;
+    }
 }
 
 std::deque<networking::Message> MessageDispatcher::pour() {
     auto dq = std::deque<networking::Message>{_messagePool};
     _messagePool.clear();
     return dq;
+}
+
+std::string MessageDispatcher::login(std::string userName, std::string password) {
+    return "MockUserOne";
+}
+
+void MessageDispatcher::addNotLoginMessage(networking::Connection connection) {
+    this->_messagePool.emplace_back(networking::Message{connection, "You are not logged in, try !login or !signup"});
 }

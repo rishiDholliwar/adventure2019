@@ -14,14 +14,17 @@
 class MessageDispatcher {
     public:
     void onReceive(std::string text, networking::Connection connection);
-    void addMessage(const uintptr_t conn_id, std::string message);
+    void addMessage(std::string userName, std::string message);
     std::deque<networking::Message> pour();
 
     private:
-    UserManager _userManager{};
     WorldManager _worldManager{};
-    std::map<uintptr_t, networking::Connection> _connectionPool{};
+    std::map<networking::Connection, std::string> _connectionPool{};
     std::deque<networking::Message> _messagePool{};
+
+    std::string login(std::string userName, std::string password);
+
+    void addNotLoginMessage(networking::Connection connection);
 };
 
 
