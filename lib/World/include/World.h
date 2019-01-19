@@ -15,11 +15,11 @@ public:
 
     //void addObject();
 
-    void writeJson(string filename);
-    void readJson(string filename);
+    void writeJson(std::string filename);
+    void readJson(std::string filename);
 private:
 
-    vector<std::unique_ptr<Area>> areas;
+    std::vector<std::unique_ptr<Area>> areas;
 
     //vector<std::unique_ptr<Entity>> entities;
 };

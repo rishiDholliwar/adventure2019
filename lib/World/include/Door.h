@@ -8,8 +8,6 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 class Door {
 public:
     Door();
@@ -17,9 +15,9 @@ public:
 private:
     unsigned int id;
     unsigned int destinatedRoomId;
-    string direction;
-    vector<string> descriptions;
-    vector<string> keywords;
+    std::string direction;
+    std::vector<std::string> descriptions;
+    std::vector<std::string> keywords;
 
 };
 

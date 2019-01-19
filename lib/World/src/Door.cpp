@@ -5,8 +5,7 @@
 #include <Door.h>
 #include <iostream>
 
-using namespace std;
 
 Door::Door(){
-    cout << "Door Created\n";
+    std::cout << "Door Created\n";
 }
