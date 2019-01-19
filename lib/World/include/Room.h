@@ -31,7 +31,7 @@ private:
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
     std::vector<std::unique_ptr<Door, DoorDeleter>> doors;
-    std::vector<unsigned> objectIdList;
+    std::vector<unsigned int> objectIdList;
 
 };
 
