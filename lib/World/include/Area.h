@@ -18,12 +18,12 @@ struct RoomDeleter {
 class Area
 {
 public:
-    Area(unsigned int& id, std::string& name);
+    Area(unsigned int id, std::unique_ptr<std::string>  name);
     void addRoom(std::unique_ptr<Room,RoomDeleter> room);
     const std::vector<std::unique_ptr<Room,RoomDeleter>>& getRooms(){return rooms;};
 private:
-    std::string name;
     unsigned int id;
+    std::unique_ptr<std::string>  name;
     std::vector<std::unique_ptr<Room,RoomDeleter>> rooms;
 };
 #endif //OOP_AREA_H

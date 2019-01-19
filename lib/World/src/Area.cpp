@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <Area.h>
 
-Area::Area(unsigned int& id, std::string& name) {
+Area::Area(unsigned int id, std::unique_ptr<std::string>  name) {
     Area::id = id;
-    Area::name = name;
+    Area::name = std::move(name);
 }
 
 void Area::addRoom(std::unique_ptr<Room,RoomDeleter> room) {
