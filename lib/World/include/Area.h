@@ -16,6 +16,7 @@ class Area
 public:
     Area(unsigned int& id, std::string& name);
     void addRoom(std::unique_ptr<Room> room);
+    const std::vector<std::unique_ptr<Room>>& getRooms(){return rooms;};
 private:
     std::string name;
     unsigned id;

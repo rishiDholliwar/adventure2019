@@ -14,9 +14,9 @@ public:
     Room(unsigned int& id, std::string& name);
     void addDescription(std::string& description);
     void addExtendedDescription(std::string& extDescription);
-    std::vector<std::string>& getDescriptions(){return descriptions;};
-    std::vector<std::string>& getExtendedDescriptions(){return extendedDescriptions;};
-    std::vector<std::unique_ptr<Door>>& getDoors(){return doors;};
+    const std::vector<std::string>& getDescriptions(){return descriptions;};
+    const std::vector<std::string>& getExtendedDescriptions(){return extendedDescriptions;};
+    const std::vector<std::unique_ptr<Door>>& getDoors(){return doors;};
     void join(int& objectId);
     void quit(int& objectId);
     void addDoor(std::unique_ptr<Door> door);

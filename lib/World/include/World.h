@@ -12,7 +12,7 @@ class World
 public:
     World();
     void addArea(std::unique_ptr<Area> area);
-
+    const std::vector<std::unique_ptr<Area>>& getDoors(){return areas;};
     //void addObject();
 
     void writeJson(std::string filename);
