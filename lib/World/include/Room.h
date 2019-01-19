@@ -13,9 +13,10 @@ class Room
 {
 public:
     Room(unsigned int  id, std::string name);
-    ~Room();
     void addDescription(std::string description);
     void addExtendedDescription(std::string extDescription);
+    const unsigned int& getId(){return id;};
+    const std::string& getName(){return name;};
     const std::vector<std::string>& getDescriptions(){return descriptions;};
     const std::vector<std::string>& getExtendedDescriptions(){return extendedDescriptions;};
     const std::vector<std::unique_ptr<Door>>& getDoors(){return doors;};
