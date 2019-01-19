@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "Area.h"
 
-Area::Area(unsigned int id, std::string name) {
+Area::Area(unsigned int id, std::string& name) {
     Area::id = id;
     Area::name = std::move(name);
 }

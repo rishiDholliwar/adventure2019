@@ -11,9 +11,9 @@
 
 class Door {
 public:
-    Door(unsigned int  id, unsigned int  destinatedRoomId, std::string direction);
-    void addDescription(std::string description);
-    void addKeyword(std::string keyword);
+    Door(unsigned int  id, unsigned int  destinatedRoomId, std::string& direction);
+    void addDescription(std::string& description);
+    void addKeyword(std::string& keyword);
     const unsigned int& getId(){return id;};
     const unsigned int& getDestinatedRoomId(){return destinatedRoomId;};
     const std::string& getDirection(){return direction;};
