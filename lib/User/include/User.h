@@ -15,14 +15,8 @@ public:
     User(std::string userName)
     :_userName(userName) { };
     
-    User(long connectionId, std::string userName, size_t hashedPassword)
-    :_connectionId(connectionId), _userName(userName), _hashedPassword(hashedPassword), _roomNumber(0) { };
-
-    void setConnection(const long connectionId) const;
-
-    long getConnectionId() const;
-
-    void clearConnection() const;
+    User(std::string userName, size_t hashedPassword)
+    :_userName(userName), _hashedPassword(hashedPassword), _roomNumber(0) { };
 
     bool isUsernameEqual(const std::string userName) const;
 
@@ -34,14 +28,11 @@ public:
 
     bool isSameUser(User user) const;
 
-    void startSession(const long connectionId) const;
-
     void moveToRoom(int roomNumber);
 
     int getRoomNumber() const;
 
 private:
-    mutable long _connectionId;
 
     std::string _userName;
     

@@ -4,18 +4,6 @@
 
 #include "../include/User.h"
 
-void User::setConnection(const long connectionId) const {
-	this -> _connectionId = connectionId;
-}
-
-long User::getConnectionId() const {
-	return _connectionId;
-}
-
-void User::clearConnection() const {
-	setConnection(0);
-}
-
 bool User::isUsernameEqual(const std::string userName) const {
 	return _userName == userName;
 }
@@ -30,10 +18,6 @@ std::string User::getUsername() const {
 
 std::size_t User::getHashedPassword() const {
 	return _hashedPassword;
-}
-
-void User::startSession(const long connectionId) const {
-	setConnection(connectionId);
 }
 
 void User::moveToRoom(int roomNumber) {

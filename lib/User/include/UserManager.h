@@ -23,11 +23,9 @@ public:
 
 	// bool userExists(std::string username, std::string password);
 
-	void tryLoginAgain();
+	bool login(std::string userName, std::string password);
 
-	void login(long connectionId, std::string userName, std::string password);
-
-	void createUser(long connectionId, std::string userName, std::string password);
+	bool createUser(std::string userName, std::string password);
 
     void loadUsers();
 

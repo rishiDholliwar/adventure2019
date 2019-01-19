@@ -36,40 +36,46 @@ bool UserManager::passwordMatchesUsername(std::string password, std::set<User>::
 	return false;
 }
 
-void UserManager::tryLoginAgain() {
-	// Output to screen
-}
-
-
-void UserManager::login(long connectionId, std::string userName, std::string password) {
+bool UserManager::login(std::string userName, std::string password) {
 	
 	std::set<User>::iterator it = findUsername(userName);
 
 	if (it != UserManager::users.end()) {
 		//username exists
 		if (passwordMatchesUsername(password, it)) {
-
-			(*it).User::startSession(connectionId);
+			return true;
+			//return success_return_code
 		} else {
-			throw std::invalid_argument("Account does not exist"); // TBD custom exception class
+			return false;
+			//return error_return_code
 		}
 				
 	} else {
-		throw std::invalid_argument("Account does not exist");
+		return false;
+		//return error_return_code
 	}
 }
 
-void UserManager::createUser(long connectionId, std::string userName, std::string password) {
+bool UserManager::createUser(std::string userName, std::string password) {
 
 	std::set<User>::iterator it = findUsername(userName);
 
 	if (it != UserManager::users.end()) {
-		throw std::invalid_argument("Username is taken");
+		return false;
+		//return error_return_code
 	} else {
 		//username does not exist
 		auto hashedPassword = std::hash<std::string>{}(password);
-		User newUser(connectionId, userName, hashedPassword);
+		User newUser(userName, hashedPassword);
 		UserManager::users.insert(newUser);
+
+		if (findUsername(userName) != users.end()) {
+			return true;
+			//return success_return_code
+		} else {
+			return false;
+			//return error_return_code
+		}
 	}
 }
 
