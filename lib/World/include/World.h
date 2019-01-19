@@ -5,14 +5,13 @@
 #include <vector>
 #include <string>
 #include <Area.h>
-
-using namespace std;
+#include <memory>
 
 class World
 {
 public:
     World();
-    void addArea(Area& area);
+    void addArea(std::unique_ptr<Area> area);
 
     //void addObject();
 
@@ -20,8 +19,8 @@ public:
     void readJson(string filename);
 private:
 
-    vector<Area> areas;
+    vector<std::unique_ptr<Area>> areas;
 
-    //vector<Entity> entities;
+    //vector<std::unique_ptr<Entity>> entities;
 };
 #endif //OOP_WORLD_H

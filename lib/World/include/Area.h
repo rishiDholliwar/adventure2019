@@ -9,17 +9,18 @@
 #include <string>
 #include <Area.h>
 #include <Room.h>
+#include <memory>
 
 using namespace std;
 
 class Area
 {
 public:
-    Area(unsigned int id, string name);
-    void addRoom(Room& room);
+    Area(unsigned int& id, string& name);
+    void addRoom(std::unique_ptr<Room> room);
 private:
     string name;
     unsigned id;
-    vector<Room> rooms;
+    vector<std::unique_ptr<Room>> rooms;
 };
 #endif //OOP_AREA_H
