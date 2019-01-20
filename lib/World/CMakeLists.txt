@@ -11,3 +11,14 @@ target_include_directories(world
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
+
+
+set_target_properties(world
+                      PROPERTIES
+                      LINKER_LANGUAGE CXX
+                      CXX_STANDARD 17
+)
+
+install(TARGETS world
+  ARCHIVE DESTINATION lib
+)

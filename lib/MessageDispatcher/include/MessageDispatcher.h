@@ -1,14 +1,12 @@
-//
-// Created by ximinz on 16/01/19.
-//
 
 #ifndef WEBSOCKETNETWORKING_MESSAGEDISPATCHER_H
 #define WEBSOCKETNETWORKING_MESSAGEDISPATCHER_H
 
 
 #include <string>
-#include "../../User/include/UserManager.h"
-#include "../../WorldManager/include/WorldManager.h"
+#include "UserManager.h"
+#include "WorldManager.h"
+#include "Server.h"
 
 class MessageDispatcher {
     public:

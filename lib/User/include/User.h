@@ -1,10 +1,6 @@
-#include <utility>
-
 #ifndef WEBSOCKETNETWORKING_USER_H
 #define WEBSOCKETNETWORKING_USER_H
 
-
-#include <Server.h>
 #include <string>
 
 class User {

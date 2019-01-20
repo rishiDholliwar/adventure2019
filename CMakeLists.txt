@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
-project(WebSocketNetworking)
+project(AlterSpace)
 
-set(PACKAGE_NAME WebSocketNetworking)
+set(PACKAGE_NAME AlterSpace)
 set(PACKAGE_VERSION 0.1)
 set(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
+# Sorry Nick, we don't actually want the bug reports
 set(PACKAGE_BUGREPORT "wsumner@sfu.ca")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

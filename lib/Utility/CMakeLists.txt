@@ -1,12 +1,8 @@
 
-add_library(networking
-  src/Server.cpp
-  src/Client.cpp
-  )
+add_library(utility
+  src/Utility.cpp)
 
-find_package(Boost 1.66 COMPONENTS system REQUIRED)
-
-target_include_directories(networking
+target_include_directories(utility
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -15,18 +11,12 @@ target_include_directories(networking
     ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(networking
-  PRIVATE
-    ${Boost_LIBRARIES}
-)
-
-set_target_properties(networking
+set_target_properties(utility
                       PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
 )
 
-install(TARGETS networking
+install(TARGETS utility
   ARCHIVE DESTINATION lib
 )
-

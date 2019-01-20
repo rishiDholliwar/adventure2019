@@ -1,6 +1,4 @@
-
-
-#include "../include/WorldManager.h"
+#include "WorldManager.h"
 
 void WorldManager::receiveText(User user, std::string input, std::function<void (const User user, const std::string feedback)> callBack) {
     this->_users.emplace_back(user);
