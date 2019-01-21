@@ -12,9 +12,9 @@
 class Room
 {
 public:
-    Room(unsigned int  id, std::string& name);
-    void addDescription(std::string& description);
-    void addExtendedDescription(std::string& extDescription);
+    Room(unsigned int  id, std::string name);
+    void addDescription(std::string description);
+    void addExtendedDescription(std::string extDescription);
     const unsigned int& getId(){return id;};
     const std::string& getName(){return name;};
     const std::vector<std::string>& getDescriptions(){return descriptions;};
