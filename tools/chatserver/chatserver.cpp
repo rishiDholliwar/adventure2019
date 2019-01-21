@@ -7,7 +7,7 @@
 
 
 #include "Server.h"
-#include "../../lib/MessageDispatcher/include/MessageDispatcher.h"
+#include "MessageDispatcher.h"
 
 #include <experimental/filesystem>
 #include <fstream>

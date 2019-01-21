@@ -1,9 +1,5 @@
-//
-// Created by ximinz on 16/01/19.
-//
-
-#include "../include/MessageDispatcher.h"
-#include "../../Ultility/Ultility.h"
+#include "MessageDispatcher.h"
+#include "Utility.h"
 #include <boost/algorithm/string.hpp>
 #include <iostream>
 void MessageDispatcher::onReceive(std::string text, networking::Connection connection) {

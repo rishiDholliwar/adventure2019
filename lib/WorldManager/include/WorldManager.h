@@ -1,6 +1,3 @@
-//
-// Created by ximinz on 16/01/19.
-//
 
 #ifndef WEBSOCKETNETWORKING_WORLDMANAGER_H
 #define WEBSOCKETNETWORKING_WORLDMANAGER_H
@@ -8,7 +5,8 @@
 
 #include <deque>
 #include <vector>
-#include "../../User/include/User.h"
+#include "User.h"
+#include <functional>
 
 class WorldManager {
 private:

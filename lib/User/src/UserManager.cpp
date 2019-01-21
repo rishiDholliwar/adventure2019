@@ -1,4 +1,4 @@
-#include "../include/UserManager.h"
+#include "UserManager.h"
 
 // User UserManager::findUser(std::string userName, std::size_t hashedPassword) {
 //     if(userName == "a"){

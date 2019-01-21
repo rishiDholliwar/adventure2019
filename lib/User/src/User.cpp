@@ -1,8 +1,5 @@
-//
-// Created by ximinz on 16/01/19.
-//
 
-#include "../include/User.h"
+#include "User.h"
 
 bool User::isUsernameEqual(const std::string userName) const {
 	return _userName == userName;
