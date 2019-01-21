@@ -2,7 +2,7 @@
 // Created by evan on 17/01/19.
 //
 
-#include "../include/Door.h"
+#include "Door.h"
 #include <iostream>
 
 
