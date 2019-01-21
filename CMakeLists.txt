@@ -28,4 +28,4 @@ ENDIF()
 
 add_subdirectory(lib)
 add_subdirectory(tools)
-add_subdirectory(web-socket-networking/lib)
+add_subdirectory(${NETWORKING_LIB_DIRECTORY})
