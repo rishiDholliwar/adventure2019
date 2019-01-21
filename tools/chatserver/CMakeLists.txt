@@ -13,6 +13,7 @@ set_target_properties(chatserver
 find_package(Threads REQUIRED)
 
 target_link_libraries(chatserver
+  messageDispatcher
   networking
   ${CMAKE_THREAD_LIBS_INIT}
 )
