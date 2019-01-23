@@ -1,6 +1,7 @@
 
 add_library(utility
-  src/Utility.cpp)
+  src/Utility.cpp
+        include/Utility.h)
 
 target_include_directories(utility
   PUBLIC

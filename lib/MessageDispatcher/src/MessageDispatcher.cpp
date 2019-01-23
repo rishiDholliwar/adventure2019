@@ -1,7 +1,7 @@
 #include "MessageDispatcher.h"
 #include "Utility.h"
 #include <boost/algorithm/string.hpp>
-#include "../../Ultility/CommandUtil.hpp"
+#include "CommandUtil.hpp"
 #include <iostream>
 void MessageDispatcher::onReceive(std::string text, networking::Connection connection) {
     std::string userName;
