@@ -9,7 +9,7 @@ void UserManager::addUser(User user) {
 }
 
 
-std::set<User>::iterator UserManager::findUsername(std::string username) {
+std::set<User>::iterator UserManager::findusername(std::string username) {
 	User tempUser(username);
 
 	std::set<User>::iterator it = users.find(tempUser);
@@ -17,7 +17,7 @@ std::set<User>::iterator UserManager::findUsername(std::string username) {
 	return it;
 }
 
-bool UserManager::passwordMatchesUsername(std::string password, const std::set<User>::iterator it) {
+bool UserManager::passwordMatchesusername(std::string password, const std::set<User>::iterator it) {
 
 	auto hashedPassword = std::hash<std::string>{}(password);
 
@@ -28,9 +28,9 @@ bool UserManager::passwordMatchesUsername(std::string password, const std::set<U
 	return false;
 }
 
-bool UserManager::login(std::string userName, std::string password) {
+bool UserManager::login(std::string username, std::string password) {
 
-	const std::set<User>::iterator it = findUsername(userName);
+	const std::set<User>::iterator it = findusername(username);
 
 	//username doesn't exist
 	if (it == UserManager::users.end()) {
@@ -38,7 +38,7 @@ bool UserManager::login(std::string userName, std::string password) {
 		//return error_return_code
 	}
 
-	if (passwordMatchesUsername(password, it)) {
+	if (passwordMatchesusername(password, it)) {
 		return true;
 		//return success_return_code
 	} else {
@@ -47,9 +47,9 @@ bool UserManager::login(std::string userName, std::string password) {
 	}
 }
 
-bool UserManager::createUser(std::string userName, std::string password) {
+bool UserManager::createUser(std::string username, std::string password) {
 
-	std::set<User>::iterator it = findUsername(userName);
+	std::set<User>::iterator it = findusername(username);
 
 	//username already exists
 	if (it != UserManager::users.end()) {
@@ -59,10 +59,10 @@ bool UserManager::createUser(std::string userName, std::string password) {
 
 	//username does not exist
 	auto hashedPassword = std::hash<std::string>{}(password);
-	User newUser(userName, hashedPassword);
+	User newUser(std::move(username), std::move(hashedPassword));
 	UserManager::users.insert(newUser);
 
-	if (findUsername(userName) != users.end()) {
+	if (findusername(username) != users.end()) {
 		return true;
 		//return success_return_code
 	} else {
@@ -75,15 +75,15 @@ void UserManager::loadUsers() {
 	//
 }
 
-User UserManager::lookUpUser(std::string userName, std::string password) {
+User UserManager::lookUpUser(std::string username, std::string password) {
 	//just a dummy user for stableness
-	User tempUser(userName);
+	User tempUser(username);
 
 	return tempUser;
 }
 
-User UserManager::getUserByUsername(std::string userName) {
-	std::set<User>::iterator it = findUsername(userName);
+User UserManager::getUserByusername(std::string username) {
+	std::set<User>::iterator it = findusername(username);
 
 	return *it;
 }
