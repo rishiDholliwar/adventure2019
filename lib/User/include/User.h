@@ -14,7 +14,7 @@ public:
 
     User(std::string userName)
     :_userName(userName) { };
-    
+
     User(std::string userName, size_t hashedPassword)
     :_userName(userName), _hashedPassword(hashedPassword), _roomNumber(0) { };
 
@@ -26,24 +26,21 @@ public:
 
     std::size_t getHashedPassword() const;
 
-    bool isSameUser(User user) const;
-
     void moveToRoom(int roomNumber);
 
     int getRoomNumber() const;
 
+    //UserManager uses set<User> and requires a < operator overload for comparison
+    bool operator<(const User& t, const User& o);
+
 private:
 
     std::string _userName;
-    
+
     std::size_t _hashedPassword;
 
     mutable int _roomNumber;
 
 };
-
-//UserManager uses set<User> and requires a < operator overload for comparison purposes.
-bool operator<(const User& t, const User& o);
-
 
 #endif //WEBSOCKETNETWORKING_USER_H

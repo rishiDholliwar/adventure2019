@@ -1,13 +1,5 @@
 #include "../include/UserManager.h"
 
-// User UserManager::findUser(std::string userName, std::size_t hashedPassword) {
-//     if(userName == "a"){
-//         User a(networking::Connection{2}, "a", "b");
-//         a.moveToRoom(5);
-//         return a;
-//     }
-//     return User(networking::Connection{1}, "b", "b");
-// }
 std::set<User> UserManager::getUsers() {
 	return users;
 }
@@ -37,7 +29,7 @@ bool UserManager::passwordMatchesUsername(std::string password, const std::set<U
 }
 
 bool UserManager::login(std::string userName, std::string password) {
-	
+
 	const std::set<User>::iterator it = findUsername(userName);
 
 	//username doesn't exist
