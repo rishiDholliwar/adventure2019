@@ -21,10 +21,18 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 link_directories(${LIBRARY_OUTPUT_PATH})
 set(CMAKE_TEMP_LIBRARY_PATH "${PROJECT_BINARY_DIR}/lib")
 
-set(NETWORKING_LIB_DIRECTORY "web-socket-networking/lib")
+set(NETWORKING_LIB_DIRECTORY "${CMAKE_SOURCE_DIR}/web-socket-networking/lib")
 IF(NOT EXISTS NETWORKING_LIB_DIRECTORY)
 	EXECUTE_PROCESS(COMMAND git submodule update --init)
 ENDIF()
+
+set(SERVER_PATCHES
+	"${CMAKE_SOURCE_DIR}/patches/server.patch")
+FOREACH(PATCH ${SERVER_PATCHES})
+	MESSAGE(${PATCH})
+	EXECUTE_PROCESS(COMMAND git apply ${PATCH} WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/web-socket-networking")
+ENDFOREACH(PATCH)
+
 
 add_subdirectory(lib)
 add_subdirectory(tools)
