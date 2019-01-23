@@ -1,12 +1,32 @@
-#include "WorldManager.h"
+#include <utility>
+#include "../include/WorldManager.h"
+#include <iostream>
+WorldManager::FunctionMap WorldManager::_funcMap = []
+{
+    std::map<std::string, std::string (WorldManager::*)(std::string, std::string)> mapping;
+    mapping["!say"]  = &WorldManager::say;
+    return mapping;
+}();
 
-void WorldManager::receiveText(User user, std::string input, std::function<void (const User user, const std::string feedback)> callBack) {
-    this->_users.emplace_back(user);
-    if(input.find("!say ") == 0){
-        for(const auto &each : this->_users){
-            if(user.User::getRoomNumber() == each.User::getRoomNumber()){
-                callBack(user, user.getUsername() + " said: " +input.substr(4));
-            }
-        }
+
+std::string WorldManager::say(std::string userName, std::string input)
+{
+    std::cout << "Say " << input << std::endl;
+    return userName+" says: "+input;
+}
+
+void WorldManager::receiveText(std::string input, std::string userName, std::function<void (std::string userName, std::string message)> callBack) {
+    auto command = input.substr(0, input.find(' '));
+    auto actionText = input.substr(input.find(' ') + 1, std::string::npos);
+    std::string ret;
+    std::string error = "Unknown";
+    if(_funcMap.find(command) != _funcMap.end())
+    {
+        ret = (this->*_funcMap[command])(userName, actionText);
     }
+    else
+    {
+        error = "Invalid command";
+    }
+    callBack(userName, ret);
 }

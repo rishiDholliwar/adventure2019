@@ -7,17 +7,22 @@
 #include "UserManager.h"
 #include "WorldManager.h"
 #include "Server.h"
+#include <map>
 
 class MessageDispatcher {
     public:
     void onReceive(std::string text, networking::Connection connection);
+    void addMessage(std::string userName, std::string message);
     std::deque<networking::Message> pour();
 
     private:
-    UserManager _userManager{};
     WorldManager _worldManager{};
-    std::vector<std::pair<networking::Connection, User>> _userPools{};
+    std::map<networking::Connection, std::string> _connectionPool{};
     std::deque<networking::Message> _messagePool{};
+
+    std::string login(std::string userName, std::string password);
+
+    void addNotLoginMessage(networking::Connection connection);
 };
 
 
