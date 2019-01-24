@@ -1,21 +1,21 @@
 #include <utility>
-#include "../include/WorldManager.h"
+#include "GameController.h"
 #include <iostream>
-WorldManager::FunctionMap WorldManager::_funcMap = []
+GameController::FunctionMap GameController::_funcMap = []
 {
-    std::map<std::string, std::string (WorldManager::*)(std::string, std::string)> mapping;
-    mapping["!say"]  = &WorldManager::say;
+    std::map<std::string, std::string (GameController::*)(std::string, std::string)> mapping;
+    mapping["!say"]  = &GameController::say;
     return mapping;
 }();
 
 
-std::string WorldManager::say(std::string userName, std::string input)
+std::string GameController::say(std::string userName, std::string input)
 {
     std::cout << "Say " << input << std::endl;
     return userName+" says: "+input;
 }
 
-void WorldManager::receiveText(std::string input, std::string userName, std::function<void (std::string userName, std::string message)> callBack) {
+void GameController::receiveText(std::string input, std::string userName, std::function<void (std::string userName, std::string message)> callBack) {
     auto command = input.substr(0, input.find(' '));
     auto actionText = input.substr(input.find(' ') + 1, std::string::npos);
     std::string ret;

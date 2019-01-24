@@ -1,10 +1,10 @@
 
-add_library(worldManager
-  src/WorldManager.cpp)
+add_library(gameController
+  src/GameController.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
-target_include_directories(worldManager
+target_include_directories(gameController
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -13,7 +13,7 @@ target_include_directories(worldManager
     ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(worldManager
+target_link_libraries(gameController
   PUBLIC
     userManager
     utility
@@ -21,12 +21,12 @@ target_link_libraries(worldManager
     ${Boost_LIBRARIES}
 )
 
-set_target_properties(worldManager
+set_target_properties(gameController
                       PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
 )
 
-install(TARGETS worldManager
+install(TARGETS gameController
   ARCHIVE DESTINATION lib
 )

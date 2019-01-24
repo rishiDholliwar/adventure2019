@@ -15,7 +15,7 @@ target_include_directories(messageDispatcher
 
 target_link_libraries(messageDispatcher
   PUBLIC
-  worldManager
+  gameController
   userManager
   networking
   PRIVATE

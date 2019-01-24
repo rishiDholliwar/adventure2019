@@ -18,7 +18,7 @@ void MessageDispatcher::onReceive(std::string text, networking::Connection conne
         addNotLoginMessage(connection);
         return;
     }
-    _worldManager.receiveText(
+    gameController.receiveText(
             std::move(text), it->second, [&](std::string userName, std::string message){addMessage(userName, message);});
 }
 

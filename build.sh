@@ -32,11 +32,21 @@ fi
 mkdir -p $DIR/networkbuild;
 cd $DIR/networkbuild;
 cmake ..;
+if [ $? -ne 0 ]
+then
+	echo "Failed: cmake"
+	exit -1
+fi
 if [ "$JOBS" == "0" ]
 then
 	make;
 else
 	make -j$JOBS;
+fi
+if [ $? -ne 0 ]
+then
+	echo "Failed: make"
+	exit -1
 fi
 if [ "$SERVER" == "FALSE" ]
 then

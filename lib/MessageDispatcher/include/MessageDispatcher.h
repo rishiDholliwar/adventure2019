@@ -5,7 +5,7 @@
 
 #include <string>
 #include "UserManager.h"
-#include "WorldManager.h"
+#include "GameController.h"
 #include "Server.h"
 #include <map>
 
@@ -16,7 +16,7 @@ class MessageDispatcher {
     std::deque<networking::Message> pour();
 
     private:
-    WorldManager _worldManager{};
+    GameController gameController{};
     std::map<networking::Connection, std::string> _connectionPool{};
     std::deque<networking::Message> _messagePool{};
 
