@@ -2,12 +2,12 @@
 // Created by ximinz on 16/01/19.
 //
 
-#ifndef WEBSOCKETNETWORKING_ULTILITY_H
-#define WEBSOCKETNETWORKING_ULTILITY_H
+#ifndef WEBSOCKETNETWORKING_UTILITY_H
+#define WEBSOCKETNETWORKING_UTILITY_H
 
 #include <vector>
 #include <algorithm>
-namespace ultility {
+namespace utility {
 
     template <typename T, typename Pred>
     static std::vector<T> filter(std::vector<T> collection, Pred predicate){
@@ -19,4 +19,4 @@ namespace ultility {
 }
 
 
-#endif //WEBSOCKETNETWORKING_ULTILITY_H
+#endif //WEBSOCKETNETWORKING_UTILITY_H

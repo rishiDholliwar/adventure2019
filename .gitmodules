@@ -1,0 +1,4 @@
+[submodule "web-socket-networking"]
+	path = web-socket-networking
+	url = https://github.com/nsumner/web-socket-networking
+	ignore = dirty
