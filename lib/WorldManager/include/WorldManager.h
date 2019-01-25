@@ -6,8 +6,11 @@
 #include <deque>
 #include <vector>
 #include "User.h"
+#include "../../Controllers/include/CharacterController.h"
 #include <functional>
 #include <map>
+
+
 
 class WorldManager {
 
@@ -16,6 +19,7 @@ class WorldManager {
 private:
     std::vector<User> _users;
     static FunctionMap _funcMap;
+    CharacterController charController;
     //Areas
     //other objects
 
@@ -25,6 +29,7 @@ public:
     //handles real user input
     void receiveText(std::string input,std::string userName, std::function<void (std::string userName, std::string message)> callBack);
     std::string say(std::string userName, std::string input);
+
 
 };
 

@@ -24,23 +24,25 @@ public:
      * */
     bool levelUpCharacter(Character &character);
 
-    /* Equip Weapon:
-     *
-     * Function: Equips a weapon into the weapon slot
-     *
-     * Pre-Condition: Requires a character and the weapon he/she wants to equip
-     * Post: Returns true on a successful equip, returns false otherwise
-     * */
-    bool equipWeapon(Character &character, Item &anItem);
+//    /* Equip Weapon:
+//     *
+//     * Function: Equips a weapon into the weapon slot
+//     *
+//     * Pre-Condition: Requires a character and the weapon he/she wants to equip
+//     * Post: Returns true on a successful equip, returns false otherwise
+//     * */
+//    bool equipWeapon(Character &character, Item &anItem);
+//
+//    /* Equip Armor:
+//     *
+//     * Function: Equips a armor into the armor slot
+//     *
+//     * Pre-Condition: Requires a character and the armor he/she wants to equip
+//     * Post: Returns true on a successful equip, returns false otherwise
+//     * */
+//    bool equipArmor(Character &character, Item &item);
 
-    /* Equip Armor:
-     *
-     * Function: Equips a armor into the armor slot
-     *
-     * Pre-Condition: Requires a character and the armor he/she wants to equip
-     * Post: Returns true on a successful equip, returns false otherwise
-     * */
-    bool equipArmor(Character &character, Item &item);
+
 
 
 
