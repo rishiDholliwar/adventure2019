@@ -12,6 +12,7 @@ class CharacterController {
 
 public:
 
+    /* Constructor */
     CharacterController();
 
     /* Level Up Character:
@@ -40,37 +41,12 @@ public:
      *
      * Function: Adds the item to the character's inventory
      *
-     * Pre-Condition: requires the character that receives the item and the item name itself
+     * Pre-Condition: requires the character that receives the item and the item
      * Post: adds item to users inventory and fails if inventory is full
      *
      * */
     template <typename T>
     bool addItemToInventory(Character &character, T &item);
-
-
-//    /* Equip Weapon:
-//     *
-//     * Function: Equips a weapon into the weapon slot
-//     *
-//     * Pre-Condition: Requires a character and the weapon he/she wants to equip
-//     * Post: Returns true on a successful equip, returns false otherwise
-//     * */
-//    bool equipWeapon(Character &character, Item &anItem);
-//
-//    /* Equip Armor:
-//     *
-//     * Function: Equips a armor into the armor slot
-//     *
-//     * Pre-Condition: Requires a character and the armor he/she wants to equip
-//     * Post: Returns true on a successful equip, returns false otherwise
-//     * */
-//    bool equipArmor(Character &character, Item &item);
-
-
-
-
-
-
 
 };
 
