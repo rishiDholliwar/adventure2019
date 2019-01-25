@@ -13,7 +13,10 @@ set_target_properties(chatserver
 find_package(Threads REQUIRED)
 
 target_link_libraries(chatserver
+  gameController
+  userManager
   networking
+  json
   ${CMAKE_THREAD_LIBS_INIT}
 )
 

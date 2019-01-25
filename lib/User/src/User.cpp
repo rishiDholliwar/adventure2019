@@ -1,4 +1,4 @@
-#include "../include/User.h"
+#include <User.h>
 
 bool User::isusernameEqual(const std::string username) const {
 	return _username == username;
