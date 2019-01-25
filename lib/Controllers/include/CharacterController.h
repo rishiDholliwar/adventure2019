@@ -6,7 +6,7 @@
 #define ALTERSPACE_CHARACTERCONTROLLER_H
 
 
-#include "../Model/Character.h"
+#include "../../Model/Character.h"
 
 class CharacterController {
 

@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "CharacterController.h"
+#include "../include/CharacterController.h"
 
 CharacterController::CharacterController() = default;
 
