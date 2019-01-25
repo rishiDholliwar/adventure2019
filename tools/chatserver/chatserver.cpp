@@ -6,8 +6,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "Server.h"
-#include "MessageDispatcher.h"
+#include "json.hpp"
+#include "chatserver.h"
 
 #include <experimental/filesystem>
 #include <fstream>
@@ -15,46 +15,81 @@
 #include <sstream>
 #include <unistd.h>
 
+// We must decide on how to handle onConnect and onDisconnect
+// The reason why our game is a global is because the methods
+// can not reference the Game class easily
+std::unique_ptr<Game> game;
 
-using networking::Server;
-using networking::Connection;
-using networking::Message;
+void onConnect(Connection c) {
+  game->addConnection(c);
+}
 
-
-std::vector<Connection> clients;
-
+void onDisconnect(Connection c) {
+  game->removeConnection(c);
+}
 
 void
-onConnect(Connection c) {
+Game::addConnection(Connection c) {
   std::cout << "New connection found: " << c.id << "\n";
-  clients.push_back(c);
+  _clients.push_back(c);
 }
 
 
 void
-onDisconnect(Connection c) {
+Game::removeConnection(Connection c) {
   std::cout << "Connection lost: " << c.id << "\n";
-  auto eraseBegin = std::remove(std::begin(clients), std::end(clients), c);
-  clients.erase(eraseBegin, std::end(clients));
+  auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
+  _clients.erase(eraseBegin, std::end(_clients));
 }
 
 
 std::deque<Message>
-processMessages(Server &server, MessageDispatcher &messageDispatcher, const std::deque<Message> &incoming, bool &quit) {
+Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
   std::deque<Message> result{};
   for (auto& message : incoming) {
     if (message.text == "quit") {
-      server.disconnect(message.connection);
+      _server->disconnect(message.connection);
     } else if (message.text == "shutdown") {
       std::cout << "Shutting down.\n";
       quit = true;
     } else {
-        messageDispatcher.onReceive(message.text, message.connection);
+      // We need to get the user later on
+      std::string dummyUser = "Bob";  
+      std::string output = _gameController->receiveText(message.text, dummyUser);
+      Message msg{message.connection, output};
+      result.push_back(msg);
     }
   }
-  return messageDispatcher.pour();
+  return result;
 }
 
+bool 
+Game::run()
+{
+  bool done = false;
+  while (!done) {
+    try {
+      _server->update();
+    } catch (std::exception& e) {
+      std::cerr << "Exception from Server feedUpdate:\n"
+                << " " << e.what() << "\n\n";
+      done = true;
+    }
+
+    auto incoming = _server->receive();
+    auto log = processMessages(incoming, done);
+    _server->send(log);
+    sleep(_heartbeat);
+  }
+  return done;
+}
+
+Game::Game(Server& server, GameController& gc, UserManager& um) 
+{
+  _server = &server;
+  _gameController = &gc;
+  _userManager = &um;
+}
 
 std::string
 getHTTPMessage(const char* htmlLocation) {
@@ -79,25 +114,17 @@ main(int argc, char* argv[]) {
     return 1;
   }
 
-  bool done = false;
   unsigned short port = std::stoi(argv[1]);
-  Server server{port, getHTTPMessage(argv[2]), onConnect, onDisconnect};
-  auto msgDispatcher = MessageDispatcher{};
+  auto webpage = getHTTPMessage(argv[2]);
 
-  while (!done) {
-    try {
-      server.update();
-    } catch (std::exception& e) {
-      std::cerr << "Exception from Server feedUpdate:\n"
-                << " " << e.what() << "\n\n";
-      done = true;
-    }
+  Config config = {.port = port, .webpage = webpage};
+  Server server = Server(config.port, config.webpage, onConnect, onDisconnect);
+  GameController gameController = GameController();
+  UserManager userManager = UserManager();
 
-    auto incoming = server.receive();
-    auto log = processMessages(server, msgDispatcher, incoming, done);
-    server.send(log);
-    sleep(1);
-  }
+  // Because we 
+  game = std::make_unique<Game>(server, gameController, userManager);
+  game->run();
 
   return 0;
 }

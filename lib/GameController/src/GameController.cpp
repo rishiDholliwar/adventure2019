@@ -15,7 +15,7 @@ std::string GameController::say(std::string userName, std::string input)
     return userName+" says: "+input;
 }
 
-void GameController::receiveText(std::string input, std::string userName, std::function<void (std::string userName, std::string message)> callBack) {
+std::string GameController::receiveText(std::string input, std::string userName) {
     auto command = input.substr(0, input.find(' '));
     auto actionText = input.substr(input.find(' ') + 1, std::string::npos);
     std::string ret;
@@ -28,5 +28,5 @@ void GameController::receiveText(std::string input, std::string userName, std::f
     {
         error = "Invalid command";
     }
-    callBack(userName, ret);
+    return (ret != "") ? ret : error;
 }

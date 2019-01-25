@@ -23,7 +23,7 @@ public:
     GameController()
     :_users{}{}
     //handles real user input
-    void receiveText(std::string input,std::string userName, std::function<void (std::string userName, std::string message)> callBack);
+    std::string receiveText(std::string input,std::string userName);
     std::string say(std::string userName, std::string input);
 
 };
