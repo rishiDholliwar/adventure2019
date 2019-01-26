@@ -4,33 +4,48 @@
 
 
 #include <string>
-#include <set>
-#include "User.h"
+#include <map>
+#include <vector>
+#include <User.h>
 
-class UserManager {
+class UserController {
 
 public:
+	std::map<std::string, std::string> getActiveUsers();
 
-	std::set<User> getUsers();
+	void addActiveUser(std::string username, std::string connectionId);
 
-	void addUser(User user);
+	bool isThisUserActive(std::string username);
 
-	std::set<User>::iterator findusername(std::string username);
+	std::string getUsernameWithConnectionId(std::string connectionId);
 
-	bool passwordMatchesusername(std::string password, const std::set<User>::iterator it);
+	std::string getConnectionIdWithUsername(std::string username);
 
-	bool login(std::string username, std::string password);
+	auto hashPassword(std::string password);
+
+	bool login(std::string username, std::string password, std::string connectionId);
+
+	bool parseLoginUserData(std::string username, std::string password);
+
+	std::vector<std::string> parseLoginCharacterData(std::string username);
 
 	bool createUser(std::string username, std::string password);
 
-  void loadUsers();
+	bool parseNewUserData(std::string username, std::string password);
 
-  User lookUpUser(std::string username, std::string password);
+	bool logoutUser(std::string username, std::vector<std::string> newCharData);
 
-  User getUserByusername(std::string username);
+	bool saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData);
 
 private:
-	std::set<User> users = {};
+	std::map<std::string, std::string> activeUsers = {};
+
+	struct returnType {
+		std::string username;
+		//enum class error code. for testing purpose only, using bool rn.
+		bool returnCode;
+		std::vector<std::string> characterData;
+	};
 };
 
 

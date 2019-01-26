@@ -9,7 +9,7 @@ public:
     User(){};
 
     User(std::string username)
-    :_username(std::move(username));
+    :_username(std::move(username)) { };
 
     User(std::string username, size_t hashedPassword)
     :_username(std::move(username)), _hashedPassword(std::move(hashedPassword)), _roomNumber(0) { };
@@ -26,9 +26,6 @@ public:
 
     int getRoomNumber() const;
 
-    //UserManager uses set<User> and requires a < operator overload for comparison
-    bool operator<(const User& t, const User& o);
-
 private:
 
     std::string _username;
@@ -38,5 +35,8 @@ private:
     mutable int _roomNumber;
 
 };
+
+//UserManager uses set<User> and requires a < operator overload for comparison
+bool operator<(const User& t, const User& o);
 
 #endif //WEBSOCKETNETWORKING_USER_H

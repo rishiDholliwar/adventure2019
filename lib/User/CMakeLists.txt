@@ -1,11 +1,11 @@
 
-add_library(userManager
+add_library(userController
   src/User.cpp
-  src/UserManager.cpp)
+  src/UserController.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
-target_include_directories(userManager
+target_include_directories(userController
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -14,17 +14,17 @@ target_include_directories(userManager
     ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(userManager
+target_link_libraries(userController
   PRIVATE
     ${Boost_LIBRARIES}
 )
 
-set_target_properties(userManager
+set_target_properties(userController
                       PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
 )
 
-install(TARGETS userManager
+install(TARGETS userController
   ARCHIVE DESTINATION lib
 )
