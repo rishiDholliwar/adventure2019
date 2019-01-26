@@ -2,30 +2,26 @@
 #ifndef WEBSOCKETNETWORKING_GAMECONTROLLER_H
 #define WEBSOCKETNETWORKING_GAMECONTROLLER_H
 
-
-#include <deque>
-#include <vector>
 #include "User.h"
-#include <functional>
-#include <map>
+#include <memory>
+#include <CommandHandler.h>
+
+class CommandHandler;
 
 class GameController {
-
-    using FunctionMap = std::map<std::string, std::string(GameController::*)(std::string, std::string)>;
-
 private:
     std::vector<User> _users;
-    static FunctionMap _funcMap;
+    std::unique_ptr<CommandHandler> _commandHandler;
     //Areas
     //other objects
 
 public:
-    GameController()
-    :_users{}{}
+    GameController();
     //handles real user input
     std::string receiveText(std::string input,std::string userName);
     std::string say(std::string userName, std::string input);
-
+    std::string setAlias(std::string userName, std::string input);
+    std::string removeAlias(std::string userName, std::string input);
 };
 
 

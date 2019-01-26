@@ -1,10 +1,10 @@
 
-add_library(gameController
-  src/GameController.cpp)
+add_library(commandHandler
+  src/CommandHandler.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
-target_include_directories(gameController
+target_include_directories(commandHandler
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -13,21 +13,19 @@ target_include_directories(gameController
     ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(gameController
+target_link_libraries(commandHandler
   PUBLIC
-    userManager
-    utility
-    commandHandler
+    gameController
   PRIVATE
     ${Boost_LIBRARIES}
 )
 
-set_target_properties(gameController
+set_target_properties(commandHandler
                       PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
 )
 
-install(TARGETS gameController
+install(TARGETS commandHandler
   ARCHIVE DESTINATION lib
 )
