@@ -3,7 +3,7 @@
 
 #include "Server.h"
 #include "GameController.h"
-#include "UserManager.h"
+#include <UserController.h>
 
 using networking::Server;
 using networking::Connection;
@@ -19,7 +19,7 @@ class Game
 {
 private:
   GameController* _gameController;
-  UserManager* _userManager;
+  UserController* _userController;
   Server* _server;
   std::vector<Connection> _clients;
   float _heartbeat = 1.0;
@@ -31,7 +31,7 @@ public:
   void addConnection(Connection);
   void removeConnection(Connection);
   bool run();
-  Game(Server&, GameController&, UserManager&);
+  Game(Server&, GameController&, UserController&);
   ~Game(){};
   
 };

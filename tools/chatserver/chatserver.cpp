@@ -84,11 +84,11 @@ Game::run()
   return done;
 }
 
-Game::Game(Server& server, GameController& gc, UserManager& um) 
+Game::Game(Server& server, GameController& gc, UserController& um) 
 {
   _server = &server;
   _gameController = &gc;
-  _userManager = &um;
+  _userController = &um;
 }
 
 std::string
@@ -120,10 +120,10 @@ main(int argc, char* argv[]) {
   Config config = {.port = port, .webpage = webpage};
   Server server = Server(config.port, config.webpage, onConnect, onDisconnect);
   GameController gameController = GameController();
-  UserManager userManager = UserManager();
+  UserController userController = UserController();
 
   // Because we 
-  game = std::make_unique<Game>(server, gameController, userManager);
+  game = std::make_unique<Game>(server, gameController, userController);
   game->run();
 
   return 0;
