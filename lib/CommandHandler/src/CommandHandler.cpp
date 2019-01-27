@@ -21,7 +21,6 @@ CommandHandler::CommFunc CommandHandler::getCommand(std::string command,std::str
 	auto mapIt = _userFuncMap.find(userName);
 	if(mapIt != _userFuncMap.end())
 	{
-		std::cout << "Found user" << std::endl;
 		// find command inside of user's map
 		auto userMap = mapIt->second;
 		auto it = userMap.find(command);
