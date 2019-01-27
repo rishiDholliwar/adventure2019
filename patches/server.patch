@@ -1,0 +1,16 @@
+diff --git a/lib/networking/include/Server.h b/lib/networking/include/Server.h
+index 671e574..437cb96 100644
+--- a/lib/networking/include/Server.h
++++ b/lib/networking/include/Server.h
+@@ -30,6 +30,11 @@ struct Connection {
+   operator==(Connection other) const {
+     return id == other.id;
+   }
++
++  bool
++  operator<(Connection other) const {
++    return id < other.id;
++  }
+ };
+ 
+ 
