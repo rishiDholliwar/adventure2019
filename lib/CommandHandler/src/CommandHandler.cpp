@@ -2,6 +2,7 @@
 #include <GameController.h>
 #include <iostream>
 
+// Initialize the default function map
 CommandHandler::FunctionMap CommandHandler::_defFuncMap = []
 {
     CommandHandler::FunctionMap mapping;
@@ -15,12 +16,16 @@ CommandHandler::CommFunc CommandHandler::getCommand(std::string command,std::str
 {
 	// For user configurable spellings
 	// We need to look for the user's custom command map first
-	
+
+	//Find user's map
 	auto mapIt = _userFuncMap.find(userName);
 	if(mapIt != _userFuncMap.end())
 	{
-		auto it = (mapIt->second).find(command);
-		if(it != mapIt->second.end())
+		std::cout << "Found user" << std::endl;
+		// find command inside of user's map
+		auto userMap = mapIt->second;
+		auto it = userMap.find(command);
+		if(it != userMap.end())
 		{
 			return it->second;
 		}
@@ -39,26 +44,35 @@ std::string CommandHandler::setAlias(std::string userName, std::string command, 
 	error += "\" to \"";
 	error += newAlias;
 	error += "\"";
+	// Try and insert an empty function map for the user
+	// If it fails, it will return us the current map
 	auto ret = _userFuncMap.insert(std::pair(userName, CommandHandler::FunctionMap{}));
-	auto mapIt = ret.first;
-	auto it = mapIt->second.find(command);
-	if (it == mapIt->second.end())
+
+	// Take the reference of the map... You don't want a copy
+	auto userMap = &(ret.first)->second;
+
+	// Check both the user and default map to see if the command
+	// exists already or not
+	auto it = userMap->find(command);
+	if (it == userMap->end())
 	{
 		it = _defFuncMap.find(command);
-	}
-	if (it == _defFuncMap.end())
-	{
-		return error;
+		if (it == _defFuncMap.end())
+		{
+			return error;
+		}
 	}
 
+	// Do not allow an alias of the same name in our default map
 	auto checkIt = _defFuncMap.find(newAlias);
 	if (checkIt != _defFuncMap.end())
 	{
 		return error;
 	}
 
-	auto mapRet = mapIt->second.insert(std::pair(newAlias, it->second));
-	if(!mapRet.second)
+	auto mapRet = userMap->insert(std::pair(newAlias, it->second));
+	// Fails if there is already an alias with this name
+	if(mapRet.second == false)
 	{
 		return error;
 	}
@@ -73,7 +87,13 @@ std::string CommandHandler::setAlias(std::string userName, std::string command, 
 
 std::string CommandHandler::removeAlias(std::string userName, std::string alias)
 {
+	// Try and insert an empty function map for the user
+	// If it fails, it will return us the current map
 	auto ret = _userFuncMap.insert(std::pair(userName, CommandHandler::FunctionMap{}));
+	if(ret.second)
+	{
+		return "Alias does not exist";
+	}
 	auto mapIt = ret.first;
 	auto res = mapIt->second.erase(alias);
 	if (!res)
