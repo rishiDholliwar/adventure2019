@@ -7,7 +7,7 @@
 #include <vector>
 #include "User.h"
 #include <functional>
-#include <map>
+#include <unordered_map>
 #include <GameController.h>
 
 class GameController;
@@ -16,9 +16,9 @@ class CommandHandler {
 
 private:
 	typedef std::string (GameController::*CommFunc) (std::string userName, std::string input);
-    using FunctionMap = std::map<std::string, CommFunc>;
+    using FunctionMap = std::unordered_map<std::string, CommFunc>;
     static FunctionMap _defFuncMap;
-    std::map<std::string, FunctionMap> _userFuncMap;
+    std::unordered_map<std::string, FunctionMap> _userFuncMap;
     //Areas
     //other objects
 
