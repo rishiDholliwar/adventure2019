@@ -3,12 +3,8 @@
 //
 
 #include <memory>
-#include "../include/Door.h"
-#include "../src/Door.cpp"
-#include "../include/Room.h"
-#include "../src/Room.cpp"
-#include "../include/Area.h"
-#include "../src/Area.cpp"
+#include "Room.h"
+#include "Area.h"
 #include <iostream>
 
 int main(){

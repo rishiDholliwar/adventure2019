@@ -16,11 +16,11 @@ target_include_directories(world
         )
 
 
-#set_target_properties(world
-#                      PROPERTIES
-#                      LINKER_LANGUAGE CXX
-#                      CXX_STANDARD 17
-#)
+set_target_properties(world
+                      PROPERTIES
+                      LINKER_LANGUAGE CXX
+                      CXX_STANDARD 17
+)
 
 install(TARGETS world
   ARCHIVE DESTINATION lib
