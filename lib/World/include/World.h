@@ -11,16 +11,12 @@ class World
 {
 public:
     World();
-    void addArea(std::unique_ptr<Area>& area);
-    const std::vector<std::unique_ptr<Area>>& getDoors(){return areas;};
-    //void addObject();
+    void addArea(Area* area);
+    std::vector<Area*> const& getArea() const{return areas;};
 
-    void writeJson(std::string filename);
-    void readJson(std::string filename);
 private:
 
-    std::vector<std::unique_ptr<Area>> areas;
+    std::vector<Area*> areas;
 
-    //vector<std::unique_ptr<Entity>> entities;
 };
 #endif //OOP_WORLD_H

@@ -15,13 +15,13 @@ class Area
 {
 public:
     Area(unsigned int id, std::string name);
-    void addRoom(std::unique_ptr<Room>& room);
-    const unsigned int& getId(){return id;};
-    const std::string& getName(){return name;};
-    const std::vector<std::unique_ptr<Room>>& getRooms(){return rooms;};
+    void addRoom(Room* room);
+    unsigned int const& getId() const{return id;};
+    std::string const& getName() const{return name;};
+    std::vector<Room*> const& getRooms()const{return rooms;};
 private:
     unsigned int id;
     std::string name;
-    std::vector<std::unique_ptr<Room>> rooms;
+    std::vector<Room*> rooms;
 };
 #endif //OOP_AREA_H

@@ -15,16 +15,22 @@ int main(){
     std::string dir = "north";
     std::string room_name = "r1";
     std::string area_name = "a1";
-    std::unique_ptr<Door> d = std::make_unique<Door>(1,2,dir);
-    std::unique_ptr<Room> r = std::make_unique<Room>(1,room_name);
-    std::unique_ptr<Area> a = std::make_unique<Area>(2,area_name);
-    r->addDoor(d);
+    Room* r = new Room(1,"r1");
+    Area* a = new Area(2,"a1");
     a->addRoom(r);
-    std::cout<< "Area name: " << a->getName() << " original variable: "<< area_name << "\n";
-    std::cout<< "Room name: " << a->getRooms().begin().operator*()->getName()
-        << " original variable: "<< room_name <<"\n";
-    std::cout<< "Door direction: "<< a->getRooms().begin().operator*()->getDoors()
-            .begin().operator*()->getDirection() << " original variable: "<< dir << "\n";
+    std::cout<< "Area name: " << a->getName() << "\n";
+    Room* roomInArea = a->getRooms().at(0);
+    std::cout<< "Room name: " << roomInArea->getName() <<"\n";
+    Room* r2 = new Room(3,"r2");
+    // link r2 to north of r1
+    roomInArea->linkRoom('n', r2);
+    // link r1 to south of r2
+    r2->linkRoom('s',roomInArea);
+    std::cout<< "North of r1: " << roomInArea->getNorth()->getName() <<"\n";
+    std::cout<< "South of r2: " << roomInArea->getNorth()->getSouth()->getName() <<"\n";
+
+
+
 
 
 }
