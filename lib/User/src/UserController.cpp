@@ -68,12 +68,11 @@ bool UserController::parseLoginUserData(std::string username, std::string passwo
 	//look for username.json in some .../user/userdata/ directory
 	//using json library api parser that will eventually be created by the group,
 
-	//if username.json doesn't exist, loginSuccess is username fail. return loginSuccess.
+	//if username.json doesn't exist, ReturnCode::USERNAME_FAIL
 
-	//within userneame.json, see if hashedPassword matches hashedPassword in .json file
-	//if false, return code is a password failure. return loginSuccess.
+	// Check if hashedPassword matches hashedPassword in username.json
+	// If true, ReturnCode::LOGIN_SUCCESS, else ReturnCode::PASSWORD_FAIL 
 
-	//if both are true, loginSuccess is true.
 	loginSuccess = true;
 	return loginSuccess;
 }
@@ -95,14 +94,14 @@ std::vector<std::string> UserController::parseLoginCharacterData(std::string use
 bool UserController::createUser(std::string username, std::string password) {
 	//check if user is already logged in:
 	if (isThisUserActive(username)) {
-		//return a struct with username, already logged in return code, and some character data
+		//return a struct with username, ReturnCode::USER_ACTIVE, and some character data
 		return false;
 	}
 
 	//change this bool to enum later:
 	bool userCreateSuccess = parseNewUserData(username, password);
 
-	//if returnCode is "user already exists",
+	//if returnCode is ReturnCode::USER_ACTIVE,
 	if (!(userCreateSuccess)) {
 		//create a struct of username, fail return code and some dummy character data or empty vector
 		return false;
@@ -117,13 +116,13 @@ bool UserController::parseNewUserData(std::string username, std::string password
 	bool newUserDataParsed = false;
 
 	//make sure no .json file exists with that username.
-	//if such file already exists, return a return code that says something like "Username already exists"
+	//if such file already exists, return ReturnCode::USERNAME_EXISTS
 
 	//if no file already exists, has password.
 	auto hashedPassword = hashPassword(password);
 
 	//create .json file, read in username and hashed password
-	//if successfully created, return code is success as well.
+	//if successfully created, ReturnCode::LOGIN_SUCCESS
 	//return the return code.
 	newUserDataParsed = true;
 	return newUserDataParsed;
@@ -135,18 +134,19 @@ bool UserController::logoutUser(std::string username, std::vector<std::string> n
 	bool returnCode;
 	//check if user is logged in atm.
 	if (!(isThisUserActive(username))) {
-		//return struct of username, failed return code and maybe some char data.
+		//return struct of username, ReturnCode::LOGOUT_FAIL and maybe some char data.
 	}
 
 	//else if the user is logged in rn,
 	returnCode = saveCharacterDataBeforeLogout(username, newCharData);
-	//return struct of username, success return code and maybe some data if needed.
+	//return struct of username, success return code and maybe some data if needed
+	// Remove user from activeUsers ?
 	return returnCode;
 }
 
 bool UserController::saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData) {
 	//find username.json file in chardata directory
 	//write in the changed vector of char data after gameplay
-	//if success, return success return code. else, return fail return code.
+	//if success, ReturnCode::SAVE_SUCCESS. else, ReturnCode::SAVE_FAIL
 	return true;
 }
