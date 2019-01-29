@@ -35,35 +35,36 @@ auto UserController::hashPassword(std::string password) {
 	return hashedPassword;
 }
 
-//eventually will return a struct of username, returncode and character data?
-bool UserController::login(std::string username, std::string password, std::string connectionId) {
+ReturnType UserController::login(std::string username, std::string password, std::string connectionId) {
+
+	ReturnType result;
+	result.username = username;
+
 	//check if user is already logged in:
 	if (isThisUserActive(username)) {
-		//return a struct with username, already logged in return code, and some character data
-		return false;
+		result.returnCode = ReturnCode::USER_ACTIVE;
+		// + character data
+
+	} else {
+
+		ReturnCode isLoginSuccess = parseLoginUserData(username, password);
+
+		if (isLoginSuccess == ReturnCode::LOGIN_SUCCESS) {
+			result.returnCode = ReturnCode::LOGIN_SUCCESS;
+			result.characterData = parseLoginCharacterData(username);
+			addActiveUser(username, connectionId);
+
+		} else {
+			std::vector<std::string> blankCharData;
+			result.returnCode = isLoginSuccess; // USERNAME_FAIL or PASSWORD_FAIL
+			result.characterData = blankCharData;
+		}
 	}
-
-	//when enum codes are implemented, this bool will be an enum and check if return code is success or failure.
-	bool isLoginSuccess = parseLoginUserData(username, password);
-
-	if (isLoginSuccess) {
-		parseLoginCharacterData(username);
-		addActiveUser(username, connectionId);
-		return true;
-		//return struct? of username, success_return_code, vector? of character data
-	}
-
-	//if login is fail:
-	std::vector<std::string> blankCharData;
-
-	return false;
-	//return struct of username, success_return_code, empty vector blankCharData
+	return result;
 }
 
-bool UserController::parseLoginUserData(std::string username, std::string password) {
+ReturnCode UserController::parseLoginUserData(std::string username, std::string password) {
 
-	//when enum return codes get implemented, change both the return type of this function and loginSuccess to the enum type.
-	bool loginSuccess = false;
 	auto hashedPassword = hashPassword(password);
 	//look for username.json in some .../user/userdata/ directory
 	//using json library api parser that will eventually be created by the group,
@@ -71,10 +72,9 @@ bool UserController::parseLoginUserData(std::string username, std::string passwo
 	//if username.json doesn't exist, ReturnCode::USERNAME_FAIL
 
 	// Check if hashedPassword matches hashedPassword in username.json
-	// If true, ReturnCode::LOGIN_SUCCESS, else ReturnCode::PASSWORD_FAIL 
+	// If true, ReturnCode::LOGIN_SUCCESS, else ReturnCode::PASSWORD_FAIL
 
-	loginSuccess = true;
-	return loginSuccess;
+	return ReturnCode::LOGIN_SUCCESS;
 }
 
 std::vector<std::string> UserController::parseLoginCharacterData(std::string username) {
@@ -90,63 +90,66 @@ std::vector<std::string> UserController::parseLoginCharacterData(std::string use
 	return charData;
 }
 
-//later will have to return a struct of username, returncode, and some character data
-bool UserController::createUser(std::string username, std::string password) {
+ReturnType UserController::createUser(std::string username, std::string password) {
+
+	ReturnType result;
+	result.username = username;
+
 	//check if user is already logged in:
 	if (isThisUserActive(username)) {
-		//return a struct with username, ReturnCode::USER_ACTIVE, and some character data
-		return false;
+		result.returnCode = ReturnCode::USER_ACTIVE;
+		// + character data?
+
+	} else {
+
+		ReturnCode userCreateSuccess = parseNewUserData(username, password);
+
+		if (userCreateSuccess == ReturnCode::USERNAME_EXISTS) {
+			result.returnCode == ReturnCode::USERNAME_EXISTS;
+			// + dummy character data or empty vector
+
+		} else {
+			result.returnCode = ReturnCode::CREATE_SUCCESS;
+			// + default character data?
+		}
 	}
-
-	//change this bool to enum later:
-	bool userCreateSuccess = parseNewUserData(username, password);
-
-	//if returnCode is ReturnCode::USER_ACTIVE,
-	if (!(userCreateSuccess)) {
-		//create a struct of username, fail return code and some dummy character data or empty vector
-		return false;
-	}
-
-	//if successful, return a struct of username, success return code and a basic character data?
-	return true;
+	return result;
 }
 
-//will return a enum return code at some point in the future
-bool UserController::parseNewUserData(std::string username, std::string password) {
-	bool newUserDataParsed = false;
+ReturnCode UserController::parseNewUserData(std::string username, std::string password) {
 
 	//make sure no .json file exists with that username.
 	//if such file already exists, return ReturnCode::USERNAME_EXISTS
 
-	//if no file already exists, has password.
+	//if no file already exists, hash password.
 	auto hashedPassword = hashPassword(password);
 
-	//create .json file, read in username and hashed password
-	//if successfully created, ReturnCode::LOGIN_SUCCESS
-	//return the return code.
-	newUserDataParsed = true;
-	return newUserDataParsed;
+	//create username.json file, read in username and hashed password
+	
+	return ReturnCode::LOGIN_SUCCESS;
 }
 
-//eventually logoutUser will also return a struct of username and return code and some such.
-bool UserController::logoutUser(std::string username, std::vector<std::string> newCharData) {
-	//will eventually be enum
-	bool returnCode;
-	//check if user is logged in atm.
+ReturnType UserController::logoutUser(std::string username, std::vector<std::string> newCharData) {
+
+	ReturnType result;
+	result.username = username;
+
 	if (!(isThisUserActive(username))) {
-		//return struct of username, ReturnCode::LOGOUT_FAIL and maybe some char data.
+		result.returnCode = ReturnCode::LOGOUT_FAIL;
+		// + character data
+
+	} else {
+		result.returnCode = saveCharacterDataBeforeLogout(username, newCharData);
+		// + character data
 	}
 
-	//else if the user is logged in rn,
-	returnCode = saveCharacterDataBeforeLogout(username, newCharData);
-	//return struct of username, success return code and maybe some data if needed
-	// Remove user from activeUsers ?
-	return returnCode;
+	activeUsers.erase(username);
+	return result;
 }
 
-bool UserController::saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData) {
+ReturnCode UserController::saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData) {
 	//find username.json file in chardata directory
 	//write in the changed vector of char data after gameplay
 	//if success, ReturnCode::SAVE_SUCCESS. else, ReturnCode::SAVE_FAIL
-	return true;
+	return ReturnCode::SAVE_SUCCESS;
 }
