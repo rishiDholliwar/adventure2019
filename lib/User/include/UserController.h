@@ -21,21 +21,11 @@ public:
 
 	std::string getConnectionIdWithUsername(std::string username);
 
-	auto hashPassword(std::string password);
-
 	bool login(std::string username, std::string password, std::string connectionId);
-
-	bool parseLoginUserData(std::string username, std::string password);
-
-	std::vector<std::string> parseLoginCharacterData(std::string username);
 
 	bool createUser(std::string username, std::string password);
 
-	bool parseNewUserData(std::string username, std::string password);
-
 	bool logoutUser(std::string username, std::vector<std::string> newCharData);
-
-	bool saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData);
 
 private:
 	std::map<std::string, std::string> activeUsers = {};
@@ -46,6 +36,16 @@ private:
 		bool returnCode;
 		std::vector<std::string> characterData;
 	};
+
+	auto hashPassword(std::string password);
+
+	bool parseLoginUserData(std::string username, std::string password);
+
+	std::vector<std::string> parseLoginCharacterData(std::string username);
+
+	bool parseNewUserData(std::string username, std::string password);
+
+	bool saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData);
 };
 
 
