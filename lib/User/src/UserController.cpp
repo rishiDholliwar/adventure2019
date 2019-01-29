@@ -20,6 +20,18 @@ bool UserController::isThisUserActive(std::string username) {
 	return false;
 }
 
+bool UserController::isConnectionLoggedIn(std::string connectionId) {
+	bool isLoggedIn = false;
+
+	for(auto userConnection : activeUsers) {
+		if (userConnection.second == connectionId) {
+			isLoggedIn = true;
+		}
+	}
+
+	return isLoggedIn;
+}
+
 std::string UserController::getUsernameWithConnectionId(std::string connectionId) {
 	//
 }
@@ -35,9 +47,9 @@ auto UserController::hashPassword(std::string password) {
 	return hashedPassword;
 }
 
-ReturnType UserController::login(std::string username, std::string password, std::string connectionId) {
+UserData UserController::login(std::string username, std::string password, std::string connectionId) {
 
-	ReturnType result;
+	UserData result;
 	result.username = username;
 
 	//check if user is already logged in:
@@ -90,9 +102,9 @@ std::vector<std::string> UserController::parseLoginCharacterData(std::string use
 	return charData;
 }
 
-ReturnType UserController::createUser(std::string username, std::string password) {
+UserData UserController::createUser(std::string username, std::string password) {
 
-	ReturnType result;
+	UserData result;
 	result.username = username;
 
 	//check if user is already logged in:
@@ -129,9 +141,9 @@ ReturnCode UserController::parseNewUserData(std::string username, std::string pa
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-ReturnType UserController::logoutUser(std::string username, std::vector<std::string> newCharData) {
+UserData UserController::logoutUser(std::string username, std::vector<std::string> newCharData) {
 
-	ReturnType result;
+	UserData result;
 	result.username = username;
 
 	if (!(isThisUserActive(username))) {

@@ -11,7 +11,7 @@
 class UserController {
 
 public:
-	struct ReturnType {
+	struct UserData {
 		std::string username;
 		ReturnCode returnCode;
 		std::vector<std::string> characterData;
@@ -27,11 +27,11 @@ public:
 
 	std::string getConnectionIdWithUsername(std::string username);
 
-	ReturnType login(std::string username, std::string password, std::string connectionId);
+	UserData login(std::string username, std::string password, std::string connectionId);
 
-	ReturnType createUser(std::string username, std::string password);
+	UserData createUser(std::string username, std::string password);
 
-	ReturnType logoutUser(std::string username, std::vector<std::string> newCharData);
+	UserData logoutUser(std::string username, std::vector<std::string> newCharData);
 
 private:
 	std::map<std::string, std::string> activeUsers = {};
