@@ -11,6 +11,12 @@
 class UserController {
 
 public:
+	struct ReturnType {
+		std::string username;
+		ReturnCode returnCode;
+		std::vector<std::string> characterData;
+	};
+
 	std::map<std::string, std::string> getActiveUsers();
 
 	void addActiveUser(std::string username, std::string connectionId);
@@ -21,31 +27,24 @@ public:
 
 	std::string getConnectionIdWithUsername(std::string username);
 
-	bool login(std::string username, std::string password, std::string connectionId);
+	ReturnType login(std::string username, std::string password, std::string connectionId);
 
-	bool createUser(std::string username, std::string password);
+	ReturnType createUser(std::string username, std::string password);
 
-	bool logoutUser(std::string username, std::vector<std::string> newCharData);
+	ReturnType logoutUser(std::string username, std::vector<std::string> newCharData);
 
 private:
 	std::map<std::string, std::string> activeUsers = {};
 
-	struct returnType {
-		std::string username;
-		//enum class error code. for testing purpose only, using bool rn.
-		bool returnCode;
-		std::vector<std::string> characterData;
-	};
-
 	auto hashPassword(std::string password);
 
-	bool parseLoginUserData(std::string username, std::string password);
+	ReturnCode parseLoginUserData(std::string username, std::string password);
 
 	std::vector<std::string> parseLoginCharacterData(std::string username);
 
-	bool parseNewUserData(std::string username, std::string password);
+	ReturnCode parseNewUserData(std::string username, std::string password);
 
-	bool saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData);
+	ReturnCode saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData);
 };
 
 
