@@ -28,6 +28,16 @@ std::string Object::getObjectID() {
 }
 
 
+
+
 void Object::printTest() const {
     std::cout << "Object name: " << name <<  " Object ID: " << id << std::endl;
+}
+
+std::string Object::getObjectShortDescription() {
+    return this->short_description;
+}
+
+std::string Object::getObjectLongDescription() {
+    return this->long_description;
 }

@@ -35,6 +35,7 @@ private:
     std::string getCharacterName();
     std::string getCharacterRoomID();
 
+
     /*
      * Setter functions
      */

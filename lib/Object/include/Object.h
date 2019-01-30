@@ -21,8 +21,13 @@ public:
     Object(std::string name);
     Object(std::string id, std::string name, std::string short_description, std::string long_description);
 
+    /*
+     * Getter functions
+     */
     std::string getObjectName();
     std::string getObjectID();
+    std::string getObjectShortDescription();
+    std::string getObjectLongDescription();
 
     void printTest() const;
 };
