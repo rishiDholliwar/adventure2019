@@ -10,6 +10,11 @@
 #include "../../Object/include/Inventory.h"
 #include "../../Object/include/Object.h"
 
+/*
+ * Character class
+ * A character class holds the information of a user's character
+ */
+
 class Character {
 private:
     std::string roomID;
@@ -18,11 +23,29 @@ private:
     Inventory inventory;
 
     public:
+    /*
+     * Default constructor
+     */
     Character();
     Character(std::string name);
-    std::string getName();
-    std::string getRoomID();
+
+    /*
+     * Getter functions
+     */
+    std::string getCharacterName();
+    std::string getCharacterRoomID();
+
+    /*
+     * Setter functions
+     */
+
+    void setCharacterRoomId(std::string id);
+
+    /*
+     * Character inventory functions
+     */
     void addItemtoInventory(Object obj);
+    void removeItemFromInventory(std::string name);
     //FOR NOW ONLY RETURNING A LONG STRING OF ITEMS
     void listInventory();
 

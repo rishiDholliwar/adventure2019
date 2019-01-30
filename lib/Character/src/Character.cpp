@@ -16,18 +16,27 @@ Character::Character(std::string name) {
     this->name = name;
     roomID = STARTING_ROOM;
 }
-std::string Character::getName(){
+std::string Character::getCharacterName(){
     return this->name;
 }
 
-std::string Character::getRoomID() {
+std::string Character::getCharacterRoomID() {
     return this->roomID;
 }
 
-void Character::addItemtoInventory(Object obj) {
-    inventory.addItem(obj);
+void Character::setCharacterRoomId(std::string id) {
+    this->roomID = id;
 }
 
+void Character::addItemtoInventory(Object obj) {
+    this->inventory.addItem(obj);
+}
+
+
 void Character::listInventory() {
-    inventory.listInventory();
+    this->inventory.listInventory();
+}
+
+void Character::removeItemFromInventory(std::string name) {
+    inventory.removeItem(name);
 }

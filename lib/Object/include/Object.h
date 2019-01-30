@@ -8,14 +8,23 @@
 #include <stdio.h>
 #include <string>
 
+
 class Object {
 private:
+    std::string id;
     std::string name;
-    public:
+    std::string short_description;
+    std::string long_description;
+
+public:
     Object(){};
     Object(std::string name);
+    Object(std::string id, std::string name, std::string short_description, std::string long_description);
 
-    void printTest();
+    std::string getObjectName();
+    std::string getObjectID();
+
+    void printTest() const;
 };
 
 

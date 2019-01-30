@@ -6,18 +6,24 @@
 #define ALTERSPACE_INVENTORY_H
 
 #include <vector>
+#include <map>
 #include "Object.h"
+/*
+ * Inventory
+ * An inventory holds a list of objects
+ */
 class Inventory {
 private:
-    std::vector<Object> list;
+    std::map<std::string,Object> list;
 public:
     void addItem(Object object);
-
+    void removeItem(std::string);
 
     /*
      * TEST FUNCTIONS
      */
     void listInventory();
+    void printNumberOfItems();
 };
 
 

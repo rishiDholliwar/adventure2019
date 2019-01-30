@@ -7,9 +7,13 @@
 #include "../include/Object.h"
 
 int main(int argc, char** argv){
-    //std::cout << "hello world" << std::endl;
-    std::string testName = "item01";
-    Object object(testName);
-    object.printTest();
+
+    std::string testObjectName = "object01";
+    std::string testObjectID = "objectID01";
+    std::string testObjectShortDesc = "Short description";
+    std::string testObjectLongDesc = "Long description";
+    
+    Object obj(testObjectID,testObjectName,testObjectShortDesc,testObjectLongDesc);
+    obj.printTest();
     return 0;
 }
