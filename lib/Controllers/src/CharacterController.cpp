@@ -1,11 +1,5 @@
-//
-// Created by bshetty on 1/18/19.
-//
-
 #include <iostream>
 #include <CharacterController.h>
-
-#include "../include/CharacterController.h"
 
 CharacterController::CharacterController() = default;
 
@@ -25,20 +19,20 @@ bool CharacterController::updateRoomID(Character &character, unsigned int &desti
 
     if(character.getRoomID() == destinationRoomID){
         return false;
-    }else {
-        character.setRoomID(destinationRoomID);
-        return true;
     }
+
+    character.setRoomID(destinationRoomID);
+    return true;
 }
 
 template<typename T>
 bool CharacterController::addItemToInventory(Character &character, T &item) {
     if(!character.hasSpaceInInventory()){
         return false;
-    }else{
-        character.addItem(item);
-        return true;
     }
+
+    character.addItem(item);
+    return true;
 }
 
 
