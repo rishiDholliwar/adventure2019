@@ -27,18 +27,19 @@ void Room::linkRoom(char dir, int targetRoomId) {
 }
 
 bool Room::addCharacter(int characterId) {
-//    auto tempVector = Room::characterList;
-//    auto tempId = std::find(tempVector.begin(), tempVector.end(), characterId);
-//    // check if character id exist
-//    if(tempId != tempVector.end())
-//        return false;
+    auto tempVector = Room::characterList;
+    auto tempId = std::find(tempVector.begin(), tempVector.end(), characterId);
+    // check if character id exist
+    if(tempId != tempVector.end())
+        return false;
 
     Room::characterList.push_back(characterId);
     return true;
 }
 
 bool Room::removeCharacter(int characterId) {
-    std::remove(characterList.begin(), characterList.end(), characterId);
+    auto it = std::remove(characterList.begin(), characterList.end(), characterId);
+    characterList.erase(it);
     return true;
 }
 
@@ -54,6 +55,7 @@ bool Room::addObject(int objectId) {
 }
 
 bool Room::removeObject(int objectId) {
-    std::remove(objectList.begin(), objectList.end(), objectId);
+    auto it = std::remove(objectList.begin(), objectList.end(), objectId);
+    objectList.erase(it);
     return true;
 }

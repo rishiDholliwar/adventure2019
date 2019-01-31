@@ -28,11 +28,10 @@ class RoomControllor {
         // char 'n', 'e', 's', 'w' represents north, east, south, west
         // return true if succed, else return false
         bool linkRoom(char dir, int room1Id, int room2Id);
-        Room* searchRoom(int roomId);
     private:
         std::vector<Room> roomList;
 
-        // return nullptr if not exist
+         Room* searchRoom(int roomId);
 
 };
 
