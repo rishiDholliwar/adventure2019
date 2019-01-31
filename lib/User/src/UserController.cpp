@@ -1,26 +1,22 @@
 #include <UserController.h>
 
-std::unordered_map<std::string, uintptr_t> UserController::getActiveUsers() {
+std::unordered_map<std::string, Connection> UserController::getActiveUsers() {
 	return activeUsers;
 }
 
-void UserController::addActiveUser(std::string username, uintptr_t connectionId) {
-	activeUsers.insert(std::pair<std::string, uintptr_t>(username, connectionId));
+void UserController::addActiveUser(std::string username, Connection connectionId) {
+	activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connectionId));
 }
 
-bool UserController::isUserActive(std::string username) {
+bool UserController::isUserActive(const std::string_view username) {
 	//check if username exists in activeUsers.
 	//if true, return true. else, this user is not yet logged in or created.
-	std::unordered_map<std::string, uintptr_t>::iterator it = activeUsers.find(username);
+	std::unordered_map<std::string, Connection>::iterator it = activeUsers.find(username);
 
-	if (it != activeUsers.end()) {
-		return true;
-	}
-
-	return false;
+	return it != activeUsers.end());
 }
 
-bool UserController::isConnectionLoggedIn(uintptr_t connectionId) {
+bool UserController::isConnectionLoggedIn(const Connection connectionId) {
 	bool isLoggedIn = false;
 
 	for(auto userConnection : activeUsers) {
@@ -32,18 +28,17 @@ bool UserController::isConnectionLoggedIn(uintptr_t connectionId) {
 	return isLoggedIn;
 }
 
-std::string UserController::getUsernameWithConnectionId(uintptr_t connectionId) {
+std::string UserController::getUsernameWithConnectionId(const Connection connectionId) {
 
 	for (auto user : activeUsers) {
 		if (user.second == connectionId) {
 			return user.first;
 		}
 	}
-
 	return std::string();
 }
 
-uintptr_t UserController::getConnectionIdWithUsername(std::string username) {
+Connection UserController::getConnectionIdWithUsername(const std::string_view username) {
 	//
 }
 
@@ -54,7 +49,7 @@ auto UserController::hashPassword(std::string password) {
 	return hashedPassword;
 }
 
-UserController::UserData UserController::login(std::string username, std::string password, uintptr_t connectionId) {
+UserController::UserData UserController::login(const std::string_view username, std::string password, const Connection connectionId) {
 
 	UserData result;
 	result.username = username;
@@ -78,7 +73,7 @@ UserController::UserData UserController::login(std::string username, std::string
 	return result;
 }
 
-ReturnCode UserController::parseLoginUserData(std::string username, std::string password) {
+ReturnCode UserController::parseLoginUserData(const std::string_view username, std::string password) {
 
 	auto hashedPassword = hashPassword(password);
 	//look for username.json in some .../user/userdata/ directory
@@ -92,7 +87,7 @@ ReturnCode UserController::parseLoginUserData(std::string username, std::string 
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-UserController::UserData UserController::createUser(std::string username, std::string password) {
+UserController::UserData UserController::createUser(const std::string_view username, std::string password) {
 
 	UserData result;
 	result.username = username;
@@ -118,7 +113,7 @@ UserController::UserData UserController::createUser(std::string username, std::s
 	return result;
 }
 
-ReturnCode UserController::parseNewUserData(std::string username, std::string password) {
+ReturnCode UserController::parseNewUserData(const std::string_view username, std::string password) {
 
 	//make sure no .json file exists with that username.
 	//if such file already exists, return ReturnCode::USERNAME_EXISTS

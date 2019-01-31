@@ -1,6 +1,6 @@
 #include <User.h>
 
-bool User::isusernameEqual(const std::string username) const {
+bool User::isusernameEqual(const std::string_view username) const {
 	return _username == username;
 }
 

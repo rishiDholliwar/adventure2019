@@ -17,32 +17,32 @@ public:
 		ReturnCode returnCode;
 	};
 
-	std::unordered_map<std::string, uintptr_t> getActiveUsers();
+	std::unordered_map<std::string, Connection> getActiveUsers();
 
-	void addActiveUser(std::string username, uintptr_t connectionId);
+	void addActiveUser(std::string username, Connection connectionId);
 
-	bool isUserActive(std::string username);
+	bool isUserActive(const std::string_view username);
 
-	bool isConnectionLoggedIn(uintptr_t connectionId);
+	bool isConnectionLoggedIn(const Connection connectionId);
 
-	std::string getUsernameWithConnectionId(uintptr_t connectionId);
+	std::string getUsernameWithConnectionId(const Connection connectionId);
 
-	uintptr_t getConnectionIdWithUsername(std::string username);
+	Connection getConnectionIdWithUsername(const std::string_view username);
 
-	UserData login(std::string username, std::string password, uintptr_t connectionId);
+	UserData login(const std::string_view username, std::string password, const Connection connectionId);
 
-	UserData createUser(std::string username, std::string password);
+	UserData createUser(const std::string_view username, std::string password);
 
 	UserData logoutUser(std::string username);
 
 private:
-	std::unordered_map<std::string, uintptr_t> activeUsers = {};
+	std::unordered_map<std::string, Connection> activeUsers = {};
 
 	auto hashPassword(std::string password);
 
-	ReturnCode parseLoginUserData(std::string username, std::string password);
+	ReturnCode parseLoginUserData(const std::string_view username, std::string password);
 
-	ReturnCode parseNewUserData(std::string username, std::string password);
+	ReturnCode parseNewUserData(const std::string_view username, std::string password);
 };
 
 

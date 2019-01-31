@@ -14,7 +14,7 @@ public:
     User(std::string username, size_t hashedPassword)
     :_username(std::move(username)), _hashedPassword(std::move(hashedPassword)), _roomNumber(0) { };
 
-    bool isusernameEqual(const std::string username) const;
+    bool isusernameEqual(const std::string_view username) const;
 
     bool isHashedPasswordEqual(const size_t hashedPassword) const;
 
