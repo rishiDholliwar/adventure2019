@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "Room.h"
 
-Room::Room(unsigned int id, std::string name){
+Room::Room(int id, std::string name){
     Room::id = id;
     Room::name = std::move(name);
 }
@@ -14,22 +14,46 @@ void Room::addExtendedDescription(std::string extDescription) {
     Room::extendedDescriptions.push_back(std::move(extDescription));
 }
 
-void Room::linkRoom(char dir, Room* targetRoom) {
+void Room::linkRoom(char dir, int targetRoomId) {
     if (dir == 'n')
-        Room::north = targetRoom;
+        Room::north = targetRoomId;
     else if (dir =='e')
-        Room::east = targetRoom;
+        Room::east = targetRoomId;
     else if (dir =='s')
-        Room::south = targetRoom;
+        Room::south = targetRoomId;
     else if (dir =='w')
-        Room::west = targetRoom;
+        Room::west = targetRoomId;
 
 }
 
-//void Room::join(Character* character) {
-//    Room::objectIdList.push_back(objectId);
-//}
-//
-//void Room::quit(Character* character) {
-//    std::remove(objectIdList.begin(), objectIdList.end(), objectId);
-//}
+bool Room::addCharacter(int characterId) {
+//    auto tempVector = Room::characterList;
+//    auto tempId = std::find(tempVector.begin(), tempVector.end(), characterId);
+//    // check if character id exist
+//    if(tempId != tempVector.end())
+//        return false;
+
+    Room::characterList.push_back(characterId);
+    return true;
+}
+
+bool Room::removeCharacter(int characterId) {
+    std::remove(characterList.begin(), characterList.end(), characterId);
+    return true;
+}
+
+bool Room::addObject(int objectId) {
+    auto tempVector = Room::objectList;
+    auto tempId = std::find(tempVector.begin(), tempVector.end(),objectId);
+    // check if character id exist
+    if(tempId != tempVector.end())
+        return false;
+
+    tempVector.push_back(objectId);
+    return true;;
+}
+
+bool Room::removeObject(int objectId) {
+    std::remove(objectList.begin(), objectList.end(), objectId);
+    return true;
+}
