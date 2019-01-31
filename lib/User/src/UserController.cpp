@@ -33,7 +33,12 @@ bool UserController::isConnectionLoggedIn(std::string connectionId) {
 }
 
 std::string UserController::getUsernameWithConnectionId(std::string connectionId) {
-	//
+
+	for (auto user : activeUsers) {
+		if (user.second == connectionID) {
+			return user.first;
+		}
+	} return std::string();
 }
 
 std::string UserController::getConnectionIdWithUsername(std::string username) {
@@ -137,7 +142,7 @@ ReturnCode UserController::parseNewUserData(std::string username, std::string pa
 	auto hashedPassword = hashPassword(password);
 
 	//create username.json file, read in username and hashed password
-	
+
 	return ReturnCode::LOGIN_SUCCESS;
 }
 

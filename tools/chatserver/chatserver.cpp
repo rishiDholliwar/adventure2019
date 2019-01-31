@@ -53,17 +53,18 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
       std::cout << "Shutting down.\n";
       quit = true;
     } else {
-      // We need to get the user later on
-      std::string dummyUser = "Bob";  
-      std::string output = _gameController->receiveText(message.text, dummyUser);
-      Message msg{message.connection, output};
-      result.push_back(msg);
+      if (_userController.isConnectionLoggedIn(message.connection) {
+        std::string username = _userController.getUsernameWithConnectionId(message.connection);
+        std::string output = _gameController->receiveText(message.text, username);
+        Message msg{message.connection, output};
+        result.push_back(msg);
+      }
     }
   }
   return result;
 }
 
-bool 
+bool
 Game::run()
 {
   bool done = false;
@@ -84,7 +85,7 @@ Game::run()
   return done;
 }
 
-Game::Game(Server& server, GameController& gc, UserController& um) 
+Game::Game(Server& server, GameController& gc, UserController& um)
 {
   _server = &server;
   _gameController = &gc;
@@ -122,10 +123,8 @@ main(int argc, char* argv[]) {
   GameController gameController = GameController();
   UserController userController = UserController();
 
-  // Because we 
   game = std::make_unique<Game>(server, gameController, userController);
   game->run();
 
   return 0;
 }
-
