@@ -4,9 +4,10 @@
 
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <User.h>
+#include <ReturnCode.h>
 
 class UserController {
 
@@ -14,37 +15,34 @@ public:
 	struct UserData {
 		std::string username;
 		ReturnCode returnCode;
-		std::vector<std::string> characterData;
 	};
 
-	std::map<std::string, std::string> getActiveUsers();
+	std::unordered_map<std::string, uintptr_t> getActiveUsers();
 
-	void addActiveUser(std::string username, std::string connectionId);
+	void addActiveUser(std::string username, uintptr_t connectionId);
 
-	bool isThisUserActive(std::string username);
+	bool isUserActive(std::string username);
 
-	std::string getUsernameWithConnectionId(std::string connectionId);
+	bool isConnectionLoggedIn(uintptr_t connectionId);
 
-	std::string getConnectionIdWithUsername(std::string username);
+	std::string getUsernameWithConnectionId(uintptr_t connectionId);
 
-	UserData login(std::string username, std::string password, std::string connectionId);
+	uintptr_t getConnectionIdWithUsername(std::string username);
+
+	UserData login(std::string username, std::string password, uintptr_t connectionId);
 
 	UserData createUser(std::string username, std::string password);
 
-	UserData logoutUser(std::string username, std::vector<std::string> newCharData);
+	UserData logoutUser(std::string username);
 
 private:
-	std::map<std::string, std::string> activeUsers = {};
+	std::unordered_map<std::string, uintptr_t> activeUsers = {};
 
 	auto hashPassword(std::string password);
 
 	ReturnCode parseLoginUserData(std::string username, std::string password);
 
-	std::vector<std::string> parseLoginCharacterData(std::string username);
-
 	ReturnCode parseNewUserData(std::string username, std::string password);
-
-	ReturnCode saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData);
 };
 
 

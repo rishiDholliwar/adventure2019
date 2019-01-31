@@ -38,6 +38,11 @@ Game::addConnection(Connection c) {
 void
 Game::removeConnection(Connection c) {
   std::cout << "Connection lost: " << c.id << "\n";
+  if(_userController->isConnectionLoggedIn(c.id)) {
+    std::string username = _userController->getUsernameWithConnectionId(c.id);
+    _userController->logoutUser(username);
+    //save character data here, maybe?
+  }
   auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
   _clients.erase(eraseBegin, std::end(_clients));
 }
@@ -53,11 +58,13 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
       std::cout << "Shutting down.\n";
       quit = true;
     } else {
-      if (_userController.isConnectionLoggedIn(message.connection) {
-        std::string username = _userController.getUsernameWithConnectionId(message.connection);
+      if (_userController->isConnectionLoggedIn(message.connection.id)) {
+        std::string username = _userController->getUsernameWithConnectionId(message.connection.id);
         std::string output = _gameController->receiveText(message.text, username);
         Message msg{message.connection, output};
         result.push_back(msg);
+      } else {
+        //gotta log in, dude!
       }
     }
   }

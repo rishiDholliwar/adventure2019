@@ -1,17 +1,17 @@
 #include <UserController.h>
 
-std::map<std::string, std::string> UserController::getActiveUsers() {
+std::unordered_map<std::string, uintptr_t> UserController::getActiveUsers() {
 	return activeUsers;
 }
 
-void UserController::addActiveUser(std::string username, std::string connectionId) {
-	activeUsers.insert(std::pair<std::string, std::string>(username, connectionId));
+void UserController::addActiveUser(std::string username, uintptr_t connectionId) {
+	activeUsers.insert(std::pair<std::string, uintptr_t>(username, connectionId));
 }
 
-bool UserController::isThisUserActive(std::string username) {
+bool UserController::isUserActive(std::string username) {
 	//check if username exists in activeUsers.
 	//if true, return true. else, this user is not yet logged in or created.
-	std::map<std::string, std::string>::iterator it = activeUsers.find(username);
+	std::unordered_map<std::string, uintptr_t>::iterator it = activeUsers.find(username);
 
 	if (it != activeUsers.end()) {
 		return true;
@@ -20,7 +20,7 @@ bool UserController::isThisUserActive(std::string username) {
 	return false;
 }
 
-bool UserController::isConnectionLoggedIn(std::string connectionId) {
+bool UserController::isConnectionLoggedIn(uintptr_t connectionId) {
 	bool isLoggedIn = false;
 
 	for(auto userConnection : activeUsers) {
@@ -32,16 +32,18 @@ bool UserController::isConnectionLoggedIn(std::string connectionId) {
 	return isLoggedIn;
 }
 
-std::string UserController::getUsernameWithConnectionId(std::string connectionId) {
+std::string UserController::getUsernameWithConnectionId(uintptr_t connectionId) {
 
 	for (auto user : activeUsers) {
-		if (user.second == connectionID) {
+		if (user.second == connectionId) {
 			return user.first;
 		}
-	} return std::string();
+	}
+
+	return std::string();
 }
 
-std::string UserController::getConnectionIdWithUsername(std::string username) {
+uintptr_t UserController::getConnectionIdWithUsername(std::string username) {
 	//
 }
 
@@ -52,15 +54,14 @@ auto UserController::hashPassword(std::string password) {
 	return hashedPassword;
 }
 
-UserData UserController::login(std::string username, std::string password, std::string connectionId) {
+UserController::UserData UserController::login(std::string username, std::string password, uintptr_t connectionId) {
 
 	UserData result;
 	result.username = username;
 
 	//check if user is already logged in:
-	if (isThisUserActive(username)) {
+	if (isUserActive(username)) {
 		result.returnCode = ReturnCode::USER_ACTIVE;
-		// + character data
 
 	} else {
 
@@ -68,13 +69,10 @@ UserData UserController::login(std::string username, std::string password, std::
 
 		if (isLoginSuccess == ReturnCode::LOGIN_SUCCESS) {
 			result.returnCode = ReturnCode::LOGIN_SUCCESS;
-			result.characterData = parseLoginCharacterData(username);
 			addActiveUser(username, connectionId);
 
 		} else {
-			std::vector<std::string> blankCharData;
 			result.returnCode = isLoginSuccess; // USERNAME_FAIL or PASSWORD_FAIL
-			result.characterData = blankCharData;
 		}
 	}
 	return result;
@@ -94,26 +92,13 @@ ReturnCode UserController::parseLoginUserData(std::string username, std::string 
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-std::vector<std::string> UserController::parseLoginCharacterData(std::string username) {
-	std::vector<std::string> charData;
-
-	//dummy value for testing.
-	charData.push_back("charName");
-
-	//when json parser library is implemented, find username.json in user/chardata/ directory
-	//read in the .json file to the library, get back the array or vector or some return type of info
-	//return the chardata info to login.
-
-	return charData;
-}
-
-UserData UserController::createUser(std::string username, std::string password) {
+UserController::UserData UserController::createUser(std::string username, std::string password) {
 
 	UserData result;
 	result.username = username;
 
 	//check if user is already logged in:
-	if (isThisUserActive(username)) {
+	if (isUserActive(username)) {
 		result.returnCode = ReturnCode::USER_ACTIVE;
 		// + character data?
 
@@ -146,27 +131,19 @@ ReturnCode UserController::parseNewUserData(std::string username, std::string pa
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-UserData UserController::logoutUser(std::string username, std::vector<std::string> newCharData) {
+UserController::UserData UserController::logoutUser(std::string username) {
 
 	UserData result;
 	result.username = username;
 
-	if (!(isThisUserActive(username))) {
+	if (!(isUserActive(username))) {
 		result.returnCode = ReturnCode::LOGOUT_FAIL;
-		// + character data
 
 	} else {
-		result.returnCode = saveCharacterDataBeforeLogout(username, newCharData);
+		activeUsers.erase(username);
 		// + character data
+		result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 	}
 
-	activeUsers.erase(username);
 	return result;
-}
-
-ReturnCode UserController::saveCharacterDataBeforeLogout(std::string username, std::vector<std::string> newCharData) {
-	//find username.json file in chardata directory
-	//write in the changed vector of char data after gameplay
-	//if success, ReturnCode::SAVE_SUCCESS. else, ReturnCode::SAVE_FAIL
-	return ReturnCode::SAVE_SUCCESS;
 }
