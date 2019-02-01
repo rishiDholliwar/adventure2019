@@ -13,7 +13,7 @@ class RoomControllor {
     public:
         RoomControllor();
         bool generateRoom(unsigned int roomId, std::string roomName);
-        void removeRoom(int roomId);
+        bool removeRoom(int roomId);
         const std::vector<int> & getCharacterList (int roomId);
         const std::vector<int> & getObjectList (int roomId);
         std::vector<int> getRoomList() const;
@@ -24,10 +24,14 @@ class RoomControllor {
         bool addObjectToRoom(int objectId, int roomId);
         bool removeObjectFromRoom(int objectId, int roomId);
 
+         // char 'n', 'e', 's', 'w' represents north, east, south, west
+
         // link room2 to room1 in the direction of room1,
-        // char 'n', 'e', 's', 'w' represents north, east, south, west
         // return true if succed, else return false
-        bool linkRoom(char dir, int room1Id, int room2Id);
+        void linkRoom(char dir, int room1Id, int room2Id);
+        // return 0 indicates no room is linked in the direction
+        int getLinkedRoom(char dir, int roomId);
+
     private:
         std::vector<Room> roomList;
 

@@ -27,13 +27,11 @@ public:
     bool removeObject(int objectId);
 
     // use character 'n','e','s','w' to represent direction
-    // it will assign targetRoom to the coordinate Room*
-    void linkRoom(char dir, int targetRoomId);
 
-    int const& getNorth() const{return north;};
-    int const& getEast() const{return east;};
-    int const& getSouth() const{return south;};
-    int const& getWest() const{return west;};
+    // linkRoom will assign targetRoom to the coordinate Room*
+    void linkRoom(char dir, int targetRoomId);
+    // return 0 indicates no room is linked in the direction
+    int getLinkedRoom(char dir);
 
 
 private:

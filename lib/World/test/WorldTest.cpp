@@ -14,18 +14,19 @@ int main(){
 
 
 
-    std::cout<<rc.generateRoom(1, "room1")<<"\n";
-    std::cout<<rc.generateRoom(1, "room1")<<"\n";
-    rc.generateRoom(2, "room2");
-    rc.generateRoom(3, "room3");
+    std::cout<< "generate room1: " <<rc.generateRoom(1, "room1")<<"\n";
+    std::cout<< "generate room1: " <<rc.generateRoom(1, "room1")<<"\n";
+    std::cout<< "generate room2: " <<rc.generateRoom(2, "room2")<<"\n";
+    std::cout<< "generate room3: " <<rc.generateRoom(3, "room3")<<"\n";
 
-    rc.addCharacterToRoom(2,1);
-    rc.addCharacterToRoom(4,1);
-    rc.addCharacterToRoom(5,1);
-    rc.addCharacterToRoom(5,1);
-    rc.addCharacterToRoom(6,1);
+    std::cout<< "add character 2 to room1: " << rc.addCharacterToRoom(2,1) << "\n";
+    std::cout<< "add character 3 to room1: " << rc.addCharacterToRoom(3,1) << "\n";
+    std::cout<< "add character 4 to room1: " << rc.addCharacterToRoom(4,1) << "\n";
+    std::cout<< "add character 4 to room1: " << rc.addCharacterToRoom(4,1) << "\n";
+    std::cout<< "add character 5 to room1: " << rc.addCharacterToRoom(5,1) << "\n";
 
-    rc.addCharacterToRoom(10,2);
+    std::cout<< "add character 10 to room2: " << rc.addCharacterToRoom(10,2) << "\n";
+
     std::cout<< "character ID in room1" <<"\n";
     for (auto i : rc.getCharacterList(1)){
         std::cout<<i<<"\n";
@@ -36,11 +37,12 @@ int main(){
     }
 
     // moving character
-    rc.removeCharacterFromRoom(2,1);
-    rc.addCharacterToRoom(2,2);
+    std::cout<< "remove character 2 from room1: " << rc.removeCharacterFromRoom(2,1) << "\n";
+    std::cout<< "remove character 9 from room1: " << rc.removeCharacterFromRoom(9,1) << "\n";
+    std::cout<< "remove character 10 from room2: " << rc.removeCharacterFromRoom(10,2) << "\n";
+    std::cout<< "add character 2 to room2: " << rc.addCharacterToRoom(2,2) << "\n";
 
-
-    std::cout<< "move character 2 to room2 \n character ID in room1" <<"\n";
+    std::cout<< "character ID in room1" <<"\n";
     for (auto i : rc.getCharacterList(1)){
         std::cout<<i<<"\n";
     }
@@ -53,6 +55,12 @@ int main(){
         std::cout<<i<<"\n";
     }
 
+    rc.linkRoom('n',1,2);
+    std::cout<< "link room 2 to the north of room1" << "\n";
+    rc.linkRoom('s',2,1);
+    std::cout<< "link room 1 to the south of room2" << "\n";
+    std::cout<< "north of room1 is " << rc.getLinkedRoom('n', 1)<<"\n";
+    std::cout<< "south of room2 is " << rc.getLinkedRoom('s', 2)<<"\n";
     std::cout << "end" << std::endl;
 
 }

@@ -4,6 +4,10 @@
 Room::Room(int id, std::string name){
     Room::id = id;
     Room::name = std::move(name);
+    Room::north = 0;
+    Room::east = 0;
+    Room::south = 0;
+    Room::west = 0;
 }
 
 void Room::addDescription(std::string description) {
@@ -23,39 +27,64 @@ void Room::linkRoom(char dir, int targetRoomId) {
         Room::south = targetRoomId;
     else if (dir =='w')
         Room::west = targetRoomId;
+}
 
+int Room::getLinkedRoom(char dir) {
+    int targetRoomId;
+
+    if (dir == 'n')
+        targetRoomId = Room::north;
+    else if (dir =='e')
+        targetRoomId = Room::east;
+    else if (dir =='s')
+        targetRoomId = Room::south;
+    else if (dir =='w')
+        targetRoomId = Room::west;
+    else
+        targetRoomId = 0;
+
+    return targetRoomId;
 }
 
 bool Room::addCharacter(int characterId) {
-    auto tempVector = Room::characterList;
-    auto tempId = std::find(tempVector.begin(), tempVector.end(), characterId);
-    // check if character id exist
-    if(tempId != tempVector.end())
-        return false;
+    auto size = Room::characterList.size();
+    auto it = std::find(Room::characterList.begin(), Room::characterList.end(), characterId);
 
-    Room::characterList.push_back(characterId);
-    return true;
+    // check if character id exist
+    if(it == Room::characterList.end())
+        Room::characterList.push_back(characterId);
+
+    return size != Room::characterList.size();
 }
 
 bool Room::removeCharacter(int characterId) {
-    auto it = std::remove(characterList.begin(), characterList.end(), characterId);
-    characterList.erase(it);
-    return true;
+    auto size = Room::characterList.size();
+    auto it = std::find(characterList.begin(), characterList.end(), characterId);
+
+    if(it != Room::characterList.end())
+        Room::characterList.erase(it);
+
+
+    return size != Room::characterList.size();
 }
 
 bool Room::addObject(int objectId) {
-    auto tempVector = Room::objectList;
-    auto tempId = std::find(tempVector.begin(), tempVector.end(),objectId);
-    // check if character id exist
-    if(tempId != tempVector.end())
-        return false;
+    auto size = Room::objectList.size();
+    auto it = std::find(Room::objectList.begin(), Room::objectList.end(),objectId);
 
-    tempVector.push_back(objectId);
-    return true;;
+    // check if character id exist
+    if(it == Room::objectList.end())
+        Room::objectList.push_back(objectId);
+
+    return size != Room::objectList.size();
 }
 
 bool Room::removeObject(int objectId) {
-    auto it = std::remove(objectList.begin(), objectList.end(), objectId);
-    objectList.erase(it);
-    return true;
+    auto size = Room::objectList.size();
+    auto it = std::find(Room::objectList.begin(), Room::objectList.end(), objectId);
+
+    if (it != Room::objectList.end())
+        Room::objectList.erase(it);
+
+    return size != Room::objectList.size();
 }
