@@ -2,8 +2,7 @@
 // Created by evan on 30/01/19.
 //
 
-#include <vector>
-#include "Room.h"
+#include <Room.h>
 
 #ifndef ALTERSPACE_ROOMCONTROLLER_H
 #define ALTERSPACE_ROOMCONTROLLER_H
