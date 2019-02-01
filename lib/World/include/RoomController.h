@@ -31,7 +31,7 @@ class RoomController {
         // Link Rooms
         // char 'n', 'e', 's', 'w' represents north, east, south, west
         // link room2 to room1 in the direction of room1,
-        // return true if succed, else return false
+        // return true if succeed, else return false
         void linkRoom(char dir, int room1Id, int room2Id);
         // return 0 indicates no room is linked in the direction
         int getLinkedRoom(char dir, int roomId);
