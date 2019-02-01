@@ -6,11 +6,11 @@
 #include "Room.h"
 #include "Area.h"
 #include <iostream>
-#include <RoomControllor.h>
+#include <RoomController.h>
 #include <algorithm>
 
 int main(){
-    RoomControllor rc;
+    RoomController rc;
 
 
 

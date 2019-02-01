@@ -5,13 +5,13 @@
 #include <vector>
 #include "Room.h"
 
-#ifndef ALTERSPACE_ROOMCONTROLLOR_H
-#define ALTERSPACE_ROOMCONTROLLOR_H
+#ifndef ALTERSPACE_ROOMCONTROLLER_H
+#define ALTERSPACE_ROOMCONTROLLER_H
 
 
-class RoomControllor {
+class RoomController {
     public:
-        RoomControllor();
+        RoomController();
         bool generateRoom(unsigned int roomId, std::string roomName);
         bool removeRoom(int roomId);
         const std::vector<int> & getCharacterList (int roomId);
@@ -40,4 +40,4 @@ class RoomControllor {
 };
 
 
-#endif //ROOMCONTROLLOR_H
+#endif //ROOMCONTROLLER_H

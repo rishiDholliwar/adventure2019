@@ -1,5 +1,5 @@
 add_library(world
-            src/RoomControllor.cpp
+        src/RoomController.cpp
             src/Area.cpp
             src/Room.cpp
             src/World.cpp
