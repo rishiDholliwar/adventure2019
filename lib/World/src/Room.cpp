@@ -1,21 +1,21 @@
 #include <algorithm>
 #include <Room.h>
 
-Room::Room(int id, std::string name){
+Room::Room(int id, const std::string& name){
     Room::id = id;
-    Room::name = std::move(name);
+    Room::name = name;
     Room::north = 0;
     Room::east = 0;
     Room::south = 0;
     Room::west = 0;
 }
 
-void Room::addDescription(std::string description) {
-    Room::descriptions.push_back(std::move(description));
+void Room::addDescription(const std::string& description) {
+    Room::descriptions.push_back(description);
 }
 
-void Room::addExtendedDescription(std::string extDescription) {
-    Room::extendedDescriptions.push_back(std::move(extDescription));
+void Room::addExtendedDescription(const std::string& extDescription) {
+    Room::extendedDescriptions.push_back(extDescription);
 }
 
 void Room::linkRoom(char dir, int targetRoomId) {

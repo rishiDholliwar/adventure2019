@@ -11,7 +11,7 @@
 class RoomController {
     public:
         RoomController();
-        bool generateRoom(unsigned int roomId, std::string roomName);
+        bool generateRoom(unsigned int roomId, const std::string& roomName);
         bool removeRoom(int roomId);
         const std::vector<int> & getCharacterList (int roomId);
         const std::vector<int> & getObjectList (int roomId);

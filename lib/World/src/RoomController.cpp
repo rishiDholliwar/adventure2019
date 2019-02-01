@@ -7,7 +7,7 @@
 
 RoomController::RoomController() = default;
 
-bool RoomController::generateRoom(unsigned int roomId, std::string roomName) {
+bool RoomController::generateRoom(unsigned int roomId, const std::string& roomName) {
     auto size = RoomController::roomList.size();
     auto tempRoom = RoomController::searchRoom(roomId);
 

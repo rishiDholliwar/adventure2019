@@ -10,10 +10,10 @@
 class Room
 {
 public:
-    Room(int id, std::string name);
-    void addDescription(std::string description);
-    void addExtendedDescription(std::string extDescription);
-    unsigned int const& getId() const{return id;};
+    Room(int id, const std::string& name);
+    void addDescription(const std::string& description);
+    void addExtendedDescription(const std::string& extDescription);
+    int const& getId() const{return id;};
     std::string const& getName() const{return name;};
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
@@ -33,7 +33,7 @@ public:
 
 
 private:
-    unsigned int  id;
+    int  id;
     std::string name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
