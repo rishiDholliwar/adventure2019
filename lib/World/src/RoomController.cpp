@@ -7,28 +7,9 @@
 
 RoomController::RoomController() = default;
 
-bool RoomController::generateRoom(unsigned int roomId, const std::string& roomName) {
-    auto size = RoomController::roomList.size();
-    auto tempRoom = RoomController::searchRoom(roomId);
-
-    if (tempRoom == nullptr)
-        RoomController::roomList.emplace_back(roomId,roomName);
-
-    return size != RoomController::roomList.size();
-}
-
-bool RoomController::removeRoom(int roomId) {
-    auto size = RoomController::roomList.size();
-
-    auto it = std::find_if(RoomController::roomList.begin(), RoomController::roomList.end(),
-            [&roomId](const Room& room)
-            {return room.getId() == roomId;}
-            );
-    RoomController::roomList.erase(it);
-
-    return size != roomList.size();
-}
-
+/*
+ * Getters
+ */
 const std::vector<int> & RoomController::getCharacterList(int roomId) {
     return RoomController::searchRoom(roomId)->getCharacterList();
 }
@@ -47,30 +28,59 @@ std::vector<int> RoomController::getRoomList() const {
     return integerRoomList;
 }
 
-bool RoomController::addCharacterToRoom(int characterId, int roomId) {
+/*
+ * Adders
+ */
+
+bool RoomController::generateRoom(unsigned int roomId, const std::string& roomName) {
+    auto size = RoomController::roomList.size();
     auto tempRoom = RoomController::searchRoom(roomId);
 
-    return (tempRoom != nullptr) && (tempRoom->addCharacter(characterId));
+    if (tempRoom == nullptr)
+        RoomController::roomList.emplace_back(roomId,roomName);
+
+    return size != RoomController::roomList.size();
 }
 
-bool RoomController::removeCharacterFromRoom(int characterId, int roomId) {
+bool RoomController::addCharacterToRoom(int characterId, int roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
-
-    return (tempRoom != nullptr) && (tempRoom->removeCharacter(characterId));
+    return (tempRoom != nullptr) && (tempRoom->addCharacter(characterId));
 }
 
 bool RoomController::addObjectToRoom(int objectId, int roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
-
     return (tempRoom != nullptr) && (tempRoom->addObject(objectId));
+}
+
+/*
+ * Removers
+ */
+
+bool RoomController::removeRoom(int roomId) {
+    auto size = RoomController::roomList.size();
+
+    auto it = std::find_if(RoomController::roomList.begin(), RoomController::roomList.end(),
+                           [&roomId](const Room& room)
+                           {return room.getId() == roomId;}
+    );
+    RoomController::roomList.erase(it);
+
+    return size != roomList.size();
+}
+
+bool RoomController::removeCharacterFromRoom(int characterId, int roomId) {
+    auto tempRoom = RoomController::searchRoom(roomId);
+    return (tempRoom != nullptr) && (tempRoom->removeCharacter(characterId));
 }
 
 bool RoomController::removeObjectFromRoom(int objectId, int roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
-
     return (tempRoom != nullptr) && (tempRoom->removeObject(objectId));
 }
 
+/*
+ *  Link Rooms
+ */
 void RoomController::linkRoom(char dir, int room1Id, int room2Id) {
     auto room = searchRoom(room1Id);
     room->linkRoom(dir, room2Id);
@@ -80,6 +90,10 @@ int RoomController::getLinkedRoom(char dir, int roomId) {
     auto room = searchRoom(roomId);
     return room->getLinkedRoom(dir);
 }
+
+/*
+ * private functions
+ */
 
 Room* RoomController::searchRoom(int roomId) {
 

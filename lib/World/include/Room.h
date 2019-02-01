@@ -11,19 +11,26 @@ class Room
 {
 public:
     Room(int id, const std::string& name);
-    void addDescription(const std::string& description);
-    void addExtendedDescription(const std::string& extDescription);
+
+    // Getters
     int const& getId() const{return id;};
     std::string const& getName() const{return name;};
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
     std::vector<int> const& getCharacterList() const{return characterList;};
     std::vector<int> const& getObjectList() const{return objectList;};
+
+    // Adders
+    void addDescription(const std::string& description);
+    void addExtendedDescription(const std::string& extDescription);
     bool addCharacter(int characterId);
-    bool removeCharacter(int characterId);
     bool addObject(int objectId);
+
+    // Removers
+    bool removeCharacter(int characterId);
     bool removeObject(int objectId);
 
+    // Link Rooms
     // use character 'n','e','s','w' to represent direction
 
     // linkRoom will assign targetRoom to the coordinate Room*
@@ -43,6 +50,8 @@ private:
     int east;
     int south;
     int west;
+    bool addIdToList(int id, std::vector<int> &list);
+    bool removeIdFromList(int id, std::vector<int> &list);
 };
 
 
