@@ -46,7 +46,7 @@ private:
 	std::unordered_map<std::string, Connection> activeUsers = {};
 	// unordered_string_map<std::string, Connection, std::less<>> activeUsers = {};
 
-	auto hashPassword(std::string password);
+	std::size_t hashPassword(std::string password);
 
 	ReturnCode parseLoginUserData(const std::string_view username, std::string password);
 

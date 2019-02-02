@@ -11,9 +11,8 @@ void UserController::addActiveUser(const std::string& username, Connection conne
 bool UserController::isUserActive(const std::string& username) {
 	//check if username exists in activeUsers.
 	//if true, return true. else, this user is not yet logged in or created.
-	auto it = activeUsers.find(username);
 
-	return it != activeUsers.end();
+	return activeUsers.find(username) != activeUsers.end();
 }
 
 bool UserController::isConnectionLoggedIn(const Connection connection) {
@@ -42,7 +41,7 @@ Connection UserController::getConnectionWithUsername(const std::string& username
 	//
 }
 
-auto UserController::hashPassword(std::string password) {
+std::size_t UserController::hashPassword(std::string password) {
 
 	auto hashedPassword = std::hash<std::string>{}(password);
 
@@ -57,19 +56,16 @@ UserController::UserData UserController::login(const std::string& username, std:
 	//check if user is already logged in:
 	if (isUserActive(username)) {
 		result.returnCode = ReturnCode::USER_ACTIVE;
+		return result;
 
-	} else {
-
-		ReturnCode isLoginSuccess = parseLoginUserData(username, password);
-
-		if (isLoginSuccess == ReturnCode::LOGIN_SUCCESS) {
-			result.returnCode = ReturnCode::LOGIN_SUCCESS;
-			addActiveUser(username, connection);
-
-		} else {
-			result.returnCode = isLoginSuccess; // USERNAME_FAIL or PASSWORD_FAIL
-		}
 	}
+
+	result.returnCode = parseLoginUserData(username, password);
+
+	if (result.returnCode == ReturnCode::LOGIN_SUCCESS) {
+		addActiveUser(username, connection);
+	}
+
 	return result;
 }
 
@@ -96,20 +92,12 @@ UserController::UserData UserController::createUser(const std::string& username,
 	if (isUserActive(username)) {
 		result.returnCode = ReturnCode::USER_ACTIVE;
 		// + character data?
+		return result;
 
-	} else {
-
-		ReturnCode userCreateSuccess = parseNewUserData(username, password);
-
-		if (userCreateSuccess == ReturnCode::USERNAME_EXISTS) {
-			result.returnCode == ReturnCode::USERNAME_EXISTS;
-			// + dummy character data or empty vector
-
-		} else {
-			result.returnCode = ReturnCode::CREATE_SUCCESS;
-			// + default character data?
-		}
 	}
+
+	result.returnCode = parseNewUserData(username, password);
+
 	return result;
 }
 
@@ -133,12 +121,13 @@ UserController::UserData UserController::logoutUser(const std::string& username)
 
 	if (!(isUserActive(username))) {
 		result.returnCode = ReturnCode::LOGOUT_FAIL;
+		return result;
 
-	} else {
-		activeUsers.erase(username);
-		// + character data
-		result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 	}
+	
+	activeUsers.erase(username);
+	// + character data
+	result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 
 	return result;
 }
