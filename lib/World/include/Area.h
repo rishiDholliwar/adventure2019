@@ -7,19 +7,21 @@
 
 #include <vector>
 #include <string>
-#include <Area.h>
-#include <Room.h>
+#include "Room.h"
 #include <memory>
+
 
 class Area
 {
 public:
-    Area(unsigned int& id, std::string& name);
-    void addRoom(std::unique_ptr<Room> room);
-    const std::vector<std::unique_ptr<Room>>& getRooms(){return rooms;};
+    Area(unsigned int id, std::string name);
+    void addRoom(Room* room);
+    unsigned int const& getId() const{return id;};
+    std::string const& getName() const{return name;};
+    std::vector<Room*> const& getRooms()const{return rooms;};
 private:
-    std::string name;
     unsigned int id;
-    std::vector<std::unique_ptr<Room>> rooms;
+    std::string name;
+    std::vector<Room*> rooms;
 };
 #endif //OOP_AREA_H
