@@ -11,7 +11,13 @@ RoomController::RoomController() = default;
  * Getters
  */
 const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
-    return RoomController::searchRoom(roomId)->getCharacterList();
+    auto room = RoomController::searchRoom(roomId);
+
+    if (room == nullptr){
+        return emptyVector;
+    }
+
+    return room->getCharacterList();
 }
 
 const std::vector<ID> & RoomController::getObjectList(ID roomId) {

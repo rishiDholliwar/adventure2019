@@ -38,6 +38,7 @@ class RoomController {
 
     private:
          std::vector<Room> roomList;
+         std::vector<ID> emptyVector;
 
          Room* searchRoom(ID roomId);
 
