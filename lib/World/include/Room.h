@@ -6,52 +6,66 @@
 #include <string>
 #include <memory>
 
+using ID = unsigned int;
+
+enum class Direction{
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST
+};
 
 class Room
 {
 public:
-    Room(int id, const std::string& name);
+
+    Room(ID id, const std::string& name);
 
     // Getters
-    int const& getId() const{return id;};
+    ID const& getId() const{return id;};
     std::string const& getName() const{return name;};
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
-    std::vector<int> const& getCharacterList() const{return characterList;};
-    std::vector<int> const& getObjectList() const{return objectList;};
+    std::vector<ID> const& getCharacterList() const{return characterList;};
+    std::vector<ID> const& getObjectList() const{return objectList;};
 
     // Adders
     void addDescription(const std::string& description);
     void addExtendedDescription(const std::string& extDescription);
-    bool addCharacter(int characterId);
-    bool addObject(int objectId);
+    bool addCharacter(ID characterId);
+    bool addObject(ID objectId);
 
     // Removers
-    bool removeCharacter(int characterId);
-    bool removeObject(int objectId);
+    bool removeCharacter(ID characterId);
+    bool removeObject(ID objectId);
 
     // Link Rooms
     // use character 'n','e','s','w' to represent direction
 
     // linkRoom will assign targetRoom to the coordinate Room*
-    void linkRoom(char dir, int targetRoomId);
+    void linkRoom(Direction dir, ID targetRoomId);
     // return 0 indicates no room is linked in the direction
-    int getLinkedRoom(char dir);
+    ID getLinkedRoom(Direction dir);
 
 
 private:
-    int  id;
+    ID  id;
     std::string name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
-    std::vector<int> characterList;
-    std::vector<int> objectList;
-    int north;
-    int east;
-    int south;
-    int west;
-    bool addIdToList(int id, std::vector<int> &list);
-    bool removeIdFromList(int id, std::vector<int> &list);
+    std::vector<ID> characterList;
+    std::vector<ID> objectList;
+
+    struct LinkingRoomList{
+        ID north = 0;
+        ID west = 0;
+        ID south = 0;
+        ID east = 0;
+    };
+
+    LinkingRoomList linkingRoomList;
+    bool addIdToList(ID id, std::vector<ID> &list);
+    bool removeIdFromList(ID id, std::vector<ID> &list);
 };
 
 

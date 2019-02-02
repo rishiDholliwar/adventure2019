@@ -1,13 +1,9 @@
 #include <algorithm>
 #include <Room.h>
 
-Room::Room(int id, const std::string& name){
-    Room::id = id;
-    Room::name = name;
-    Room::north = 0;
-    Room::east = 0;
-    Room::south = 0;
-    Room::west = 0;
+Room::Room(ID id, const std::string& name){
+    this->id = id;
+    this->name = name;
 }
 
 /*
@@ -15,59 +11,59 @@ Room::Room(int id, const std::string& name){
 */
 
 void Room::addDescription(const std::string& description) {
-    Room::descriptions.push_back(description);
+    this->descriptions.push_back(description);
 }
 
 void Room::addExtendedDescription(const std::string& extDescription) {
-    Room::extendedDescriptions.push_back(extDescription);
+    this->extendedDescriptions.push_back(extDescription);
 }
 
-bool Room::addCharacter(int characterId) {
-    return addIdToList(characterId, Room::characterList);
+bool Room::addCharacter(ID characterId) {
+    return addIdToList(characterId, this->characterList);
 }
 
-bool Room::addObject(int objectId) {
-    return addIdToList(objectId, Room::objectList);
+bool Room::addObject(ID objectId) {
+    return addIdToList(objectId, this->objectList);
 }
 
 /*
  *  Removers
  */
 
-bool Room::removeCharacter(int characterId) {
-    return removeIdFromList(characterId, Room::characterList);
+bool Room::removeCharacter(ID characterId) {
+    return removeIdFromList(characterId, this->characterList);
 }
 
-bool Room::removeObject(int objectId) {
-    return removeIdFromList(objectId, Room::objectList);
+bool Room::removeObject(ID objectId) {
+    return removeIdFromList(objectId, this->objectList);
 }
 
 /*
  *  Link Rooms
  */
 
-void Room::linkRoom(char dir, int targetRoomId) {
-    if (dir == 'n')
-        Room::north = targetRoomId;
-    else if (dir =='e')
-        Room::east = targetRoomId;
-    else if (dir =='s')
-        Room::south = targetRoomId;
-    else if (dir =='w')
-        Room::west = targetRoomId;
+void Room::linkRoom(Direction dir, ID targetRoomId) {
+    if (dir == Direction::NORTH)
+        this->linkingRoomList.north = targetRoomId;
+    else if (dir == Direction::EAST)
+        this->linkingRoomList.east = targetRoomId;
+    else if (dir == Direction::SOUTH)
+        this->linkingRoomList.south = targetRoomId;
+    else if (dir == Direction::WEST)
+        this->linkingRoomList.west = targetRoomId;
 }
 
-int Room::getLinkedRoom(char dir) {
-    int targetRoomId;
+ID Room::getLinkedRoom(Direction dir) {
+    ID targetRoomId;
 
-    if (dir == 'n')
-        targetRoomId = Room::north;
-    else if (dir =='e')
-        targetRoomId = Room::east;
-    else if (dir =='s')
-        targetRoomId = Room::south;
-    else if (dir =='w')
-        targetRoomId = Room::west;
+    if (dir == Direction::NORTH)
+        targetRoomId = this->linkingRoomList.north;
+    else if (dir == Direction::EAST)
+        targetRoomId = this->linkingRoomList.east;
+    else if (dir == Direction::SOUTH)
+        targetRoomId = this->linkingRoomList.south;
+    else if (dir == Direction::WEST)
+        targetRoomId = this->linkingRoomList.west;
     else
         targetRoomId = 0;
 
@@ -78,7 +74,7 @@ int Room::getLinkedRoom(char dir) {
  *  private functions
  */
 
-bool Room::addIdToList(int id, std::vector<int> &list) {
+bool Room::addIdToList(ID id, std::vector<ID> &list) {
     auto size = list.size();
     auto it = std::find(list.begin(), list.end(),id);
 
@@ -89,7 +85,7 @@ bool Room::addIdToList(int id, std::vector<int> &list) {
     return size != list.size();
 }
 
-bool Room::removeIdFromList(int id, std::vector<int> &list) {
+bool Room::removeIdFromList(ID id, std::vector<ID> &list) {
     auto size = list.size();
     auto it = std::find(list.begin(), list.end(), id);
 
