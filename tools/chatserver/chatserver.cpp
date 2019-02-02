@@ -38,10 +38,11 @@ Game::addConnection(Connection c) {
 void
 Game::removeConnection(Connection c) {
   std::cout << "Connection lost: " << c.id << "\n";
-  if(_userController->isConnectionLoggedIn(c.id)) {
-    std::string username = _userController->getUsernameWithConnectionId(c.id);
+  if(_userController->isConnectionLoggedIn(c)) {
+    std::string username = _userController->getUsernameWithConnection(c);
     _userController->logoutUser(username);
     //save character data here, maybe?
+    std::cout << "logged out yo" << std::endl;
   }
   auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
   _clients.erase(eraseBegin, std::end(_clients));
@@ -58,13 +59,41 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
       std::cout << "Shutting down.\n";
       quit = true;
     } else {
-      if (_userController->isConnectionLoggedIn(message.connection.id)) {
-        std::string username = _userController->getUsernameWithConnectionId(message.connection.id);
+      if (_userController->isConnectionLoggedIn(message.connection)) {
+        std::string username = _userController->getUsernameWithConnection(message.connection);
         std::string output = _gameController->receiveText(message.text, username);
         Message msg{message.connection, output};
         result.push_back(msg);
       } else {
-        //gotta log in, dude!
+        
+         std::vector<std::string> result;
+         std::stringstream ss(message.text);
+         std::string word;
+         while (ss >> word) { 
+          result.push_back(word);
+          std::cout << word << std::endl;
+        }
+
+        if (result.at(0) == "!login") {
+          std::cout << "result.at(0) is login" << std::endl;
+
+
+
+          if (result.size() == 3) {
+            _userController->login(result.at(1), result.at(2), message.connection);
+            std::cout << "logged in yo" << std::endl;
+          } else {
+
+          }
+          
+          
+        } else if (result.at(0) == "!signup") {
+          if (result.size() == 3) {
+            _userController->createUser(result.at(1), result.at(2), message.connection);
+          } else {
+            
+          }
+        }
       }
     }
   }

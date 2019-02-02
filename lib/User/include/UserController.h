@@ -5,9 +5,16 @@
 
 #include <string>
 #include <unordered_map>
+// #include <boost/multi_index_container.hpp>
+// #include <boost/multi_index/hashed_index.hpp>
+// #include <boost/multi_index/member.hpp>
 #include <vector>
 #include <User.h>
 #include <ReturnCode.h>
+#include "Server.h"
+#include <functional>
+
+using networking::Connection;
 
 class UserController {
 
@@ -19,24 +26,25 @@ public:
 
 	std::unordered_map<std::string, Connection> getActiveUsers();
 
-	void addActiveUser(std::string username, Connection connectionId);
+	void addActiveUser(const std::string& username, Connection connection);
 
-	bool isUserActive(const std::string_view username);
+	bool isUserActive(const std::string& username);
 
-	bool isConnectionLoggedIn(const Connection connectionId);
+	bool isConnectionLoggedIn(const Connection connection);
 
-	std::string getUsernameWithConnectionId(const Connection connectionId);
+	std::string getUsernameWithConnection(const Connection connection);
 
-	Connection getConnectionIdWithUsername(const std::string_view username);
+	Connection getConnectionWithUsername(const std::string& username);
 
-	UserData login(const std::string_view username, std::string password, const Connection connectionId);
+	UserData login(const std::string& username, std::string password, const Connection connection);
 
-	UserData createUser(const std::string_view username, std::string password);
+	UserData createUser(const std::string& username, std::string password, const Connection connection);
 
-	UserData logoutUser(std::string username);
+	UserData logoutUser(const std::string& username);
 
 private:
 	std::unordered_map<std::string, Connection> activeUsers = {};
+	// unordered_string_map<std::string, Connection, std::less<>> activeUsers = {};
 
 	auto hashPassword(std::string password);
 

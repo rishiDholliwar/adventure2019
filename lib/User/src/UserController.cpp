@@ -4,23 +4,23 @@ std::unordered_map<std::string, Connection> UserController::getActiveUsers() {
 	return activeUsers;
 }
 
-void UserController::addActiveUser(std::string username, Connection connectionId) {
-	activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connectionId));
+void UserController::addActiveUser(const std::string& username, Connection connection) {
+	activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connection));
 }
 
-bool UserController::isUserActive(const std::string_view username) {
+bool UserController::isUserActive(const std::string& username) {
 	//check if username exists in activeUsers.
 	//if true, return true. else, this user is not yet logged in or created.
-	std::unordered_map<std::string, Connection>::iterator it = activeUsers.find(username);
+	auto it = activeUsers.find(username);
 
-	return it != activeUsers.end());
+	return it != activeUsers.end();
 }
 
-bool UserController::isConnectionLoggedIn(const Connection connectionId) {
+bool UserController::isConnectionLoggedIn(const Connection connection) {
 	bool isLoggedIn = false;
 
 	for(auto userConnection : activeUsers) {
-		if (userConnection.second == connectionId) {
+		if (userConnection.second == connection) {
 			isLoggedIn = true;
 		}
 	}
@@ -28,17 +28,17 @@ bool UserController::isConnectionLoggedIn(const Connection connectionId) {
 	return isLoggedIn;
 }
 
-std::string UserController::getUsernameWithConnectionId(const Connection connectionId) {
+std::string UserController::getUsernameWithConnection(const Connection connection) {
 
 	for (auto user : activeUsers) {
-		if (user.second == connectionId) {
+		if (user.second == connection) {
 			return user.first;
 		}
 	}
 	return std::string();
 }
 
-Connection UserController::getConnectionIdWithUsername(const std::string_view username) {
+Connection UserController::getConnectionWithUsername(const std::string& username) {
 	//
 }
 
@@ -49,7 +49,7 @@ auto UserController::hashPassword(std::string password) {
 	return hashedPassword;
 }
 
-UserController::UserData UserController::login(const std::string_view username, std::string password, const Connection connectionId) {
+UserController::UserData UserController::login(const std::string& username, std::string password, const Connection connection) {
 
 	UserData result;
 	result.username = username;
@@ -64,7 +64,7 @@ UserController::UserData UserController::login(const std::string_view username, 
 
 		if (isLoginSuccess == ReturnCode::LOGIN_SUCCESS) {
 			result.returnCode = ReturnCode::LOGIN_SUCCESS;
-			addActiveUser(username, connectionId);
+			addActiveUser(username, connection);
 
 		} else {
 			result.returnCode = isLoginSuccess; // USERNAME_FAIL or PASSWORD_FAIL
@@ -87,7 +87,7 @@ ReturnCode UserController::parseLoginUserData(const std::string_view username, s
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-UserController::UserData UserController::createUser(const std::string_view username, std::string password) {
+UserController::UserData UserController::createUser(const std::string& username, std::string password,  const Connection connection) {
 
 	UserData result;
 	result.username = username;
@@ -126,7 +126,7 @@ ReturnCode UserController::parseNewUserData(const std::string_view username, std
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-UserController::UserData UserController::logoutUser(std::string username) {
+UserController::UserData UserController::logoutUser(const std::string& username) {
 
 	UserData result;
 	result.username = username;

@@ -17,6 +17,7 @@ target_include_directories(userController
 target_link_libraries(userController
   PUBLIC
     returnCode
+    networking
   PRIVATE
     ${Boost_LIBRARIES}
 )
