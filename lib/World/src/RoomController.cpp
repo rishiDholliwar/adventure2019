@@ -21,7 +21,13 @@ const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
 }
 
 const std::vector<ID> & RoomController::getObjectList(ID roomId) {
-    return RoomController::searchRoom(roomId)->getObjectList();
+    auto room = RoomController::searchRoom(roomId);
+
+    if (room == nullptr){
+        return emptyVector;
+    }
+
+    return room->getObjectList();
 }
 
 std::vector<ID> RoomController::getRoomIdList() const {
