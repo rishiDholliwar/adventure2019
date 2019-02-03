@@ -38,6 +38,12 @@ Game::addConnection(Connection c) {
 void
 Game::removeConnection(Connection c) {
   std::cout << "Connection lost: " << c.id << "\n";
+  if(_userController->isConnectionLoggedIn(c)) {
+    std::string username = _userController->getUsernameWithConnection(c);
+    _userController->logoutUser(username);
+    //save character data here, maybe?
+    std::cout << "logged out yo" << std::endl;
+  }
   auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
   _clients.erase(eraseBegin, std::end(_clients));
 }
@@ -53,17 +59,48 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
       std::cout << "Shutting down.\n";
       quit = true;
     } else {
-      // We need to get the user later on
-      std::string dummyUser = "Bob";  
-      std::string output = _gameController->receiveText(message.text, dummyUser);
-      Message msg{message.connection, output};
-      result.push_back(msg);
+      if (_userController->isConnectionLoggedIn(message.connection)) {
+        std::string username = _userController->getUsernameWithConnection(message.connection);
+        std::string output = _gameController->receiveText(message.text, username);
+        Message msg{message.connection, output};
+        result.push_back(msg);
+      } else {
+        
+         std::vector<std::string> result;
+         std::stringstream ss(message.text);
+         std::string word;
+         while (ss >> word) { 
+          result.push_back(word);
+          std::cout << word << std::endl;
+        }
+
+        if (result.at(0) == "!login") {
+          std::cout << "result.at(0) is login" << std::endl;
+
+
+
+          if (result.size() == 3) {
+            _userController->login(result.at(1), result.at(2), message.connection);
+            std::cout << "logged in yo" << std::endl;
+          } else {
+
+          }
+          
+          
+        } else if (result.at(0) == "!signup") {
+          if (result.size() == 3) {
+            _userController->createUser(result.at(1), result.at(2), message.connection);
+          } else {
+            
+          }
+        }
+      }
     }
   }
   return result;
 }
 
-bool 
+bool
 Game::run()
 {
   bool done = false;
@@ -84,11 +121,11 @@ Game::run()
   return done;
 }
 
-Game::Game(Server& server, GameController& gc, UserManager& um) 
+Game::Game(Server& server, GameController& gc, UserController& um)
 {
   _server = &server;
   _gameController = &gc;
-  _userManager = &um;
+  _userController = &um;
 }
 
 std::string
@@ -120,12 +157,10 @@ main(int argc, char* argv[]) {
   Config config = {.port = port, .webpage = webpage};
   Server server = Server(config.port, config.webpage, onConnect, onDisconnect);
   GameController gameController = GameController();
-  UserManager userManager = UserManager();
+  UserController userController = UserController();
 
-  // Because we 
-  game = std::make_unique<Game>(server, gameController, userManager);
+  game = std::make_unique<Game>(server, gameController, userController);
   game->run();
 
   return 0;
 }
-

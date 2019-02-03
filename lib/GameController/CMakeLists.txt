@@ -15,7 +15,7 @@ target_include_directories(gameController
 
 target_link_libraries(gameController
   PUBLIC
-    userManager
+    userController
     utility
   PRIVATE
     ${Boost_LIBRARIES}

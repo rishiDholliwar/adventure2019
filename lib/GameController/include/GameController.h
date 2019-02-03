@@ -5,12 +5,15 @@
 
 #include <deque>
 #include <vector>
-#include "User.h"
+
 #include "../../Controllers/include/CharacterController.h"
 #include "../../Controllers/include/ObjectController.h"
 #include "../../World/include/RoomController.h"
+
+
 #include <functional>
 #include <map>
+#include <User.h>
 
 class GameController {
 

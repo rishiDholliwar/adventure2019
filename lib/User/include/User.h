@@ -8,21 +8,19 @@ class User {
 public:
     User(){};
 
-    User(std::string userName)
-    :_userName(userName) { };
-    
-    User(std::string userName, size_t hashedPassword)
-    :_userName(userName), _hashedPassword(hashedPassword), _roomNumber(0) { };
+    User(std::string username)
+    :_username(std::move(username)) { };
 
-    bool isUsernameEqual(const std::string userName) const;
+    User(std::string username, size_t hashedPassword)
+    :_username(std::move(username)), _hashedPassword(std::move(hashedPassword)), _roomNumber(0) { };
+
+    bool isusernameEqual(const std::string_view username) const;
 
     bool isHashedPasswordEqual(const size_t hashedPassword) const;
 
-    std::string getUsername() const;
+    std::string getusername() const;
 
     std::size_t getHashedPassword() const;
-
-    bool isSameUser(User user) const;
 
     void moveToRoom(int roomNumber);
 
@@ -30,16 +28,15 @@ public:
 
 private:
 
-    std::string _userName;
-    
+    std::string _username;
+
     std::size_t _hashedPassword;
 
     mutable int _roomNumber;
 
 };
 
-//UserManager uses set<User> and requires a < operator overload for comparison purposes.
+//UserManager uses set<User> and requires a < operator overload for comparison
 bool operator<(const User& t, const User& o);
-
 
 #endif //WEBSOCKETNETWORKING_USER_H
