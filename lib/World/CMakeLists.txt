@@ -5,8 +5,8 @@ add_library(world
             src/World.cpp
             src/Door.cpp)
 
-add_executable(test
-        test/WorldTest.cpp)
+add_executable(RoomControllerTest
+        test/RoomControllerTest.cpp)
 
 target_include_directories(world
         PUBLIC
@@ -27,6 +27,6 @@ install(TARGETS world
   ARCHIVE DESTINATION lib
 )
 
-target_link_libraries(test
+target_link_libraries(RoomControllerTest
         world)
 
