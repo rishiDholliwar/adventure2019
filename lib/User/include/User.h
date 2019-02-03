@@ -6,15 +6,18 @@
 class User {
 
 public:
+
+    using Name = std::string;   // Type alias for username type
+
     User(){};
 
-    User(std::string username)
+    User(Name username)
     :_username(std::move(username)) { };
 
-    User(std::string username, size_t hashedPassword)
+    User(Name username, size_t hashedPassword)
     :_username(std::move(username)), _hashedPassword(std::move(hashedPassword)), _roomNumber(0) { };
 
-    bool isusernameEqual(const std::string_view username) const;
+    bool isusernameEqual(const Name username) const;
 
     bool isHashedPasswordEqual(const size_t hashedPassword) const;
 
@@ -28,7 +31,7 @@ public:
 
 private:
 
-    std::string _username;
+    Name _username;
 
     std::size_t _hashedPassword;
 

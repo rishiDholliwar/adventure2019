@@ -20,27 +20,27 @@ class UserController {
 
 public:
 	struct UserData {
-		std::string username;
+		User::Name username;
 		ReturnCode returnCode;
 	};
 
 	std::unordered_map<std::string, Connection> getActiveUsers();
 
-	void addActiveUser(const std::string& username, Connection connection);
+	void addActiveUser(const User::Name& username, Connection connection);
 
-	bool isUserActive(const std::string& username);
+	bool isUserActive(const User::Name& username);
 
 	bool isConnectionLoggedIn(const Connection connection);
 
 	std::string getUsernameWithConnection(const Connection connection);
 
-	Connection getConnectionWithUsername(const std::string& username);
+	Connection getConnectionWithUsername(const User::Name& username);
 
-	UserData login(const std::string& username, std::string password, const Connection connection);
+	UserData login(const User::Name& username, std::string password, const Connection connection);
 
-	UserData createUser(const std::string& username, std::string password, const Connection connection);
+	UserData createUser(const User::Name& username, std::string password, const Connection connection);
 
-	UserData logoutUser(const std::string& username);
+	UserData logoutUser(const User::Name& username);
 
 private:
 	std::unordered_map<std::string, Connection> activeUsers = {};
@@ -48,9 +48,9 @@ private:
 
 	std::size_t hashPassword(std::string password);
 
-	ReturnCode parseLoginUserData(const std::string_view username, std::string password);
+	ReturnCode parseLoginUserData(const User::Name username, std::string password);
 
-	ReturnCode parseNewUserData(const std::string_view username, std::string password);
+	ReturnCode parseNewUserData(const User::Name username, std::string password);
 };
 
 
