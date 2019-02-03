@@ -1,6 +1,6 @@
 add_library(world
         src/RoomController.cpp
-            src/Room.cpp)
+        src/Room.cpp)
 
 add_executable(RoomControllerTest
         test/RoomControllerTest.cpp)

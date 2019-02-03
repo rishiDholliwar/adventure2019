@@ -1,5 +1,5 @@
 add_executable(test_object
-                src/test_object.cpp src/Object.cpp include/Object.h)
+                src/test_object.cpp )
 
 add_library(Object src/Object.cpp)
 add_library(Inventory src/Inventory.cpp)

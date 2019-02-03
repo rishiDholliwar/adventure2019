@@ -2,10 +2,12 @@
 // Created by evan on 30/01/19.
 //
 
-#include <Room.h>
+
 
 #ifndef ALTERSPACE_ROOMCONTROLLER_H
 #define ALTERSPACE_ROOMCONTROLLER_H
+
+#include <Room.h>
 
 class RoomController {
     public:

@@ -17,16 +17,19 @@ void Inventory::addItem(Object object) {
 
 void Inventory::listInventory() {
     for(Object obj : objects){
-        obj.printTest();
+        //obj.printTest();
     }
 }
 
 bool Inventory::doesItemExist(unsigned int objectId) {
-    return find_if(objects.begin(), objects.end(), [objectId](const Object& obj) {return obj.getId() == objectId;}) != objects.end();
+    for(auto& object : objects){
+        return object.getId() == objectId;
+    }
+    return false;
 }
 
 void Inventory::removeItem(unsigned int objectId) {
-    auto it = find_if(objects.begin(), objects.end(), [objectId](const Object& obj) {return obj.getId() == objectId;});
+    auto it = find_if(objects.begin(), objects.end(), [objectId](Object const& obj)->bool{return obj.getId() == objectId;});
 
     if(it != objects.end()){
         objects.erase(it);
