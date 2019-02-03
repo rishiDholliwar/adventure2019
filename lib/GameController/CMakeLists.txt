@@ -17,6 +17,9 @@ target_link_libraries(gameController
   PUBLIC
     userController
     utility
+    world
+    Character
+    controllers
   PRIVATE
     ${Boost_LIBRARIES}
 )

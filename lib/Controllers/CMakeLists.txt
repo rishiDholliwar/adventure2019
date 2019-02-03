@@ -13,6 +13,8 @@ target_include_directories(controllers
         )
 
 target_link_libraries(controllers
+        PUBLIC
+        Character
         PRIVATE
         ${Boost_LIBRARIES}
         )

@@ -8,7 +8,7 @@
 
 
 #include <map>
-#include "../../Character/include/Character.h"
+#include <Character.h>
 
 class CharacterController {
 

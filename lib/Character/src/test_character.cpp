@@ -9,17 +9,18 @@
 #include <stdio.h>
 
 int main(){
-//    std::string testCharacterName = "character01";
-//    Character character(testCharacterName);
-//    std::string testObjectName = "object01";
-//    std::string testObjectName2 = "object02";
-//    Object object;
-//    Object obj(testObjectName);
-//    Object obj2(testObjectName2);
-//    character.addItemtoInventory(obj);
-//    character.addItemtoInventory(obj2);
-//    character.listInventory();
-//    std::cout << character.getName() << std::endl;
-//    std::cout << character.getRoomID() << std::endl;
+
+    std::string testCharacterName = "character01";
+    Character character(testCharacterName, 0, 0);
+    std::string testObjectName = "object01";
+    std::string testObjectName2 = "object02";
+    Object object(0, testObjectName2);
+    Object obj(0, testObjectName);
+    Object obj2(0, testObjectName2);
+    // character.addItemtoInventory(obj);
+    // character.addItemtoInventory(obj2);
+    character.listInventory();
+    std::cout << character.getName() << std::endl;
+    std::cout << character.getRoomID() << std::endl;
     return 0;
 }

@@ -6,10 +6,10 @@
 #include <deque>
 #include <vector>
 
-#include "../../Controllers/include/CharacterController.h"
-#include "../../Controllers/include/ObjectController.h"
-#include "../../World/include/RoomController.h"
-#include "../../World/include/Room.h"
+#include <CharacterController.h>
+#include <ObjectController.h>
+#include <RoomController.h>
+#include <Room.h>
 
 
 #include <functional>

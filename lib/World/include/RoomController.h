@@ -1,9 +1,3 @@
-//
-// Created by evan on 30/01/19.
-//
-
-
-
 #ifndef ALTERSPACE_ROOMCONTROLLER_H
 #define ALTERSPACE_ROOMCONTROLLER_H
 
