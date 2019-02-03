@@ -95,3 +95,7 @@ bool Room::removeIdFromList(ID id, std::vector<ID> &list) {
 
     return size != list.size();
 }
+
+bool Room::hasObject(ID objectId) {
+    return std::find(this->objectList.begin(), this->objectList.end(), id) != this->objectList.end();
+}

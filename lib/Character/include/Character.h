@@ -12,21 +12,26 @@
 
 class Character {
 private:
-    unsigned int roomID;
     std::string name;
+    unsigned int characterId;
+    unsigned int roomID;
 
 
     Inventory inventory;
 
     public:
-    Character(unsigned int roomID, const std::string &name);
+    Character(const std::string &name, unsigned int characterId, unsigned int roomID);
 
     std::string getName();
     unsigned int getRoomID();
 
+    unsigned int getCharacterId() const;
+
     void setRoomID(unsigned int roomID);
 
     bool hasItem(unsigned int objectId);
+
+
 
     bool addItemToInventory(Object obj);
     void listInventory();

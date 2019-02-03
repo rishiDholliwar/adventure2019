@@ -18,6 +18,10 @@ unsigned int Character::getRoomID() {
     return this->roomID;
 }
 
+unsigned int Character::getCharacterId() const {
+    return characterId;
+}
+
 bool Character::addItemToInventory(Object obj) {
     inventory.addItem(obj);
 }
@@ -38,7 +42,10 @@ void Character::dropItem(unsigned int objectId) {
     inventory.removeItem(objectId);
 }
 
-Character::Character(unsigned int roomID, const std::string &name) : roomID(roomID), name(name), inventory(){}
+
+Character::Character(const std::string &name, unsigned int characterId, unsigned int roomID) :roomID(roomID), name(name), inventory(){}
+
+
 
 
 

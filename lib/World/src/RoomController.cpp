@@ -125,3 +125,8 @@ Room* RoomController::searchRoom(ID roomId) {
 
     return tempRoom.base();
 }
+
+bool RoomController::hasItem(ID objectID, ID roomId) {
+    auto tempRoom = this->searchRoom(roomId);
+    return (tempRoom != nullptr) && (tempRoom->hasObject(objectID));
+}

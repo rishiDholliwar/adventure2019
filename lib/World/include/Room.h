@@ -48,6 +48,8 @@ public:
     ID getLinkedRoom(Direction dir);
 
 
+    bool hasObject(ID objectId);
+
 private:
     ID  id;
     std::string name;

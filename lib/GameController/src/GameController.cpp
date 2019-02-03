@@ -28,14 +28,16 @@ std::string GameController::move(std::string userName, std::string input) {
     Character character = characterController.getCharacter(userName);
 
     // Verify if direction is valid
-    if(!roomController.isDirectionValid(character.getRoomID(), input)){
-        return "That isnt a valid direction";
+    unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(input), character.getRoomID());
+    if( destinationRoomID == 0){
+        return "That isn't a valid direction";
     }
-    unsigned int destinationRoomID = roomController.getRoomID(character.getRoomID(), input);
-    character.setRoomID(destinationRoomID);
 
     // Update roomList to account for character moving
-    roomController.updateCharacterList(userName, character.getRoomID(), destinationRoomID);
+    roomController.removeCharacterFromRoom(character.getCharacterId(),character.getRoomID());
+    roomController.addCharacterToRoom(character.getCharacterId(), destinationRoomID);
+    character.setRoomID(destinationRoomID);
+
     return userName + " has moved " + input;
     
 
@@ -55,12 +57,12 @@ std::string GameController::pickUp(std::string userName, std::string input) {
     Object item = objectController.getObject(input);
 
     // Verify if item exists in the room
-    if(!roomController.doesItemExist(character.getRoomID(), item.getId())) {
+    if(!roomController.hasItem(character.getRoomID(), item.getId())) {
         return "Item: " + input + " doesnt exist in this room!";
-    } 
+    }
 
     // Update room to no longer have the item (until the next reset)
-    roomController.removeItem(character.getRoomID, input);
+    roomController.removeObjectFromRoom(item.getId(), character.getRoomID());
 
     character.addItemToInventory(item);
 
@@ -89,7 +91,7 @@ std::string GameController::drop(std::string userName, std::string input) {
     character.dropItem(item.getId());
 
     // Add item to room's item List
-    roomController.addItem(character.getRoomID(), item);
+    roomController.addObjectToRoom(item.getId(), character.getRoomID());
 
     return "You dropped " + input + " into the room!";
     

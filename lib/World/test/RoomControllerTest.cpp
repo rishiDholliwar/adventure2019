@@ -4,7 +4,6 @@
 
 #include <memory>
 #include "Room.h"
-#include "Area.h"
 #include <iostream>
 #include <RoomController.h>
 #include <algorithm>

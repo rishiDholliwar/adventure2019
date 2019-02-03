@@ -11,7 +11,7 @@ bool CharacterController::addToLoggedInUsers(std::string &username) {
     /* json work */
 
     /* if character not found one will be made and then loaded*/
-    Character dummyCharacter(1000,username);
+    Character dummyCharacter(username, 91, 1000);
     return loggedInUsers.emplace(username,dummyCharacter).second;
 
 }

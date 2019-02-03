@@ -9,6 +9,7 @@
 #include "../../Controllers/include/CharacterController.h"
 #include "../../Controllers/include/ObjectController.h"
 #include "../../World/include/RoomController.h"
+#include "../../World/include/Room.h"
 
 
 #include <functional>
@@ -27,8 +28,13 @@ private:
     ObjectController objectController;
     RoomController roomController;
 
+    std::map<std::string, Direction> directionMap;
+
 public:
-    GameController():_users{}, characterController{}, objectController{}{}
+    GameController():_users{}, characterController{}, objectController{}{
+        directionMap = {{"north", Direction::NORTH}, {"south", Direction::SOUTH}, {"east", Direction::EAST},
+                        {"west", Direction ::WEST}};
+    }
     //handles real user input
     std::string receiveText(std::string input,std::string userName);
     std::string say(std::string userName, std::string input);

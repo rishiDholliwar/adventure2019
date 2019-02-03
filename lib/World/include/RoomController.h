@@ -36,7 +36,9 @@ class RoomController {
         ID getLinkedRoom(Direction dir, ID roomId);
 
 
-    private:
+    bool hasItem(ID objectID, ID roomId);
+
+private:
          std::vector<Room> roomList;
          std::vector<ID> emptyVector;
 
