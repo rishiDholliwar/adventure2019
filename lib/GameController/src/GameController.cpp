@@ -48,7 +48,7 @@ std::string GameController::receiveText(std::string input, std::string userName)
         actionText = input.substr(command.length() + 1, std::string::npos);
     }
     std::string ret = "Unknown";
-    auto commFunc = _commandHandler->getCommand(command, userName);
+    auto commFunc = _commandHandler->getCommand(userName, command);
     if(commFunc != nullptr)
     {
         ret = (this->*commFunc)(userName, actionText);

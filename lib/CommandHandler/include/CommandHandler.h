@@ -1,12 +1,10 @@
-
 #ifndef WEBSOCKETNETWORKING_COMMANDHANDLER_H
 #define WEBSOCKETNETWORKING_COMMANDHANDLER_H
 
 
 #include <deque>
 #include <vector>
-#include "User.h"
-#include <functional>
+#include <User.h>
 #include <unordered_map>
 #include <GameController.h>
 
@@ -15,20 +13,20 @@ class GameController;
 class CommandHandler {
 
 private:
-	typedef std::string (GameController::*CommFunc) (std::string userName, std::string input);
-    using FunctionMap = std::unordered_map<std::string, CommFunc>;
+    using Name = std::string;
+    using Command = std::string;
+    using Alias = std::string;
+	typedef std::string (GameController::*CommFunc) (Name userName, std::string input);
+    using FunctionMap = std::unordered_map<Command, CommFunc>;
+
     static FunctionMap _defFuncMap;
-    std::unordered_map<std::string, FunctionMap> _userFuncMap;
-    //Areas
-    //other objects
+    std::unordered_map<Name, FunctionMap> _userFuncMap;
 
 public:
-    CommandHandler(){};
-    //handles real user input
-    CommFunc getCommand(std::string command,std::string userName);
-    std::string setAlias(std::string userName,std::string command, std::string alias);
-    std::string removeAlias(std::string userName, std::string alias);
+    CommandHandler() = default;
+    CommFunc getCommand(const Name& userName, const Command& command);
+    std::string setAlias(const Name& userName, const Command& command, const Alias& alias);
+    std::string removeAlias(const Name& userName, const Alias& alias);
 };
-
 
 #endif //WEBSOCKETNETWORKING_COMMANDHANDLER_H
