@@ -6,7 +6,6 @@
 #define ALTERSPACE_OBJECTCONTROLLER_H
 
 #include <string>
-#include <bits/unordered_map.h>
 #include <map>
 #include "../../Object/include/Object.h"
 
