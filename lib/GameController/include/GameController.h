@@ -8,6 +8,7 @@
 #include "User.h"
 #include "../../Controllers/include/CharacterController.h"
 #include "../../Controllers/include/ObjectController.h"
+#include "../../World/include/RoomController.h"
 #include <functional>
 #include <map>
 
@@ -21,6 +22,7 @@ private:
 
     CharacterController characterController;
     ObjectController objectController;
+    RoomController roomController;
 
 public:
     GameController():_users{}, characterController{}, objectController{}{}

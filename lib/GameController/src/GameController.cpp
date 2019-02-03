@@ -1,6 +1,4 @@
 #include <utility>
-
-#include <utility>
 #include "GameController.h"
 #include "../../Character/include/Character.h"
 #include <iostream>
@@ -67,6 +65,7 @@ std::string GameController::pickUp(std::string userName, std::string input) {
     character.addItemToInventory(item);
 
     return "Item added to inventory!";
+
 
 }
 
