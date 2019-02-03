@@ -1,7 +1,16 @@
 #include <utility>
 #include "GameController.h"
-#include "../../Character/include/Character.h"
+#include <Character.h>
 #include <iostream>
+#include <GameController.h>
+
+
+struct Response {
+    std::string message;
+    std::vector<std::string> userName;
+};
+
+
 
 GameController::FunctionMap GameController::_funcMap = []
 {
@@ -99,6 +108,8 @@ std::string GameController::drop(std::string userName, std::string input) {
 
 
 
+
+
 std::string GameController::receiveText(std::string input, std::string userName) {
 
     auto command = input.substr(0, input.find(' '));
@@ -116,4 +127,10 @@ std::string GameController::receiveText(std::string input, std::string userName)
 
     return (!ret.empty()) ? ret : error;
 }
+
+std::string GameController::logout(std::string userName, std::string input) {
+    return std::__cxx11::string();
+}
+
+
 

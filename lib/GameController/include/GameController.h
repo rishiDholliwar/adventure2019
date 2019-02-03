@@ -21,7 +21,6 @@ class GameController {
     using FunctionMap = std::map<std::string, std::string(GameController::*)(std::string, std::string)>;
 
 private:
-    std::vector<User> _users;
     static FunctionMap _funcMap;
 
     CharacterController characterController;
@@ -31,10 +30,11 @@ private:
     std::map<std::string, Direction> directionMap;
 
 public:
-    GameController():_users{}, characterController{}, objectController{}{
+    GameController():characterController{}, objectController{}{
         directionMap = {{"north", Direction::NORTH}, {"south", Direction::SOUTH}, {"east", Direction::EAST},
                         {"west", Direction ::WEST}};
     }
+
     //handles real user input
     std::string receiveText(std::string input,std::string userName);
     std::string say(std::string userName, std::string input);
@@ -68,6 +68,18 @@ public:
      *
      * */
     std::string drop(std::string userName, std::string input);
+
+    /* Logout:
+     *
+     * Function: Removes user from characterController
+     *
+     * Pre-Condition: requires the userName of the person
+     * Post: user is removed from logged in users in character controller
+     *
+     * */
+    std::string logout(std::string userName, std::string input);
+
+
 
 
 };
