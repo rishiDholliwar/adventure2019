@@ -7,13 +7,20 @@
 
 #include <stdio.h>
 #include <string>
+#include <utility>
 
 class Object {
 private:
+    unsigned int id;
     std::string name;
-    public:
-    Object(){};
-    Object(std::string name);
+
+public:
+
+    Object(unsigned int id, const std::string &name);
+
+    const std::string &getName() const;
+
+    unsigned int getId() const;
 
     void printTest();
 };

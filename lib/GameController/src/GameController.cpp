@@ -1,5 +1,8 @@
 #include <utility>
+
+#include <utility>
 #include "GameController.h"
+#include "../../Character/include/Character.h"
 #include <iostream>
 
 GameController::FunctionMap GameController::_funcMap = []
@@ -9,7 +12,6 @@ GameController::FunctionMap GameController::_funcMap = []
     mapping["!move"] = &GameController::move;
     mapping["!get"] = &GameController::pickUp;
     mapping["!drop"] = &GameController::drop;
-    mapping["!use"] = &GameController::consume;
 
     return mapping;
 }();
@@ -25,14 +27,14 @@ std::string GameController::move(std::string userName, std::string input) {
     std::cout << "Move: " << input << std::endl;
 
     // Obtain character object based on userName (dummy)
-    Character character = userManager.getCharacter(userName);
+    Character character = characterController.getCharacter(userName);
 
     // Verify if direction is valid
     if(!roomController.isDirectionValid(character.getRoomID(), input)){
         return "That isnt a valid direction";
     }
-    unsigned int destinationRoomID = roomController.getRoomID(character.getRoomID, input);
-    charController.updateRoomID(character, destinationRoomID);
+    unsigned int destinationRoomID = roomController.getRoomID(character.getRoomID(), input);
+    character.setRoomID(destinationRoomID);
 
     // Update roomList to account for character moving
     roomController.updateCharacterList(userName, character.getRoomID(), destinationRoomID);
@@ -45,24 +47,26 @@ std::string GameController::pickUp(std::string userName, std::string input) {
     std::cout << "Pick Up: " << input << std::endl;
 
     // Obtain character object based on userName (dummy)
-    Character character = userManager.getCharacter(userName);
+    Character character = characterController.getCharacter(userName);
+
+    if(!objectController.findObject(input)){
+        return "No such Item";
+    }
 
     // Obtain item through input
-    auto item = itemList.getItemByName(input);
+    Object item = objectController.getObject(input);
 
     // Verify if item exists in the room
-    if(!roomController.doesItemExist(character.getRoomID(), item.getItemID())) {
+    if(!roomController.doesItemExist(character.getRoomID(), item.getId())) {
         return "Item: " + input + " doesnt exist in this room!";
     } 
 
-    if(!charController.addItemToInventory(character, item)){
-        return "You have no room for this item";
-    }
     // Update room to no longer have the item (until the next reset)
     roomController.removeItem(character.getRoomID, input);
 
-    return "Item added to inventory!";
+    character.addItemToInventory(item);
 
+    return "Item added to inventory!";
 
 }
 
@@ -70,50 +74,25 @@ std::string GameController::drop(std::string userName, std::string input) {
     std::cout << "Drop: " << input << std::endl;
 
     // Obtain character object based on userName (dummy)
-    Character character = userManager.getCharacter(userName);
+    Character character = characterController.getCharacter(userName);
 
+    if(!objectController.findObject(input)){
+        return "No such Item";
+    }
     //obtain item through input
-    auto item = itemList.getItemByName(input);
+    Object item = objectController.getObject(input);
 
     // Verify if the character has item
-    if(!character.hasItem(item.getItemID())){
+    if(!character.hasItem(item.getId())){
         return "You don't have this item in your inventory";
     }
     // Remove item from character's inventory
-    character.dropItem(item.getItemID());
+    character.dropItem(item.getId());
 
     // Add item to room's item List
     roomController.addItem(character.getRoomID(), item);
 
     return "You dropped " + input + " into the room!";
-    
-}
-
-std::string GameController::consume(std::string userName, std::string input) {
-    std::cout << "Consume: " << input << std::endl;
-
-    // Obtain character object based on userName (dummy)
-    Character character = userManager.getCharacter(userName);
-
-    //obtain item through input
-    auto item = itemList.getItemByName(input);
-
-    // Verify if character has the item
-    if(!character.hasItem(item.getItemID())){
-        return "You don't have this item in your inventory";
-    }
-    // Check if item is consumable
-    if(!character.isConsumable(item)){
-        return "The item is not a consumable!";
-    }
-    // Consume Item and gain it's effects
-    character.consume(item.getItemID());
-
-    // Remove item from character's inventory
-    character.dropItem(item.getItemID());
-
-    return "you used " + input + " !";
-    
     
 }
 
@@ -127,13 +106,13 @@ std::string GameController::receiveText(std::string input, std::string userName)
     std::string error = "Unknown";
     if(_funcMap.find(command) != _funcMap.end())
     {
-        ret = (this->*_funcMap[command])(userName, actionText);
+        ret = (this->*_funcMap[command])(std::move(userName), actionText);
     }
     else
     {
         error = "Invalid command";
     }
 
-    return (ret != "") ? ret : error;
+    return (!ret.empty()) ? ret : error;
 }
 

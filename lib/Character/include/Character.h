@@ -12,20 +12,27 @@
 
 class Character {
 private:
-    std::string roomID;
+    unsigned int roomID;
     std::string name;
-    std::string const STARTING_ROOM = "0000";
+
+
     Inventory inventory;
 
     public:
-    Character();
-    Character(std::string name);
+    Character(unsigned int roomID, const std::string &name);
+
     std::string getName();
-    std::string getRoomID();
-    void addItemtoInventory(Object obj);
-    //FOR NOW ONLY RETURNING A LONG STRING OF ITEMS
+    unsigned int getRoomID();
+
+    void setRoomID(unsigned int roomID);
+
+    bool hasItem(unsigned int objectId);
+
+    bool addItemToInventory(Object obj);
     void listInventory();
 
+
+    void dropItem(unsigned int objectId);
 };
 
 

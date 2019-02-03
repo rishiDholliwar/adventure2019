@@ -6,48 +6,25 @@
 #define ALTERSPACE_CHARACTERCONTROLLER_H
 
 
-#include "../../Model/Character.h"
+#include <bits/unordered_map.h>
+#include <map>
+#include "../../Character/include/Character.h"
 
 class CharacterController {
+
+private:
+
+    std::map<std::string, Character> loggedInUsers;
 
 public:
 
     /* Constructor */
     CharacterController();
 
-    /* Level Up Character:
-     *
-     * Function: levels up a character once they have the required amount of experience
-     *
-     * Pre-Condition: Requires a character to level up
-     * Post: Returns true on a successful level up, returns false otherwise
-     *
-     * */
-    bool levelUpCharacter(Character &character);
 
+    bool addToLoggedInUsers(std::string &username);
 
-    /* Update Room ID:
-     *
-     * Function: Updates the character's current room based on the roomID of the destination
-     *
-     * Pre-Condition: requires the character that wants to move and the destination room ID
-     * Post: Updates the character's current location to the new room and returns true if successful
-     *
-     * */
-    bool updateRoomID(Character &character, unsigned int &destinationRoomID);
-
-
-    /* Add Item To Inventory:
-     *
-     * Function: Adds the item to the character's inventory
-     *
-     * Pre-Condition: requires the character that receives the item and the item
-     * Post: adds item to users inventory and fails if inventory is full
-     *
-     * */
-    template <typename T>
-    bool addItemToInventory(Character &character, T &item);
-
+    Character &getCharacter(std::string &userName);
 };
 
 

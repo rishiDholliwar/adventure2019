@@ -3,36 +3,21 @@
 
 CharacterController::CharacterController() = default;
 
-bool CharacterController::levelUpCharacter(Character &character) {
-    if(character.canLevelUp()){
-        character.levelUp();
-        std::cout << "Player: " << character.getUserName() << " has successfully levelled up!" << std::endl;
 
-        return true;
-    } else {
-        return false;
-    }
+
+bool CharacterController::addToLoggedInUsers(std::string &username) {
+
+    //find and load character based on username
+    /* json work */
+
+    /* if character not found one will be made and then loaded*/
+    Character dummyCharacter(1000,username);
+    return loggedInUsers.emplace(username,dummyCharacter).second;
+
 }
 
-
-bool CharacterController::updateRoomID(Character &character, unsigned int &destinationRoomID) {
-
-    if(character.getRoomID() == destinationRoomID){
-        return false;
-    }
-
-    character.setRoomID(destinationRoomID);
-    return true;
-}
-
-template<typename T>
-bool CharacterController::addItemToInventory(Character &character, T &item) {
-    if(!character.hasSpaceInInventory()){
-        return false;
-    }
-
-    character.addItem(item);
-    return true;
+Character &CharacterController::getCharacter(std::string &userName) {
+    return loggedInUsers.find(userName)->second;
 }
 
 

@@ -6,6 +6,8 @@
 #include <deque>
 #include <vector>
 #include "User.h"
+#include "../../Controllers/include/CharacterController.h"
+#include "../../Controllers/include/ObjectController.h"
 #include <functional>
 #include <map>
 
@@ -16,12 +18,12 @@ class GameController {
 private:
     std::vector<User> _users;
     static FunctionMap _funcMap;
-    //Areas
-    //other objects
+
+    CharacterController characterController;
+    ObjectController objectController;
 
 public:
-    GameController()
-    :_users{}{}
+    GameController():_users{}, characterController{}, objectController{}{}
     //handles real user input
     std::string receiveText(std::string input,std::string userName);
     std::string say(std::string userName, std::string input);
@@ -55,16 +57,6 @@ public:
      *
      * */
     std::string drop(std::string userName, std::string input);
-
-    /* Consume:
-     *
-     * Function: The user uses a consumable item in their inventory
-     *
-     * Pre-Condition: requires the userName of the person issuing the command and the name of the item being consumed
-     * Post: consumes said item unless they dont have it or it is not consumable
-     *
-     * */
-    std::string consume(std::string userName, std::string input);
 
 
 };

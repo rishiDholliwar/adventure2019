@@ -1,3 +1,7 @@
+#include <utility>
+
+#include <utility>
+
 //
 // Created on 1/23/2019.
 //
@@ -6,28 +10,39 @@
 #include <Character.h>
 
 
-Character::Character() {
-}
-
-/*
- * Create character with just a name.
- */
-Character::Character(std::string name) {
-    this->name = name;
-    roomID = STARTING_ROOM;
-}
 std::string Character::getName(){
     return this->name;
 }
 
-std::string Character::getRoomID() {
+unsigned int Character::getRoomID() {
     return this->roomID;
 }
 
-void Character::addItemtoInventory(Object obj) {
+bool Character::addItemToInventory(Object obj) {
     inventory.addItem(obj);
+}
+
+void Character::setRoomID(unsigned int roomID) {
+    Character::roomID = roomID;
+}
+
+bool Character::hasItem(unsigned int objectId) {
+    return inventory.doesItemExist(objectId);
 }
 
 void Character::listInventory() {
     inventory.listInventory();
 }
+
+void Character::dropItem(unsigned int objectId) {
+    inventory.removeItem(objectId);
+}
+
+Character::Character(unsigned int roomID, const std::string &name) : roomID(roomID), name(name), inventory(){}
+
+
+
+
+
+
+

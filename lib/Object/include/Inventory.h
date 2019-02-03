@@ -9,15 +9,18 @@
 #include "Object.h"
 class Inventory {
 private:
-    std::vector<Object> list;
+    std::vector<Object> objects;
+
 public:
+    Inventory();
+
     void addItem(Object object);
 
-
-    /*
-     * TEST FUNCTIONS
-     */
     void listInventory();
+
+    bool doesItemExist(unsigned int objectId);
+
+    void removeItem(unsigned int objectId);
 };
 
 
