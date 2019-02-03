@@ -14,6 +14,15 @@ target_include_directories(Object
         ${Boost_INCLUDE_DIR}
         )
 
+target_include_directories(Inventory
+        PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${Boost_INCLUDE_DIR}
+        )
+
 set_target_properties(test_object
         PROPERTIES
         LINKER_LANGUAGE CXX
@@ -25,7 +34,15 @@ target_link_libraries(test_object
         Object
         )
 
+target_link_libraries(Inventory
+        Object
+        )
+
 install(TARGETS Object
+        ARCHIVE DESTINATION lib
+        )
+
+install(TARGETS Inventory
         ARCHIVE DESTINATION lib
         )
 

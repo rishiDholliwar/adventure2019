@@ -5,8 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include "../include/Inventory.h"
-#include "../include/Object.h"
+#include <Inventory.h>
+#include <Object.h>
 
 
 Inventory::Inventory() {}

@@ -39,7 +39,7 @@ std::string GameController::move(std::string userName, std::string input) {
     character.setRoomID(destinationRoomID);
 
     return userName + " has moved " + input;
-    
+
 
 }
 
@@ -94,7 +94,7 @@ std::string GameController::drop(std::string userName, std::string input) {
     roomController.addObjectToRoom(item.getId(), character.getRoomID());
 
     return "You dropped " + input + " into the room!";
-    
+
 }
 
 

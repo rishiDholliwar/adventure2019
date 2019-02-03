@@ -15,6 +15,8 @@ target_include_directories(controllers
 target_link_libraries(controllers
         PUBLIC
         Character
+        Object
+        Inventory
         PRIVATE
         ${Boost_LIBRARIES}
         )
