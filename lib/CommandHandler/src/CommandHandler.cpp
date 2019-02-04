@@ -3,11 +3,20 @@
 #include <iostream>
 #include <Utility.h>
 
-// Initialize the default function map
-CommandHandler::UserFunctionMap CommandHandler::_defFuncMap = []
+// Initialize the default user function map
+CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
 {
     CommandHandler::UserFunctionMap mapping;
     mapping["/say"]  = &GameController::say;
+    return mapping;
+}();
+
+// Initialize the default command handler function map
+CommandHandler::CommFunctionMap CommandHandler::_defCommMap = []
+{
+    CommandHandler::CommFunctionMap mapping;
+    mapping["/alias"]  	= &CommandHandler::setAlias;
+    mapping["/unalias"] = &CommandHandler::removeAlias;
     return mapping;
 }();
 
@@ -25,22 +34,8 @@ CommandInfo CommandHandler::parseCommand(const std::string& input)
 		}
 		return ci;
 	}
-
-	/*
-	// This logic will be used when user controller is integrated to this branch
-	if ( _loginMap.find(v[0]) != _loginMap.end() )
-	{
-		ci.type = CommandType::LOGIN;
-	}
-	else
-	{
-		ci.type = CommandType::GAMECONTROLLER;
-	}
-	*/
-	const std::string ALIAS = "/alias";
-	const std::string UNALIAS = "/unalias";
-
-	if ( v[0] == ALIAS || v[0] == UNALIAS )
+	std::string command = v[0];
+	if ( _defCommMap.find(command) != _defCommMap.end() )
 	{
 		ci.type = CommandType::COMMANDHANDLER;
 	}
@@ -48,6 +43,7 @@ CommandInfo CommandHandler::parseCommand(const std::string& input)
 	{
 		ci.type = CommandType::GAMECONTROLLER;
 	}
+
 	ci.command = v[0];
 	ci.input = v[1];
 	return ci;
@@ -55,19 +51,11 @@ CommandInfo CommandHandler::parseCommand(const std::string& input)
 
 CommandHandler::CommHandFunc CommandHandler::getCommFunc(const Name& userName, const Command& command)
 {
-	// Turn this into a map when we have more than 2 functions from command handler?
-	const std::string ALIAS = "/alias";
-	const std::string UNALIAS = "/unalias";
-	if ( command == ALIAS)
+	if(_defCommMap.find(command) == _defCommMap.end())
 	{
-		return &CommandHandler::setAlias;
+		return nullptr;
 	}
-	else if ( command == UNALIAS )
-	{
-		return &CommandHandler::removeAlias;
-	}
-	return nullptr;
-
+	return _defCommMap[command];
 }
 
 std::string CommandHandler::setAlias(const Name& userName, const std::string& input)
@@ -112,11 +100,11 @@ CommandHandler::UserCommFunc CommandHandler::getUserFunc(const Name& userName, c
 			return itr->second;
 		}
 	}
-	if(_defFuncMap.find(command) == _defFuncMap.end())
+	if(_defUserMap.find(command) == _defUserMap.end())
 	{
 		return nullptr;
 	}
-	return _defFuncMap[command];
+	return _defUserMap[command];
 }
 
 std::string CommandHandler::_setAlias(const Name& userName, const Command& command, const Alias& newAlias)
@@ -144,16 +132,19 @@ std::string CommandHandler::_setAlias(const Name& userName, const Command& comma
 	auto itr = userMap->find(command);
 	if (itr == userMap->end())
 	{
-		itr = _defFuncMap.find(command);
-		if (itr == _defFuncMap.end())
+		itr = _defUserMap.find(command);
+		if (itr == _defUserMap.end())
 		{
 			return error;
 		}
 	}
 
 	// Do not allow an alias of the same name in our default map
-	auto checkItr = _defFuncMap.find(newAlias);
-	if (checkItr != _defFuncMap.end())
+	if ( _defUserMap.find(newAlias) != _defUserMap.end() )
+	{
+		return error;
+	}
+	else if ( _defCommMap.find(newAlias) != _defCommMap.end() )
 	{
 		return error;
 	}

@@ -26,11 +26,14 @@ public:
     using Command = std::string;
     typedef std::string (GameController::*UserCommFunc) (Name userName, std::string input);
     typedef std::string (CommandHandler::*CommHandFunc) (const Name& userName, const std::string& input);
+    // typedef std::string (UserController::*LognCommFunc) (Name userName, std::string input);
     using UserFunctionMap = std::unordered_map<Command, UserCommFunc>;
+    using CommFunctionMap = std::unordered_map<Command, CommHandFunc>;
 
     CommandHandler() = default;
     UserCommFunc getUserFunc(const Name& userName, const Command& command);
     CommHandFunc getCommFunc(const Name& userName, const Command& command);
+    // LognCommFunc getLognFunc(const Name& userName, const Command& command);
 
     std::string setAlias(const Name& userName, const std::string& input);
     std::string removeAlias(const Name& userName, const std::string& input);
@@ -40,9 +43,9 @@ public:
     CommandInfo parseCommand(const std::string& input);
 
 private:
-	// typedef std::string (UserController::*LoginCommFunc) (Name userName, std::string input);
-
-    static UserFunctionMap _defFuncMap;
+    static UserFunctionMap _defUserMap;
+    static CommFunctionMap _defCommMap;
+    // static LognFunctionMap _defLognMap;
     std::unordered_map<Name, UserFunctionMap> _userFuncMap;
 };
 

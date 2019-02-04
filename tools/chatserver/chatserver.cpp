@@ -52,60 +52,56 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         } else if (message.text == "shutdown") {
             std::cout << "Shutting down.\n";
             quit = true;
-        } else {
-            // We need to get the user later on
-            std::string dummyUser = "Bob";
-
-            std::string output = "Unknown";
-            CommandInfo info = _commandHandler->parseCommand(message.text);
-            switch ( info.type )
-            {
-                case CommandType::GAMECONTROLLER:
-                {
-                    auto func = _commandHandler->getUserFunc(dummyUser, info.command);
-                    if(func != nullptr)
-                    {
-                        // Copy of unique ptr
-                        auto gc = &(*_gameController);
-                        output = (gc->*func)(dummyUser, info.input);
-                    }
-                    else
-                    {
-                            output = "Invalid command";
-                    }
-                    break;
-                }
-                case CommandType::LOGIN:
-                {
-                    output = "Somehow you've entered login...";
-                    break;
-                }
-                case CommandType::COMMANDHANDLER:
-                {
-                    auto func = _commandHandler->getCommFunc(dummyUser, info.command);
-                    if(func != nullptr)
-                    {
-                        auto ch = &(*_commandHandler);
-                        output = (ch->*func)(dummyUser, info.input);
-                    }
-                    else
-                    {
-                        output = "Invalid command";
-                    }
-                    break;
-                }
-                case CommandType::UNKNOWN:
-                {
-                    break;
-                }
-                default:
-                {
-                    std::cout << "I dont even know how" << std::endl;
-                }
-            }
-            Message msg{message.connection, output + "\n"};
-            result.push_back(msg);
         }
+        // We need to get the user later on
+        std::string dummyUser = "Bob";
+
+        std::string output = "Unknown";
+        CommandInfo info = _commandHandler->parseCommand(message.text);
+        switch ( info.type )
+        {
+            case CommandType::GAMECONTROLLER:
+            {
+                auto func = _commandHandler->getUserFunc(dummyUser, info.command);
+                if(func != nullptr)
+                {
+                    output = ((*_gameController).*func)(dummyUser, info.input);
+                }
+                else
+                {
+                    output = "Invalid command";
+                }
+                break;
+            }
+            case CommandType::LOGIN:
+            {
+                output = "Somehow you've entered login...";
+                break;
+            }
+            case CommandType::COMMANDHANDLER:
+            {
+                auto func = _commandHandler->getCommFunc(dummyUser, info.command);
+                if(func != nullptr)
+                {
+                    output = ((*_commandHandler).*func)(dummyUser, info.input);
+                }
+                else
+                {
+                    output = "Invalid command";
+                }
+                break;
+            }
+            case CommandType::UNKNOWN:
+            {
+                break;
+            }
+            default:
+            {
+                std::cout << "I dont even know how" << std::endl;
+            }
+        }
+        Message msg{message.connection, output};
+        result.push_back(msg);
     }
     return result;
 }
