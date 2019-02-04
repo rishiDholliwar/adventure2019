@@ -37,8 +37,8 @@ public:
     }
 
     //handles real user input
-    Response receiveText(std::string input,std::string userName);
-    Response say(std::string userName, std::string input);
+    std::vector<Response> receiveText(std::string input,std::string userName);
+    std::vector<Response> say(std::string userName, std::string input);
 
     /* Move:
      *
@@ -48,7 +48,7 @@ public:
      * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    Response move(std::string userName, std::string input);
+    std::vector<Response> move(std::string userName, std::string input);
 
     /* PickUp:
      *
@@ -58,7 +58,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    Response pickUp(std::string userName, std::string input);
+    std::vector<Response> pickUp(std::string userName, std::string input);
 
     /* Drop:
      *
@@ -68,7 +68,7 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    Response drop(std::string userName, std::string input);
+    std::vector<Response> drop(std::string userName, std::string input);
 
     /* Logout:
      *
@@ -78,7 +78,11 @@ public:
      * Post: user is removed from logged in users in character controller
      *
      * */
-    Response logout(std::string userName, std::string input);
+    std::vector<Response> logout(std::string userName, std::string input);
+
+    std::vector<Response> formulateResponse(Response &userResponse, std::vector<std::string> characterList, std::string &message);
+
+    std::vector<Response> formulateResponse(Response &userResponse);
 
 
 

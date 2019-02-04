@@ -13,7 +13,6 @@ bool CharacterController::addToLoggedInUsers(std::string &username) {
     /* if character not found one will be made and then loaded*/
     Character dummyCharacter(username, 91, 1000);
     return loggedInUsers.emplace(username,dummyCharacter).second;
-
 }
 
 Character &CharacterController::getCharacter(std::string &userName) {
@@ -22,4 +21,8 @@ Character &CharacterController::getCharacter(std::string &userName) {
 
 void CharacterController::logoutUser(std::string &username) {
   loggedInUsers.erase(username);
+}
+
+bool CharacterController::doesExist(std::string &userName) {
+    return loggedInUsers.count(userName) > 0 ;
 }

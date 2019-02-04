@@ -21,12 +21,28 @@ public:
     /* Constructor */
     CharacterController();
 
-
+    /*
+     * Adds new users to the list of characters
+     *
+     * Pre-Condition: username of the person sending the command
+     *
+     * Post-Condition: Returns true if addition is successful
+    */
     bool addToLoggedInUsers(std::string &username);
+
 
     Character &getCharacter(std::string &userName);
 
+    /*
+     * Removes user from logged in users
+     *
+     * Pre-Condition: username of the person sending the command
+     *
+     * Post-Condition: The user will no longer exist in the list
+    */
     void logoutUser(std::string &username);
+
+    bool doesExist(std::string &userName);
 };
 
 

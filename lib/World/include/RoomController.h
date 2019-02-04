@@ -10,7 +10,7 @@ class RoomController {
         //Getters
         const std::vector<ID> & getCharacterList (ID roomId);
         const std::vector<ID> & getObjectList (ID roomId);
-        std::vector<std::string, std::allocator<std::string>> & getUsernameList (ID roomId);
+        const std::vector<std::string> & getUsernameList (ID roomId);
         std::vector<ID> getRoomIdList() const;
 
         // Adders

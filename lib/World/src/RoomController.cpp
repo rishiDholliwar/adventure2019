@@ -30,7 +30,7 @@ const std::vector<ID> & RoomController::getObjectList(ID roomId) {
     return room->getObjectList();
 }
 
-std::vector<std::string, std::allocator<std::string>> & RoomController::getUsernameList(ID roomId) {
+const std::vector<std::string> & RoomController::getUsernameList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
