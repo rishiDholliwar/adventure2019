@@ -4,7 +4,8 @@ add_library(utility
         include/Utility.h)
 
 add_library(returnCode
-  include/ReturnCode.h)
+  include/ReturnCode.h
+        include/Response.h)
 
 target_include_directories(utility
   PUBLIC

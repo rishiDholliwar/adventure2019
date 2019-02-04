@@ -20,6 +20,6 @@ Character &CharacterController::getCharacter(std::string &userName) {
     return loggedInUsers.find(userName)->second;
 }
 
-void CharacterController::logoutUser(std::string username) {
+void CharacterController::logoutUser(std::string &username) {
   loggedInUsers.erase(username);
 }

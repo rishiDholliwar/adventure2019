@@ -10,7 +10,7 @@ class RoomController {
         //Getters
         const std::vector<ID> & getCharacterList (ID roomId);
         const std::vector<ID> & getObjectList (ID roomId);
-        const std::vector<std::string> & getUsernameList (ID roomId);
+        std::vector<std::string, std::allocator<std::string>> & getUsernameList (ID roomId);
         std::vector<ID> getRoomIdList() const;
 
         // Adders
@@ -33,9 +33,6 @@ class RoomController {
         void linkRoom(Direction dir, ID room1Id, ID room2Id);
         // return 0 indicates no room is linked in the direction
         ID getLinkedRoom(Direction dir, ID roomId);
-
-
-    bool hasItem(ID objectID, ID roomId);
 
 private:
          std::vector<Room> roomList;
