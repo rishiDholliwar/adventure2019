@@ -14,7 +14,7 @@ const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return emptyVector;
+        return emptyIdVector;
     }
 
     return room->getCharacterList();
@@ -24,10 +24,20 @@ const std::vector<ID> & RoomController::getObjectList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return emptyVector;
+        return emptyIdVector;
     }
 
     return room->getObjectList();
+}
+
+const std::vector<std::string>& RoomController::getUsernameList(ID roomId) {
+    auto room = RoomController::searchRoom(roomId);
+
+    if (room == nullptr){
+        return emptyStringVector;
+    }
+
+    return room->getUsernameList();
 }
 
 std::vector<ID> RoomController::getRoomIdList() const {
@@ -64,6 +74,11 @@ bool RoomController::addObjectToRoom(ID objectId, ID roomId) {
     return (tempRoom != nullptr) && (tempRoom->addObject(objectId));
 }
 
+bool RoomController::addUserNameToRoom(const std::string &userName, ID roomId) {
+    auto tempRoom = this->searchRoom(roomId);
+    return (tempRoom != nullptr) && (tempRoom->addUserName(userName));
+}
+
 /*
  * Removers
  */
@@ -91,6 +106,11 @@ bool RoomController::removeCharacterFromRoom(ID characterId, ID roomId) {
 bool RoomController::removeObjectFromRoom(ID objectId, ID roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->removeObject(objectId));
+}
+
+bool RoomController::removeUserNameFromRoom(const std::string &userName, ID roomId) {
+    auto tempRoom = RoomController::searchRoom(roomId);
+    return (tempRoom != nullptr) && (tempRoom->removeUserName(userName));
 }
 
 /*
@@ -125,3 +145,4 @@ Room* RoomController::searchRoom(ID roomId) {
 
     return tempRoom.base();
 }
+
