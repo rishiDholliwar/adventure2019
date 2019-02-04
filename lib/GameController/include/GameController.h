@@ -19,7 +19,7 @@
 
 class GameController {
 
-    using FunctionMap = std::map<std::string, std::string(GameController::*)(std::string, std::string)>;
+    using FunctionMap = std::map<std::string, std::vector<Response>(GameController::*)(std::string, std::string)>;
 
 private:
     static FunctionMap _funcMap;
@@ -80,7 +80,7 @@ public:
      * */
     std::vector<Response> logout(std::string userName, std::string input);
 
-    std::vector<Response> formulateResponse(Response &userResponse, std::vector<std::string> characterList, std::string &message);
+    std::vector<Response> formulateResponse(Response &userResponse, std::vector<std::string> characterList, std::string message);
 
     std::vector<Response> formulateResponse(Response &userResponse);
 

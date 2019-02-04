@@ -7,7 +7,7 @@
 
 GameController::FunctionMap GameController::_funcMap = []
 {
-    std::map<std::string, std::string (GameController::*)(std::string, std::string)> mapping;
+    std::map<std::string, std::vector<Response> (GameController::*)(std::string, std::string)> mapping;
     mapping["!say"]  = &GameController::say;
     mapping["!move"] = &GameController::move;
     mapping["!get"] = &GameController::pickUp;
@@ -137,13 +137,11 @@ std::vector<Response> GameController::logout(std::string userName, std::string i
 
 
 
-Response GameController::receiveText(std::string input, std::string userName) {
-
-    Response response;
+std::vector<Response> GameController::receiveText(std::string input, std::string userName) {
 
     auto command = input.substr(0, input.find(' '));
     auto actionText = input.substr(input.find(' ') + 1, std::string::npos);
-    std::string ret;
+    std::vector<Response> ret;
     std::string error = "Unknown";
     if(_funcMap.find(command) != _funcMap.end())
     {
@@ -152,16 +150,16 @@ Response GameController::receiveText(std::string input, std::string userName) {
     }
     else
     {
-      response.usernames.push_back(userName);
-      response.message = "Invalid command";
+        Response userResponse = Response("Invalid command!", userName);
+        ret = formulateResponse(userResponse);
     }
 
-    return (!ret.empty()) ? ret : error;
+    return ret;
 }
 
 std::vector<Response>
 GameController::formulateResponse(Response &userResponse, std::vector<std::string> characterList,
-                                  std::string &message){
+                                  std::string message){
 
     std::vector<Response> response;
 
@@ -174,11 +172,8 @@ GameController::formulateResponse(Response &userResponse, std::vector<std::strin
 
     response.push_back(userResponse);
     return response;
-
 }
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
-    std::vector<std::string>list;
-    std::string message;
-    return formulateResponse(userResponse, list, message);
+    return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
 }

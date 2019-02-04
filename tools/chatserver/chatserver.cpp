@@ -61,7 +61,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
     } else {
       if (_userController->isConnectionLoggedIn(message.connection)) {
         std::string username = _userController->getUsernameWithConnection(message.connection);
-        std::string output = _gameController->receiveText(message.text, username);
+        std::vector<Response> output = _gameController->receiveText(message.text, username);
         Message msg{message.connection, output};
         result.push_back(msg);
       } else {
