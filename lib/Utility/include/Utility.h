@@ -5,6 +5,9 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
+#include <iostream>
+#include <regex>
+
 namespace utility {
 
     template <typename T, typename Pred>
@@ -14,7 +17,7 @@ namespace utility {
         return result;
     }
 
-    static std::vector<std::string> stringToVector(std::string input)
+    static std::vector<std::string> tokenizeString(const std::string& input)
     {
     	std::vector<std::string> result;
     	std::stringstream ss(input);
@@ -24,6 +27,24 @@ namespace utility {
     		result.push_back(word);
     	}
     	return result;
+    }
+
+    static std::vector<std::string> popFront(const std::string& input)
+    {
+        std::vector<std::string> result;
+        std::stringstream ss(input);
+        std::string str;
+        ss >> str;
+        result.push_back(str);
+        std::string tmp;
+        ss >> tmp;
+        while ( ss >> str )
+        {
+            tmp += " " + str;
+        }
+        auto value = std::regex_replace(tmp, std::regex("^ +| +$|( ) +"), "$1");
+        result.push_back(value);
+        return result;
     }
 
 }
