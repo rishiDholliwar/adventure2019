@@ -62,34 +62,36 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
       if (_userController->isConnectionLoggedIn(message.connection)) {
         std::string username = _userController->getUsernameWithConnection(message.connection);
         std::vector<Response> output = _gameController->receiveText(message.text, username);
-        Message msg{message.connection, output};
-        result.push_back(msg);
+        for(auto &response : output){
+          Message msg{message.connection, response.message};
+          result.push_back(msg);
+        }
       } else {
         
-         std::vector<std::string> result;
+         std::vector<std::string> res;
          std::stringstream ss(message.text);
          std::string word;
          while (ss >> word) { 
-          result.push_back(word);
+          res.push_back(word);
           std::cout << word << std::endl;
         }
 
-        if (result.at(0) == "!login") {
+        if (res.at(0) == "!login") {
           std::cout << "result.at(0) is login" << std::endl;
 
 
 
-          if (result.size() == 3) {
-            _userController->login(result.at(1), result.at(2), message.connection);
+          if (res.size() == 3) {
+            _userController->login(res.at(1), res.at(2), message.connection);
             std::cout << "logged in yo" << std::endl;
           } else {
 
           }
           
           
-        } else if (result.at(0) == "!signup") {
-          if (result.size() == 3) {
-            _userController->createUser(result.at(1), result.at(2), message.connection);
+        } else if (res.at(0) == "!signup") {
+          if (res.size() == 3) {
+            _userController->createUser(res.at(1), res.at(2), message.connection);
           } else {
             
           }
