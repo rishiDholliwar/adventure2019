@@ -178,7 +178,7 @@ GameController::formulateResponse(Response &userResponse, std::vector<std::strin
 }
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
-    std::vector<Response> response;
-    response.push_back(userResponse);
-    return response;
+    std::vector<std::string>list;
+    std::string message;
+    return formulateResponse(userResponse, list, message);
 }
