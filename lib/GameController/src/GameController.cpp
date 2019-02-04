@@ -5,13 +5,6 @@
 #include <GameController.h>
 
 
-struct Response {
-    std::string message;
-    std::vector<std::string> userName;
-};
-
-
-
 GameController::FunctionMap GameController::_funcMap = []
 {
     std::map<std::string, std::string (GameController::*)(std::string, std::string)> mapping;
@@ -24,14 +17,17 @@ GameController::FunctionMap GameController::_funcMap = []
 }();
 
 
-std::string GameController::say(std::string userName, std::string input)
+Response GameController::say(std::string userName, std::string input)
 {
     std::cout << "Say " << input << std::endl;
     return userName+" says: "+input;
 }
 
-std::string GameController::move(std::string userName, std::string input) {
+Response GameController::move(std::string userName, std::string input) {
     std::cout << "Move: " << input << std::endl;
+
+    Response response;
+    response.usernames.push_back(userName);
 
     // Obtain character object based on userName (dummy)
     Character character = characterController.getCharacter(userName);
@@ -39,7 +35,8 @@ std::string GameController::move(std::string userName, std::string input) {
     // Verify if direction is valid
     unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(input), character.getRoomID());
     if( destinationRoomID == 0){
-        return "That isn't a valid direction";
+      response.message = "That isn't a valid direction";
+      return response;
     }
 
     // Update roomList to account for character moving
@@ -47,19 +44,22 @@ std::string GameController::move(std::string userName, std::string input) {
     roomController.addCharacterToRoom(character.getCharacterId(), destinationRoomID);
     character.setRoomID(destinationRoomID);
 
-    return userName + " has moved " + input;
-
-
+    response.message = userName + " has moved " + input;
+    return response;
 }
 
-std::string GameController::pickUp(std::string userName, std::string input) {
+Response GameController::pickUp(std::string userName, std::string input) {
     std::cout << "Pick Up: " << input << std::endl;
+
+    Response response;
+    response.usernames.push_back(userName);
 
     // Obtain character object based on userName (dummy)
     Character character = characterController.getCharacter(userName);
 
     if(!objectController.findObject(input)){
-        return "No such Item";
+      response.message = "No such Item";
+      return response;
     }
 
     // Obtain item through input
@@ -67,7 +67,7 @@ std::string GameController::pickUp(std::string userName, std::string input) {
 
     // Verify if item exists in the room
     if(!roomController.hasItem(character.getRoomID(), item.getId())) {
-        return "Item: " + input + " doesnt exist in this room!";
+      response.message = "Item: " + input + " doesnt exist in this room!";
     }
 
     // Update room to no longer have the item (until the next reset)
@@ -75,26 +75,31 @@ std::string GameController::pickUp(std::string userName, std::string input) {
 
     character.addItemToInventory(item);
 
-    return "Item added to inventory!";
+    response.message = "Item added to inventory!";
+    return response;
 
 
 }
 
-std::string GameController::drop(std::string userName, std::string input) {
+Response GameController::drop(std::string userName, std::string input) {
     std::cout << "Drop: " << input << std::endl;
+
+    Response response;
+    response.usernames.push_back(userName);
 
     // Obtain character object based on userName (dummy)
     Character character = characterController.getCharacter(userName);
 
     if(!objectController.findObject(input)){
-        return "No such Item";
+      response.message = "No such item";
     }
     //obtain item through input
     Object item = objectController.getObject(input);
 
     // Verify if the character has item
     if(!character.hasItem(item.getId())){
-        return "You don't have this item in your inventory";
+      response.message = "You don't have this item in your inventory";
+      return response;
     }
     // Remove item from character's inventory
     character.dropItem(item.getId());
@@ -102,15 +107,24 @@ std::string GameController::drop(std::string userName, std::string input) {
     // Add item to room's item List
     roomController.addObjectToRoom(item.getId(), character.getRoomID());
 
-    return "You dropped " + input + " into the room!";
-
+    response.message = "You dropped " + input + " into the room!";
+    return response;
 }
 
 
+Response GameController::logout(std::string userName, std::string input) {
+  Response response;
+  response.usernames.push_back(userName);
+  response.message = userName + "has logged out";
 
+  characterController.logoutUser(userName); // characterController can remove username from active users
 
+  return response;
+}
 
-std::string GameController::receiveText(std::string input, std::string userName) {
+Response GameController::receiveText(std::string input, std::string userName) {
+
+    Response response;
 
     auto command = input.substr(0, input.find(' '));
     auto actionText = input.substr(input.find(' ') + 1, std::string::npos);
@@ -119,18 +133,13 @@ std::string GameController::receiveText(std::string input, std::string userName)
     if(_funcMap.find(command) != _funcMap.end())
     {
         ret = (this->*_funcMap[command])(std::move(userName), actionText);
+
     }
     else
     {
-        error = "Invalid command";
+      response.usernames.push_back(userName);
+      response.message = "Invalid command";
     }
 
     return (!ret.empty()) ? ret : error;
 }
-
-std::string GameController::logout(std::string userName, std::string input) {
-    return std::__cxx11::string();
-}
-
-
-

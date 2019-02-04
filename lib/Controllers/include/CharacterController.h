@@ -25,6 +25,8 @@ public:
     bool addToLoggedInUsers(std::string &username);
 
     Character &getCharacter(std::string &userName);
+
+    void logoutUser(std::string &username);
 };
 
 

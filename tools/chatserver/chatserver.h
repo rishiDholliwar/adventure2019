@@ -27,13 +27,15 @@ private:
   std::string _webpage;
   std::deque<Message> processMessages(const std::deque<Message>&, bool&);
   Game(const Game&) = delete;
+  
 public:
+
   void addConnection(Connection);
   void removeConnection(Connection);
   bool run();
   Game(Server&, GameController&, UserController&);
   ~Game(){};
-  
+
 };
 
 #endif //GAME_H

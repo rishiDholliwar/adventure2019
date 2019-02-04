@@ -10,6 +10,7 @@
 #include <ObjectController.h>
 #include <RoomController.h>
 #include <Room.h>
+#include <Response.h>
 
 
 #include <functional>
@@ -36,8 +37,8 @@ public:
     }
 
     //handles real user input
-    std::string receiveText(std::string input,std::string userName);
-    std::string say(std::string userName, std::string input);
+    Response receiveText(std::string input,std::string userName);
+    Response say(std::string userName, std::string input);
 
     /* Move:
      *
@@ -47,7 +48,7 @@ public:
      * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    std::string move(std::string userName, std::string input);
+    Response move(std::string userName, std::string input);
 
     /* PickUp:
      *
@@ -57,7 +58,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    std::string pickUp(std::string userName, std::string input);
+    Response pickUp(std::string userName, std::string input);
 
     /* Drop:
      *
@@ -67,7 +68,7 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    std::string drop(std::string userName, std::string input);
+    Response drop(std::string userName, std::string input);
 
     /* Logout:
      *
@@ -77,7 +78,7 @@ public:
      * Post: user is removed from logged in users in character controller
      *
      * */
-    std::string logout(std::string userName, std::string input);
+    Response logout(std::string userName, std::string input);
 
 
 
