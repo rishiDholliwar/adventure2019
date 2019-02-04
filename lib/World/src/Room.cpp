@@ -19,25 +19,31 @@ void Room::addExtendedDescription(const std::string& extDescription) {
 }
 
 bool Room::addCharacter(ID characterId) {
-    return addIdToList(characterId, this->characterList);
+    return addUniqueItemToList(characterId, this->characterList);
 }
 
 bool Room::addObject(ID objectId) {
-    return addIdToList(objectId, this->objectList);
+    return addUniqueItemToList(objectId, this->objectList);
 }
 
+bool Room::addUserName(const std::string &userName) {
+    return addUniqueItemToList(userName, this->usernameList);
+}
 /*
  *  Removers
  */
 
 bool Room::removeCharacter(ID characterId) {
-    return removeIdFromList(characterId, this->characterList);
+    return removeUniqueItemFromList(characterId, this->characterList);
 }
 
 bool Room::removeObject(ID objectId) {
-    return removeIdFromList(objectId, this->objectList);
+    return removeUniqueItemFromList(objectId, this->objectList);
 }
 
+bool Room::removeUserName(const std::string &userName) {
+    return removeUniqueItemFromList(userName, this->usernameList);
+}
 /*
  *  Link Rooms
  */
@@ -74,7 +80,8 @@ ID Room::getLinkedRoom(Direction dir) {
  *  private functions
  */
 
-bool Room::addIdToList(ID id, std::vector<ID> &list) {
+template <typename T>
+bool Room::addUniqueItemToList(T id, std::vector<T> &list) {
     auto size = list.size();
     auto it = std::find(list.begin(), list.end(),id);
 
@@ -85,7 +92,8 @@ bool Room::addIdToList(ID id, std::vector<ID> &list) {
     return size != list.size();
 }
 
-bool Room::removeIdFromList(ID id, std::vector<ID> &list) {
+template <typename T>
+bool Room::removeUniqueItemFromList(T id, std::vector<T> &list) {
     auto size = list.size();
     auto it = std::find(list.begin(), list.end(), id);
 
