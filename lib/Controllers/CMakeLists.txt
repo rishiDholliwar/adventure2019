@@ -13,11 +13,10 @@ target_include_directories(controllers
         )
 
 target_link_libraries(controllers
-        PUBLIC
+PRIVATE
         Character
         Object
         Inventory
-        PRIVATE
         ${Boost_LIBRARIES}
         )
 

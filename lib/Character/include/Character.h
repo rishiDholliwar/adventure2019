@@ -7,8 +7,8 @@
 
 
 #include <string>
-#include "../../Object/include/Inventory.h"
-#include "../../Object/include/Object.h"
+#include <Inventory.h>
+#include <Object.h>
 
 class Character {
 private:

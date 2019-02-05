@@ -28,7 +28,7 @@ CommandHandler::LognFunctionMap CommandHandler::_defLognMap = []
 {
     CommandHandler::LognFunctionMap mapping;
     mapping["/login"]  = &UserController::login;
-    mapping["/signup"] = &UserController::signup;
+    mapping["/signup"] = &UserController::createUser;
     mapping["/logout"] = &UserController::logoutUser;
     return mapping;
 }();
@@ -51,6 +51,10 @@ CommandInfo CommandHandler::parseCommand(const std::string& input)
 	if ( _defCommMap.find(command) != _defCommMap.end() )
 	{
 		ci.type = CommandType::COMMANDHANDLER;
+	}
+	else if( _defLognMap.find(command) != _defLognMap.end() )
+	{
+		ci.type = CommandType::LOGIN;	
 	}
 	else
 	{
@@ -86,7 +90,7 @@ CommandHandler::UserCommFunc CommandHandler::getUserFunc(const Name& userName, c
 	return _defUserMap[command];
 }
 
-LognCommFunc getLognFunc( const Command& command )
+CommandHandler::LognCommFunc CommandHandler::getLognFunc( const Command& command )
 {
 	if( _defLognMap.find(command) == _defLognMap.end() )
 	{

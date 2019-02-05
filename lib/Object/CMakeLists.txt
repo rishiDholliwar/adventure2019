@@ -35,7 +35,8 @@ target_link_libraries(test_object
         )
 
 target_link_libraries(Inventory
-        Object
+        PUBLIC
+                Object
         )
 
 install(TARGETS Object

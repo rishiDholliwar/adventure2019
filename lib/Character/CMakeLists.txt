@@ -20,6 +20,11 @@ set_target_properties(test_character
         PREFIX ""
         )
 
+target_link_libraries(Character
+        PUBLIC
+                Inventory
+        )
+
 target_link_libraries(test_character
         Character
         Object

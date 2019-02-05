@@ -2,22 +2,13 @@
 #ifndef WEBSOCKETNETWORKING_GAMECONTROLLER_H
 #define WEBSOCKETNETWORKING_GAMECONTROLLER_H
 
-#include <deque>
-#include <vector>
-
 #include <CharacterController.h>
 #include <ObjectController.h>
 #include <RoomController.h>
-#include <Room.h>
 #include <Response.h>
 
-
-#include <functional>
+#include <vector>
 #include <map>
-#include <User.h>
-#include <CommandHandler.h>
-
-class CommandHandler;
 
 class GameController {
 private:
@@ -30,11 +21,9 @@ private:
 public:
     GameController():characterController{}, objectController{}{
         directionMap = {{"north", Direction::NORTH}, {"south", Direction::SOUTH}, {"east", Direction::EAST},
-                        {"west", Direction ::WEST}};
+                        {"west", Direction::WEST}};
     }
 
-    //handles real user input
-    std::vector<Response> receiveText(std::string input,std::string userName);
     std::vector<Response> say(std::string userName, std::string input);
 
     /* Move:

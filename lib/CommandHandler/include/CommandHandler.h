@@ -4,12 +4,15 @@
 
 #include <deque>
 #include <vector>
-#include <User.h>
 #include <unordered_map>
 #include <GameController.h>
+#include <UserController.h>
 #include <Server.h>
+#include <Response.h>
 
 class GameController;
+class UserController;
+
 struct CommandInfo;
 
 enum CommandType
@@ -25,17 +28,18 @@ public:
     using Name = std::string;
     using Alias = std::string;
     using Command = std::string;
-    typedef std::string (GameController::*UserCommFunc) (Name userName, std::string input);
-    typedef std::string (CommandHandler::*CommHandFunc) (const Name& userName, const std::string& input);
-    typedef std::string (UserController::*LognCommFunc) (const Name& userName, std::string password, const networking::Connection);
+    typedef std::vector<Response>    (GameController::*UserCommFunc) (Name userName, std::string input);
+    typedef std::string              (CommandHandler::*CommHandFunc) (const Name& userName, const std::string& input);
+    typedef UserController::UserData (UserController::*LognCommFunc) (const Name& userName, std::string password, const networking::Connection);
 
     using UserFunctionMap = std::unordered_map<Command, UserCommFunc>;
     using CommFunctionMap = std::unordered_map<Command, CommHandFunc>;
+    using LognFunctionMap = std::unordered_map<Command, LognCommFunc>;
 
     CommandHandler() = default;
     UserCommFunc getUserFunc(const Name& userName, const Command& command);
-    CommHandFunc getCommFunc(const Name& userName, const Command& command);
-    LognCommFunc getLognFunc(const Name& userName, const Command& command);
+    CommHandFunc getCommFunc(const Command& command);
+    LognCommFunc getLognFunc(const Command& command);
 
     std::string setAlias(const Name& userName, const std::string& input);
     std::string removeAlias(const Name& userName, const std::string& input);

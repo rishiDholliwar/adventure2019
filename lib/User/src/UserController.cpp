@@ -18,7 +18,7 @@ bool UserController::isUserActive(const std::string& username) {
 bool UserController::isConnectionLoggedIn(const Connection connection) {
 	bool isLoggedIn = false;
 
-	for(auto userConnection : activeUsers) {
+	for (auto userConnection : activeUsers) {
 		if (userConnection.second == connection) {
 			isLoggedIn = true;
 		}
@@ -38,12 +38,17 @@ std::string UserController::getUsernameWithConnection(const Connection connectio
 }
 
 Connection UserController::getConnectionWithUsername(const std::string& username) {
-	//
+	auto itr = activeUsers.find(username);
+	if ( itr != activeUsers.end() )
+	{
+		return itr->second;
+	}
+	return Connection{ .id = 0 };
 }
 
 std::size_t UserController::hashPassword(std::string password) {
 
-	auto hashedPassword = std::hash<std::string>{}(password);
+	auto hashedPassword = std::hash<std::string> {}(password);
 
 	return hashedPassword;
 }
@@ -124,7 +129,7 @@ UserController::UserData UserController::logoutUser(const std::string& username)
 		return result;
 
 	}
-	
+
 	activeUsers.erase(username);
 	// + character data
 	result.returnCode = ReturnCode::LOGOUT_SUCCESS;
@@ -132,7 +137,7 @@ UserController::UserData UserController::logoutUser(const std::string& username)
 	return result;
 }
 
-UserData logoutUser(const std::string& username, std::string password, const Connection connection)
+UserController::UserData UserController::logoutUser(const std::string& username, std::string password, const Connection connection)
 {
 	return logoutUser(username);
 }

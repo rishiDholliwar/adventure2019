@@ -20,7 +20,7 @@ class Game
 {
 private:
   std::unique_ptr<GameController> _gameController;
-  std::unique_ptr<UserManager> _userManager;
+  std::unique_ptr<UserController> _userController;
   std::unique_ptr<Server> _server;
   std::unique_ptr<CommandHandler> _commandHandler;
 

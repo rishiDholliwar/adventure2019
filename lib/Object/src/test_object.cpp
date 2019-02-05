@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <iostream>
-#include "../include/Object.h"
+#include <Object.h>
 
 int main(int argc, char** argv){
     //std::cout << "hello world" << std::endl;

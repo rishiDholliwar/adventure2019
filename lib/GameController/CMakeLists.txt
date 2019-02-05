@@ -15,14 +15,11 @@ target_include_directories(gameController
 
 target_link_libraries(gameController
   PUBLIC
-    userController
-    utility
-<<<<<<< .merge_file_OJBK72
     world
     Character
     controllers
-    commandHandler
   PRIVATE
+    utility
     ${Boost_LIBRARIES}
 )
 

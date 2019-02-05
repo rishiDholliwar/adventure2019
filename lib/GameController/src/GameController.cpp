@@ -8,6 +8,8 @@ std::vector<Response> GameController::say(std::string userName, std::string mess
     // check user if user is logged in
     if(!characterController.doesExist(userName)){
         characterController.addToLoggedInUsers(userName);
+        auto character = characterController.getCharacter(userName);
+        roomController.addCharacterToRoom(character.getCharacterId(), character.getRoomID());
     }
 
     Character character = characterController.getCharacter(userName);
@@ -29,6 +31,7 @@ std::vector<Response> GameController::move(std::string userName, std::string dir
     Character character = characterController.getCharacter(userName);
 
     // Verify if direction is valid
+    std::cout << direction << std::endl;
     unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(direction), character.getRoomID());
     if( destinationRoomID == 0){
         Response userResponse = Response("That isn't a valid direction!", userName);
@@ -119,28 +122,6 @@ std::vector<Response> GameController::logout(std::string userName, std::string i
     characterController.logoutUser(userName); // characterController can remove username from active users
 
     return formulateResponse(userResponse);
-}
-
-
-
-std::vector<Response> GameController::receiveText(std::string input, std::string userName) {
-
-    auto command = input.substr(0, input.find(' '));
-    auto actionText = input.substr(input.find(' ') + 1, std::string::npos);
-    std::vector<Response> ret;
-    std::string error = "Unknown";
-    if(_funcMap.find(command) != _funcMap.end())
-    {
-        ret = (this->*_funcMap[command])(std::move(userName), actionText);
-
-    }
-    else
-    {
-        Response userResponse = Response("Invalid command!", userName);
-        ret = formulateResponse(userResponse);
-    }
-
-    return ret;
 }
 
 std::vector<Response>

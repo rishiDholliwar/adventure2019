@@ -62,9 +62,9 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         }
 
         CommandInfo info = _commandHandler->parseCommand(message.text);
-        if ( ! _userController->isConnectionLoggedIn(message.connection) && info.type != CommandType::LOGIN)
+        if ( (! _userController->isConnectionLoggedIn(message.connection)) && (info.type != CommandType::LOGIN))
         {
-            result.push_back(message.connection, "System: Please login first");
+            result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
         }
 
@@ -72,62 +72,73 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         std::string output = "Unknown";
         switch ( info.type )
         {
-        case CommandType::GAMECONTROLLER:
-        {
-            auto func = _commandHandler->getUserFunc(username, info.command);
-            if (func != nullptr)
+            case CommandType::GAMECONTROLLER:
             {
-                output = ((*_gameController).*func)(username, info.input);
-            }
-            else
-            {
-                output = "Invalid command";
-            }
-            break;
-        }
-        case CommandType::LOGIN:
-        {
-            auto func = _commandHandler->getLognFunc(username, info.command);
-            if (func != nullptr)
-            {
-                std::vector<std::string> v = utility::tokenizeString(info.input);
-                if ( v.size() != 2)
+                auto func = _commandHandler->getUserFunc(username, info.command);
+                if (func != nullptr)
                 {
-                    output = "System: Invalid Login parameters passed in";
-                    break;
+                    auto responses = ((*_gameController).*func)(username, info.input);
+                    for ( auto& res : responses )
+                    {
+                        Connection conn = _userController->getConnectionWithUsername(res.username);
+                        std::cout << conn.id << std::endl;
+                        result.push_back(Message{conn.id, res.message});
+                    }
                 }
-                output = ((*_userController).*func)(username, v[0], v[1]);
+                else
+                {
+                    output = "Invalid command";
+                }
+                break;
             }
-            else
+            case CommandType::LOGIN:
             {
-                output = "Invalid command";
+                auto func = _commandHandler->getLognFunc(info.command);
+                if (func != nullptr)
+                {
+                    std::vector<std::string> v = utility::tokenizeString(info.input);
+                    if ( v.size() != 2)
+                    {
+                        output = "System: Invalid Login parameters passed in";
+                        break;
+                    }
+                    UserController::UserData response = ((*_userController).*func)(v.at(0), v.at(1), message.connection);
+                    // output = Return::ReturnCodeToString(response.returnCode);
+                    output = "OK";
+                }
+                else
+                {
+                    output = "Invalid command";
+                }
+                break;
             }
-            break;
-        }
-        case CommandType::COMMANDHANDLER:
-        {
-            auto func = _commandHandler->getCommFunc(username, info.command);
-            if (func != nullptr)
+            case CommandType::COMMANDHANDLER:
             {
-                output = ((*_commandHandler).*func)(username, info.input);
+                auto func = _commandHandler->getCommFunc(info.command);
+                if (func != nullptr)
+                {
+                    output = ((*_commandHandler).*func)(username, info.input);
+                }
+                else
+                {
+                    output = "Invalid command";
+                }
+                break;
             }
-            else
+            case CommandType::UNKNOWN:
             {
-                output = "Invalid command";
+                break;
             }
-            break;
+            default:
+            {
+                std::cout << "I dont even know how" << std::endl;
+            }
         }
-        case CommandType::UNKNOWN:
+        if ( result.empty() )
         {
-            break;
+            Message msg{message.connection, output};
+            result.push_back(msg);
         }
-        default:
-        {
-            std::cout << "I dont even know how" << std::endl;
-        }
-        }
-        Message msg{message.connection, output};
-        result.push_back(msg);
     }
     return result;
 }
@@ -157,7 +168,7 @@ Game::Game(Config config)
 {
     _server = std::make_unique<Server>(config.port, config.webpage, onConnect, onDisconnect);
     _gameController = std::make_unique<GameController>();
-    _userManager = std::make_unique<UserManager>();
+    _userController = std::make_unique<UserController>();
     _commandHandler = std::make_unique<CommandHandler>();
 }
 

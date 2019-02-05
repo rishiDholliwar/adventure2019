@@ -14,10 +14,10 @@ target_include_directories(commandHandler
 )
 
 target_link_libraries(commandHandler
-  PUBLIC
-    gameController
-    utility
   PRIVATE
+    gameController
+    userController
+    utility
     ${Boost_LIBRARIES}
 )
 
