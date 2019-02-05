@@ -2,7 +2,6 @@
 #ifndef WEBSOCKETNETWORKING_GAMECONTROLLER_H
 #define WEBSOCKETNETWORKING_GAMECONTROLLER_H
 
-
 #include <deque>
 #include <vector>
 
@@ -16,14 +15,12 @@
 #include <functional>
 #include <map>
 #include <User.h>
+#include <CommandHandler.h>
+
+class CommandHandler;
 
 class GameController {
-
-    using FunctionMap = std::map<std::string, std::vector<Response>(GameController::*)(std::string, std::string)>;
-
 private:
-    static FunctionMap _funcMap;
-
     CharacterController characterController;
     ObjectController objectController;
     RoomController roomController;
@@ -83,9 +80,6 @@ public:
     std::vector<Response> formulateResponse(Response &userResponse, std::vector<std::string> characterList, std::string message);
 
     std::vector<Response> formulateResponse(Response &userResponse);
-
-
-
 
 };
 

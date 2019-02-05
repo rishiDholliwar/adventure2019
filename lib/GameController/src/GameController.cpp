@@ -1,20 +1,6 @@
-#include <utility>
 #include "GameController.h"
 #include <Character.h>
 #include <iostream>
-#include <GameController.h>
-
-
-GameController::FunctionMap GameController::_funcMap = []
-{
-    std::map<std::string, std::vector<Response> (GameController::*)(std::string, std::string)> mapping;
-    mapping["!say"]  = &GameController::say;
-    mapping["!move"] = &GameController::move;
-    mapping["!get"] = &GameController::pickUp;
-    mapping["!drop"] = &GameController::drop;
-
-    return mapping;
-}();
 
 std::vector<Response> GameController::say(std::string userName, std::string message) {
     std::cout << "Say " << message << std::endl;

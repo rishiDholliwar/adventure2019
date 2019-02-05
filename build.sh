@@ -31,7 +31,13 @@ then
 fi
 mkdir -p $DIR/networkbuild;
 cd $DIR/networkbuild;
-cmake ..;
+
+BOOST=""
+if [ -d "/usr/shared/CMPT/faculty/wsumner/base/" ]
+then
+	BOOST='-DBOOST_ROOT=/usr/shared/CMPT/faculty/wsumner/base/ '
+fi
+cmake ${BOOST}..;
 if [ $? -ne 0 ]
 then
 	echo "Failed: cmake"

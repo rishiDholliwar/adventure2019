@@ -44,7 +44,7 @@ main(int argc, char* argv[]) {
 
     auto response = client.receive();
     if (!response.empty()) {
-      chatWindow.displayText(response);
+      chatWindow.displayText(response + "\n");
     }
     chatWindow.update();
   }

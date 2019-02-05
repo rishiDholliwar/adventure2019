@@ -42,6 +42,8 @@ public:
 
 	UserData logoutUser(const std::string& username);
 
+	UserData logoutUser(const std::string& username, std::string password, const Connection connection);
+
 private:
 	std::unordered_map<std::string, Connection> activeUsers = {};
 	// unordered_string_map<std::string, Connection, std::less<>> activeUsers = {};

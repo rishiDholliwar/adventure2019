@@ -131,3 +131,8 @@ UserController::UserData UserController::logoutUser(const std::string& username)
 
 	return result;
 }
+
+UserData logoutUser(const std::string& username, std::string password, const Connection connection)
+{
+	return logoutUser(username);
+}
