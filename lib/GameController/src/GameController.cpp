@@ -8,11 +8,13 @@ std::vector<Response> GameController::say(std::string userName, std::string mess
     // check user if user is logged in
     if(!characterController.doesExist(userName)){
         characterController.addToLoggedInUsers(userName);
-        auto character = characterController.getCharacter(userName);
-        roomController.addCharacterToRoom(character.getCharacterId(), character.getRoomID());
+        roomController.addUserNameToRoom(characterController.getCharacter(userName).getName(),characterController.getCharacter(userName).getRoomID());
     }
 
     Character character = characterController.getCharacter(userName);
+
+
+
 
     Response userResponse = Response("Me: " + message, userName);
     std::string genericMessage = userName + ": "+ message;

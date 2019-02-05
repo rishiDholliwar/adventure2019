@@ -5,7 +5,20 @@
 #include <algorithm>
 #include <RoomController.h>
 
-RoomController::RoomController() = default;
+RoomController::RoomController() {
+
+    generateRoom(1000, "Room1");
+    generateRoom(1001, "Room2");
+    generateRoom(1002, "Room3");
+    generateRoom(1003, "Room4");
+
+
+    linkRoom(Direction::NORTH, 1000, 1001);
+    linkRoom(Direction::EAST, 1001, 1002);
+    linkRoom(Direction::SOUTH, 1002, 1003);
+    linkRoom(Direction::WEST, 1003, 1000);
+};
+
 
 /*
  * Getters
