@@ -28,22 +28,23 @@ std::vector<Response> GameController::move(std::string userName, std::string dir
     // check user if user is logged in
     if(!characterController.doesExist(userName)){
         characterController.addToLoggedInUsers(userName);
+        roomController.addUserNameToRoom(characterController.getCharacter(userName).getName(),characterController.getCharacter(userName).getRoomID());
     }
+
     // Obtain character object based on userName (dummy)
-    Character character = characterController.getCharacter(userName);
+    Character* character = &characterController.getCharacter(userName);
 
     // Verify if direction is valid
-    std::cout << direction << std::endl;
-    unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(direction), character.getRoomID());
+    unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(direction), character->getRoomID());
     if( destinationRoomID == 0){
         Response userResponse = Response("That isn't a valid direction!", userName);
         return formulateResponse(userResponse);
     }
 
     // Update roomList to account for character moving
-    roomController.removeCharacterFromRoom(character.getCharacterId(),character.getRoomID());
-    roomController.addCharacterToRoom(character.getCharacterId(), destinationRoomID);
-    character.setRoomID(destinationRoomID);
+    roomController.removeUserNameFromRoom(character->getName(),character->getRoomID());
+    roomController.addUserNameToRoom(character->getName(), destinationRoomID);
+    character->setRoomID(destinationRoomID);
 
     Response userResponse = Response("Headed " + direction, userName);
     return formulateResponse(userResponse);

@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <Room.h>
+#include <iostream>
 
 Room::Room(ID id, const std::string& name){
     this->id = id;
@@ -100,7 +101,6 @@ bool Room::removeUniqueItemFromList(T id, std::vector<T> &list) {
     // if id exist
     if (it != list.end())
         list.erase(it);
-
     return size != list.size();
 }
 

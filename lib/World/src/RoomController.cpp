@@ -14,9 +14,16 @@ RoomController::RoomController() {
 
 
     linkRoom(Direction::NORTH, 1000, 1001);
+    linkRoom(Direction::SOUTH, 1001, 1000);
+
     linkRoom(Direction::EAST, 1001, 1002);
+    linkRoom(Direction::WEST, 1002, 1001);
+
     linkRoom(Direction::SOUTH, 1002, 1003);
+    linkRoom(Direction::NORTH, 1003, 1002);
+
     linkRoom(Direction::WEST, 1003, 1000);
+    linkRoom(Direction::EAST, 1000, 1003);
 };
 
 
