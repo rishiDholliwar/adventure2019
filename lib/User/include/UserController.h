@@ -29,32 +29,32 @@ enum class ReturnCode {
     CREATE_SUCCESS,   // User creation was success
 };
 
-// namespace Return
-// {
+namespace Return
+{
 
-//     static const std::unordered_map<ReturnCode, std::string>
-//     ReturnCodeResponses = { 
-//         { ReturnCode::USER_ACTIVE,    "User is active" },
-//         { ReturnCode::LOGIN_SUCCESS,  "Logged in succesfully" },
-//         { ReturnCode::LOGOUT_SUCCESS, "Logged out succesfully" },
-//         { ReturnCode::LOGOUT_FAIL,    "Failed to logout" },
-//         { ReturnCode::SAVE_SUCCESS,   "Saved succesfully" },
-//         { ReturnCode::SAVE_FAIL,      "Failed to save" },
-//         { ReturnCode::PASSWORD_FAIL,  "Incorrect password" },
-//         { ReturnCode::USERNAME_EXISTS, "Username already taken" },
-//         { ReturnCode::USERNAME_FAIL,  "Username does not exist" },
-//         { ReturnCode::CREATE_SUCCESS, "Failed to create character"}
-//     };
+    static const std::unordered_map<ReturnCode, std::string>
+    ReturnCodeResponses = {
+        { ReturnCode::USER_ACTIVE,    "User is active" },
+        { ReturnCode::LOGIN_SUCCESS,  "Logged in succesfully" },
+        { ReturnCode::LOGOUT_SUCCESS, "Logged out succesfully" },
+        { ReturnCode::LOGOUT_FAIL,    "Failed to logout" },
+        { ReturnCode::SAVE_SUCCESS,   "Saved succesfully" },
+        { ReturnCode::SAVE_FAIL,      "Failed to save" },
+        { ReturnCode::PASSWORD_FAIL,  "Incorrect password" },
+        { ReturnCode::USERNAME_EXISTS, "Username already taken" },
+        { ReturnCode::USERNAME_FAIL,  "Username does not exist" },
+        { ReturnCode::CREATE_SUCCESS, "Succesfully created character"}
+    };
 
-//     std::string ReturnCodeToString( ReturnCode rc )
-//     {
-//         if( ReturnCodeResponses.find(rc) == ReturnCodeResponses.end() )
-//         {
-//             return "Unknown response";
-//         }
-//         return ReturnCodeResponses.at(rc);
-//     }
-// }
+    inline std::string ReturnCodeToString( ReturnCode rc )
+    {
+        if( ReturnCodeResponses.find(rc) == ReturnCodeResponses.end() )
+        {
+            return "Unknown response";
+        }
+        return ReturnCodeResponses.at(rc);
+    }
+}
 
 
 class UserController {

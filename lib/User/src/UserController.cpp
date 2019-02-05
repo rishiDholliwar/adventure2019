@@ -116,7 +116,7 @@ ReturnCode UserController::parseNewUserData(const std::string_view username, std
 
 	//create username.json file, read in username and hashed password
 
-	return ReturnCode::LOGIN_SUCCESS;
+	return ReturnCode::CREATE_SUCCESS;
 }
 
 UserController::UserData UserController::logoutUser(const std::string& username) {

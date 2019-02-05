@@ -97,14 +97,19 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
                 if (func != nullptr)
                 {
                     std::vector<std::string> v = utility::tokenizeString(info.input);
-                    if ( v.size() != 2)
+                    while ( v.size() < 2 )
                     {
-                        output = "System: Invalid Login parameters passed in";
-                        break;
+                        v.push_back("");
                     }
-                    UserController::UserData response = ((*_userController).*func)(v.at(0), v.at(1), message.connection);
-                    // output = Return::ReturnCodeToString(response.returnCode);
-                    output = "OK";
+                    if ( username.empty() )
+                    {
+                        username = v.front();
+                        v.front() = std::move(v.back());
+                        v.pop_back();
+                    }
+                    UserController::UserData response = ((*_userController).*func)(username, v.at(0), message.connection);
+                    output = Return::ReturnCodeToString(response.returnCode);
+                    // output = "OK";
                 }
                 else
                 {
