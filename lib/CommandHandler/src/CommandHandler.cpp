@@ -8,6 +8,7 @@ CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
 {
     CommandHandler::UserFunctionMap mapping;
     mapping["/say"]  = &GameController::say;
+    mapping["/broadcast"] = &GameController::broadcast;
     mapping["/move"] = &GameController::move;
     mapping["/get"] = &GameController::pickUp;
     mapping["/drop"] = &GameController::drop;

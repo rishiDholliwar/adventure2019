@@ -15,11 +15,33 @@ std::vector<Response> GameController::say(std::string userName, std::string mess
 
 
 
-
     Response userResponse = Response("Me: " + message, userName);
     std::string genericMessage = userName + ": "+ message;
 
     return formulateResponse(userResponse, roomController.getUsernameList(character.getRoomID()),genericMessage);
+}
+
+std::vector<Response> GameController::broadcast(std::string userName, std::string message) {
+    std::cout << "Yell " << message << std::endl;
+
+    //
+    if(!characterController.doesExist(userName)){
+        characterController.addToLoggedInUsers(userName);
+        roomController.addUserNameToRoom(characterController.getCharacter(userName).getName(),characterController.getCharacter(userName).getRoomID());
+    }
+
+    Character character = characterController.getCharacter(userName);
+
+    std::vector<std::string> broadcast;
+    for(auto &person : characterController.getLoggedInUsers()) {
+        broadcast.push_back(person.first);
+    }
+
+
+    Response userResponse = Response("Me: " + message, userName);
+    std::string genericMessage = userName + ": " + message;
+
+    return formulateResponse(userResponse, broadcast ,genericMessage);
 }
 
 std::vector<Response> GameController::move(std::string userName, std::string direction) {

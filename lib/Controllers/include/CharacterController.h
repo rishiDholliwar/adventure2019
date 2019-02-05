@@ -43,6 +43,8 @@ public:
     void logoutUser(std::string &username);
 
     bool doesExist(std::string &userName);
+
+    const std::map<std::string, Character> &getLoggedInUsers() const;
 };
 
 

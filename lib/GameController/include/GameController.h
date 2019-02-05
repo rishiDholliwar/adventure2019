@@ -24,7 +24,9 @@ public:
                         {"west", Direction::WEST}};
     }
 
-    std::vector<Response> say(std::string userName, std::string input);
+    std::vector<Response> say(std::string userName, std::string message);
+
+    std::vector<Response> broadcast(std::string userName, std::string message);
 
     /* Move:
      *
@@ -34,7 +36,7 @@ public:
      * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    std::vector<Response> move(std::string userName, std::string input);
+    std::vector<Response> move(std::string userName, std::string direction);
 
     /* PickUp:
      *
@@ -44,7 +46,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    std::vector<Response> pickUp(std::string userName, std::string input);
+    std::vector<Response> pickUp(std::string userName, std::string itemName);
 
     /* Drop:
      *
@@ -54,7 +56,7 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    std::vector<Response> drop(std::string userName, std::string input);
+    std::vector<Response> drop(std::string userName, std::string itemName);
 
     /* Logout:
      *

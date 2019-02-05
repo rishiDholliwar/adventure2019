@@ -27,3 +27,7 @@ void CharacterController::logoutUser(std::string &username) {
 bool CharacterController::doesExist(std::string &userName) {
     return loggedInUsers.count(userName) > 0 ;
 }
+
+const std::map<std::string, Character> &CharacterController::getLoggedInUsers() const {
+    return loggedInUsers;
+}
