@@ -74,6 +74,8 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
           std::cout << word << std::endl;
         }
 
+        std::cout << "result.at(0) is: " << result.at(0) << std::endl;
+
         if (result.at(0) == "!login") {
           std::cout << "result.at(0) is login" << std::endl;
 
@@ -88,8 +90,13 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
           
           
         } else if (result.at(0) == "!signup") {
+          std::cout << "result.at(0) is signup" << std::endl;
+
           if (result.size() == 3) {
             _userController->createUser(result.at(1), result.at(2), message.connection);
+            std::cout << "signed up ayy" << std::endl;
+            _userController->login(result.at(1), result.at(2), message.connection);
+            std::cout << "logged in yoo" << std::endl;
           } else {
             
           }
