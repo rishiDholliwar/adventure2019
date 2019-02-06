@@ -39,7 +39,11 @@ std::string UserController::getUsernameWithConnection(const Connection connectio
 }
 
 Connection UserController::getConnectionWithUsername(const User::Name& username) {
-	//
+
+	if (activeUsers.find(username) != activeUsers.end()) {
+		return activeUsers.find(username)->second;
+
+	}
 }
 
 std::size_t UserController::hashPassword(std::string password) {
