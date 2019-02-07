@@ -1,14 +1,15 @@
 #include <UserController.h>
+#include <User.h>
 
 std::unordered_map<std::string, Connection> UserController::getActiveUsers() {
 	return activeUsers;
 }
 
-void UserController::addActiveUser(const std::string& username, Connection connection) {
+void UserController::addActiveUser(const User::Name& username, Connection connection) {
 	activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connection));
 }
 
-bool UserController::isUserActive(const std::string& username) {
+bool UserController::isUserActive(const User::Name& username) {
 	//check if username exists in activeUsers.
 	//if true, return true. else, this user is not yet logged in or created.
 
@@ -37,13 +38,12 @@ std::string UserController::getUsernameWithConnection(const Connection connectio
 	return std::string();
 }
 
-Connection UserController::getConnectionWithUsername(const std::string& username) {
-	auto itr = activeUsers.find(username);
-	if ( itr != activeUsers.end() )
-	{
-		return itr->second;
+Connection UserController::getConnectionWithUsername(const User::Name& username) {
+
+	if (activeUsers.find(username) != activeUsers.end()) {
+		return activeUsers.find(username)->second;
+
 	}
-	return Connection{ .id = 0 };
 }
 
 std::size_t UserController::hashPassword(std::string password) {
@@ -53,17 +53,10 @@ std::size_t UserController::hashPassword(std::string password) {
 	return hashedPassword;
 }
 
-UserController::UserData UserController::login(const std::string& username, std::string password, const Connection connection) {
+UserController::UserData UserController::login(const User::Name& username, std::string password, const Connection connection) {
 
 	UserData result;
 	result.username = username;
-
-	//check if user is already logged in:
-	if (isUserActive(username)) {
-		result.returnCode = ReturnCode::USER_ACTIVE;
-		return result;
-
-	}
 
 	result.returnCode = parseLoginUserData(username, password);
 
@@ -74,7 +67,13 @@ UserController::UserData UserController::login(const std::string& username, std:
 	return result;
 }
 
-ReturnCode UserController::parseLoginUserData(const std::string_view username, std::string password) {
+ReturnCode UserController::parseLoginUserData(const User::Name username, std::string password) {
+
+	//check if user is already logged in:
+	if (isUserActive(username)) {
+
+		return ReturnCode::USER_ACTIVE;
+	}
 
 	auto hashedPassword = hashPassword(password);
 	//look for username.json in some .../user/userdata/ directory
@@ -88,25 +87,23 @@ ReturnCode UserController::parseLoginUserData(const std::string_view username, s
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-UserController::UserData UserController::createUser(const std::string& username, std::string password,  const Connection connection) {
+UserController::UserData UserController::createUser(const User::Name& username, std::string password,  const Connection connection) {
 
 	UserData result;
 	result.username = username;
-
-	//check if user is already logged in:
-	if (isUserActive(username)) {
-		result.returnCode = ReturnCode::USER_ACTIVE;
-		// + character data?
-		return result;
-
-	}
 
 	result.returnCode = parseNewUserData(username, password);
 
 	return result;
 }
 
-ReturnCode UserController::parseNewUserData(const std::string_view username, std::string password) {
+ReturnCode UserController::parseNewUserData(const User::Name username, std::string password) {
+
+	//check if user is already logged in:
+	if (isUserActive(username)) {
+
+		return ReturnCode::USER_ACTIVE;
+	}
 
 	//make sure no .json file exists with that username.
 	//if such file already exists, return ReturnCode::USERNAME_EXISTS
@@ -119,18 +116,16 @@ ReturnCode UserController::parseNewUserData(const std::string_view username, std
 	return ReturnCode::CREATE_SUCCESS;
 }
 
-UserController::UserData UserController::logoutUser(const std::string& username) {
+UserController::UserData UserController::logoutUser(const User::Name& username) {
 
 	UserData result;
 	result.username = username;
 
-	if (!(isUserActive(username))) {
+	if (activeUsers.erase(username) != 1) {
 		result.returnCode = ReturnCode::LOGOUT_FAIL;
 		return result;
-
 	}
 
-	activeUsers.erase(username);
 	// + character data
 	result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 

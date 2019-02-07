@@ -1,6 +1,6 @@
 #include <User.h>
 
-bool User::isusernameEqual(const std::string_view username) const {
+bool User::isusernameEqual(const Name username) const {
 	return _username == username;
 }
 
@@ -14,14 +14,6 @@ std::string User::getusername() const {
 
 std::size_t User::getHashedPassword() const {
 	return _hashedPassword;
-}
-
-void User::moveToRoom(int roomNumber) {
-    this->_roomNumber = roomNumber;
-}
-
-int User::getRoomNumber() const {
-	return _roomNumber;
 }
 
 bool operator<(const User& t, const User& o) {
