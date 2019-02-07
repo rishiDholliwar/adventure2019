@@ -5,9 +5,6 @@
 
 #include <string>
 #include <unordered_map>
-// #include <boost/multi_index_container.hpp>
-// #include <boost/multi_index/hashed_index.hpp>
-// #include <boost/multi_index/member.hpp>
 #include <vector>
 #include <User.h>
 #include <ReturnCode.h>
@@ -36,10 +33,31 @@ public:
 
 	Connection getConnectionWithUsername(const User::Name& username);
 
+	/* 
+     * if username exists and isn't logged in already, logs them in and returns the outcome
+     *
+     * Pre-Condition: username as const reference User::Name type, password as string and a const Connection object
+     * 
+     * Post-Condition: a struct of username and a login result
+	*/
 	UserData login(const User::Name& username, std::string password, const Connection connection);
 
+	/* 
+     * if no such username exists already, creates a user with such username and password
+     *
+     * Pre-Condition: username as const reference User::Name type, password as string and a const Connection object
+     * 
+     * Post-Condition: a struct of username and a user creation result
+	*/
 	UserData createUser(const User::Name& username, std::string password, const Connection connection);
 
+	/* 
+     * logs out a username by deleting it from the map of activeUsers
+     *
+     * Pre-Condition: username as const reference User::Name type
+     * 
+     * Post-Condition: a struct of username and a logout result
+	*/
 	UserData logoutUser(const User::Name& username);
 
 private:
@@ -48,8 +66,29 @@ private:
 
 	std::size_t hashPassword(std::string password);
 
+	/* 
+     * In the process of login,
+     * looks for a json file for the username, compares login information for accuracy
+     * If a user is already logged in with such username or if the password is inaccurate, login fails
+     * Password passed in is hashed for security
+     *
+     * Pre-Condition: username as const reference User::Name type, password as string
+     * 
+     * Post-Condition: a result value of whether a user is found and validated successfully
+	*/
 	ReturnCode parseLoginUserData(const User::Name username, std::string password);
 
+	/* 
+     * In the process of creating user,
+     * checks to see a user isn't already logged in with such username
+     * looks for a json file for the username to make sure no such user exists already
+	 * creates a file to store the login information for the future
+	 * password is hashed for security before being stored
+     *
+     * Pre-Condition: username as const reference User::Name type, password as string
+     * 
+     * Post-Condition: a result value of whether a new user is created succesfully
+	*/
 	ReturnCode parseNewUserData(const User::Name username, std::string password);
 };
 

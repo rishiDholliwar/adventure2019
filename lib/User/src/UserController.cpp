@@ -58,13 +58,6 @@ UserController::UserData UserController::login(const User::Name& username, std::
 	UserData result;
 	result.username = username;
 
-	//check if user is already logged in:
-	if (isUserActive(username)) {
-		result.returnCode = ReturnCode::USER_ACTIVE;
-		return result;
-
-	}
-
 	result.returnCode = parseLoginUserData(username, password);
 
 	if (result.returnCode == ReturnCode::LOGIN_SUCCESS) {
@@ -75,6 +68,12 @@ UserController::UserData UserController::login(const User::Name& username, std::
 }
 
 ReturnCode UserController::parseLoginUserData(const User::Name username, std::string password) {
+
+	//check if user is already logged in:
+	if (isUserActive(username)) {
+
+		return ReturnCode::USER_ACTIVE;
+	}
 
 	auto hashedPassword = hashPassword(password);
 	//look for username.json in some .../user/userdata/ directory
@@ -93,20 +92,18 @@ UserController::UserData UserController::createUser(const User::Name& username, 
 	UserData result;
 	result.username = username;
 
-	//check if user is already logged in:
-	if (isUserActive(username)) {
-		result.returnCode = ReturnCode::USER_ACTIVE;
-		// + character data?
-		return result;
-
-	}
-
 	result.returnCode = parseNewUserData(username, password);
 
 	return result;
 }
 
 ReturnCode UserController::parseNewUserData(const User::Name username, std::string password) {
+
+	//check if user is already logged in:
+	if (isUserActive(username)) {
+
+		return ReturnCode::USER_ACTIVE;
+	}
 
 	//make sure no .json file exists with that username.
 	//if such file already exists, return ReturnCode::USERNAME_EXISTS
@@ -124,13 +121,10 @@ UserController::UserData UserController::logoutUser(const User::Name& username) 
 	UserData result;
 	result.username = username;
 
-	if (!(isUserActive(username))) {
+	if (activeUsers.erase(username) != 1) {
 		result.returnCode = ReturnCode::LOGOUT_FAIL;
 		return result;
-
 	}
-
-	activeUsers.erase(username);
 	// + character data
 	result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 

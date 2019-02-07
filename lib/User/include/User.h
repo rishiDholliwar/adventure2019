@@ -9,13 +9,13 @@ public:
 
     using Name = std::string;   // Type alias for username type
 
-    User(){};
+    User() = default;
 
     User(Name username)
     :_username(std::move(username)) { };
 
     User(Name username, size_t hashedPassword)
-    :_username(std::move(username)), _hashedPassword(std::move(hashedPassword)), _roomNumber(0) { };
+    :_username(std::move(username)), _hashedPassword(std::move(hashedPassword)) { };
 
     bool isusernameEqual(const Name username) const;
 
@@ -25,17 +25,11 @@ public:
 
     std::size_t getHashedPassword() const;
 
-    void moveToRoom(int roomNumber);
-
-    int getRoomNumber() const;
-
 private:
 
     Name _username;
 
     std::size_t _hashedPassword;
-
-    mutable int _roomNumber;
 
 };
 

@@ -16,14 +16,6 @@ std::size_t User::getHashedPassword() const {
 	return _hashedPassword;
 }
 
-void User::moveToRoom(int roomNumber) {
-    this->_roomNumber = roomNumber;
-}
-
-int User::getRoomNumber() const {
-	return _roomNumber;
-}
-
 bool operator<(const User& t, const User& o) {
 	return (t.getusername() < o.getusername());
 }
