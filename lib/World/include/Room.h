@@ -34,21 +34,30 @@ public:
     // Adders
     void addDescription(const std::string& description);
     void addExtendedDescription(const std::string& extDescription);
+
+    /*
+     * Adder functions
+     * Post-condition:
+         *          return true if the element is successfully added
+         *          return false otherwise
+     */
     bool addCharacter(ID characterId);
     bool addObject(ID objectId);
     bool addUserName(const std::string& userName);
 
-    // Removers
+    /*
+     * Remover functions
+     * Post-condition:
+         *          return true if the element is successfully removed
+         *          return false otherwise
+     */
     bool removeCharacter(ID characterId);
     bool removeObject(ID objectId);
     bool removeUserName(const std::string& userName);
 
     // Link Rooms
-    // use character 'n','e','s','w' to represent direction
-
-    // linkRoom will assign targetRoom to the coordinate Room*
+    // TODO: Will need to redesign Linking Structure
     void linkRoom(Direction dir, ID targetRoomId);
-    // return 0 indicates no room is linked in the direction
     ID getLinkedRoom(Direction dir);
 
 

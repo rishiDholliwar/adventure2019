@@ -17,25 +17,45 @@ class RoomController {
         const std::vector<std::string> & getUsernameList (ID roomId);
         std::vector<ID> getRoomIdList() const;
 
-        // Adders
-        // return true if succeed, else return false
+        /*
+         * create a room according to the roomID and roomName inside RoomController
+         * Post-condition:
+         *          return true if the room is successfully created
+         *          return false otherwise
+         */
         bool generateRoom(ID roomId, const std::string& roomName);
+
+        /*
+         * Delete the room in roomController according to the roomId
+         * Post-condition:
+         *          return true if the room is successfully deleted
+         *          return false otherwise
+         */
+        bool removeRoom(ID roomId);
+
+        /*
+         * The 3 functions can add unique id or unique userName into the room
+         * Post-condition:
+         *          return true if the element is successfully added
+         *          return false otherwise
+         */
         bool addCharacterToRoom(ID characterId, ID roomId);
         bool addObjectToRoom(ID objectId, ID roomId);
         bool addUserNameToRoom(const std::string& userName, ID roomId);
 
-        // Removers
+        /*
+         * The 3 functions can remove unique id or unique userName from the room
+         * Post-condition:
+         *          return true if the element is successfully removed
+         *          return false otherwise
+         */
         bool removeCharacterFromRoom(ID characterId, ID roomId);
         bool removeObjectFromRoom(ID objectId, ID roomId);
-        bool removeRoom(ID roomId);
         bool removeUserNameFromRoom(const std::string &userName, ID roomId);
 
         // Link Rooms
-        // char 'n', 'e', 's', 'w' represents north, east, south, west
-        // link room2 to room1 in the direction of room1,
-        // return true if succeed, else return false
+        // TODO: Will need to redesign Linking Structure
         void linkRoom(Direction dir, ID room1Id, ID room2Id);
-        // return 0 indicates no room is linked in the direction
         ID getLinkedRoom(Direction dir, ID roomId);
 
 
