@@ -11,18 +11,16 @@
 
 class Object {
 private:
-    unsigned int id;
+    unsigned int ID;
     std::string name;
 
 public:
 
-    Object(unsigned int id, const std::string &name);
+    Object(unsigned int ID, const std::string &name);
 
     const std::string &getName() const;
 
-    unsigned int getId() const;
-
-    void printTest();
+    unsigned int getID() const;
 };
 
 

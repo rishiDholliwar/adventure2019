@@ -7,18 +7,14 @@
 #include <Object.h>
 
 
-Object::Object(unsigned int id, const std::string &name) : id(id), name(name) {}
+Object::Object(unsigned int ID, const std::string &name) : ID(ID), name(name) {}
 
 const std::string &Object::getName() const {
     return name;
 }
 
-unsigned int Object::getId() const {
-    return id;
-}
-
-void Object::printTest() {
-    std::cout << "Object name: " << name << std::endl;
+unsigned int Object::getID() const {
+    return ID;
 }
 
 

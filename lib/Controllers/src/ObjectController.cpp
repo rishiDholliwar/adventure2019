@@ -11,11 +11,11 @@ ObjectController::ObjectController(){
     objects.insert({"Basic Armor", Object(200,"Basic Armor")});
 };
 
-bool ObjectController::findObject(const std::string &objectName) {
+bool ObjectController::doesObjectExist(const std::string &objectName) {
     return objects.find(objectName) != objects.end();
 }
 
-const Object &ObjectController::getObject(const std::string &objectName) const {
+const Object &ObjectController::getObjectFromListByName(const std::string &objectName) const {
     return objects.find(objectName)->second;
 }
 

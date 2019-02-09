@@ -14,7 +14,7 @@ class Character {
 private:
     std::string name;
 
-    unsigned int characterId;
+    unsigned int characterID;
 
     unsigned int roomID;
 
@@ -22,13 +22,13 @@ private:
 
     public:
 
-    Character(const std::string &name, unsigned int characterId, unsigned int roomID);
+    Character(const std::string &name, unsigned int characterID, unsigned int roomID);
 
     std::string getName();
 
     unsigned int getRoomID();
 
-    unsigned int getCharacterId() const;
+    unsigned int getCharacterID() const;
 
     void setRoomID(unsigned int roomID);
 
@@ -50,8 +50,6 @@ private:
     */
     bool addItemToInventory(Object obj);
 
-    std::string listInventory();
-
     /*
      * Removes specified object from inventory
      *
@@ -60,6 +58,8 @@ private:
      * Post-Condition: Item will be dropped if it exists
     */
     void dropItem(unsigned int objectId);
+
+    std::string listInventory();
 };
 
 

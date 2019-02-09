@@ -24,9 +24,23 @@ public:
                         {"west", Direction::WEST}};
     }
 
-    std::vector<Response> say(std::string userName, std::string message);
+    /*
+     * say:
+     *
+     * Pre-Condition: username of the user sending the message and the message
+     *
+     * Post-Condition: Returns a vector of messages to whomever it may concern
+    */
+    std::vector<Response> say(std::string username, std::string message);
 
-    std::vector<Response> broadcast(std::string userName, std::string message);
+    /*
+     * Broadcast:
+     *
+     * Pre-Condition: username of the user sending the message and the message
+     *
+     * Post-Condition: Returns a vector of messages to whomever it may concern (Global)
+    */
+    std::vector<Response> broadcast(std::string username, std::string message);
 
     /* Move:
      *
@@ -36,7 +50,7 @@ public:
      * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    std::vector<Response> move(std::string userName, std::string direction);
+    std::vector<Response> move(std::string username, std::string direction);
 
     /* PickUp:
      *
@@ -46,7 +60,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    std::vector<Response> pickUp(std::string userName, std::string itemName);
+    std::vector<Response> pickUp(std::string username, std::string itemName);
 
     /* Drop:
      *
@@ -56,23 +70,38 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    std::vector<Response> drop(std::string userName, std::string itemName);
+    std::vector<Response> drop(std::string username, std::string itemName);
 
-    std::vector<Response> inventory(std::string userName, std::string message);
-
-    /* Logout:
+    /* Inventory:
      *
-     * Function: Removes user from characterController
+     * Function: username of the person invoking this method
      *
-     * Pre-Condition: requires the userName of the person
-     * Post: user is removed from logged in users in character controller
+     * Pre-Condition: requires the userName of the person issuing the command
+     * Post: sends back a response to the caller and lists out their inventory
      *
      * */
-    std::vector<Response> logout(std::string userName, std::string input);
+    std::vector<Response> inventory(std::string username, std::string message);
 
+    std::vector<Response> swap(std::string username, std::string target);
+
+    /* Formulate Response:
+     *
+     * Function: Constructs messages to send to every player
+     *
+     * Pre-Condition: requires the userName of the person issuing the command and the message they want to send
+     * Post: vector of responses for every person it may concern
+     *
+     * */
+    std::vector<Response> formulateResponse(Response &userResponse);
+
+    std::vector<Response> formulateResponse(Response &userResponse, Response &targetResponse);
+
+    /* Formulate Response:
+     * Overloaded function of the formulateResponse(Response)
+     * */
     std::vector<Response> formulateResponse(Response &userResponse, std::vector<std::string> characterList, std::string message);
 
-    std::vector<Response> formulateResponse(Response &userResponse);
+
 
 };
 

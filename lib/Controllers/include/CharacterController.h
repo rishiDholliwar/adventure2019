@@ -9,12 +9,17 @@
 
 #include <map>
 #include <Character.h>
+#include <RoomController.h>
+
+//dummy values
+#define CHARACTER_ID 90
+#define ROOM_ID 1000
 
 class CharacterController {
 
 private:
 
-    std::map<std::string, Character> loggedInUsers;
+    std::map<std::string, Character> onlineUsers;
 
 public:
 
@@ -28,23 +33,39 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    bool addToLoggedInUsers(std::string &username);
-
-
-    Character &getCharacter(std::string &userName);
+    bool addToOnlineUsers(std::string &username, RoomController &roomController);
 
     /*
-     * Removes user from logged in users
+     * Remove user from the list of characters
      *
      * Pre-Condition: username of the person sending the command
      *
-     * Post-Condition: The user will no longer exist in the list
+     * Post-Condition: Returns true if removal is successful
     */
-    void logoutUser(std::string &username);
+    bool removeFromOnlineUsers(std::string &username);
 
-    bool doesExist(std::string &userName);
+    /*
+     * Returns a character object of the specified username
+     *
+     * Pre-Condition: username of the person sending the command
+     *
+     * Post-Condition: Returns true if removal is successful
+    */
+    Character &getCharacter(std::string &username);
 
-    const std::map<std::string, Character> &getLoggedInUsers() const;
+    /*
+     * Checks to see if character exists in online users
+     *
+     * Pre-Condition: username of the person sending the command
+     *
+     * Post-Condition: Returns true if the character exists
+    */
+    bool doesCharacterExist(std::string &userName);
+
+    std::vector<std::string> getNamesOfOnlineUsers();
+
+
+    void swapCharacters( Character &userCharacter,  Character &targetCharacter);
 };
 
 

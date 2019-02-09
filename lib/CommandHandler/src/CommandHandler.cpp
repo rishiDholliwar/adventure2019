@@ -14,6 +14,7 @@ CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
     mapping["/drop"] = &GameController::drop;
     // mapping["/logout"] = &GameController::logout;
     mapping["/inventory"] = &GameController::inventory;
+    mapping["/swap"] = &GameController::swap;
     return mapping;
 }();
 

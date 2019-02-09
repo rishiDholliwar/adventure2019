@@ -20,9 +20,25 @@ public:
 
     ObjectController();
 
-    bool findObject(const std::string &objectName);
+    /* Does Object Exist:
+     *
+     * Function: Checks to see if the object in question is valid
+     *
+     * Pre-Condition: requires the name of the object
+     * Post: returns true if object exists
+     *
+     * */
+    bool doesObjectExist(const std::string &objectName);
 
-    const Object &getObject(const std::string &objectName) const;
+    /* Get Object By Name:
+     *
+     * Function: Retrieve the object from the object list
+     *
+     * Pre-Condition: requires the name of the object
+     * Post: returns the object
+     *
+     * */
+    const Object &getObjectFromListByName(const std::string &objectName) const;
 };
 
 #endif //ALTERSPACE_OBJECTCONTROLLER_H

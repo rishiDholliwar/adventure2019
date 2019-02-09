@@ -1,33 +1,51 @@
 #include <iostream>
 #include <CharacterController.h>
+#include "../../World/include/RoomController.h"
 
 CharacterController::CharacterController() = default;
 
 
 
-bool CharacterController::addToLoggedInUsers(std::string &username) {
+bool CharacterController::addToOnlineUsers(std::string &username, RoomController &roomController) {
 
     //find and load character based on username
-    /* json work */
+    /* json work
+     * if character not found one will be made and then loaded*/
 
-    /* if character not found one will be made and then loaded*/
-    Character dummyCharacter(username, 91, 1000);
+    // Dummy Data for all logged in users
+    Character dummyCharacter(username, CHARACTER_ID, ROOM_ID);
+    roomController.addUserNameToRoom(dummyCharacter.getName(),dummyCharacter.getRoomID());
 
-    return loggedInUsers.emplace(username,dummyCharacter).second;
+    return onlineUsers.emplace(username,dummyCharacter).second;
 }
 
-Character &CharacterController::getCharacter(std::string &userName) {
-    return loggedInUsers.find(userName)->second;
+bool CharacterController::removeFromOnlineUsers(std::string &username){
+    return onlineUsers.erase(username) > 0;
 }
 
-void CharacterController::logoutUser(std::string &username) {
-  loggedInUsers.erase(username);
+Character &CharacterController::getCharacter(std::string &username) {
+    return onlineUsers.find(username)->second;
 }
 
-bool CharacterController::doesExist(std::string &userName) {
-    return loggedInUsers.count(userName) > 0 ;
+bool CharacterController::doesCharacterExist(std::string &userName) {
+    return onlineUsers.count(userName) > 0 ;
 }
 
-const std::map<std::string, Character> &CharacterController::getLoggedInUsers() const {
-    return loggedInUsers;
+std::vector<std::string> CharacterController::getNamesOfOnlineUsers() {
+    std::vector<std::string> usernameList;
+    for(auto &characters : onlineUsers) {
+        usernameList.push_back(characters.first);
+    }
+    return usernameList;
 }
+
+void CharacterController::swapCharacters(Character &userCharacter, Character &targetCharacter) {
+    auto item1 = onlineUsers.find(userCharacter.getName());
+    auto item2 = onlineUsers.find(targetCharacter.getName());
+    if ((item1 != onlineUsers.end()) && (item2 != onlineUsers.end())){
+        std::swap(item1->second, item2->second);
+    }
+
+}
+
+

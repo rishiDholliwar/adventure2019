@@ -10,6 +10,5 @@ int main(int argc, char** argv){
     //std::cout << "hello world" << std::endl;
     std::string testName = "item01";
     Object object(0, testName);
-    object.printTest();
     return 0;
 }

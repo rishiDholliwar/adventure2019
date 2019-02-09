@@ -9,10 +9,20 @@
 #include <Object.h>
 
 
-Inventory::Inventory() { }
+Inventory::Inventory() = default;
 
 void Inventory::addItem(Object object) {
     objects.push_back(object);
+}
+
+bool Inventory::doesItemExist(unsigned int objectID) {
+    return find_if(objects.begin(), objects.end(),
+                   [objectID](Object const& obj)->bool{return obj.getID() == objectID;}) != objects.end();
+}
+
+void Inventory::removeItem(unsigned int objectID) {
+    auto it = find_if(objects.begin(), objects.end(), [objectID](Object const& obj)->bool{return obj.getID() == objectID;});
+    objects.erase(it);
 }
 
 std::string Inventory::listInventory() {
@@ -22,31 +32,14 @@ std::string Inventory::listInventory() {
     }
 
     int objectCount = 1;
-    std::string inventoryList = "";
+    std::string inventoryList;
 
-    for(Object obj : objects){
+    for(auto &obj : objects){
+
         std::string objectString = std::to_string(objectCount) + ". " + obj.getName() + "\n";
         inventoryList += objectString;
 
         objectCount++;
     }
-
     return inventoryList;
 }
-
-bool Inventory::doesItemExist(unsigned int objectId) {
-    for(auto& object : objects){
-        return object.getId() == objectId;
-    }
-    return false;
-}
-
-void Inventory::removeItem(unsigned int objectId) {
-    auto it = find_if(objects.begin(), objects.end(), [objectId](Object const& obj)->bool{return obj.getId() == objectId;});
-
-    if(it != objects.end()){
-        objects.erase(it);
-    }
-}
-
-

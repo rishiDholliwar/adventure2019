@@ -17,6 +17,7 @@ PRIVATE
         Character
         Object
         Inventory
+        world
         ${Boost_LIBRARIES}
         )
 
