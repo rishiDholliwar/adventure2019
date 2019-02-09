@@ -5,7 +5,7 @@ std::unordered_map<std::string, Connection> UserController::getActiveUsers() {
 	return activeUsers;
 }
 
-void UserController::addActiveUser(const User::Name& username, Connection connection) {
+void UserController::addActiveUser(const User::Name username, Connection connection) {
 	activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connection));
 }
 
@@ -16,13 +16,22 @@ bool UserController::isUserActive(const User::Name& username) {
 	return activeUsers.find(username) != activeUsers.end();
 }
 
+auto UserController::getIteratorWithConnection(const Connection connection) {
+
+	auto itrToUsername = find_if(activeUsers.begin(), activeUsers.end(),
+		[&connection](const std::pair<std::string, Connection>& userConnection)
+		{ return userConnection.second == connection; } );
+
+	return itrToUsername;
+}
+
 bool UserController::isConnectionLoggedIn(const Connection connection) {
 	bool isLoggedIn = false;
 
-	for (auto userConnection : activeUsers) {
-		if (userConnection.second == connection) {
-			isLoggedIn = true;
-		}
+	if (getIteratorWithConnection(connection) != activeUsers.end()) {
+
+		isLoggedIn = true;
+	
 	}
 
 	return isLoggedIn;
@@ -30,20 +39,29 @@ bool UserController::isConnectionLoggedIn(const Connection connection) {
 
 std::string UserController::getUsernameWithConnection(const Connection connection) {
 
-	for (auto user : activeUsers) {
-		if (user.second == connection) {
-			return user.first;
-		}
+	if (isConnectionLoggedIn(connection) == false) {
+		return std::string();
 	}
-	return std::string();
+
+	auto itrToUsername = getIteratorWithConnection(connection);
+
+
+	return itrToUsername->first;
+
 }
 
 Connection UserController::getConnectionWithUsername(const User::Name& username) {
 
-	if (activeUsers.find(username) != activeUsers.end()) {
-		return activeUsers.find(username)->second;
+	auto userItr = activeUsers.find(username);
+
+	if (userItr != activeUsers.end()) {
+		return userItr->second;
 
 	}
+
+	//chatserver.cpp checks for whether or not connection is logged in before calling this function
+	//...so this return statement should never be needed.
+	return Connection();
 }
 
 std::size_t UserController::hashPassword(std::string password) {
@@ -58,7 +76,7 @@ UserController::UserData UserController::login(const User::Name& username, std::
 	UserData result;
 	result.username = username;
 
-	result.returnCode = parseLoginUserData(username, password);
+	result.returnCode = validateLoginUserData(username, password);
 
 	if (result.returnCode == ReturnCode::LOGIN_SUCCESS) {
 		addActiveUser(username, connection);
@@ -67,7 +85,7 @@ UserController::UserData UserController::login(const User::Name& username, std::
 	return result;
 }
 
-ReturnCode UserController::parseLoginUserData(const User::Name username, std::string password) {
+ReturnCode UserController::validateLoginUserData(const User::Name username, std::string password) {
 
 	//check if user is already logged in:
 	if (isUserActive(username)) {
@@ -92,12 +110,16 @@ UserController::UserData UserController::createUser(const User::Name& username, 
 	UserData result;
 	result.username = username;
 
-	result.returnCode = parseNewUserData(username, password);
+	result.returnCode = validateNewUserData(username, password);
+
+	if (result.returnCode == ReturnCode::CREATE_SUCCESS) {
+		login(username, password, connection);
+	}
 
 	return result;
 }
 
-ReturnCode UserController::parseNewUserData(const User::Name username, std::string password) {
+ReturnCode UserController::validateNewUserData(const User::Name username, std::string password) {
 
 	//check if user is already logged in:
 	if (isUserActive(username)) {

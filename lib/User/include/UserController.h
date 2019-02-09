@@ -64,7 +64,7 @@ public:
 
 	std::unordered_map<std::string, Connection> getActiveUsers();
 
-	void addActiveUser(const User::Name& username, Connection connection);
+	void addActiveUser(const User::Name username, Connection connection);
 
 	bool isUserActive(const User::Name& username);
 
@@ -74,13 +74,14 @@ public:
 
 	Connection getConnectionWithUsername(const User::Name& username);
 
-	/* 
-     * if username exists and isn't logged in already, logs them in and returns the outcome
+	 
+    /* if username exists and isn't logged in already, logs them in and returns the outcome
      *
      * Pre-Condition: username as const reference User::Name type, password as string and a const Connection object
      * 
      * Post-Condition: a struct of username and a login result
-	*/
+     */
+	
 	UserData login(const User::Name& username, std::string password, const Connection connection);
 
 	/* 
@@ -107,6 +108,8 @@ private:
 	std::unordered_map<std::string, Connection> activeUsers = {};
 	// unordered_string_map<std::string, Connection, std::less<>> activeUsers = {};
 
+	auto getIteratorWithConnection(const Connection connection);
+
 	std::size_t hashPassword(std::string password);
 
 	/* 
@@ -119,7 +122,7 @@ private:
      * 
      * Post-Condition: a result value of whether a user is found and validated successfully
 	*/
-	ReturnCode parseLoginUserData(const User::Name username, std::string password);
+	ReturnCode validateLoginUserData(const User::Name username, std::string password);
 
 	/* 
      * In the process of creating user,
@@ -132,7 +135,7 @@ private:
      * 
      * Post-Condition: a result value of whether a new user is created succesfully
 	*/
-	ReturnCode parseNewUserData(const User::Name username, std::string password);
+	ReturnCode validateNewUserData(const User::Name username, std::string password);
 };
 
 
