@@ -9,6 +9,8 @@
 
 class RoomController {
     public:
+        using ID = Room::ID;
+
         RoomController();
 
         //Getters
@@ -54,9 +56,10 @@ class RoomController {
         bool removeUserNameFromRoom(const std::string &userName, ID roomId);
 
         // Link Rooms
-        // TODO: Will need to redesign Linking Structure
-        void linkRoom(Direction dir, ID room1Id, ID room2Id);
-        ID getLinkedRoom(Direction dir, ID roomId);
+        bool addDoorToRoom(ID roomId, ID doorId, ID destinatedRoomId, const std::string &direction);
+        bool removeDoorFromRoom(ID roomId, ID doorId);
+
+        std::string getTextOfRoomDetails(ID roomId);
 
 
     private:

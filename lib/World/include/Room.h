@@ -2,23 +2,14 @@
 #ifndef OOP_ROOM_H
 #define OOP_ROOM_H
 
-#include <vector>
-#include <string>
-#include <memory>
 #include <string_view>
+#include <Door.h>
 
-using ID = unsigned int;
-
-enum class Direction{
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
-};
 
 class Room
 {
 public:
+    using ID = Door::ID;
 
     Room(ID id, const std::string& name);
 
@@ -56,10 +47,11 @@ public:
     bool removeUserName(const std::string& userName);
 
     // Link Rooms
-    // TODO: Will need to redesign Linking Structure
-    void linkRoom(Direction dir, ID targetRoomId);
-    ID getLinkedRoom(Direction dir);
-
+    bool addDoor(ID doorId, ID destinatedRoomId, const std::string& direction);
+    bool removeDoor(ID doorId);
+    std::string const getTextOfRoomDetails();
+    std::string const getTextOfDoorDetails();
+    ID const& getDestinatedRoomId(ID doorId);
 
 private:
     ID  id;
@@ -69,15 +61,9 @@ private:
     std::vector<ID> characterList;
     std::vector<ID> objectList;
     std::vector<std::string> usernameList;
+    std::vector<Door> doorList;
 
-    struct LinkingRoomList{
-        ID north = 0;
-        ID west = 0;
-        ID south = 0;
-        ID east = 0;
-    };
-
-    LinkingRoomList linkingRoomList;
+    ID unfoundDoorId = 0;
 
     template <typename T>
     bool addUniqueItemToList(T id, std::vector<T> &list);
