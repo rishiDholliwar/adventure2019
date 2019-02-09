@@ -34,8 +34,8 @@ bool Character::hasItem(unsigned int objectId) {
     return inventory.doesItemExist(objectId);
 }
 
-void Character::listInventory() {
-    inventory.listInventory();
+std::string Character::listInventory() {
+    return inventory.listInventory();
 }
 
 void Character::dropItem(unsigned int objectId) {

@@ -6,6 +6,7 @@
 #define ALTERSPACE_INVENTORY_H
 
 #include <vector>
+#include <string>
 #include "Object.h"
 class Inventory {
 private:
@@ -16,7 +17,7 @@ public:
 
     void addItem(Object object);
 
-    void listInventory();
+    std::string listInventory();
 
     bool doesItemExist(unsigned int objectId);
 

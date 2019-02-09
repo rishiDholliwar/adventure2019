@@ -9,16 +9,29 @@
 #include <Object.h>
 
 
-Inventory::Inventory() {}
+Inventory::Inventory() { }
 
 void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
 
-void Inventory::listInventory() {
-    for(Object obj : objects){
-        //obj.printTest();
+std::string Inventory::listInventory() {
+
+    if (objects.empty()) {
+        return std::string();
     }
+
+    int objectCount = 1;
+    std::string inventoryList = "";
+
+    for(Object obj : objects){
+        std::string objectString = std::to_string(objectCount) + ". " + obj.getName() + "\n";
+        inventoryList += objectString;
+
+        objectCount++;
+    }
+
+    return inventoryList;
 }
 
 bool Inventory::doesItemExist(unsigned int objectId) {

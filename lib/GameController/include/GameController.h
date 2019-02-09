@@ -58,6 +58,8 @@ public:
      * */
     std::vector<Response> drop(std::string userName, std::string itemName);
 
+    std::vector<Response> inventory(std::string userName, std::string message);
+
     /* Logout:
      *
      * Function: Removes user from characterController

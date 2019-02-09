@@ -141,6 +141,30 @@ std::vector<Response> GameController::drop(std::string userName, std::string ite
 }
 
 
+std::vector<Response> GameController::inventory(std::string userName, std::string message) {
+    // check user if user is logged in
+    if(!characterController.doesExist(userName)){
+        characterController.addToLoggedInUsers(userName);
+    }
+
+    // Obtain character object based on userName (dummy)
+    Character character = characterController.getCharacter(userName);
+
+    //get the string containing inventory listed numerically
+    std::string inventoryList = character.listInventory();
+
+    //check if inventory is empty or not
+    if(inventoryList.empty()) {
+        Response userResponse = Response("Your inventory is empty!", userName);
+        return formulateResponse(userResponse);
+    }
+
+    Response userResponse = Response("Your inventory has: \n" + inventoryList, userName);
+    return formulateResponse(userResponse);
+
+}
+
+
 std::vector<Response> GameController::logout(std::string userName, std::string input) {
     Response userResponse = Response("You have logged out successfully!", userName);
 

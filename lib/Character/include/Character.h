@@ -50,7 +50,7 @@ private:
     */
     bool addItemToInventory(Object obj);
 
-    void listInventory();
+    std::string listInventory();
 
     /*
      * Removes specified object from inventory
