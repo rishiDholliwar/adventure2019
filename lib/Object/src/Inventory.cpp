@@ -17,13 +17,16 @@ bool Inventory::doesItemExist(ID objectID)
     return it != objects.end();
 }
 
-void Inventory::removeItem(ID objectID)
+bool Inventory::removeItem(ID objectID)
 {
     auto it = find_if(objects.begin(), objects.end(),
                         [objectID] (Object const& obj)->bool {
                             return obj.getID() == objectID;
                         });
-    objects.erase(it);
+    if (it != objects.end())
+        it = objects.erase(it);
+        return true;
+    return false;
 }
 
 std::string Inventory::listInventory()

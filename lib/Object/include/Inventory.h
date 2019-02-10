@@ -41,10 +41,10 @@ public:
      * Function: removes item from inventory
      *
      * Pre-Condition: the ID of the item in question
-     * Post: will have removed the item from the inventory
+     * Post: will have removed the item from the inventory, returns true if removed
      *
      * */
-    void removeItem(ID objectID);
+    bool removeItem(ID objectID);
 
     /* List Inventory:
      *

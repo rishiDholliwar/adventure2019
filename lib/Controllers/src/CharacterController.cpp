@@ -26,7 +26,7 @@ Character &CharacterController::getCharacter(Name &username) {
 }
 
 bool CharacterController::doesCharacterExist(Name &userName) {
-    return onlineUsers.count(userName) > 0 ;
+    return onlineUsers.find(userName) != onlineUsers.end();
 }
 
 std::vector<Name> CharacterController::getNamesOfOnlineUsers() {

@@ -1,10 +1,4 @@
-//
-// Created by bshetty on 2/2/19.
-//
-
 #include <ObjectController.h>
-#include <algorithm>
-
 
 ObjectController::ObjectController(){
     objects.insert( {"Basic Sword", Object(100,"Basic Sword")} );
