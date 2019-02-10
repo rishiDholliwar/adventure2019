@@ -1,10 +1,12 @@
 
 add_library(utility
-  src/Utility.cpp
-        include/Utility.h)
+        src/Utility.cpp
+        include/Utility.h
+        include/AlterSpace.h)
 
 add_library(returnCode
-        include/Response.h)
+        include/Response.h
+        include/ReturnCodes.h)
 
 target_include_directories(utility
   PUBLIC

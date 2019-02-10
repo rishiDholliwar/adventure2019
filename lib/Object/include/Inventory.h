@@ -1,13 +1,14 @@
-//
-// Created on 1/24/2019.
-//
-
 #ifndef ALTERSPACE_INVENTORY_H
 #define ALTERSPACE_INVENTORY_H
 
 #include <vector>
 #include <string>
+
+#include <AlterSpace.h>
 #include "Object.h"
+
+using AlterSpace::ID;
+
 class Inventory {
 private:
     std::vector<Object> objects;
@@ -33,7 +34,7 @@ public:
      * Post:returns true if found
      *
      * */
-    bool doesItemExist(unsigned int objectID);
+    bool doesItemExist(ID objectID);
 
     /* Remove Item:
      *
@@ -43,7 +44,7 @@ public:
      * Post: will have removed the item from the inventory
      *
      * */
-    void removeItem(unsigned int objectID);
+    void removeItem(ID objectID);
 
     /* List Inventory:
      *

@@ -1,15 +1,15 @@
 #include <UserController.h>
 #include <User.h>
 
-std::unordered_map<std::string, Connection> UserController::getActiveUsers() {
+std::unordered_map<Name, Connection> UserController::getActiveUsers() {
 	return activeUsers;
 }
 
-void UserController::addActiveUser(const User::Name username, Connection connection) {
+void UserController::addActiveUser(const Name username, Connection connection) {
 	activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connection));
 }
 
-bool UserController::isUserActive(const User::Name& username) {
+bool UserController::isUserActive(const Name& username) {
 	//check if username exists in activeUsers.
 	//if true, return true. else, this user is not yet logged in or created.
 
@@ -31,7 +31,7 @@ bool UserController::isConnectionLoggedIn(const Connection connection) {
 	if (getIteratorWithConnection(connection) != activeUsers.end()) {
 
 		isLoggedIn = true;
-	
+
 	}
 
 	return isLoggedIn;
@@ -50,7 +50,7 @@ std::string UserController::getUsernameWithConnection(const Connection connectio
 
 }
 
-Connection UserController::getConnectionWithUsername(const User::Name& username) {
+Connection UserController::getConnectionWithUsername(const Name& username) {
 
 	auto userItr = activeUsers.find(username);
 
@@ -61,17 +61,17 @@ Connection UserController::getConnectionWithUsername(const User::Name& username)
 
 	//chatserver.cpp checks for whether or not connection is logged in before calling this function
 	//...so this return statement should never be needed.
-	return Connection();
+	return Connection{};
 }
 
-std::size_t UserController::hashPassword(std::string password) {
+std::size_t UserController::hashPassword(Password password) {
 
 	auto hashedPassword = std::hash<std::string> {}(password);
 
 	return hashedPassword;
 }
 
-UserController::UserData UserController::login(const User::Name& username, std::string password, const Connection connection) {
+UserController::UserData UserController::login(const Name& username, Password password, const Connection connection) {
 
 	UserData result;
 	result.username = username;
@@ -85,7 +85,7 @@ UserController::UserData UserController::login(const User::Name& username, std::
 	return result;
 }
 
-ReturnCode UserController::validateLoginUserData(const User::Name username, std::string password) {
+ReturnCode UserController::validateLoginUserData(const Name username, Password password) {
 
 	//check if user is already logged in:
 	if (isUserActive(username)) {
@@ -105,7 +105,7 @@ ReturnCode UserController::validateLoginUserData(const User::Name username, std:
 	return ReturnCode::LOGIN_SUCCESS;
 }
 
-UserController::UserData UserController::createUser(const User::Name& username, std::string password,  const Connection connection) {
+UserController::UserData UserController::createUser(const Name& username, Password password,  const Connection connection) {
 
 	UserData result;
 	result.username = username;
@@ -119,7 +119,7 @@ UserController::UserData UserController::createUser(const User::Name& username, 
 	return result;
 }
 
-ReturnCode UserController::validateNewUserData(const User::Name username, std::string password) {
+ReturnCode UserController::validateNewUserData(const Name username, Password password) {
 
 	//check if user is already logged in:
 	if (isUserActive(username)) {
@@ -138,7 +138,7 @@ ReturnCode UserController::validateNewUserData(const User::Name username, std::s
 	return ReturnCode::CREATE_SUCCESS;
 }
 
-UserController::UserData UserController::logoutUser(const User::Name& username) {
+UserController::UserData UserController::logoutUser(const Name& username) {
 
 	UserData result;
 	result.username = username;
@@ -154,7 +154,7 @@ UserController::UserData UserController::logoutUser(const User::Name& username) 
 	return result;
 }
 
-UserController::UserData UserController::logoutUser(const std::string& username, std::string password, const Connection connection)
+UserController::UserData UserController::logoutUser(const Name& username, Password password, const Connection connection)
 {
 	return logoutUser(username);
 }

@@ -3,8 +3,15 @@
 #include <iostream>
 #include <GameController.h>
 
+using ASDirection::directionMap;
 
-std::vector<Response> GameController::say(std::string username, std::string message) {
+GameController::GameController()
+{
+    this->characterController = CharacterController();
+    this->objectController = ObjectController();
+}
+
+std::vector<Response> GameController::say(Name username, Input message) {
     std::cout << "Say " << message << std::endl;
 
     // check user if user is logged in
@@ -20,7 +27,7 @@ std::vector<Response> GameController::say(std::string username, std::string mess
     return formulateResponse(userResponse, roomController.getUsernameList(character.getRoomID()),genericMessage);
 }
 
-std::vector<Response> GameController::broadcast(std::string username, std::string message) {
+std::vector<Response> GameController::broadcast(Name username, Input message) {
     std::cout << "Broadcast " << message << std::endl;
 
     if(!characterController.doesCharacterExist(username)){
@@ -37,7 +44,7 @@ std::vector<Response> GameController::broadcast(std::string username, std::strin
     return formulateResponse(userResponse, broadcast ,genericMessage);
 }
 
-std::vector<Response> GameController::move(std::string username, std::string direction) {
+std::vector<Response> GameController::move(Name username, std::string direction) {
     std::cout << "Move: " << direction << std::endl;
 
     // check user if user is logged in
@@ -70,7 +77,7 @@ std::vector<Response> GameController::move(std::string username, std::string dir
     return formulateResponse(userResponse);
 }
 
-std::vector<Response> GameController::pickUp(std::string username, std::string itemName) {
+std::vector<Response> GameController::pickUp(Name username, std::string itemName) {
     std::cout << "Pick Up: " << itemName << std::endl;
 
     // check user if user is logged in
@@ -104,7 +111,7 @@ std::vector<Response> GameController::pickUp(std::string username, std::string i
 
 }
 
-std::vector<Response> GameController::drop(std::string username, std::string itemName) {
+std::vector<Response> GameController::drop(Name username, std::string itemName) {
     std::cout << "Drop: " << itemName << std::endl;
 
     // check user if user is logged in
@@ -138,7 +145,7 @@ std::vector<Response> GameController::drop(std::string username, std::string ite
 }
 
 
-std::vector<Response> GameController::inventory(std::string username, std::string message) {
+std::vector<Response> GameController::inventory(Name username, Input message) {
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
         characterController.addToOnlineUsers(username, roomController);
@@ -161,7 +168,7 @@ std::vector<Response> GameController::inventory(std::string username, std::strin
 
 }
 
-std::vector<Response> GameController::swap(std::string username, std::string target) {
+std::vector<Response> GameController::swap(Name username, Name target) {
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
         characterController.addToOnlineUsers(username, roomController);
@@ -184,9 +191,9 @@ std::vector<Response> GameController::swap(std::string username, std::string tar
     return formulateResponse(userResponse, targetResponse);
 }
 
-std::vector<Response> GameController::formulateResponse(Response &userResponse, std::vector<std::string> characterList,
-                                                        std::string message){
-
+std::vector<Response>
+GameController::formulateResponse(Response &userResponse, std::vector<Name> characterList, Input message)
+{
     std::vector<Response> response;
 
     for(auto &character : characterList){
@@ -210,7 +217,6 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
     return response;
 }
 
-
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
     return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
 }
@@ -218,6 +224,3 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse) 
 bool GameController::directionExists(std::string direction) {
     return directionMap.find(direction) != directionMap.end();
 }
-
-
-

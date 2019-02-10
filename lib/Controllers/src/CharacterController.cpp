@@ -1,12 +1,10 @@
 #include <iostream>
 #include <CharacterController.h>
-#include "../../World/include/RoomController.h"
+#include <RoomController.h>
 
 CharacterController::CharacterController() = default;
 
-
-
-bool CharacterController::addToOnlineUsers(std::string &username, RoomController &roomController) {
+bool CharacterController::addToOnlineUsers(Name &username, RoomController &roomController) {
 
     //find and load character based on username
     /* json work
@@ -19,19 +17,19 @@ bool CharacterController::addToOnlineUsers(std::string &username, RoomController
     return onlineUsers.emplace(username,dummyCharacter).second;
 }
 
-bool CharacterController::removeFromOnlineUsers(std::string &username){
+bool CharacterController::removeFromOnlineUsers(Name &username){
     return onlineUsers.erase(username) > 0;
 }
 
-Character &CharacterController::getCharacter(std::string &username) {
+Character &CharacterController::getCharacter(Name &username) {
     return onlineUsers.find(username)->second;
 }
 
-bool CharacterController::doesCharacterExist(std::string &userName) {
+bool CharacterController::doesCharacterExist(Name &userName) {
     return onlineUsers.count(userName) > 0 ;
 }
 
-std::vector<std::string> CharacterController::getNamesOfOnlineUsers() {
+std::vector<Name> CharacterController::getNamesOfOnlineUsers() {
     std::vector<std::string> usernameList;
     for(auto &characters : onlineUsers) {
         usernameList.push_back(characters.first);

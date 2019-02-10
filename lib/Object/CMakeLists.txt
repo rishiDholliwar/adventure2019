@@ -34,6 +34,10 @@ target_link_libraries(test_object
         Object
         )
 
+target_link_libraries(Object
+        utility
+        )
+
 target_link_libraries(Inventory
         PUBLIC
                 Object

@@ -2,6 +2,7 @@
 #ifndef WEBSOCKETNETWORKING_GAMECONTROLLER_H
 #define WEBSOCKETNETWORKING_GAMECONTROLLER_H
 
+#include <AlterSpace.h>
 #include <CharacterController.h>
 #include <ObjectController.h>
 #include <RoomController.h>
@@ -10,19 +11,17 @@
 #include <vector>
 #include <map>
 
+using AlterSpace::Input;
+using AlterSpace::Name;
+
 class GameController {
 private:
     CharacterController characterController;
     ObjectController objectController;
     RoomController roomController;
 
-    std::map<std::string, Direction> directionMap;
-
 public:
-    GameController():characterController{}, objectController{}{
-        directionMap = {{"north", Direction::NORTH}, {"south", Direction::SOUTH}, {"east", Direction::EAST},
-                        {"west", Direction::WEST}};
-    }
+    GameController();
 
     /*
      * say:
@@ -31,7 +30,7 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern
     */
-    std::vector<Response> say(std::string username, std::string message);
+    std::vector<Response> say(Name username, std::string message);
 
     /*
      * Broadcast:
@@ -40,7 +39,7 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern (Global)
     */
-    std::vector<Response> broadcast(std::string username, std::string message);
+    std::vector<Response> broadcast(Name username, std::string message);
 
     /* Move:
      *
@@ -50,7 +49,7 @@ public:
      * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    std::vector<Response> move(std::string username, std::string direction);
+    std::vector<Response> move(Name username, std::string direction);
 
     /* Does the direction exist:
      *
@@ -60,7 +59,7 @@ public:
      * Post: returns true if direction exists
      *
      * */
-    bool directionExists(std::string direction);
+    bool directionExists(Name direction);
 
     /* PickUp:
      *
@@ -70,7 +69,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    std::vector<Response> pickUp(std::string username, std::string itemName);
+    std::vector<Response> pickUp(Name username, Name itemName);
 
     /* Drop:
      *
@@ -80,7 +79,7 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    std::vector<Response> drop(std::string username, std::string itemName);
+    std::vector<Response> drop(Name username, Name itemName);
 
     /* Inventory:
      *
@@ -90,9 +89,9 @@ public:
      * Post: sends back a response to the caller and lists out their inventory
      *
      * */
-    std::vector<Response> inventory(std::string username, std::string message);
+    std::vector<Response> inventory(Name username, Input message);
 
-    std::vector<Response> swap(std::string username, std::string target);
+    std::vector<Response> swap(Name username, Name target);
 
     /* Formulate Response:
      *
@@ -109,7 +108,7 @@ public:
     /* Formulate Response:
      * Overloaded function of the formulateResponse(Response)
      * */
-    std::vector<Response> formulateResponse(Response &userResponse, std::vector<std::string> characterList, std::string message);
+    std::vector<Response> formulateResponse(Response &userResponse, std::vector<Name> characterList, Input message);
 };
 
 

@@ -1,20 +1,9 @@
-//
-// Created on 1/22/2019.
-//
-
-
-#include <iostream>
 #include <Object.h>
 
-
-Object::Object(unsigned int ID, const std::string &name) : ID(ID), name(name) {}
-
-const std::string &Object::getName() const {
-    return name;
+const Name& Object::getName() const {
+    return this->objectName;
 }
 
-unsigned int Object::getID() const {
-    return ID;
+ID Object::getID() const {
+    return this->objectID;
 }
-
-

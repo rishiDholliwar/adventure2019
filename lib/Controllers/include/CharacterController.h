@@ -1,15 +1,14 @@
-//
-// Created by bshetty on 1/18/19.
-//
-
 #ifndef ALTERSPACE_CHARACTERCONTROLLER_H
 #define ALTERSPACE_CHARACTERCONTROLLER_H
 
+#include <unordered_map>
 
-
-#include <map>
+#include <AlterSpace.h>
 #include <Character.h>
 #include <RoomController.h>
+
+using AlterSpace::ID;
+using AlterSpace::Name;
 
 //dummy values
 #define CHARACTER_ID 90
@@ -19,7 +18,7 @@ class CharacterController {
 
 private:
 
-    std::map<std::string, Character> onlineUsers;
+    std::unordered_map<Name, Character> onlineUsers;
 
 public:
 
@@ -33,7 +32,7 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    bool addToOnlineUsers(std::string &username, RoomController &roomController);
+    bool addToOnlineUsers(Name &username, RoomController &roomController);
 
     /*
      * Remove user from the list of characters
@@ -42,7 +41,7 @@ public:
      *
      * Post-Condition: Returns true if removal is successful
     */
-    bool removeFromOnlineUsers(std::string &username);
+    bool removeFromOnlineUsers(Name &username);
 
     /*
      * Returns a character object of the specified username
@@ -51,7 +50,7 @@ public:
      *
      * Post-Condition: Returns true if removal is successful
     */
-    Character &getCharacter(std::string &username);
+    Character &getCharacter(Name &username);
 
     /*
      * Checks to see if character exists in online users
@@ -60,9 +59,9 @@ public:
      *
      * Post-Condition: Returns true if the character exists
     */
-    bool doesCharacterExist(std::string &userName);
+    bool doesCharacterExist(Name &userName);
 
-    std::vector<std::string> getNamesOfOnlineUsers();
+    std::vector<Name> getNamesOfOnlineUsers();
 
 
     void swapCharacters( Character &userCharacter,  Character &targetCharacter);
