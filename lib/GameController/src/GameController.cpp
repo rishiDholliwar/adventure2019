@@ -48,6 +48,12 @@ std::vector<Response> GameController::move(std::string username, std::string dir
     // Obtain character object based on userName (dummy)
     Character* character = &characterController.getCharacter(username);
 
+    // check if direction exists
+    if(!directionExists(direction)){
+        Response userResponse = Response("There is no such direction!", username);
+        return formulateResponse(userResponse);
+    }
+
     // Verify if direction is valid
     unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(direction), character->getRoomID());
     if( destinationRoomID == 0){
@@ -84,13 +90,12 @@ std::vector<Response> GameController::pickUp(std::string username, std::string i
     Object item = objectController.getObjectFromListByName(itemName);
 
 
-    if(! roomController.removeObjectFromRoom(item.getID(), character.getRoomID())) {
+    if(!roomController.removeObjectFromRoom(item.getID(), character.getRoomID())) {
         Response userResponse = Response("This item does not exist in the room!", username);
         return formulateResponse(userResponse);
     }
 
     // Update room to no longer have the item (until the next reset)
-    roomController.removeObjectFromRoom(item.getID(), character.getRoomID());
     character.addItemToInventory(item);
 
     Response userResponse = Response(itemName + " added to inventory!", username);
@@ -208,6 +213,10 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
     return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
+}
+
+bool GameController::directionExists(std::string direction) {
+    return directionMap.find(direction) != directionMap.end();
 }
 
 

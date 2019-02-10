@@ -52,6 +52,16 @@ public:
      * */
     std::vector<Response> move(std::string username, std::string direction);
 
+    /* Does the direction exist:
+     *
+     * Function: Checks to see if direction exists in the map
+     *
+     * Pre-Condition: requires the direction in question
+     * Post: returns true if direction exists
+     *
+     * */
+    bool directionExists(std::string direction);
+
     /* PickUp:
      *
      * Function: adds the picked up item to user's inventory
@@ -100,9 +110,6 @@ public:
      * Overloaded function of the formulateResponse(Response)
      * */
     std::vector<Response> formulateResponse(Response &userResponse, std::vector<std::string> characterList, std::string message);
-
-
-
 };
 
 
