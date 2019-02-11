@@ -1,160 +1,173 @@
 #include <UserController.h>
 #include <User.h>
+#include <JSONUser.h>
 
 std::unordered_map<Name, Connection> UserController::getActiveUsers() {
-	return activeUsers;
+    return activeUsers;
 }
 
 void UserController::addActiveUser(const Name username, Connection connection) {
-	activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connection));
+    activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connection));
 }
 
-bool UserController::isUserActive(const Name& username) {
-	//check if username exists in activeUsers.
-	//if true, return true. else, this user is not yet logged in or created.
+bool UserController::isUserActive(const Name &username) {
+    //check if username exists in activeUsers.
+    //if true, return true. else, this user is not yet logged in or created.
 
-	return activeUsers.find(username) != activeUsers.end();
+    return activeUsers.find(username) != activeUsers.end();
 }
 
 auto UserController::getIteratorWithConnection(const Connection connection) {
 
-	auto itrToUsername = find_if(activeUsers.begin(), activeUsers.end(),
-		[&connection](const std::pair<std::string, Connection>& userConnection)
-		{ return userConnection.second == connection; } );
+    auto itrToUsername = find_if(activeUsers.begin(), activeUsers.end(),
+                                 [&connection](const std::pair<std::string, Connection> &userConnection) {
+                                     return userConnection.second == connection;
+                                 });
 
-	return itrToUsername;
+    return itrToUsername;
 }
 
 bool UserController::isConnectionLoggedIn(const Connection connection) {
-	bool isLoggedIn = false;
+    bool isLoggedIn = false;
 
-	if (getIteratorWithConnection(connection) != activeUsers.end()) {
+    if (getIteratorWithConnection(connection) != activeUsers.end()) {
 
-		isLoggedIn = true;
+        isLoggedIn = true;
 
-	}
+    }
 
-	return isLoggedIn;
+    return isLoggedIn;
 }
 
 std::string UserController::getUsernameWithConnection(const Connection connection) {
 
-	if (isConnectionLoggedIn(connection) == false) {
-		return std::string();
-	}
+    if (isConnectionLoggedIn(connection) == false) {
+        return std::string();
+    }
 
-	auto itrToUsername = getIteratorWithConnection(connection);
+    auto itrToUsername = getIteratorWithConnection(connection);
 
 
-	return itrToUsername->first;
+    return itrToUsername->first;
 
 }
 
-Connection UserController::getConnectionWithUsername(const Name& username) {
+Connection UserController::getConnectionWithUsername(const Name &username) {
 
-	auto userItr = activeUsers.find(username);
+    auto userItr = activeUsers.find(username);
 
-	if (userItr != activeUsers.end()) {
-		return userItr->second;
+    if (userItr != activeUsers.end()) {
+        return userItr->second;
 
-	}
+    }
 
-	//chatserver.cpp checks for whether or not connection is logged in before calling this function
-	//...so this return statement should never be needed.
-	return Connection{};
+    //chatserver.cpp checks for whether or not connection is logged in before calling this function
+    //...so this return statement should never be needed.
+    return Connection{};
 }
 
 std::size_t UserController::hashPassword(Password password) {
 
-	auto hashedPassword = std::hash<std::string> {}(password);
+    auto hashedPassword = std::hash<std::string>{}(password);
 
-	return hashedPassword;
+    return hashedPassword;
 }
 
-UserController::UserData UserController::login(const Name& username, Password password, const Connection connection) {
+UserController::UserData UserController::login(const Name &username, Password password, const Connection connection) {
 
-	UserData result;
-	result.username = username;
+    UserData result;
+    result.username = username;
 
-	result.returnCode = validateLoginUserData(username, password);
+    result.returnCode = validateLoginUserData(username, password);
 
-	if (result.returnCode == ReturnCode::LOGIN_SUCCESS) {
-		addActiveUser(username, connection);
-	}
+    if (result.returnCode == ReturnCode::LOGIN_SUCCESS) {
+        addActiveUser(username, connection);
+    }
 
-	return result;
+    return result;
 }
 
 ReturnCode UserController::validateLoginUserData(const Name username, Password password) {
 
-	//check if user is already logged in:
-	if (isUserActive(username)) {
+    //check if user is already logged in:
+    if (isUserActive(username)) {
 
-		return ReturnCode::USER_ACTIVE;
-	}
+        return ReturnCode::USER_ACTIVE;
+    }
 
-	auto hashedPassword = hashPassword(password);
-	//look for username.json in some .../user/userdata/ directory
-	//using json library api parser that will eventually be created by the group,
+    auto hashedPassword = hashPassword(password);
+    //look for username.json in some .../user/userdata/ directory
+    //using json library api parser that will eventually be created by the group,
 
-	//if username.json doesn't exist, ReturnCode::USERNAME_FAIL
+    //if username.json doesn't exist, ReturnCode::USERNAME_FAIL
+    if (!JSONUser::isFileExists(username)) {
+        return ReturnCode::USERNAME_FAIL;
+    }
+    // Check if hashedPassword matches hashedPassword in username.json
+    // If true, ReturnCode::LOGIN_SUCCESS, else ReturnCode::PASSWORD_FAIL
 
-	// Check if hashedPassword matches hashedPassword in username.json
-	// If true, ReturnCode::LOGIN_SUCCESS, else ReturnCode::PASSWORD_FAIL
+    if(JSONUser::getUser(username).getHashedPassword() != hashedPassword){
+        return ReturnCode::PASSWORD_FAIL;
+    }
 
-	return ReturnCode::LOGIN_SUCCESS;
+    return ReturnCode::LOGIN_SUCCESS;
 }
 
-UserController::UserData UserController::createUser(const Name& username, Password password,  const Connection connection) {
+UserController::UserData
+UserController::createUser(const Name &username, Password password, const Connection connection) {
 
-	UserData result;
-	result.username = username;
+    UserData result;
+    result.username = username;
 
-	result.returnCode = validateNewUserData(username, password);
+    result.returnCode = validateNewUserData(username, password);
 
-	if (result.returnCode == ReturnCode::CREATE_SUCCESS) {
-		login(username, password, connection);
-	}
+    if (result.returnCode == ReturnCode::CREATE_SUCCESS) {
+        login(username, password, connection);
+    }
 
-	return result;
+    return result;
 }
 
 ReturnCode UserController::validateNewUserData(const Name username, Password password) {
 
-	//check if user is already logged in:
-	if (isUserActive(username)) {
+    //check if user is already logged in:
+    if (isUserActive(username)) {
 
-		return ReturnCode::USER_ACTIVE;
-	}
+        return ReturnCode::USER_ACTIVE;
+    }
 
-	//make sure no .json file exists with that username.
-	//if such file already exists, return ReturnCode::USERNAME_EXISTS
+    //make sure no .json file exists with that username.
+    //if such file already exists, return ReturnCode::USERNAME_EXISTS
+    if (JSONUser::isFileExists(username)) {
+        return ReturnCode::USERNAME_EXISTS;
+    }
 
-	//if no file already exists, hash password.
-	auto hashedPassword = hashPassword(password);
+    //if no file already exists, hash password.
+    auto hashedPassword = hashPassword(password);
 
-	//create username.json file, read in username and hashed password
+    //create username.json file, read in username and hashed password
+    JSONUser::createNewUser(username,hashedPassword);
 
-	return ReturnCode::CREATE_SUCCESS;
+    return ReturnCode::CREATE_SUCCESS;
 }
 
-UserController::UserData UserController::logoutUser(const Name& username) {
+UserController::UserData UserController::logoutUser(const Name &username) {
 
-	UserData result;
-	result.username = username;
+    UserData result;
+    result.username = username;
 
-	if (activeUsers.erase(username) != 1) {
-		result.returnCode = ReturnCode::LOGOUT_FAIL;
-		return result;
-	}
+    if (activeUsers.erase(username) != 1) {
+        result.returnCode = ReturnCode::LOGOUT_FAIL;
+        return result;
+    }
 
-	// + character data
-	result.returnCode = ReturnCode::LOGOUT_SUCCESS;
+    // + character data
+    result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 
-	return result;
+    return result;
 }
 
-UserController::UserData UserController::logoutUser(const Name& username, Password password, const Connection connection)
-{
-	return logoutUser(username);
+UserController::UserData
+UserController::logoutUser(const Name &username, Password password, const Connection connection) {
+    return logoutUser(username);
 }
