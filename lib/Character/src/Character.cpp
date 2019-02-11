@@ -11,11 +11,11 @@ Character::Character(const Name &name, ID characterID, ID roomID)
   this->inventory = Inventory{};
 }
 
-Name Character::getName(){
+Name Character::getName() const {
     return this->name;
 }
 
-ID Character::getRoomID() {
+ID Character::getRoomID() const {
     return this->roomID;
 }
 

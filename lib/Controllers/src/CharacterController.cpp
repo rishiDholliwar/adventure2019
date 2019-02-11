@@ -4,7 +4,7 @@
 
 CharacterController::CharacterController() = default;
 
-bool CharacterController::addToOnlineUsers(Name &username, RoomController &roomController) {
+bool CharacterController::addCharacter(Name &username, RoomController &roomController) {
 
     //find and load character based on username
     /* json work
@@ -14,33 +14,33 @@ bool CharacterController::addToOnlineUsers(Name &username, RoomController &roomC
     Character dummyCharacter(username, CHARACTER_ID, ROOM_ID);
     roomController.addUserNameToRoom(dummyCharacter.getName(),dummyCharacter.getRoomID());
 
-    return onlineUsers.emplace(username,dummyCharacter).second;
+    return _characters.emplace(username,dummyCharacter).second;
 }
 
-bool CharacterController::removeFromOnlineUsers(Name &username){
-    return onlineUsers.erase(username) > 0;
+bool CharacterController::removeCharacter(Name &username){
+    return _characters.erase(username) > 0;
 }
 
 Character &CharacterController::getCharacter(Name &username) {
-    return onlineUsers.find(username)->second;
+    return _characters.find(username)->second;
 }
 
 bool CharacterController::doesCharacterExist(Name &userName) {
-    return onlineUsers.find(userName) != onlineUsers.end();
+    return _characters.find(userName) != _characters.end();
 }
 
-std::vector<Name> CharacterController::getNamesOfOnlineUsers() {
+std::vector<Name> CharacterController::getAllCharacterNames() {
     std::vector<std::string> usernameList;
-    for(auto &characters : onlineUsers) {
+    for(auto &characters : _characters) {
         usernameList.push_back(characters.first);
     }
     return usernameList;
 }
 
 void CharacterController::swapCharacters(Character &userCharacter, Character &targetCharacter) {
-    auto item1 = onlineUsers.find(userCharacter.getName());
-    auto item2 = onlineUsers.find(targetCharacter.getName());
-    if ((item1 != onlineUsers.end()) && (item2 != onlineUsers.end())){
+    auto item1 = _characters.find(userCharacter.getName());
+    auto item2 = _characters.find(targetCharacter.getName());
+    if ((item1 != _characters.end()) && (item2 != _characters.end())){
         std::swap(item1->second, item2->second);
     }
 

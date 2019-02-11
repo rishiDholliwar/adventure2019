@@ -18,7 +18,7 @@ class CharacterController {
 
 private:
 
-    std::unordered_map<Name, Character> onlineUsers;
+    std::unordered_map<Name, Character> _characters;
 
 public:
 
@@ -32,7 +32,7 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    bool addToOnlineUsers(Name &username, RoomController &roomController);
+    bool addCharacter(Name &username, RoomController &roomController);
 
     /*
      * Remove user from the list of characters
@@ -41,7 +41,7 @@ public:
      *
      * Post-Condition: Returns true if removal is successful
     */
-    bool removeFromOnlineUsers(Name &username);
+    bool removeCharacter(Name &username);
 
     /*
      * Returns a character object of the specified username
@@ -61,7 +61,7 @@ public:
     */
     bool doesCharacterExist(Name &userName);
 
-    std::vector<Name> getNamesOfOnlineUsers();
+    std::vector<Name> getAllCharacterNames();
 
 
     void swapCharacters( Character &userCharacter,  Character &targetCharacter);

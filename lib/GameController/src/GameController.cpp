@@ -16,7 +16,7 @@ std::vector<Response> GameController::say(Name username, Input message) {
 
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+        characterController.addCharacter(username, roomController);
     }
 
     Character character = characterController.getCharacter(username);
@@ -31,11 +31,11 @@ std::vector<Response> GameController::broadcast(Name username, Input message) {
     std::cout << "Broadcast " << message << std::endl;
 
     if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+        characterController.addCharacter(username, roomController);
     }
 
     Character character = characterController.getCharacter(username);
-    std::vector<std::string> broadcast = characterController.getNamesOfOnlineUsers();
+    std::vector<std::string> broadcast = characterController.getAllCharacterNames();
 
 
     Response userResponse = Response("Me: " + message, username);
@@ -49,7 +49,7 @@ std::vector<Response> GameController::move(Name username, std::string direction)
 
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+        characterController.addCharacter(username, roomController);
     }
 
     // Obtain character object based on userName (dummy)
@@ -82,7 +82,7 @@ std::vector<Response> GameController::pickUp(Name username, std::string itemName
 
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+        characterController.addCharacter(username, roomController);
     }
 
     // Obtain character object based on userName (dummy)
@@ -116,7 +116,7 @@ std::vector<Response> GameController::drop(Name username, std::string itemName) 
 
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+        characterController.addCharacter(username, roomController);
     }
 
     // Obtain character object based on userName (dummy)
@@ -148,7 +148,7 @@ std::vector<Response> GameController::drop(Name username, std::string itemName) 
 std::vector<Response> GameController::inventory(Name username, Input message) {
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+        characterController.addCharacter(username, roomController);
     }
 
     // Obtain character object based on userName (dummy)
@@ -171,7 +171,7 @@ std::vector<Response> GameController::inventory(Name username, Input message) {
 std::vector<Response> GameController::swap(Name username, Name target) {
     // check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+        characterController.addCharacter(username, roomController);
     }
 
     //check if target is valid

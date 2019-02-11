@@ -18,8 +18,8 @@ private:
 
 public:
     Character(const Name &name, ID characterID, ID roomID);
-    Name getName();
-    ID getRoomID();
+    Name getName() const;
+    ID getRoomID() const;
     ID getCharacterID() const;
 
     void setRoomID(ID roomID);
