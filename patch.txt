@@ -1,0 +1,68 @@
+diff --git a/lib/User/include/UserController.h b/lib/User/include/UserController.h
+index 85fbc62..4d4ac82 100644
+--- a/lib/User/include/UserController.h
++++ b/lib/User/include/UserController.h
+@@ -39,9 +39,9 @@ public:
+ 
+     /* if username exists and isn't logged in already, logs them in and returns the outcome
+      *
+-     * Pre-Condition: username as const reference Name type, password as string and a const Connection object
++     * Pre-Condition: login credentials for user attempting login
+      *
+-     * Post-Condition: a struct of username and a login result
++     * Post-Condition: returns username and success/failure of user login
+      */
+ 
+ 	UserData login(const Name& username, Password password, const Connection connection);
+@@ -49,18 +49,18 @@ public:
+ 	/*
+      * if no such username exists already, creates a user with such username and password
+      *
+-     * Pre-Condition: username as const reference Name type, password as string and a const Connection object
++     * Pre-Condition: login credentials for user being created
+      *
+-     * Post-Condition: a struct of username and a user creation result
++     * Post-Condition: returns username and success/failure code for user created
+ 	*/
+ 	UserData createUser(const Name& username, Password password, const Connection connection);
+ 
+ 	/*
+      * logs out a username by deleting it from the map of activeUsers
+      *
+-     * Pre-Condition: username as const reference Name type
++     * Pre-Condition: username of user logging out
+      *
+-     * Post-Condition: a struct of username and a logout result
++     * Post-Condition: returns username and success/failure of user logout
+ 	*/
+ 	UserData logoutUser(const Name& username);
+ 
+@@ -80,9 +80,9 @@ private:
+      * If a user is already logged in with such username or if the password is inaccurate, login fails
+      * Password passed in is hashed for security
+      *
+-     * Pre-Condition: username as const reference Name type, password as string
++     * Pre-Condition: login credentials to authenticate user
+      *
+-     * Post-Condition: a result value of whether a user is found and validated successfully
++     * Post-Condition: returns a success/failure code for finding and validating user
+ 	*/
+ 	ReturnCode validateLoginUserData(const Name username, Password password);
+ 
+@@ -90,12 +90,12 @@ private:
+      * In the process of creating user,
+      * checks to see a user isn't already logged in with such username
+      * looks for a json file for the username to make sure no such user exists already
+-	 * creates a file to store the login information for the future
+-	 * password is hashed for security before being stored
++	 	 * creates a file to store the login information for the future
++	 	 * password is hashed for security before being stored
+      *
+-     * Pre-Condition: username as const reference Name type, password as string
++     * Pre-Condition: login credentials for new user
+      *
+-     * Post-Condition: a result value of whether a new user is created succesfully
++     * Post-Condition: returns a success/failure code for validating new user
+ 	*/
+ 	ReturnCode validateNewUserData(const Name username, Password password);
+ };
