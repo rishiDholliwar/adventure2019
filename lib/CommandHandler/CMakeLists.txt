@@ -1,11 +1,10 @@
 
-add_library(userController
-  src/User.cpp
-  src/UserController.cpp)
+add_library(commandHandler
+  src/CommandHandler.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
-target_include_directories(userController
+target_include_directories(commandHandler
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -14,20 +13,20 @@ target_include_directories(userController
     ${Boost_INCLUDE_DIR}
 )
 
-target_link_libraries(userController
-  PUBLIC
-    networking
-    returnCode
+target_link_libraries(commandHandler
   PRIVATE
+    gameController
+    userController
+    utility
     ${Boost_LIBRARIES}
 )
 
-set_target_properties(userController
+set_target_properties(commandHandler
                       PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
 )
 
-install(TARGETS userController
+install(TARGETS commandHandler
   ARCHIVE DESTINATION lib
 )

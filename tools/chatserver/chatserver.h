@@ -3,7 +3,8 @@
 
 #include "Server.h"
 #include "GameController.h"
-#include "UserManager.h"
+#include <UserController.h>
+#include <CommandHandler.h>
 
 using networking::Server;
 using networking::Connection;
@@ -18,22 +19,28 @@ struct Config
 class Game
 {
 private:
-  GameController* _gameController;
-  UserManager* _userManager;
-  Server* _server;
+  std::unique_ptr<GameController> _gameController;
+  std::unique_ptr<UserController> _userController;
+  std::unique_ptr<Server> _server;
+  std::unique_ptr<CommandHandler> _commandHandler;
+
   std::vector<Connection> _clients;
   float _heartbeat = 1.0;
   int _port;
   std::string _webpage;
   std::deque<Message> processMessages(const std::deque<Message>&, bool&);
   Game(const Game&) = delete;
+  
 public:
+
   void addConnection(Connection);
   void removeConnection(Connection);
   bool run();
-  Game(Server&, GameController&, UserManager&);
+
+  Game(Config config);
+
   ~Game(){};
-  
+
 };
 
 #endif //GAME_H

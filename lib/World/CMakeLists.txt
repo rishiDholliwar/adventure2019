@@ -1,8 +1,9 @@
 add_library(world
-            src/Area.cpp
-            src/Room.cpp
-            src/World.cpp
-            src/Door.cpp)
+        src/RoomController.cpp
+        src/Room.cpp)
+
+add_executable(RoomControllerTest
+        test/RoomControllerTest.cpp)
 
 target_include_directories(world
         PUBLIC
@@ -19,6 +20,13 @@ set_target_properties(world
                       CXX_STANDARD 17
 )
 
+target_link_libraries(world
+        utility)
+
 install(TARGETS world
   ARCHIVE DESTINATION lib
 )
+
+target_link_libraries(RoomControllerTest
+        world)
+

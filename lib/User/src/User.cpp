@@ -1,35 +1,21 @@
+#include <User.h>
 
-#include "User.h"
-
-bool User::isUsernameEqual(const std::string userName) const {
-	return _userName == userName;
+bool User::isusernameEqual(const Name username) const {
+	return _username == username;
 }
 
 bool User::isHashedPasswordEqual(const size_t hashedPassword) const {
 	return _hashedPassword == hashedPassword;
 }
 
-std::string User::getUsername() const {
-	return _userName;
+std::string User::getusername() const {
+	return _username;
 }
 
 std::size_t User::getHashedPassword() const {
 	return _hashedPassword;
 }
 
-void User::moveToRoom(int roomNumber) {
-    this->_roomNumber = roomNumber;
-}
-
-int User::getRoomNumber() const {
-	return _roomNumber;
-}
-
 bool operator<(const User& t, const User& o) {
-	return (t.getUsername() < o.getUsername());
+	return (t.getusername() < o.getusername());
 }
-
-/*
-./bin/chatserver
-./bin/chatserver 4002 ../adventure2019/webchat.html
-*/

@@ -3,43 +3,37 @@
 
 #include <string>
 
+#include <AlterSpace.h>
+
+using AlterSpace::Name;
+
 class User {
 
 public:
-    User(){};
+    User() = default;
 
-    User(std::string userName)
-    :_userName(userName) { };
-    
-    User(std::string userName, size_t hashedPassword)
-    :_userName(userName), _hashedPassword(hashedPassword), _roomNumber(0) { };
+    User(Name username)
+    :_username(std::move(username)) { };
 
-    bool isUsernameEqual(const std::string userName) const;
+    User(Name username, size_t hashedPassword)
+    :_username(std::move(username)), _hashedPassword(std::move(hashedPassword)) { };
+
+    bool isusernameEqual(const Name username) const;
 
     bool isHashedPasswordEqual(const size_t hashedPassword) const;
 
-    std::string getUsername() const;
+    std::string getusername() const;
 
     std::size_t getHashedPassword() const;
 
-    bool isSameUser(User user) const;
-
-    void moveToRoom(int roomNumber);
-
-    int getRoomNumber() const;
-
 private:
+    Name _username;
 
-    std::string _userName;
-    
     std::size_t _hashedPassword;
-
-    mutable int _roomNumber;
 
 };
 
-//UserManager uses set<User> and requires a < operator overload for comparison purposes.
+//UserManager uses set<User> and requires a < operator overload for comparison
 bool operator<(const User& t, const User& o);
-
 
 #endif //WEBSOCKETNETWORKING_USER_H

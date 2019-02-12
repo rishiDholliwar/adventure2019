@@ -13,11 +13,18 @@ set_target_properties(chatserver
 find_package(Threads REQUIRED)
 
 target_link_libraries(chatserver
-  gameController
-  userManager
-  networking
-  json
-  ${CMAKE_THREAD_LIBS_INIT}
+  PUBLIC
+    networking
+  PRIVATE
+    commandHandler
+    gameController
+    userController
+    json
+    utility
+    controllers
+    world
+    Character
+    ${CMAKE_THREAD_LIBS_INIT}
 )
 
 install(TARGETS chatserver
