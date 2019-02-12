@@ -13,56 +13,51 @@ namespace JSONUser {
 
     namespace {
         using json = nlohmann::json;
-
         json j;
 
         using jsonf = nlohmann::json;
-
         jsonf jsonfile;
 
         const std::string FILE_PATH = "../DataFiles/Users/";
 
-        std::string extension = ".json";
+        const std::string EXTENSION = ".json";
 
-        void setupRead(std::string username) {
-            std::ifstream ifs(FILE_PATH + username + extension);
+        void setupRead(const std::string &username) {
+            std::ifstream ifs(FILE_PATH + username + EXTENSION);
             j = json::parse(ifs);
         }
 
-        void setupWrite(std::string username) {
-            std::ofstream file(FILE_PATH + username + extension);
+        void setupWrite(const std::string &username) {
+            std::ofstream file(FILE_PATH + username + EXTENSION);
             file << "{\n\n}";
             file.close();
-            std::ifstream ifs(FILE_PATH + username + extension);
+            std::ifstream ifs(FILE_PATH + username + EXTENSION);
             jsonfile = jsonf::parse(ifs);
         }
 
-        void writeToFile(std::string username) {
-            std::ofstream file(FILE_PATH + username + extension);
+        void writeToFile(const std::string &username) {
+            std::ofstream file(FILE_PATH + username + EXTENSION);
             file << jsonfile.dump(4);
             file.close();
         }
-
-
     }
 
 
-//TODO make sure to add any other attributes as well
-
-    bool isFileExists(std::string username) {
-        std::string fileName = FILE_PATH + username + extension;
+    bool isFileExists(const std::string &username) {
+        std::string fileName = FILE_PATH + username + EXTENSION;
         std::ifstream f(fileName.c_str());
         return f.good();
     }
 
-    static User getUser(std::string username) {
+    // TODO make sure to add any other attributes as well
+    static User getUser(const std::string &username) {
         setupRead(username);
         User user(j["name"].get<std::string>(), j["password"].get<long int>());
         return user;
 
     }
 
-    static void createNewUser(User user) {
+    static void createNewUser(const User &user) {
         std::cout << " create user: " << user.getusername() << std::endl;
         setupWrite(user.getusername());
         jsonfile.push_back(jsonf::object_t::value_type("name", user.getusername()));
@@ -72,7 +67,7 @@ namespace JSONUser {
         writeToFile(user.getusername());
     }
 
-    static void createNewUser(std::string username, size_t hashedPassword) {
+    static void createNewUser(const std::string &username, size_t hashedPassword) {
         User user(username,hashedPassword);
         std::cout << " create user: " << user.getusername() << std::endl;
         setupWrite(user.getusername());
