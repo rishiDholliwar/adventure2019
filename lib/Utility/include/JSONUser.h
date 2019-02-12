@@ -57,20 +57,11 @@ namespace JSONUser {
 
     }
 
-    static void createNewUser(const User &user) {
-        std::cout << " create user: " << user.getusername() << std::endl;
-        setupWrite(user.getusername());
-        jsonfile.push_back(jsonf::object_t::value_type("name", user.getusername()));
-        jsonfile.push_back(
-                jsonf::object_t::value_type("password", user.getHashedPassword()));
-
-        writeToFile(user.getusername());
-    }
-
     static void createNewUser(const std::string &username, size_t hashedPassword) {
         User user(username,hashedPassword);
-        std::cout << " create user: " << user.getusername() << std::endl;
+
         setupWrite(user.getusername());
+
         jsonfile.push_back(jsonf::object_t::value_type("name", user.getusername()));
         jsonfile.push_back(
                 jsonf::object_t::value_type("password", user.getHashedPassword()));
