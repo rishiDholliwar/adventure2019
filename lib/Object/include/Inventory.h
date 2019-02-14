@@ -13,6 +13,10 @@ class Inventory {
 private:
     std::vector<Object> objects;
 
+    auto getItemIteratorByID(ID objectID);
+
+    auto getItemIteratorByName(Name objectName);
+
 public:
     Inventory();
 
@@ -31,10 +35,30 @@ public:
      * Function: Checks to see if user has such the item
      *
      * Pre-Condition: ID of the item in question
-     * Post:returns true if found
+     * Post: returns true if found
      *
      * */
     bool doesItemExist(ID objectID);
+
+    /* Does Item Exist By Name:
+     *
+     * Function: Checks to see if user has such the item
+     *
+     * Pre-Condition: Name of the item in question
+     * Post: returns true if found
+     *
+     * */
+    bool doesItemExistByName(Name objectName);
+
+    /* Get Item By Name:
+     *
+     * Function: Checks to see if user has such the item and returns the item if true
+     *
+     * Pre-Condition: Name of the item in question
+     * Post: returns Object if found
+     *
+     * */
+    Object getItemByName(Name objectName);
 
     /* Remove Item:
      *

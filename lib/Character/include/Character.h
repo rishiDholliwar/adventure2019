@@ -24,6 +24,8 @@ public:
 
     void setRoomID(ID roomID);
 
+    Object getItemFromInventoryByName(Name objectName);
+
     /*
      * Checks to see if character has the item in question
      *
@@ -32,6 +34,15 @@ public:
      * Post-Condition: Returns true if item exists in inventory
     */
     bool hasItem(ID objectId);
+
+    /*
+     * Checks to see if character has the item in question by name
+     *
+     * Pre-Condition: Name of the Object
+     *
+     * Post-Condition: Returns true if item exists in inventory
+    */
+    bool hasItemByName(Name objectName);
 
     /*
      * Adds the specified item to inventory (as a copy)

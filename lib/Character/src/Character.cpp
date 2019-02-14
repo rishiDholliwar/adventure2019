@@ -23,6 +23,10 @@ ID Character::getCharacterID() const {
     return characterID;
 }
 
+Object Character::getItemFromInventoryByName(Name objectName) {
+    return inventory.getItemByName(objectName); 
+}
+
 bool Character::addItemToInventory(Object obj) {
     inventory.addItem(obj);
 }
@@ -33,6 +37,10 @@ void Character::setRoomID(ID roomID) {
 
 bool Character::hasItem(ID objectId) {
     return inventory.doesItemExist(objectId);
+}
+
+bool Character::hasItemByName(Name objectName) {
+    return inventory.doesItemExistByName(objectName);
 }
 
 void Character::dropItem(ID objectId) {
