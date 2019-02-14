@@ -44,7 +44,7 @@ Object Inventory::getItemByName(Name objectName)
 {
     if (doesItemExistByName(objectName) == false)
     {
-        return nullptr;
+        return Object();
     }
 
     auto it = getItemIteratorByName(objectName);
