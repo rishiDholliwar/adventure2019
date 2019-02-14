@@ -58,9 +58,9 @@ public:
      *
      * Pre-Condition: ID of the Object
      *
-     * Post-Condition: Item will be dropped if it exists
+     * Post-Condition: Item will be dropped if it exists, returns true if dropped
     */
-    void dropItem(ID objectId);
+    bool dropItem(ID objectId);
 
 
     // This should be getInventory

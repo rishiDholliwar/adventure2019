@@ -42,6 +42,7 @@ bool Inventory::doesItemExistByName(Name objectName)
 
 Object Inventory::getItemByName(Name objectName)
 {
+
     if (doesItemExistByName(objectName) == false)
     {
         return Object();
@@ -54,13 +55,13 @@ Object Inventory::getItemByName(Name objectName)
 
 bool Inventory::removeItem(ID objectID)
 {
-    auto it = find_if(objects.begin(), objects.end(),
-                        [objectID] (Object const& obj)->bool {
-                            return obj.getID() == objectID;
-                        });
+    auto it = getItemIteratorByID(objectID);
+
     if (it != objects.end())
+    {
         it = objects.erase(it);
-        return true;
+        return (doesItemExist(objectID) == false);
+    }
     return false;
 }
 

@@ -2,7 +2,7 @@
 #include <Character.h>
 #include <iostream>
 #include <GameController.h>
-#include <Utiliy.h>
+#include <Utility.h>
 
 using ASDirection::directionMap;
 
@@ -150,7 +150,7 @@ std::vector<Response> GameController::give(Name username, Input message) {
 
 	//check if user input format is incorrect
 	if (inputStrings.size() != 2) {
-		Response userResponse = Response("You must type in the <username of the character you wish to gift to>, <item name>", username);
+		Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
 		return formulateResponse(userResponse);
 	}
 
@@ -179,16 +179,34 @@ std::vector<Response> GameController::give(Name username, Input message) {
 
 	Object gift = userCharacter.getItemFromInventoryByName(inputStrings.at(1));
 
-	if (gift == nullptr) {
-		Response userResponse = Response("Item name " + inputStrings.at(1) + " does not exist for you to give.", username);
-		return formulateResponse(userResponse);
-	}
-
 	//drop item from user inventory
-	userCharacter.dropItem(gift.getID);
+	if (userCharacter.dropItem(gift.getID()) == false) {
+        Response userResponse = Response("dropping failed for userChar", username);
+        return formulateResponse(userResponse);
+    }
+
+    //test only:
+    if (targetCharacter.dropItem(gift.getID()) == false) {
+        Response userResponse = Response("dropping failed for targetChar", username);
+        return formulateResponse(userResponse);
+    }
+
+    //test only:
+    if (userCharacter.hasItem(gift.getID())) {
+        Response userResponse = Response("userChar still has item", username);
+        return formulateResponse(userResponse);
+    }
+
+    //test only:
+    if (targetCharacter.hasItem(gift.getID())) {
+        Response userResponse = Response("targetChar still has item", username);
+        return formulateResponse(userResponse);
+    }
 
 	//add item to target user inventory
-	bool giftSuccess = targetCharacter.addItemToInventory(gift);
+	targetCharacter.addItemToInventory(gift);
+
+    bool giftSuccess = targetCharacter.hasItem(gift.getID());
 
 	if (giftSuccess == false) {
 		Response userResponse = Response("Giving " + inputStrings.at(1) + " to character " + inputStrings.at(0) + " has failed.", username);

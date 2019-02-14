@@ -43,8 +43,8 @@ bool Character::hasItemByName(Name objectName) {
     return inventory.doesItemExistByName(objectName);
 }
 
-void Character::dropItem(ID objectId) {
-    inventory.removeItem(objectId);
+bool Character::dropItem(ID objectId) {
+    return inventory.removeItem(objectId);
 }
 
 std::string Character::listInventory() {

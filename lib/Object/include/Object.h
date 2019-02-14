@@ -14,6 +14,8 @@ private:
     Name objectName;
 
 public:
+	Object();
+	
     Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
 
     const Name& getName() const;
