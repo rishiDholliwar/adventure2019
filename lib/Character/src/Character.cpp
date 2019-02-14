@@ -11,7 +11,10 @@
 Character::Character(const std::string &name, unsigned int characterID, unsigned int roomID) : name(name),
                                                                                                characterID(characterID),
                                                                                                roomID(roomID),
-                                                                                               inventory() {}
+                                                                                               inventory() {
+    this->currentHP = maxHP;
+    this->currentMP = maxMP;
+}
 
 std::string Character::getName(){
     return this->name;
@@ -43,6 +46,58 @@ void Character::dropItem(unsigned int objectId) {
 
 std::string Character::listInventory() {
     return inventory.listInventory();
+}
+
+void Character::updateCharacterStatus(Character::CharacterStatus status) {
+    this->status = status;
+}
+
+std::string Character::getListOfSpells() {
+    if(characterSpells.empty()){
+        return std::string();
+    }
+
+    int spellCounter = 1;
+    std::string spellList;
+    for(auto &spells : characterSpells){
+        std::string spellString = std::to_string(spellCounter) + ". " + spells.getName() + " cost: " + std::to_string(spells.getManaCost()) + "\n";
+        spellList += spellString;
+        spellCounter++;
+    }
+    return spellList;
+}
+
+std::string Character::getListOfSpells(Spells::SpellType spellType) {
+    if(characterSpells.empty()){
+        return std::string();
+    }
+
+    int spellCounter = 1;
+    std::string spellList;
+    for(auto &spells : characterSpells) {
+        if (spells.getType() == spellType) {}
+        std::string spellString = std::to_string(spellCounter) + ". " + spells.getName() + " cost: " +
+                                  std::to_string(spells.getManaCost()) + "\n";
+        spellList += spellString;
+        spellCounter++;
+    }
+    return spellList;
+}
+
+unsigned int Character::getCharacterCurrentHP() {
+    return currentHP;
+}
+
+unsigned int Character::getCharacterCurrentMP() {
+    return currentMP;
+}
+
+void Character::setCharacterCurrentHP(unsigned int hp) {
+    this->currentHP = hp;
+}
+
+void Character::setCharacterCurrentMP(unsigned int mp) {
+    this->currentMP = mp;
 }
 
 

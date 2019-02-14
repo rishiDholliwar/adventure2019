@@ -9,18 +9,21 @@
 #include <string>
 #include <Inventory.h>
 #include <Object.h>
+#include <Spells.h>
+
 
 class Character {
-private:
-    std::string name;
-
-    unsigned int characterID;
-
-    unsigned int roomID;
-
-    Inventory inventory;
-
     public:
+    /*
+    * A Character has a status that limits the actions a character can do.
+    */
+    enum class CharacterStatus {
+        UNDERSPELL,
+        COMBAT,
+        MINIGAME,
+        DEFAULT
+    };
+
 
     Character(const std::string &name, unsigned int characterID, unsigned int roomID);
 
@@ -60,6 +63,63 @@ private:
     void dropItem(unsigned int objectId);
 
     std::string listInventory();
+
+    /*
+     * Updates a characters status
+     *
+     * Pre-Condition: A status requirement that doesn't conflict with another status.
+     *
+     * Post-Condition: Character status will be updated if possible
+     */
+    void updateCharacterStatus(CharacterStatus status);
+
+    /*
+     * Returns a string list of all character spells
+     *
+     * Pre-Condition: Character has a list of spells
+     *
+     * Post-Condition: Returns all character spells
+     */
+    std::string getListOfSpells();
+
+    /*
+     * Returns a string list of character spells based on spell type
+     *
+     * Pre-Condition: Character has a list of spells of said type
+     *
+     * Post-Condition: Return all character spells of said type
+     */
+    std::string getListOfSpells(Spells::SpellType spellType);
+
+    /*
+     * Character Stats
+     */
+
+    unsigned int getCharacterCurrentHP();
+    unsigned int getCharacterCurrentMP();
+    void setCharacterCurrentHP(unsigned int hp);
+    void setCharacterCurrentMP(unsigned int mp);
+
+
+private:
+    std::string name;
+    unsigned int characterID;
+    unsigned int roomID;
+    Inventory inventory;
+    CharacterStatus status = CharacterStatus::DEFAULT;
+    std::vector<Spells> characterSpells;
+
+    /*
+     * Character stats
+     */
+    unsigned int currentHP;
+    unsigned int currentMP;
+    unsigned int attack = 1;
+    unsigned int defense = 1;
+
+    unsigned int maxHP = 100;
+    unsigned int maxMP = 100;
+
 };
 
 
