@@ -19,8 +19,9 @@ namespace JSONUser {
         jsonf jsonfile;
 
         const std::string FILE_PATH = "../DataFiles/Users/";
-
         const std::string EXTENSION = ".json";
+        const std::string USER_NAME = "name";
+        const std::string USER_PASSWORD = "password";
 
         const int INDENT = 4;
 
@@ -54,18 +55,18 @@ namespace JSONUser {
     // TODO make sure to add any other attributes as well
     static User getUser(const std::string &username) {
         setupRead(username);
-        User user(j["name"].get<std::string>(), j["password"].get<long int>());
+        User user(j[USER_NAME].get<std::string>(), j[USER_PASSWORD].get<long int>());
         return user;
     }
 
     static void createNewUser(const std::string &username, size_t hashedPassword) {
-        User user(username,hashedPassword);
+        User user(username, hashedPassword);
 
         setupWrite(user.getusername());
 
-        jsonfile.push_back(jsonf::object_t::value_type("name", user.getusername()));
+        jsonfile.push_back(jsonf::object_t::value_type(USER_NAME, user.getusername()));
         jsonfile.push_back(
-                jsonf::object_t::value_type("password", user.getHashedPassword()));
+                jsonf::object_t::value_type(USER_PASSWORD, user.getHashedPassword()));
 
         writeToFile(user.getusername());
     }
