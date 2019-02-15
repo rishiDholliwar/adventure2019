@@ -56,7 +56,6 @@ namespace JSONUser {
         setupRead(username);
         User user(j["name"].get<std::string>(), j["password"].get<long int>());
         return user;
-
     }
 
     static void createNewUser(const std::string &username, size_t hashedPassword) {
@@ -70,7 +69,6 @@ namespace JSONUser {
 
         writeToFile(user.getusername());
     }
-
 
 }
 #endif //ALTERSPACE_JSONUSER_H
