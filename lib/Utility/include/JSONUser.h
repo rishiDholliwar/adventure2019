@@ -1,9 +1,6 @@
-
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <memory>
 #include "json.hpp"
 #include <User.h>
 
@@ -27,15 +24,19 @@ namespace JSONUser {
 
         void setupRead(const std::string &username) {
             std::ifstream ifs(FILE_PATH + username + EXTENSION);
-            j = json::parse(ifs);
+            if (ifs.is_open()) {
+                j = json::parse(ifs);
+            }
         }
 
         void setupWrite(const std::string &username) {
             std::ofstream file(FILE_PATH + username + EXTENSION);
-            file << "{\n\n}";
-            file.close();
-            std::ifstream ifs(FILE_PATH + username + EXTENSION);
-            jsonfile = jsonf::parse(ifs);
+            if (file.is_open()) {
+                file << "{\n\n}";
+                file.close();
+                std::ifstream ifs(FILE_PATH + username + EXTENSION);
+                jsonfile = jsonf::parse(ifs);
+            }
         }
 
         void writeToFile(const std::string &username) {
@@ -48,11 +49,10 @@ namespace JSONUser {
 
     bool isFileExists(const std::string &username) {
         std::string fileName = FILE_PATH + username + EXTENSION;
-        std::ifstream f(fileName.c_str());
+        std::ifstream f(fileName);
         return f.good();
     }
 
-    // TODO make sure to add any other attributes as well
     static User getUser(const std::string &username) {
         setupRead(username);
         User user(j[USER_NAME].get<std::string>(), j[USER_PASSWORD].get<long int>());
