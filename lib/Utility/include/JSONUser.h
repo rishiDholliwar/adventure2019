@@ -22,6 +22,8 @@ namespace JSONUser {
 
         const std::string EXTENSION = ".json";
 
+        const int INDENT = 4;
+
         void setupRead(const std::string &username) {
             std::ifstream ifs(FILE_PATH + username + EXTENSION);
             j = json::parse(ifs);
@@ -37,7 +39,7 @@ namespace JSONUser {
 
         void writeToFile(const std::string &username) {
             std::ofstream file(FILE_PATH + username + EXTENSION);
-            file << jsonfile.dump(4);
+            file << jsonfile.dump(INDENT);
             file.close();
         }
     }
@@ -57,20 +59,11 @@ namespace JSONUser {
 
     }
 
-    static void createNewUser(const User &user) {
-        std::cout << " create user: " << user.getusername() << std::endl;
-        setupWrite(user.getusername());
-        jsonfile.push_back(jsonf::object_t::value_type("name", user.getusername()));
-        jsonfile.push_back(
-                jsonf::object_t::value_type("password", user.getHashedPassword()));
-
-        writeToFile(user.getusername());
-    }
-
     static void createNewUser(const std::string &username, size_t hashedPassword) {
         User user(username,hashedPassword);
-        std::cout << " create user: " << user.getusername() << std::endl;
+
         setupWrite(user.getusername());
+
         jsonfile.push_back(jsonf::object_t::value_type("name", user.getusername()));
         jsonfile.push_back(
                 jsonf::object_t::value_type("password", user.getHashedPassword()));
