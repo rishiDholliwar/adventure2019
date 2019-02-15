@@ -8,46 +8,43 @@
 #define ALTERSPACE_JSONUSER_H
 namespace JSONUser {
 
-    namespace {
-        using json = nlohmann::json;
-        json j;
+    using json = nlohmann::json;
+    json j;
 
-        using jsonf = nlohmann::json;
-        jsonf jsonfile;
+    using jsonf = nlohmann::json;
+    jsonf jsonfile;
 
-        const std::string FILE_PATH = "../DataFiles/Users/";
-        const std::string EXTENSION = ".json";
-        const std::string USER_NAME = "name";
-        const std::string USER_PASSWORD = "password";
+    const std::string FILE_PATH = "../DataFiles/Users/";
+    const std::string EXTENSION = ".json";
+    const std::string USER_NAME = "name";
+    const std::string USER_PASSWORD = "password";
 
-        const int INDENT = 4;
+    const int INDENT = 4;
 
-        void setupRead(const std::string &username) {
-            std::ifstream ifs(FILE_PATH + username + EXTENSION);
-            if (ifs.is_open()) {
-                j = json::parse(ifs);
-            }
-        }
-
-        void setupWrite(const std::string &username) {
-            std::ofstream file(FILE_PATH + username + EXTENSION);
-            if (file.is_open()) {
-                file << "{\n\n}";
-                file.close();
-                std::ifstream ifs(FILE_PATH + username + EXTENSION);
-                jsonfile = jsonf::parse(ifs);
-            }
-        }
-
-        void writeToFile(const std::string &username) {
-            std::ofstream file(FILE_PATH + username + EXTENSION);
-            file << jsonfile.dump(INDENT);
-            file.close();
+    static void setupRead(const std::string &username) {
+        std::ifstream ifs(FILE_PATH + username + EXTENSION);
+        if (ifs.is_open()) {
+            j = json::parse(ifs);
         }
     }
 
+    static void setupWrite(const std::string &username) {
+        std::ofstream file(FILE_PATH + username + EXTENSION);
+        if (file.is_open()) {
+            file << "{\n\n}";
+            file.close();
+            std::ifstream ifs(FILE_PATH + username + EXTENSION);
+            jsonfile = jsonf::parse(ifs);
+        }
+    }
 
-    bool isFileExists(const std::string &username) {
+    static void writeToFile(const std::string &username) {
+        std::ofstream file(FILE_PATH + username + EXTENSION);
+        file << jsonfile.dump(INDENT);
+        file.close();
+    }
+
+    static bool isFileExists(const std::string &username) {
         std::string fileName = FILE_PATH + username + EXTENSION;
         std::ifstream f(fileName);
         return f.good();

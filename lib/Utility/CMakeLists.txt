@@ -2,7 +2,9 @@
 add_library(utility
         src/Utility.cpp
         include/Utility.h
-        include/AlterSpace.h)
+        include/AlterSpace.h
+        include/JSONUser.h
+        )
 
 add_library(returnCode
         include/Response.h
@@ -38,7 +40,6 @@ target_include_directories(jsonUser
 
 target_link_libraries(jsonUser
         json
-        world
         userController
         )
 
