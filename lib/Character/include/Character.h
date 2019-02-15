@@ -15,6 +15,7 @@ private:
     ID characterID;
     ID roomID;
     Inventory inventory;
+    std::vector<Object> wearing;
 
 public:
     Character(const Name &name, ID characterID, ID roomID);
@@ -43,6 +44,16 @@ public:
      * Post-Condition: Returns true if item exists in inventory
     */
     bool hasItemByName(Name objectName);
+
+    auto getWearingIteratorByID(ID objectId);
+
+    bool isWearing(ID objectId);
+
+    bool isWearingByName(Name objectName);
+
+    bool wear(Object obj);
+
+    bool takeOff(Object obj);
 
     /*
      * Adds the specified item to inventory (as a copy)

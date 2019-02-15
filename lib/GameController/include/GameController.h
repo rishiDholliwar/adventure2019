@@ -91,6 +91,26 @@ public:
      * */
     std::vector<Response> give(Name username, Input message);
 
+     /* Wear:
+     *
+     * Function: Wears an item from a user's inventory
+     *
+     * Pre-Condition: requires the userName of the person issuing the command and the name of the item being given
+     * Post: wears the item unless the item does not exist in inventory
+     *
+     * */
+    std::vector<Response> wear(Name username, Input message);
+
+     /* Take off:
+     *
+     * Function: Takes off an item that a user is wearing
+     *
+     * Pre-Condition: requires the userName of the person issuing the command and the name of the item being given
+     * Post: Takes off the item that the user is wearing
+     *
+     * */
+    std::vector<Response> takeOff(Name username, Input message);
+
     /* Inventory:
      *
      * Function: username of the person invoking this method
