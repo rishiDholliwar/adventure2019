@@ -99,7 +99,7 @@ public:
      * Post: wears the item unless the item does not exist in inventory
      *
      * */
-    std::vector<Response> wear(Name username, Input message);
+    std::vector<Response> wear(Name username, std::string itemName);
 
      /* Take off:
      *
@@ -109,7 +109,7 @@ public:
      * Post: Takes off the item that the user is wearing
      *
      * */
-    std::vector<Response> takeOff(Name username, Input message);
+    std::vector<Response> takeOff(Name username, std::string itemName);
 
     /* Inventory:
      *

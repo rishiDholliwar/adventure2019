@@ -244,7 +244,7 @@ std::vector<Response> GameController::wear(Name username, std::string itemName) 
     }
 
     //check if character is already wearing this item
-    if (character.isWearing(item.getID)) {
+    if (character.isWearing(item.getID())) {
     	Response userResponse = Response("You are already wearing this item!", username);
         return formulateResponse(userResponse);
     }
@@ -259,7 +259,7 @@ std::vector<Response> GameController::wear(Name username, std::string itemName) 
         return formulateResponse(userResponse);
 }
 
-std::vector<Response> GameController::takeOff(Name username, Input message) {
+std::vector<Response> GameController::takeOff(Name username, std::string itemName) {
 	// check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
         characterController.addCharacter(username, roomController);
@@ -284,7 +284,7 @@ std::vector<Response> GameController::takeOff(Name username, Input message) {
     }
 
     //check if character is already wearing this item
-    if (character.isWearing(item.getID)) {
+    if (character.isWearing(item.getID())) {
     	Response userResponse = Response("You are already wearing this item!", username);
         return formulateResponse(userResponse);
     }

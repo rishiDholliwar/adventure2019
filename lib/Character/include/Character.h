@@ -2,6 +2,7 @@
 #define ALTERSPACE_CHARACTER_H
 
 #include <string>
+#include <vector>
 #include <AlterSpace.h>
 #include <Inventory.h>
 #include <Object.h>

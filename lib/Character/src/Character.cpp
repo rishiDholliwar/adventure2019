@@ -1,5 +1,6 @@
 #include <utility>
 #include <iostream>
+#include <algorithm>
 #include <Character.h>
 
 
@@ -47,7 +48,7 @@ bool Character::hasItemByName(Name objectName) {
 auto Character::getWearingIteratorByID(ID objectId) {
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objectId] ( Object const& obj )->bool {
-                          return obj.getID() == objectID;
+                          return obj.getID() == objectId;
                         });
     return it;
 }
@@ -70,12 +71,12 @@ bool Character::isWearingByName(Name objectName) {
                           return obj.getName() == objectName;
                         });
 
-    return it != wearing.end();
+    return !(it == wearing.end());
 }
 
 bool Character::wear(Object obj) {
     wearing.push_back(obj);
-    return isWearing(obj.getID);
+    return isWearing(obj.getID());
 }
 
 bool Character::takeOff(Object obj) {
