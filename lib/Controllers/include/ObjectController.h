@@ -27,7 +27,7 @@ public:
      *
      * Function: Checks to see if the object in question is valid
      *
-     * Pre-Condition: requires the name of the object
+     * Pre-Condition: Name of the object to validate
      * Post: returns true if object exists
      *
      * */
@@ -37,7 +37,7 @@ public:
      *
      * Function: Retrieve the object from the object list
      *
-     * Pre-Condition: requires the name of the object
+     * Pre-Condition: Name of the object to retrieve
      * Post: returns the object
      *
      * */
