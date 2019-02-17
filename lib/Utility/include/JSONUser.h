@@ -49,7 +49,7 @@ namespace JSONUser {
         file.close();
     }
 
-    static bool isFileExists(const std::string &username) {
+    static bool doesFileExists(const std::string &username) {
         std::string fileName = FILE_PATH + username + EXTENSION;
         std::ifstream f(fileName);
         return f.good();
