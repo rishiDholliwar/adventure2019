@@ -9,10 +9,7 @@
 namespace JSONUser {
 
     using json = nlohmann::json;
-    json j;
-
     using jsonf = nlohmann::json;
-    jsonf jsonfile;
 
     const std::string FILE_PATH = "../DataFiles/Users/";
     const std::string EXTENSION = ".json";
@@ -21,24 +18,32 @@ namespace JSONUser {
 
     const int INDENT = 4;
 
-    static void setupRead(const std::string &username) {
+    static json setupRead(const std::string &username) {
         std::ifstream ifs(FILE_PATH + username + EXTENSION);
+        json j;
+
         if (ifs.is_open()) {
             j = json::parse(ifs);
         }
+
+        return j;
     }
 
-    static void setupWrite(const std::string &username) {
+    static jsonf setupWrite(const std::string &username) {
         std::ofstream file(FILE_PATH + username + EXTENSION);
+        jsonf jsonfile;
+
         if (file.is_open()) {
             file << "{\n\n}";
             file.close();
             std::ifstream ifs(FILE_PATH + username + EXTENSION);
             jsonfile = jsonf::parse(ifs);
         }
+
+        return jsonfile;
     }
 
-    static void writeToFile(const std::string &username) {
+    static void writeToFile(const std::string &username, jsonf jsonfile) {
         std::ofstream file(FILE_PATH + username + EXTENSION);
         file << jsonfile.dump(INDENT);
         file.close();
@@ -51,7 +56,7 @@ namespace JSONUser {
     }
 
     static User getUser(const std::string &username) {
-        setupRead(username);
+        json j = setupRead(username);
         User user(j[USER_NAME].get<std::string>(), j[USER_PASSWORD].get<long int>());
         return user;
     }
@@ -59,13 +64,13 @@ namespace JSONUser {
     static void createNewUser(const std::string &username, size_t hashedPassword) {
         User user(username, hashedPassword);
 
-        setupWrite(user.getusername());
+        jsonf jsonfile = setupWrite(user.getusername());
 
         jsonfile.push_back(jsonf::object_t::value_type(USER_NAME, user.getusername()));
         jsonfile.push_back(
                 jsonf::object_t::value_type(USER_PASSWORD, user.getHashedPassword()));
 
-        writeToFile(user.getusername());
+        writeToFile(user.getusername(), jsonfile);
     }
 
 }
