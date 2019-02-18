@@ -4,6 +4,7 @@ add_library(utility
         include/Utility.h
         include/AlterSpace.h
         include/JSONUser.h
+        include/JSONObjects.h
         )
 
 add_library(returnCode

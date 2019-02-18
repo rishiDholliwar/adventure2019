@@ -41,6 +41,7 @@ target_link_libraries(Object
 target_link_libraries(Inventory
         PUBLIC
                 Object
+                jsonObjects
         )
 
 install(TARGETS Object

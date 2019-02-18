@@ -6,6 +6,7 @@
 
 #ifndef ALTERSPACE_JSONOBJECTS_H
 #define ALTERSPACE_JSONOBJECTS_H
+
 namespace JSONObjects {
 
     using json = nlohmann::json;
@@ -25,57 +26,112 @@ namespace JSONObjects {
         return j;
     }
 
-    static bool doesFileExist(const std::string &name) {
+    static bool fileExists(const std::string &name) {
         std::string fileName = FILE_PATH + name + EXTENSION;
         std::ifstream f(fileName);
         return f.good();
     }
 
-    std::vector<std::string> getArray(int i, json j, std::string arrayName) {
-        std::vector<std::string> vec;
-        int size = j[i][arrayName].size();
+    /*
+     * Read in a list of values for an item's specified property
+     *
+     * Pre-Condition: Name of desired property, and an indexes for where to retrieve its values from JSON
+     *
+     * Post-Condition: Returns a list of property values
+    */
+    std::vector<std::string> getArray(int iObj, json j, std::string property) {
+        std::vector<std::string> values;
+        int numValues = j[iObj][property].size();
 
-        for (unsigned int k = 0; k < size; k++) {
-            vec.push_back(j[i][arrayName][k]);
+        for (unsigned int i = 0; i < numValues; i++) {
+            values.push_back(j[iObj][property][i]);
         }
 
-        return vec;
+        return values;
     }
 
-    std::vector<std::string> getNestedStringArray(int i, json j, std::string obj, std::string field) {
-        std::vector<std::string> vec;
-        int size = j[i][obj].size();
+    /*
+     * Read in a list of key-value pairs for an item's specified property
+     *
+     * Pre-Condition: Name of desired property, and an indexes for where to retrieve its values from JSON
+     *
+     * Post-Condition: Returns a list of key-value pairs
+    */
+    std::unordered_map<std::string, std::string> getPairs(int iObj, json j, std::string property) {
+        std::unordered_map<std::string, std::string> pairs;
+        int numPairs = j[iObj][property].size();
 
-        for (unsigned int k = 0; k < size; k++) {
-            int size2 = j[i][obj][k][field].size();
+        for (auto pair : j[iObj][property].items()) {
+            pairs.insert(std::pair<std::string, std::string>(pair.key(), pair.value()));
+        }
+    }
 
-            for (unsigned int k2 = 0; k2 < size2; k2++) {
-                vec.push_back(j[i][obj][k][field][k2].get<std::string>());
+    /*
+     * Read in a list of values for an item's specified property
+     *
+     * Pre-Condition: Name of desired (nested) property, and an indexes for where to retrieve its values from JSON
+     *
+     * Post-Condition: Returns a list of property values
+    */
+    std::vector<std::string> getNestedArray(int iObj, json j, std::string property, std::string subproperty) {
+        std::vector<std::string> values;
+        int sizeArr = j[iObj][property].size();
+
+        for (unsigned int iArr = 0; iArr < sizeArr; iArr++) {
+            int sizeSubarray = j[iObj][property][iArr][subproperty].size();
+
+            for (unsigned int iSubarr = 0; iSubarr < sizeSubarray; iSubarr++) {
+                values.push_back(j[iObj][property][iArr][subproperty][iSubarr].get<std::string>());
             }
         }
-
-        return vec;
+        return values;
     }
 
+    /*
+     * Concatenate strings from an array
+     *
+     * Pre-Condition: Name of desired property, and an indexes for where to retrieve its values from JSON
+     *
+     * Post-Condition: Returns a string of property values
+    */
+    std::string getStrFromArray(int iObj, json j, std::string property) {
+        std::string combinedStr = std::string();
+        int numValues = j[iObj][property].size();
+
+        for (unsigned int i = 0; i < numValues; i++) {
+            combinedStr += j[iObj][property][i];
+        }
+        return combinedStr;
+    }
+
+    /*
+     * Read in a list of objects from a specified JSON file
+     *
+     * Pre-Condition: Name of file to parse
+     *
+     * Post-Condition: Returns a list of objects
+    */
     static std::vector<Object> getObjects(const std::string &name) {
         json j = setupRead(name);
-        std::vector<Object> vec;
+        std::vector<Object> objects;
 
-        int size = j["OBJECTS"].size();
+        int numObjects = j["OBJECTS"].size();
         j = j["OBJECTS"];
 
-        for (unsigned int i = 0; i < size; i++) {
+        for (unsigned int i = 0; i < numObjects; i++) {
             Object obj(j[i]["id"].get<unsigned int>(),
+                       getStrFromArray(i, j, "keywords"),
+                       getPairs(i, j, "abilities"),
                        getArray(i, j, "keywords"),
                        j[i]["shortdesc"],
                        getArray(i, j, "longdesc"),
                        getNestedStringArray(i, j, "extra", "keywords"),
                        getNestedStringArray(i, j, "extra", "desc"));
 
-            vec.push_back(obj);
+            objects.push_back(obj);
         }
 
-        return vec;
+        return objects;
     }
 
 }

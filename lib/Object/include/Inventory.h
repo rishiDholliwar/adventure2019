@@ -5,6 +5,7 @@
 #include <string>
 
 #include <AlterSpace.h>
+#include <JSONObjects.h>
 #include "Object.h"
 
 using AlterSpace::ID;
@@ -13,12 +14,13 @@ class Inventory {
 private:
     std::vector<Object> objects;
 
-    auto getItemIteratorByID(ID objectID);
+    auto getItemIteratorByID(ID objID);
 
-    auto getItemIteratorByName(Name objectName);
+    auto getItemIteratorByName(Name objType);
 
 public:
-    Inventory();
+
+    Inventory::Inventory() = default;
 
     /* Add Item:
      *
@@ -38,7 +40,7 @@ public:
      * Post: returns true if found
      *
      * */
-    bool doesItemExist(ID objectID);
+    bool doesItemExist(ID objID);
 
     /* Does Item Exist By Name:
      *
@@ -48,7 +50,7 @@ public:
      * Post: returns true if found
      *
      * */
-    bool doesItemExistByName(Name objectName);
+    bool doesItemExistByName(Name objType);
 
     /* Get Item By Name:
      *
@@ -58,7 +60,7 @@ public:
      * Post: returns item if found
      *
      * */
-    Object getItemByName(Name objectName);
+    Object getItemByType(Name objType);
 
     /* Remove Item:
      *
@@ -68,7 +70,7 @@ public:
      * Post: Removes the item from the inventory, returns true if removed successfully
      *
      * */
-    bool removeItem(ID objectID);
+    bool removeItem(ID objID);
 
     /* List Inventory:
      *

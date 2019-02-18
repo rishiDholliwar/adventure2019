@@ -31,7 +31,7 @@ public:
      * Post: returns true if object exists
      *
      * */
-    bool doesObjectExist(const Name &objectName);
+    bool doesObjectExist(const Name &objType);
 
     /* Get Object By Name:
      *
@@ -41,7 +41,7 @@ public:
      * Post: returns the object
      *
      * */
-    const Object &getObjectFromListByName(const Name &objectName) const;
+    const Object &getObjectFromListByName(const Name &objType) const;
 };
 
 #endif //ALTERSPACE_OBJECTCONTROLLER_H

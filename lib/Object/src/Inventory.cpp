@@ -1,66 +1,60 @@
 #include <algorithm>
 #include <Inventory.h>
+#include <JSONObjects.h>
 
-Inventory::Inventory() = default;
-
-void Inventory::addItem(Object object)
-{
+void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
 
-auto Inventory::getItemIteratorByID(ID objectID)
-{
+auto Inventory::getItemIteratorByID(ID objID) {
     auto it = find_if(objects.begin(), objects.end(),
-                      [ objectID ] ( Object const& obj )->bool {
-                          return obj.getID() == objectID;
-                        });
-
-    return it;    
-}
-
-bool Inventory::doesItemExist(ID objectID)
-{
-    
-    return getItemIteratorByID(objectID) != objects.end();
-}
-
-auto Inventory::getItemIteratorByName(Name objectName)
-{
-    auto it = find_if(objects.begin(), objects.end(),
-                      [ objectName ] ( Object const& obj )->bool {
-                          return obj.getName() == objectName;
+                      [ objID ] ( Object const& obj )->bool {
+                          return obj.getID() == objID;
                         });
 
     return it;
 }
 
-bool Inventory::doesItemExistByName(Name objectName)
-{
-    
-    return getItemIteratorByName(objectName) != objects.end();
+bool Inventory::doesItemExist(ID objID) {
+
+    return getItemIteratorByID(objID) != objects.end();
 }
 
-Object Inventory::getItemByName(Name objectName)
+auto Inventory::getItemIteratorByName(Name objType) {
+    auto it = find_if(objects.begin(), objects.end(),
+                      [ objType ] ( Object const& obj )->bool {
+                          return obj.getName() == objType;
+                        });
+
+    return it;
+}
+
+bool Inventory::doesItemExistByName(Name objType) {
+
+    return getItemIteratorByName(objType) != objects.end();
+}
+
+Object Inventory::getItemByType(Name objType)
 {
 
-    if (doesItemExistByName(objectName) == false)
+    if (doesItemExistByName(objType) == false)
     {
         return Object();
     }
 
-    auto it = getItemIteratorByName(objectName);
+    auto it = getItemIteratorByName(objType);
 
     return *it;
 }
 
-bool Inventory::removeItem(ID objectID)
+bool Inventory::removeItem(ID objID)
 {
-    auto it = getItemIteratorByID(objectID);
+    auto it = getItemIteratorByID(objID);
 
     if (it != objects.end())
     {
         it = objects.erase(it);
-        return (doesItemExist(objectID) == false);
+        return (doesItemExist(objID) == false);
     }
     return false;
 }
@@ -70,6 +64,9 @@ std::string Inventory::listInventory()
     if (objects.empty()) {
         return std::string();
     }
+
+
+    /////
 
     int objectCount = 1;
     std::string inventoryList;

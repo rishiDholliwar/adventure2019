@@ -187,7 +187,7 @@ main(int argc, char *argv[]) {
 
     std::string fileName = "mirkwood";
 
-    if (JSONObjects::doesFileExist(fileName)) {
+    if (JSONObjects::fileExists(fileName)) {
         cout << "file exists\n";
     } else {
         cout << "error, no such file\n";
@@ -197,6 +197,13 @@ main(int argc, char *argv[]) {
 
     for (auto &obj : objects) {
         std::cout << "ID: " << obj.getID() << std::endl;
+
+        std::cout << "Type: " << obj.getType() << std::endl;
+
+        std::cout << "Abilities: " std::endl;
+        for (auto &a : obj.getAbilities()) {
+          std::cout << "\t" << a.first << ", " << a.second << std::endl;
+        }
 
         std::cout << " Keywords: " << std::endl;
         for (auto &kw : obj.getKeywords()) {

@@ -221,6 +221,11 @@
     },
     {
       "id": 8801,
+      "abilities": {
+        "minDamage": "3",
+        "maxDamage": "5",
+        "equipSlot": "hands"
+      },
       "keywords": [
         "sword"
       ],
@@ -232,6 +237,9 @@
     },
     {
       "id": 8802,
+      "abilities": {
+
+      },
       "keywords": [
         "cloak"
       ],
@@ -243,6 +251,9 @@
     },
     {
       "id": 8803,
+      "abilities": {
+
+      },
       "keywords": [
         "boots"
       ],
@@ -254,6 +265,9 @@
     },
     {
       "id": 8804,
+      "abilities": {
+
+      },
       "keywords": [
         "water",
         "flask"
@@ -266,6 +280,9 @@
     },
     {
       "id": 8805,
+      "abilities": {
+
+      },
       "keywords": [
         "shield"
       ],
@@ -277,6 +294,11 @@
     },
     {
       "id": 8806,
+      "abilities": {
+          "minDamage": "2",
+          "maxDamage": "5",
+          "equipSlot": "hands"
+      },
       "keywords": [
         "scimitar"
       ],
@@ -288,6 +310,9 @@
     },
     {
       "id": 8807,
+      "abilities": {
+
+      },
       "keywords": [
         "helm"
       ],
@@ -299,6 +324,9 @@
     },
     {
       "id": 8808,
+      "abilities": {
+
+      },
       "keywords": [
         "flask",
         "wine"
@@ -311,6 +339,9 @@
     },
     {
       "id": 8809,
+      "abilities": {
+
+      },
       "keywords": [
         "barrel",
         "wine"
@@ -323,6 +354,9 @@
     },
     {
       "id": 8810,
+      "abilities": {
+
+      },
       "keywords": [
         "barrel"
       ],
@@ -334,6 +368,9 @@
     },
     {
       "id": 8811,
+      "abilities": {
+
+      },
       "keywords": [
         "sword"
       ],
@@ -345,6 +382,9 @@
     },
     {
       "id": 8812,
+      "abilities": {
+
+      },
       "keywords": [
         "key"
       ],
@@ -356,6 +396,9 @@
     },
     {
       "id": 8813,
+      "abilities": {
+
+      },
       "keywords": [
         "key"
       ],

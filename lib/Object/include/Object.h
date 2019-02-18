@@ -11,8 +11,9 @@ using AlterSpace::Name;
 
 class Object {
 private:
-    ID objectID;
-    Name objectName;
+    ID objID;
+    Name objType;
+    std::unordered_map<Trigger, Effect> abilities;
     std::vector<std::string> keywords;
     std::string shortdesc;
     std::vector<std::string> longdesc;
@@ -23,30 +24,34 @@ private:
     };
     extraDescription extra;
 
-
 public:
 	Object();
-	
-    Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
+
+    Object(ID objID, const Name &objType) : objID(objID), objType(objType) {}
 
     //Struct not working with this constructor
-//    Object(ID objectID,std::vector<std::string> keywords , std::string shortdesc,std::vector<std::string> longdesc,std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc)
-//    : objectID(objectID),keywords(keywords),shortdesc(shortdesc),longdesc(longdesc), extra(extraKeywords),extraDescription(extraDesc){}
+//    Object(ID objID,std::vector<std::string> keywords , std::string shortdesc,std::vector<std::string> longdesc,std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc)
+//    : objID(objID),keywords(keywords),shortdesc(shortdesc),longdesc(longdesc), extra(extraKeywords),extraDescription(extraDesc){}
 
-    Object(ID objectID, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
+    Object(ID objID, Name objType, std::unordered_map<Trigger, Effect> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
            std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc) {
-        this->objectID = objectID;
+        this->objID = objID;
+        this->objType = objType;
+        this->abilities = abilities;
         this->keywords = keywords;
         this->shortdesc = shortdesc;
         this->longdesc = longdesc;
         this->extra.keywords = extraKeywords;
         this->extra.desc = extraDesc;
-
     }
 
-    const Name &getName() const;
-
     ID getID() const;
+
+    Name &getType() const;
+
+    std::unordered_map<Trigger, Effect> getAbilities() {
+      return abilities;
+    }
 
     std::vector<std::string> getKeywords() {
         return keywords;

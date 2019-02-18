@@ -39,7 +39,7 @@ public:
 
     /* if username exists and isn't logged in already, logs them in and returns the outcome
      *
-     * Pre-Condition: username as const reference Name type, password as string and a const Connection object
+     * Pre-Condition: username as const reference Name objType, password as string and a const Connection object
      *
      * Post-Condition: a struct of username and a login result
      */
@@ -49,7 +49,7 @@ public:
 	/*
      * if no such username exists already, creates a user with such username and password
      *
-     * Pre-Condition: username as const reference Name type, password as string and a const Connection object
+     * Pre-Condition: username as const reference Name objType, password as string and a const Connection object
      *
      * Post-Condition: a struct of username and a user creation result
 	*/
@@ -58,7 +58,7 @@ public:
 	/*
      * logs out a username by deleting it from the map of activeUsers
      *
-     * Pre-Condition: username as const reference Name type
+     * Pre-Condition: username as const reference Name objType
      *
      * Post-Condition: a struct of username and a logout result
 	*/
@@ -80,7 +80,7 @@ private:
      * If a user is already logged in with such username or if the password is inaccurate, login fails
      * Password passed in is hashed for security
      *
-     * Pre-Condition: username as const reference Name type, password as string
+     * Pre-Condition: username as const reference Name objType, password as string
      *
      * Post-Condition: a result value of whether a user is found and validated successfully
 	*/
@@ -93,7 +93,7 @@ private:
 	 * creates a file to store the login information for the future
 	 * password is hashed for security before being stored
      *
-     * Pre-Condition: username as const reference Name type, password as string
+     * Pre-Condition: username as const reference Name objType, password as string
      *
      * Post-Condition: a result value of whether a new user is created succesfully
 	*/

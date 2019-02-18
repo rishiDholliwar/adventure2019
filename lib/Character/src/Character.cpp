@@ -25,8 +25,8 @@ ID Character::getCharacterID() const {
     return characterID;
 }
 
-Object Character::getItemFromInventoryByName(Name objectName) {
-    return inventory.getItemByName(objectName); 
+Object Character::getItemFromInventoryByName(Name objType) {
+    return inventory.getItemByType(objType);
 }
 
 bool Character::addItemToInventory(Object obj) {
@@ -41,8 +41,8 @@ bool Character::hasItem(ID objectId) {
     return inventory.doesItemExist(objectId);
 }
 
-bool Character::hasItemByName(Name objectName) {
-    return inventory.doesItemExistByName(objectName);
+bool Character::hasItemByName(Name objType) {
+    return inventory.doesItemExistByName(objType);
 }
 
 auto Character::getWearingIteratorByID(ID objectId) {
@@ -61,14 +61,14 @@ bool Character::isWearing(ID objectId) {
     return getWearingIteratorByID(objectId) != wearing.end();
 }
 
-bool Character::isWearingByName(Name objectName) {
-    if (hasItemByName(objectName) == false) {
-        return hasItemByName(objectName);
+bool Character::isWearingByName(Name objType) {
+    if (hasItemByName(objType) == false) {
+        return hasItemByName(objType);
     }
 
     auto it = find_if(wearing.begin(), wearing.end(),
-                      [ objectName ] ( Object const& obj )->bool {
-                          return obj.getName() == objectName;
+                      [ objType ] ( Object const& obj )->bool {
+                          return obj.getName() == objType;
                         });
 
     return !(it == wearing.end());
@@ -98,16 +98,3 @@ bool Character::dropItem(ID objectId) {
 std::string Character::listInventory() {
     return inventory.listInventory();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
