@@ -66,7 +66,8 @@ std::vector<Response> GameController::move(Name username, std::string direction)
     character->setRoomID(destinationRoomID);
 
     Response userResponse = Response("Headed " + direction, username);
-    return formulateResponse(userResponse);
+    std::string genericMessage = username + "headed " + direction;
+    return formulateResponse(userResponse, roomController.getUsernameList(character->getRoomID()),genericMessage);
 }
 
 std::vector<Response> GameController::pickUp(Name username, std::string itemName) {

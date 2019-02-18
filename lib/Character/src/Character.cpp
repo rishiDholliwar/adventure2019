@@ -41,7 +41,7 @@ bool Character::hasItem(ID objectId) {
     return inventory.doesItemExist(objectId);
 }
 
-bool Character::hasItemByName(Name objectName) {
+bool Character::hasItemByName(Name &objectName) {
     return inventory.doesItemExistByName(objectName);
 }
 
@@ -54,7 +54,7 @@ auto Character::getWearingIteratorByID(ID objectId) {
 }
 
 bool Character::isWearing(ID objectId) {
-    if (hasItem(objectId) == false) {
+    if (!hasItem(objectId)) {
         return hasItem(objectId);
     }
 
@@ -62,7 +62,7 @@ bool Character::isWearing(ID objectId) {
 }
 
 bool Character::isWearingByName(Name objectName) {
-    if (hasItemByName(objectName) == false) {
+    if (!hasItemByName(objectName)) {
         return hasItemByName(objectName);
     }
 
@@ -84,10 +84,10 @@ bool Character::takeOff(Object obj) {
 
     if (it != wearing.end()) {
         it = wearing.erase(it);
-        return isWearing(obj.getID()) == false;
+        return !isWearing(obj.getID());
     }
 
-    return isWearing(obj.getID()) == false;
+    return !isWearing(obj.getID());
 }
 
 

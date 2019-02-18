@@ -44,7 +44,7 @@ public:
      *
      * Post-Condition: Returns true if item exists in inventory
     */
-    bool hasItemByName(Name objectName);
+    bool hasItemByName(Name &objectName);
 
     auto getWearingIteratorByID(ID objectId);
 
