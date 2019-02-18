@@ -25,6 +25,19 @@ ID Character::getCharacterID() const {
     return characterID;
 }
 
+std::string Character::getInfo() const {
+	std::string charIDInfo;
+	charIDInfo = "ID: " + std::to_string(getCharacterID()) + "\n";
+	std::string charNameInfo;
+	charNameInfo = "Name: " + getName() + "\n";
+	std::string charWearInfo;
+	charWearInfo = "Wearing: \n\t" + listWearing();
+	std::string roomInfo;
+	roomInfo = "Room ID: " + std::to_string(getRoomID()) + "\n";
+
+	return charIDInfo + charNameInfo + roomInfo + charWearInfo;
+}
+
 Object Character::getItemFromInventoryByName(Name objectName) {
     return inventory.getItemByName(objectName); 
 }
@@ -89,6 +102,19 @@ bool Character::takeOff(Object obj) {
 
 bool Character::dropItem(ID objectId) {
     return inventory.removeItem(objectId);
+}
+
+std::string Character::listWearing() const {
+	std::string wearList = "";
+	int wearCount = 1;
+
+	for (Object obj : wearing) {
+		std::string wearIndex = std::to_string(wearCount) + ". " + obj.getName() + "\n";
+		wearList += wearIndex;
+		wearCount++;
+	}
+
+	return wearList;
 }
 
 std::string Character::listInventory() {

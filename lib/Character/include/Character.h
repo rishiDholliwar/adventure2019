@@ -23,6 +23,7 @@ public:
     Name getName() const;
     ID getRoomID() const;
     ID getCharacterID() const;
+    std::string getInfo() const;
 
     void setRoomID(ID roomID);
 
@@ -73,6 +74,8 @@ public:
      * Post-Condition: Item will be dropped if it exists, returns true if dropped
     */
     bool dropItem(ID objectId);
+
+    std::string listWearing() const;
 
 
     // This should be getInventory
