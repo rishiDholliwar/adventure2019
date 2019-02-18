@@ -1,4 +1,3 @@
-
 add_library(gameController
   src/GameController.cpp)
 
@@ -13,6 +12,7 @@ target_include_directories(gameController
     ${Boost_INCLUDE_DIR}
 )
 
+
 target_link_libraries(gameController
   PUBLIC
     world
@@ -23,12 +23,32 @@ target_link_libraries(gameController
     ${Boost_LIBRARIES}
 )
 
+
 set_target_properties(gameController
                       PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
 )
-
 install(TARGETS gameController
   ARCHIVE DESTINATION lib
 )
+
+
+add_executable(gameControllerTest
+  test/test_commands.cpp)
+
+set_target_properties(gameControllerTest
+                      PROPERTIES
+                      LINKER_LANGUAGE CXX
+                      CXX_STANDARD 17
+                      PREFIX "")
+
+
+target_link_libraries(gameControllerTest
+  gameController
+  utility
+  ${Boost_LIBRARIES})
+
+
+install(TARGETS gameControllerTest
+  RUNTIME DESTINATION bin)

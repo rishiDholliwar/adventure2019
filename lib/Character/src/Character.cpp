@@ -54,17 +54,11 @@ auto Character::getWearingIteratorByID(ID objectId) {
 }
 
 bool Character::isWearing(ID objectId) {
-    if (!hasItem(objectId)) {
-        return hasItem(objectId);
-    }
 
     return getWearingIteratorByID(objectId) != wearing.end();
 }
 
 bool Character::isWearingByName(Name objectName) {
-    if (!hasItemByName(objectName)) {
-        return hasItemByName(objectName);
-    }
 
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objectName ] ( Object const& obj )->bool {
@@ -76,6 +70,7 @@ bool Character::isWearingByName(Name objectName) {
 
 bool Character::wear(Object obj) {
     wearing.push_back(obj);
+    dropItem(obj.getID());
     return isWearing(obj.getID());
 }
 
@@ -84,7 +79,8 @@ bool Character::takeOff(Object obj) {
 
     if (it != wearing.end()) {
         it = wearing.erase(it);
-        return !isWearing(obj.getID());
+        addItemToInventory(obj);
+        return (!isWearing(obj.getID()) && hasItem(obj.getID()));
     }
 
     return !isWearing(obj.getID());
