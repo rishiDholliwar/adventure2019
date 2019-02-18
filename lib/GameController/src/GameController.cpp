@@ -11,13 +11,13 @@ GameController::GameController()
     this->objectController = ObjectController();
 }
 
+bool GameController::loadCharacter(Name username)
+{
+    return characterController.addCharacter(username, roomController);
+}
+
 std::vector<Response> GameController::say(Name username, Input message) {
     std::cout << "Say " << message << std::endl;
-
-    // check user if user is logged in
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addCharacter(username, roomController);
-    }
 
     Character character = characterController.getCharacter(username);
 
@@ -29,10 +29,6 @@ std::vector<Response> GameController::say(Name username, Input message) {
 
 std::vector<Response> GameController::broadcast(Name username, Input message) {
     std::cout << "Broadcast " << message << std::endl;
-
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addCharacter(username, roomController);
-    }
 
     Character character = characterController.getCharacter(username);
     std::vector<std::string> broadcast = characterController.getAllCharacterNames();
@@ -46,11 +42,6 @@ std::vector<Response> GameController::broadcast(Name username, Input message) {
 
 std::vector<Response> GameController::move(Name username, std::string direction) {
     std::cout << "Move: " << direction << std::endl;
-
-    // check user if user is logged in
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addCharacter(username, roomController);
-    }
 
     // Obtain character object based on userName (dummy)
     Character* character = &characterController.getCharacter(username);
@@ -79,11 +70,6 @@ std::vector<Response> GameController::move(Name username, std::string direction)
 
 std::vector<Response> GameController::pickUp(Name username, std::string itemName) {
     std::cout << "Pick Up: " << itemName << std::endl;
-
-    // check user if user is logged in
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addCharacter(username, roomController);
-    }
 
     // Obtain character object based on userName (dummy)
     Character character = characterController.getCharacter(username);
@@ -114,11 +100,6 @@ std::vector<Response> GameController::pickUp(Name username, std::string itemName
 std::vector<Response> GameController::drop(Name username, std::string itemName) {
     std::cout << "Drop: " << itemName << std::endl;
 
-    // check user if user is logged in
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addCharacter(username, roomController);
-    }
-
     // Obtain character object based on userName (dummy)
     Character character = characterController.getCharacter(username);
 
@@ -146,10 +127,6 @@ std::vector<Response> GameController::drop(Name username, std::string itemName) 
 
 
 std::vector<Response> GameController::inventory(Name username, Input message) {
-    // check user if user is logged in
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addCharacter(username, roomController);
-    }
 
     // Obtain character object based on userName (dummy)
     Character character = characterController.getCharacter(username);
@@ -169,10 +146,6 @@ std::vector<Response> GameController::inventory(Name username, Input message) {
 }
 
 std::vector<Response> GameController::swap(Name username, Name target) {
-    // check user if user is logged in
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addCharacter(username, roomController);
-    }
 
     //check if target is valid
     if(!characterController.doesCharacterExist(target)){
