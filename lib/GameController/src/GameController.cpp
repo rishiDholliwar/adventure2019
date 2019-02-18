@@ -28,6 +28,27 @@ std::vector<Response> GameController::say(Name username, Input message) {
     return formulateResponse(userResponse, roomController.getUsernameList(character.getRoomID()),genericMessage);
 }
 
+std::vector<Response> GameController::whisper(Name username, std::string inputs) {
+    std::vector<std::string> inputStrings = utility::popFront(inputs);
+
+    //check if user input format is incorrect
+    if (inputStrings.size() != 2) {
+        Response userResponse = Response("You must type in the {username of the character you wish to message}, {message}", username);
+        return formulateResponse(userResponse);
+    }
+
+    //if whisper target character is not currently logged in
+    if (!characterController.doesCharacterExist(inputStrings.at(0))) {
+        Response userResponse = Response(inputStrings.at(0) + ": is not currently logged in", username);
+        return formulateResponse(userResponse);
+    }
+
+    Response userResponse = Response("To <" + inputStrings.at(0) + ">: " + inputStrings.at(1), username);
+    Response targetResponse = Response("From <" + username + ">: " + inputStrings.at(1), inputStrings.at(0));
+
+    return formulateResponse(userResponse, targetResponse);
+}
+
 std::vector<Response> GameController::broadcast(Name username, Input message) {
     std::cout << "Broadcast " << message << std::endl;
 
