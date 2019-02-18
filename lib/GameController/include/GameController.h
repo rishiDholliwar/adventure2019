@@ -24,6 +24,16 @@ public:
     GameController();
 
     /*
+     * loadCharacter:
+     *
+     * Pre-Condition: username of the character that we are loading
+     *
+     * Post-Condition: Returns true if successfully loaded character
+     *                         false if character already loaded
+    */
+    bool loadCharacter(Name username);
+
+    /*
      * say:
      *
      * Pre-Condition: username of the user sending the message and the message
