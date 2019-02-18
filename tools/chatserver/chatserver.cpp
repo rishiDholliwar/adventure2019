@@ -17,19 +17,6 @@
 #include <Utility.h>
 #include <ReturnCodes.h>
 
-// We must decide on how to handle onConnect and onDisconnect
-// The reason why our game is a global is because the methods
-// can not reference the Game class easily
-std::unique_ptr<Game> game;
-
-void onConnect(Connection c) {
-    game->addConnection(c);
-}
-
-void onDisconnect(Connection c) {
-    game->removeConnection(c);
-}
-
 void
 Game::addConnection(Connection c) {
     std::cout << "New connection found: " << c.id << "\n";
@@ -173,7 +160,9 @@ Game::run()
 
 Game::Game(Config config)
 {
-    _server = std::make_unique<Server>(config.port, config.webpage, onConnect, onDisconnect);
+    _server = std::make_unique<Server>(config.port, config.webpage,
+                                        [this](Connection c){this->addConnection(c);},
+                                        [this](Connection c){this->removeConnection(c);});
     _gameController = std::make_unique<GameController>();
     _userController = std::make_unique<UserController>();
     _commandHandler = std::make_unique<CommandHandler>();
@@ -207,7 +196,7 @@ main(int argc, char* argv[]) {
 
     Config config = {.port = port, .webpage = webpage};
 
-    game = std::make_unique<Game>(config);
+    auto game = std::make_unique<Game>(config);
     game->run();
 
     return 0;
