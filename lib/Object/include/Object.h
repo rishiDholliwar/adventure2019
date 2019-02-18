@@ -13,7 +13,7 @@ class Object {
 private:
     ID objID;
     Name objType;
-    std::unordered_map<Trigger, Effect> abilities;
+    std::unordered_map<Property, Value> abilities;
     std::vector<std::string> keywords;
     std::string shortdesc;
     std::vector<std::string> longdesc;
@@ -33,7 +33,7 @@ public:
 //    Object(ID objID,std::vector<std::string> keywords , std::string shortdesc,std::vector<std::string> longdesc,std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc)
 //    : objID(objID),keywords(keywords),shortdesc(shortdesc),longdesc(longdesc), extra(extraKeywords),extraDescription(extraDesc){}
 
-    Object(ID objID, Name objType, std::unordered_map<Trigger, Effect> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
+    Object(ID objID, Name objType, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
            std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc) {
         this->objID = objID;
         this->objType = objType;
@@ -49,7 +49,7 @@ public:
 
     Name &getType() const;
 
-    std::unordered_map<Trigger, Effect> getAbilities() {
+    std::unordered_map<Property, Value> getAbilities() {
       return abilities;
     }
 

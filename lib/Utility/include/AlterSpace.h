@@ -11,8 +11,8 @@ namespace AlterSpace
     using Input     = std::string;
     using Name      = std::string;
     using Password  = std::string;
-    using Trigger   = std::string;
-    using Effect    = std::string;
+    using Property  = std::string;
+    using Value     = std::string;
 }
 
 
