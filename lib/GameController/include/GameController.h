@@ -43,6 +43,15 @@ public:
     std::vector<Response> say(Name username, std::string message);
 
     /*
+     * whisper:
+     *
+     * Pre-Condition: username of the user sending the message, the message and their target
+     *
+     * Post-Condition: Returns a message to the target it may concern
+    */
+    std::vector<Response> whisper(Name username, std::string inputs);
+
+    /*
      * Broadcast:
      *
      * Pre-Condition: username of the user sending the message and the message
