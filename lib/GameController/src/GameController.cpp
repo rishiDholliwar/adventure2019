@@ -2,6 +2,7 @@
 #include <Character.h>
 #include <iostream>
 #include <GameController.h>
+#include <Utility.h>
 
 using ASDirection::directionMap;
 
@@ -144,6 +145,158 @@ std::vector<Response> GameController::drop(Name username, std::string itemName) 
     return formulateResponse(userResponse);
 }
 
+std::vector<Response> GameController::give(Name username, Input message) {
+	std::vector<std::string> inputStrings = utility::tokenizeString(message);
+
+	//check if user input format is incorrect
+	if (inputStrings.size() != 2) {
+		Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
+		return formulateResponse(userResponse);
+	}
+
+	//if gift target character doesn't exist
+	if (!characterController.doesCharacterExist(inputStrings.at(0))) {
+		Response userResponse = Response("Character name " + inputStrings.at(0) + " does not exist for you to gift to.", username);
+		return formulateResponse(userResponse);
+	}
+
+	//check user if user is logged in
+	if (!characterController.doesCharacterExist(username)) {
+		characterController.addCharacter(username, roomController);
+	}
+
+	//obtain user character object based on userName (dummy)
+	Character userCharacter = characterController.getCharacter(username);
+
+	//obtain gift target user character object based on userName
+	Character targetCharacter = characterController.getCharacter(inputStrings.at(0));
+
+	//check if gift item exists in user inventory
+	if (!userCharacter.hasItemByName(inputStrings.at(1))) {
+		Response userResponse = Response("Item name " + inputStrings.at(1) + " does not exist for you to give.", username);
+		return formulateResponse(userResponse);
+	}
+
+	Object gift = userCharacter.getItemFromInventoryByName(inputStrings.at(1));
+
+	//drop item from user inventory
+	if (userCharacter.dropItem(gift.getID()) == false) {
+        Response userResponse = Response("dropping failed for userChar", username);
+        return formulateResponse(userResponse);
+    }
+
+    //test only:
+    if (targetCharacter.dropItem(gift.getID()) == false) {
+        Response userResponse = Response("dropping failed for targetChar", username);
+        return formulateResponse(userResponse);
+    }
+
+    //test only:
+    if (userCharacter.hasItem(gift.getID())) {
+        Response userResponse = Response("userChar still has item", username);
+        return formulateResponse(userResponse);
+    }
+
+    //test only:
+    if (targetCharacter.hasItem(gift.getID())) {
+        Response userResponse = Response("targetChar still has item", username);
+        return formulateResponse(userResponse);
+    }
+
+	//add item to target user inventory
+	targetCharacter.addItemToInventory(gift);
+
+    bool giftSuccess = targetCharacter.hasItem(gift.getID());
+
+	if (giftSuccess == false) {
+		Response userResponse = Response("Giving " + inputStrings.at(1) + " to character " + inputStrings.at(0) + " has failed.", username);
+		return formulateResponse(userResponse);
+	}
+
+	//generate response
+	Response userResponse = Response("You have given " + inputStrings.at(1) + " to character " + inputStrings.at(0) + "!", username);
+	return formulateResponse(userResponse);
+
+}
+
+std::vector<Response> GameController::wear(Name username, std::string itemName) {
+	// check user if user is logged in
+    if(!characterController.doesCharacterExist(username)){
+        characterController.addCharacter(username, roomController);
+    }
+
+    //obtain user character object based on userName (dummy)
+	Character character = characterController.getCharacter(username);
+
+	//check if item exists in user inventory
+	if (!character.hasItemByName(itemName)) {
+		Response userResponse = Response("Item name " + itemName + " does not exist for you to wear.", username);
+		return formulateResponse(userResponse);
+	}
+
+	//obtain item through input
+    Object item = objectController.getObjectFromListByName(itemName);
+
+    // Verify if the character has item
+    if(!character.hasItem(item.getID())){
+        Response userResponse = Response("You don't have this item in your inventory!", username);
+        return formulateResponse(userResponse);
+    }
+
+    //check if character is already wearing this item
+    if (character.isWearing(item.getID())) {
+    	Response userResponse = Response("You are already wearing this item!", username);
+        return formulateResponse(userResponse);
+    }
+
+    //wear item
+    if (character.wear(item) == true) {
+    	Response userResponse = Response("Wearing " + item.getName() + " succesfully!", username);
+        return formulateResponse(userResponse);
+    }
+
+    Response userResponse = Response("Wearing " + item.getName() + " has failed!", username);
+        return formulateResponse(userResponse);
+}
+
+std::vector<Response> GameController::takeOff(Name username, std::string itemName) {
+	// check user if user is logged in
+    if(!characterController.doesCharacterExist(username)){
+        characterController.addCharacter(username, roomController);
+    }
+
+    //obtain user character object based on userName (dummy)
+	Character character = characterController.getCharacter(username);
+
+	//check if item exists in user inventory
+	if (!character.hasItemByName(itemName)) {
+		Response userResponse = Response("Item name " + itemName + " does not exist for you to wear.", username);
+		return formulateResponse(userResponse);
+	}
+
+	//obtain item through input
+    Object item = objectController.getObjectFromListByName(itemName);
+
+    // Verify if the character has item
+    if(!character.hasItem(item.getID())){
+        Response userResponse = Response("You don't have this item in your inventory!", username);
+        return formulateResponse(userResponse);
+    }
+
+    //check if character is already wearing this item
+    if (character.isWearing(item.getID())) {
+    	Response userResponse = Response("You are already wearing this item!", username);
+        return formulateResponse(userResponse);
+    }
+
+    if (character.takeOff(item) == true) {
+    	Response userResponse = Response("Took off " + item.getName() + " succesfully!", username);
+        return formulateResponse(userResponse);
+    }
+
+    Response userResponse = Response("Taking off " + item.getName() + " has failed!", username);
+    return formulateResponse(userResponse);
+}
 
 std::vector<Response> GameController::inventory(Name username, Input message) {
     // check user if user is logged in

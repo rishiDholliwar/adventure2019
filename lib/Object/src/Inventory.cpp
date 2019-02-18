@@ -8,24 +8,60 @@ void Inventory::addItem(Object object)
     objects.push_back(object);
 }
 
-bool Inventory::doesItemExist(ID objectID)
+auto Inventory::getItemIteratorByID(ID objectID)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectID ] ( Object const& obj )->bool {
                           return obj.getID() == objectID;
                         });
-    return it != objects.end();
+
+    return it;    
+}
+
+bool Inventory::doesItemExist(ID objectID)
+{
+    
+    return getItemIteratorByID(objectID) != objects.end();
+}
+
+auto Inventory::getItemIteratorByName(Name objectName)
+{
+    auto it = find_if(objects.begin(), objects.end(),
+                      [ objectName ] ( Object const& obj )->bool {
+                          return obj.getName() == objectName;
+                        });
+
+    return it;
+}
+
+bool Inventory::doesItemExistByName(Name objectName)
+{
+    
+    return getItemIteratorByName(objectName) != objects.end();
+}
+
+Object Inventory::getItemByName(Name objectName)
+{
+
+    if (doesItemExistByName(objectName) == false)
+    {
+        return Object();
+    }
+
+    auto it = getItemIteratorByName(objectName);
+
+    return *it;
 }
 
 bool Inventory::removeItem(ID objectID)
 {
-    auto it = find_if(objects.begin(), objects.end(),
-                        [objectID] (Object const& obj)->bool {
-                            return obj.getID() == objectID;
-                        });
+    auto it = getItemIteratorByID(objectID);
+
     if (it != objects.end())
+    {
         it = objects.erase(it);
-        return true;
+        return (doesItemExist(objectID) == false);
+    }
     return false;
 }
 

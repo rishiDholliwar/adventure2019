@@ -1,0 +1,24 @@
+diff --git a/lib/Object/include/Inventory.h b/lib/Object/include/Inventory.h
+index 7ba25a5..e21e99b 100644
+--- a/lib/Object/include/Inventory.h
++++ b/lib/Object/include/Inventory.h
+@@ -30,8 +30,8 @@ public:
+      *
+      * Function: Checks to see if user has such the item
+      *
+-     * Pre-Condition: ID of the item in question
+-     * Post:returns true if found
++     * Pre-Condition: ID of the item to validate
++     * Post: returns true if found
+      *
+      * */
+     bool doesItemExist(ID objectID);
+@@ -40,7 +40,7 @@ public:
+      *
+      * Function: removes item from inventory
+      *
+-     * Pre-Condition: the ID of the item in question
++     * Pre-Condition: ID of the item to remove
+      * Post: will have removed the item from the inventory, returns true if removed
+      *
+      * */

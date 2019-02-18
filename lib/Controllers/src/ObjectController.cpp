@@ -12,4 +12,3 @@ bool ObjectController::doesObjectExist(const Name &objectName) {
 const Object &ObjectController::getObjectFromListByName(const Name &objectName) const {
     return objects.find(objectName)->second;
 }
-
