@@ -100,13 +100,13 @@ ReturnCode UserController::validateLoginUserData(const Name username, Password p
     //using json library api parser that will eventually be created by the group,
 
     //if username.json doesn't exist, ReturnCode::USERNAME_FAIL
-    if (!JSONUser::isFileExists(username)) {
+    if (!JSONUser::doesFileExist(username)) {
         return ReturnCode::USERNAME_FAIL;
     }
     // Check if hashedPassword matches hashedPassword in username.json
     // If true, ReturnCode::LOGIN_SUCCESS, else ReturnCode::PASSWORD_FAIL
 
-    if(JSONUser::getUser(username).getHashedPassword() != hashedPassword){
+    if (JSONUser::getUser(username).getHashedPassword() != hashedPassword) {
         return ReturnCode::PASSWORD_FAIL;
     }
 
@@ -138,7 +138,7 @@ ReturnCode UserController::validateNewUserData(const Name username, Password pas
 
     //make sure no .json file exists with that username.
     //if such file already exists, return ReturnCode::USERNAME_EXISTS
-    if (JSONUser::isFileExists(username)) {
+    if (JSONUser::doesFileExist(username)) {
         return ReturnCode::USERNAME_EXISTS;
     }
 
@@ -146,7 +146,7 @@ ReturnCode UserController::validateNewUserData(const Name username, Password pas
     auto hashedPassword = hashPassword(password);
 
     //create username.json file, read in username and hashed password
-    JSONUser::createNewUser(username,hashedPassword);
+    JSONUser::createNewUser(username, hashedPassword);
 
     return ReturnCode::CREATE_SUCCESS;
 }
