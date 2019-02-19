@@ -1,6 +1,7 @@
 #include <utility>
 #include <iostream>
 #include <Character.h>
+#include <StringLibrary.h>
 
 
 Character::Character(const Name &name, ID characterID, ID roomID)
@@ -96,7 +97,9 @@ bool Character::doesSpellExist(std::string &spellName) {
 
 
 void Character::addDefaultSpells(){
-
+    addSpellToCharacter(StringLibrary::spellSwap);
+    addSpellToCharacter(StringLibrary::spellDecoy);
+    addSpellToCharacter(StringLibrary::spellConfuse);
 }
 
 void Character::addSpellToCharacter(std::string &spellName) {

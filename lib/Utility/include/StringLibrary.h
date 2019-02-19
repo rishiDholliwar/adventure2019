@@ -13,9 +13,9 @@ namespace StringLibrary{
     /*
      * Spell Library
      */
-    std::string spellSwap = "swap";
-    std::string spellDecoy = "decoy";
-    std::string spellConfuse = "confuse";
+    inline std::string spellSwap = "swap";
+    inline std::string spellDecoy = "decoy";
+    inline std::string spellConfuse = "confuse";
 }
 
 #endif //ALTERSPACE_STRINGLIBRARY_H

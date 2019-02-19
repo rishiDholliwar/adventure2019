@@ -182,10 +182,18 @@ std::vector<Response> GameController::cast(std::string username, std::string tar
         return formulateResponse(userResponse);
     }
 
-    //Check if second parameter is a valid character
-    if(!characterController.doesCharacterExist(message[1])){
-        Response userResponse = Response("The target does not exist!",username);
-        return formulateResponse(userResponse);
+    //Check if second parameter exists
+    if(message.max_size() > 1){
+        //Check if second parameter target exists
+        if(!characterController.doesCharacterExist(message[1])){
+            Response userResponse = Response("The target does not exist!",username);
+            return formulateResponse(userResponse);
+        }
+        //TODO::GAME LOGIC ON SPELL CAST
+    }
+    else {
+            //TODO::IN COMBAT STATE OR TARGET NOT SPECIFIED
+
     }
 
 
