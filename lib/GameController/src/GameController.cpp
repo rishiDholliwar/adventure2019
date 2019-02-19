@@ -80,14 +80,17 @@ std::vector<Response> GameController::move(Name username, Input direction) {
         return formulateResponse(userResponse);
     }
 
+    // list of users to notify that character moved north
+    std::vector<std::string> userList = roomController.getUsernameList(characterController.getCharacterRoomID(username));
+
     // Update roomList to account for character moving
     roomController.removeUserNameFromRoom(username, characterController.getCharacterRoomID(username));
     roomController.addUserNameToRoom(username, destinationRoomID);
     characterController.setCharacterRoomID(username, destinationRoomID);
 
     Response userResponse = Response("Headed " + direction, username);
-    std::string genericMessage = username + "headed " + direction;
-    return formulateResponse(userResponse, roomController.getUsernameList(characterController.getCharacterRoomID(username)), genericMessage);
+    std::string genericMessage = username + " headed " + direction;
+    return formulateResponse(userResponse, userList, genericMessage);
 }
 
 std::vector<Response> GameController::pickUp(Name username, Input itemName) {
