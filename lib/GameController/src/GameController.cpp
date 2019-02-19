@@ -145,7 +145,7 @@ std::vector<Response> GameController::inventory(Name username, Input message) {
     return formulateResponse(userResponse);
 
 }
-
+/*
 std::vector<Response> GameController::swap(Name username, Name target) {
 
     //check if target is valid
@@ -164,13 +164,14 @@ std::vector<Response> GameController::swap(Name username, Name target) {
 
     return formulateResponse(userResponse, targetResponse);
 }
+*/
 
 std::vector<Response> GameController::cast(std::string username, std::string target) {
     std::vector<std::string> message = utility::tokenizeString(target);
     for(auto &a : message){
         std::cout<< a << std::endl;
     }
-
+    std::cout << message.size() << std::endl;
     // checks game to see if spell exists in game
     if(!spellController.doesSpellExist(message[0])){
         Response userResponse = Response("The spell doesn't exist", username);
@@ -182,25 +183,28 @@ std::vector<Response> GameController::cast(std::string username, std::string tar
         return formulateResponse(userResponse);
     }
 
-    //Check if second parameter exists
-    if(message.max_size() > 1){
-        //Check if second parameter target exists
-        if(!characterController.doesCharacterExist(message[1])){
-            Response userResponse = Response("The target does not exist!",username);
+    Spells spell = spellController.getSpell(message[0]);
+    //If spell is of type CHARACTER, then a target is required
+    if(spell.getType()==Spells::SpellType::CHARACTER){
+        //Check if second parameter exists
+        if(message.size() > 1){
+            //Check if second parameter target exists
+            if(!characterController.doesCharacterExist(message[1])){
+                Response userResponse = Response("The target does not exist!",username);
+                return formulateResponse(userResponse);
+            }
+            //TODO::GAME LOGIC ON SPELL CAST
+        } else{
+            Response userResponse = Response("No target selected",username);
             return formulateResponse(userResponse);
         }
-        //TODO::GAME LOGIC ON SPELL CAST
     }
-    else {
-            //TODO::IN COMBAT STATE OR TARGET NOT SPECIFIED
-
-    }
+    //TODO::IN COMBAT STATE OR TARGET NOT SPECIFIED
 
 
-    Response userResponse = Response("Successfully swapped!", "a'");
-    Response targetResponse = Response("A swap spell was cast on you!", "a'");
+    Response targetResponse = Response("A swap spell was cast on you!", username);
 
-    return formulateResponse(userResponse, targetResponse);
+    return formulateResponse(targetResponse);
 };
 
 std::vector<Response>

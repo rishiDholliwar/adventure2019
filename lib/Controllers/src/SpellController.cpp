@@ -28,3 +28,14 @@ bool SpellController::doesSpellExist(std::string &spellName) {
     return false;
 }
 
+Spells SpellController::getSpell(std::string &spellName) {
+    Spells spell;
+    for(auto &spell : SpellList){
+        if(spell.getName() == spellName){
+            return spell;
+        }
+    }
+    return spell;
+}
+
+

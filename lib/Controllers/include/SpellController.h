@@ -39,6 +39,15 @@ public:
      */
     bool doesSpellExist(std::string &spellName);
 
+    /*
+     * Returns a spell
+     *
+     * Pre-Condition: given a spell name
+     *
+     * Post-Condition: give back the spell
+     */
+    Spells getSpell(std::string &spellName);
+
 
 
 
