@@ -169,7 +169,7 @@ std::vector<Response> GameController::give(Name username, Input message) {
 	Object gift = characterController.getItemFromCharacterInventory(username, giftName);
 
 	//drop item from user inventory
-	if (characterController.dropItemFromCharacterInventory(username, gift.getID()) == false) {
+	if (!characterController.dropItemFromCharacterInventory(username, gift.getID())) {
         Response userResponse = Response("dropping failed for userChar", username);
         return formulateResponse(userResponse);
     }
@@ -177,7 +177,7 @@ std::vector<Response> GameController::give(Name username, Input message) {
 	//add item to target user inventory
 	characterController.addItemToCharacterInventory(targetCharacterName, gift);
 
-	if (characterController.characterHasItem(targetCharacterName, gift.getID()) == false) {
+	if (!characterController.characterHasItem(targetCharacterName, gift.getID())) {
 		Response userResponse = Response("Giving " + giftName + " to character " + targetCharacterName + " has failed.", username);
 		return formulateResponse(userResponse);
 	}
@@ -205,7 +205,7 @@ std::vector<Response> GameController::wear(Name username, Input itemName) {
     Object item = objectController.getObjectFromListByName(itemName);
 
     //wear item
-    if (characterController.characterWearItem(username, item) == false) {
+    if (!characterController.characterWearItem(username, item)) {
         Response userResponse = Response("Wearing " + item.getName() + " has failed!", username);
         return formulateResponse(userResponse);
     }
@@ -219,12 +219,12 @@ std::vector<Response> GameController::takeOff(Name username, Input itemName) {
     Object item = objectController.getObjectFromListByName(itemName);
 
     //check if character is already wearing this item
-    if (characterController.characterIsWearingItem(username, item.getID()) == false) {
+    if (!characterController.characterIsWearingItem(username, item.getID())) {
     	Response userResponse = Response("You don't have this item equipped!", username);
         return formulateResponse(userResponse);
     }
 
-    if (characterController.characterRemoveItem(username, item) == false) {
+    if (!characterController.characterRemoveItem(username, item)) {
         Response userResponse = Response("Taking off " + item.getName() + " has failed!", username);
         return formulateResponse(userResponse);
     	

@@ -2,4 +2,3 @@
 networkbuild/
 .idea/
 cmake-build-debug/
-web-socket-networking/
