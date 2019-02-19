@@ -62,6 +62,16 @@ public:
     */
     bool doesCharacterExist(std::string &userName);
 
+
+    /*
+     * Checks to see if character has knowledge of given spell
+     *
+     * Pre-Condition: the spell name that the character is casting
+     *
+     * Post-Condition: returns true if the character has knowledge of given spell
+     */
+    bool doesCharacterHaveSpell(std::string &username, std::string &spellName);
+
     std::vector<std::string> getNamesOfOnlineUsers();
 
 

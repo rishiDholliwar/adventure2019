@@ -2,6 +2,7 @@
 #include <Character.h>
 #include <iostream>
 #include <GameController.h>
+#include <Utility.h>
 
 
 std::vector<Response> GameController::say(std::string username, std::string message) {
@@ -183,6 +184,38 @@ std::vector<Response> GameController::swap(std::string username, std::string tar
 
     return formulateResponse(userResponse, targetResponse);
 }
+
+std::vector<Response> GameController::cast(std::string username, std::string target) {
+    std::vector<std::string> message = utility::tokenizeString(target);
+
+    // check user if user is logged in
+    if(!characterController.doesCharacterExist(username)){
+        characterController.addToOnlineUsers(username, roomController);
+    }
+
+    // checks game to see if spell exists in game
+    if(!spellController.doesSpellExist(message[0])){
+        Response userResponse = Response("The spell doesn't exist", username);
+        return formulateResponse(userResponse);
+    }
+    // checks to see if character has knowledge of spells
+    if(!characterController.doesCharacterHaveSpell(username,message[0])) {
+        Response userResponse = Response("You do not know this spell.", username);
+        return formulateResponse(userResponse);
+    }
+
+    //Check if second parameter is a valid character
+    if(characterController.doesCharacterExist(message[1])){
+        Response userResponse = Response("The target does not exist!",username);
+        return formulateResponse(userResponse);
+    }
+
+
+    Response userResponse = Response("Successfully swapped!", "a'");
+    Response targetResponse = Response("A swap spell was cast on you!", "a'");
+
+    return formulateResponse(userResponse, targetResponse);
+};
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse, std::vector<std::string> characterList,
                                                         std::string message){

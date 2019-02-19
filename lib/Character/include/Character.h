@@ -92,6 +92,15 @@ class Character {
     std::string getListOfSpells(Spells::SpellType spellType);
 
     /*
+     * Returns true or false depending if the character has a given spell name
+     *
+     * Pre-Condition: Character has a list of spells
+     *
+     * Post-Condition: True if character has spell learned
+     */
+    bool doesSpellExist(std::string &spellName);
+
+    /*
      * Character Stats
      */
 
@@ -107,7 +116,7 @@ private:
     unsigned int roomID;
     Inventory inventory;
     CharacterStatus status = CharacterStatus::DEFAULT;
-    std::vector<Spells> characterSpells;
+    std::vector<std::string> characterSpells;
 
     /*
      * Character stats

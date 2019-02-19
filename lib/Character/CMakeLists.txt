@@ -1,7 +1,8 @@
 add_executable(test_character
         src/test_character.cpp src/Character.cpp include/Character.h)
 
-add_library(Character src/Character.cpp)
+add_library(Character src/Character.cpp
+            src/Spells.cpp)
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
 target_include_directories(Character

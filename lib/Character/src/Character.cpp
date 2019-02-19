@@ -60,29 +60,13 @@ std::string Character::getListOfSpells() {
     int spellCounter = 1;
     std::string spellList;
     for(auto &spells : characterSpells){
-        std::string spellString = std::to_string(spellCounter) + ". " + spells.getName() + " cost: " + std::to_string(spells.getManaCost()) + "\n";
+        std::string spellString = std::to_string(spellCounter) + ". " + spells;
         spellList += spellString;
         spellCounter++;
     }
     return spellList;
 }
 
-std::string Character::getListOfSpells(Spells::SpellType spellType) {
-    if(characterSpells.empty()){
-        return std::string();
-    }
-
-    int spellCounter = 1;
-    std::string spellList;
-    for(auto &spells : characterSpells) {
-        if (spells.getType() == spellType) {}
-        std::string spellString = std::to_string(spellCounter) + ". " + spells.getName() + " cost: " +
-                                  std::to_string(spells.getManaCost()) + "\n";
-        spellList += spellString;
-        spellCounter++;
-    }
-    return spellList;
-}
 
 unsigned int Character::getCharacterCurrentHP() {
     return currentHP;
@@ -98,6 +82,18 @@ void Character::setCharacterCurrentHP(unsigned int hp) {
 
 void Character::setCharacterCurrentMP(unsigned int mp) {
     this->currentMP = mp;
+}
+
+bool Character::doesSpellExist(std::string &spellName) {
+    if(characterSpells.empty()){
+        return false;
+    }
+    for(auto &spells : characterSpells){
+        if(spells == spellName){
+            return true;
+        }
+    }
+    return false;
 }
 
 

@@ -6,6 +6,7 @@
 #include <ObjectController.h>
 #include <RoomController.h>
 #include <Response.h>
+#include <SpellController.h>
 
 #include <vector>
 #include <map>
@@ -15,6 +16,7 @@ private:
     CharacterController characterController;
     ObjectController objectController;
     RoomController roomController;
+    SpellController spellController;
 
     std::map<std::string, Direction> directionMap;
 
@@ -93,6 +95,9 @@ public:
     std::vector<Response> inventory(std::string username, std::string message);
 
     std::vector<Response> swap(std::string username, std::string target);
+
+    std::vector<Response> cast(std::string username, std::string target);
+
 
     /* Formulate Response:
      *

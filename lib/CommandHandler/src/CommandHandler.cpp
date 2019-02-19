@@ -1,5 +1,6 @@
 #include <CommandHandler.h>
 #include <GameController.h>
+#include <SpellController.h>
 #include <iostream>
 #include <Utility.h>
 
@@ -36,6 +37,8 @@ CommandHandler::LognFunctionMap CommandHandler::_defLognMap = []
     mapping["/logout"] = &UserController::logoutUser;
     return mapping;
 }();
+
+
 
 CommandInfo CommandHandler::parseCommand(const std::string& input)
 {

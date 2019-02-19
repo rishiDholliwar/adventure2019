@@ -48,4 +48,9 @@ void CharacterController::swapCharacters(Character &userCharacter, Character &ta
 
 }
 
+bool CharacterController::doesCharacterHaveSpell(std::string &username, std::string &spellName) {
+    Character character = getCharacter(username);
+    return(character.doesSpellExist(spellName));
+}
+
 

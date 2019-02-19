@@ -1,5 +1,5 @@
 add_library(controllers
-        src/CharacterController.cpp src/ObjectController.cpp)
+        src/CharacterController.cpp src/ObjectController.cpp src/SpellController.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
