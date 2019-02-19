@@ -20,7 +20,7 @@ private:
 
 public:
 
-    Inventory::Inventory() = default;
+    Inventory() = default;
 
     /* Add Item:
      *

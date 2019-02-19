@@ -5,9 +5,12 @@
 #include <vector>
 
 #include <AlterSpace.h>
+#include <unordered_map>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
+using AlterSpace::Property;
+using AlterSpace::Value;
 
 class Object {
 private:
@@ -47,7 +50,7 @@ public:
 
     ID getID() const;
 
-    Name &getType() const;
+    Name getType() const;
 
     std::unordered_map<Property, Value> getAbilities() {
       return abilities;

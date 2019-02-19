@@ -23,7 +23,7 @@ bool Inventory::doesItemExist(ID objID) {
 auto Inventory::getItemIteratorByName(Name objType) {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objType ] ( Object const& obj )->bool {
-                          return obj.getName() == objType;
+                          return obj.getType() == objType;
                         });
 
     return it;
@@ -73,7 +73,7 @@ std::string Inventory::listInventory()
 
     for(auto &obj : objects){
 
-        std::string objectString = std::to_string(objectCount) + ". " + obj.getName() + "\n";
+        std::string objectString = std::to_string(objectCount) + ". " + obj.getType() + "\n";
         inventoryList += objectString;
 
         objectCount++;

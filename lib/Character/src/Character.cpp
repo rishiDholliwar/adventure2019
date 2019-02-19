@@ -68,7 +68,7 @@ bool Character::isWearingByName(Name objType) {
 
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objType ] ( Object const& obj )->bool {
-                          return obj.getName() == objType;
+                          return obj.getType() == objType;
                         });
 
     return !(it == wearing.end());

@@ -12,7 +12,7 @@ namespace JSONObjects {
     using json = nlohmann::json;
     using jsonf = nlohmann::json;
 
-    const std::string FILE_PATH = "../DataFiles/";
+    const std::string FILE_PATH = "./DataFiles/";
     const std::string EXTENSION = ".json";
 
     static json setupRead(const std::string &name) {
@@ -39,13 +39,18 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a list of property values
     */
-    std::vector<std::string> getArray(int iObj, json j, std::string property) {
-        std::vector<std::string> values;
-        int numValues = j[iObj][property].size();
+    inline std::vector<std::string> getArray(int iObj, json j, std::string property) {
+        std::vector<std::string> values{};
 
-        for (unsigned int i = 0; i < numValues; i++) {
-            values.push_back(j[iObj][property][i]);
+        for (auto str : j[iObj][property].items()) {
+            values.push_back(str.value());
         }
+
+        // int numValues = j[iObj][property].size();
+
+        // for (unsigned int i = 0; i < numValues; i++) {
+        //     values.push_back(j[iObj][property][i]);
+        // }
 
         return values;
     }
@@ -57,9 +62,8 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a list of key-value pairs
     */
-    std::unordered_map<std::string, std::string> getPairs(int iObj, json j, std::string property) {
-        std::unordered_map<std::string, std::string> pairs;
-        int numPairs = j[iObj][property].size();
+    inline std::unordered_map<std::string, std::string> getPairs(int iObj, json j, std::string property) {
+        std::unordered_map<std::string, std::string> pairs{};
 
         for (auto pair : j[iObj][property].items()) {
             pairs.insert(std::pair<std::string, std::string>(pair.key(), pair.value()));
@@ -73,17 +77,24 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a list of property values
     */
-    std::vector<std::string> getNestedArray(int iObj, json j, std::string property, std::string subproperty) {
-        std::vector<std::string> values;
-        int sizeArr = j[iObj][property].size();
+    inline std::vector<std::string> getNestedArray(int iObj, json j, std::string arr, std::string subarr) {
+        std::vector<std::string> values{};
 
-        for (unsigned int iArr = 0; iArr < sizeArr; iArr++) {
-            int sizeSubarray = j[iObj][property][iArr][subproperty].size();
-
-            for (unsigned int iSubarr = 0; iSubarr < sizeSubarray; iSubarr++) {
-                values.push_back(j[iObj][property][iArr][subproperty][iSubarr].get<std::string>());
+        for (auto obj : j[iObj][arr].items()) {
+            for (auto str : j[iObj][arr][subarr]) {
+                values.push_back(str.key());
             }
         }
+
+        //int sizeArr = j[iObj][arr].size();
+        //
+        // for (unsigned int iArr = 0; iArr < sizeArr; iArr++) {
+        //     int sizeSubarray = j[iObj][property][iArr][subproperty].size();
+
+        //     for (unsigned int iSubarr = 0; iSubarr < sizeSubarray; iSubarr++) {
+        //         values.push_back(j[iObj][property][iArr][subproperty][iSubarr].get<std::string>());
+        //     }
+        // }
         return values;
     }
 
@@ -94,13 +105,18 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a string of property values
     */
-    std::string getStrFromArray(int iObj, json j, std::string property) {
+    inline std::string getStrFromArray(int iObj, json j, std::string property) {
         std::string combinedStr = std::string();
-        int numValues = j[iObj][property].size();
 
-        for (unsigned int i = 0; i < numValues; i++) {
-            combinedStr += j[iObj][property][i];
+        for (auto str : j[iObj][property].items()) {
+            combinedStr += str.key();
         }
+
+        // int numValues = j[iObj][property].size();
+
+        // for (unsigned int i = 0; i < numValues; i++) {
+        //     combinedStr += j[iObj][property][i];
+        // }
         return combinedStr;
     }
 
@@ -113,9 +129,12 @@ namespace JSONObjects {
     */
     static std::vector<Object> getObjects(const std::string &name) {
         json j = setupRead(name);
-        std::vector<Object> objects;
+        std::cout << "read json" << std::endl;
+        std::vector<Object> objects{};
+        std::cout << "initialized object vector" << std::endl;
 
         int numObjects = j["OBJECTS"].size();
+        std::cout << "number of objects: " << numObjects << std::endl;
         j = j["OBJECTS"];
 
         for (unsigned int i = 0; i < numObjects; i++) {
@@ -125,8 +144,9 @@ namespace JSONObjects {
                        getArray(i, j, "keywords"),
                        j[i]["shortdesc"],
                        getArray(i, j, "longdesc"),
-                       getNestedStringArray(i, j, "extra", "keywords"),
-                       getNestedStringArray(i, j, "extra", "desc"));
+                       getNestedArray(i, j, "extra", "keywords"),
+                       getNestedArray(i, j, "extra", "desc"));
+            std::cout << "Created object " << i << std::endl;
 
             objects.push_back(obj);
         }

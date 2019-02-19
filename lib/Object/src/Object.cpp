@@ -3,9 +3,9 @@
 Object::Object() = default;
 
 ID Object::getID() const {
-    return this->objType;
+    return this->objID;
 }
 
-const Name& Object::getType() const {
+Name Object::getType() const {
     return this->objType;
 }
