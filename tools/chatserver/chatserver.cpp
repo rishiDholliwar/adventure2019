@@ -15,6 +15,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <Utility.h>
+#include <ReturnCodes.h>
 
 // We must decide on how to handle onConnect and onDisconnect
 // The reason why our game is a global is because the methods
@@ -61,8 +62,9 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             quit = true;
         }
 
-        CommandInfo info = _commandHandler->parseCommand(message.text);
-        if ( (! _userController->isConnectionLoggedIn(message.connection)) && (info.type != CommandType::LOGIN))
+        std::string trimmed = utility::trimStringToLength(message.text, 2048);
+        CommandInfo info = _commandHandler->parseCommand(trimmed);
+        if ( (! _userController->isConnectionLoggedIn(message.connection)) && (info.type != CommandType::USERCONTROLLER))
         {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
@@ -91,7 +93,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
                 }
                 break;
             }
-            case CommandType::LOGIN:
+            case CommandType::USERCONTROLLER:
             {
                 auto func = _commandHandler->getLognFunc(info.command);
                 if (func != nullptr)
@@ -109,6 +111,10 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
                     }
                     UserController::UserData response = ((*_userController).*func)(username, v.at(0), message.connection);
                     output = Return::ReturnCodeToString(response.returnCode);
+                    if ( response.returnCode == ReturnCode::LOGIN_SUCCESS )
+                    {
+                        _gameController->loadCharacter(username);
+                    }
                     // output = "OK";
                 }
                 else

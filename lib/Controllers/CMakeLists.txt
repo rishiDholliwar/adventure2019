@@ -18,6 +18,7 @@ PRIVATE
         Object
         Inventory
         world
+        utility
         ${Boost_LIBRARIES}
         )
 

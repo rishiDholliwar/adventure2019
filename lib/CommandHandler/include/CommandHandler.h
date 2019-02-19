@@ -4,10 +4,20 @@
 #include <deque>
 #include <vector>
 #include <unordered_map>
+
+#include <AlterSpace.h>
 #include <GameController.h>
 #include <UserController.h>
 #include <Server.h>
 #include <Response.h>
+
+using AlterSpace::Alias;
+using AlterSpace::Command;
+using AlterSpace::Input;
+using AlterSpace::Name;
+using AlterSpace::Password;
+
+using networking::Connection;
 
 class GameController;
 class UserController;
@@ -17,7 +27,7 @@ struct CommandInfo;
 enum CommandType
 {
     GAMECONTROLLER,
-    LOGIN,
+    USERCONTROLLER,
     COMMANDHANDLER,
     UNKNOWN
 };
@@ -30,12 +40,9 @@ enum CommandType
 */
 class CommandHandler {
 public:
-    using Name = std::string;
-    using Alias = std::string;
-    using Command = std::string;
-    typedef std::vector<Response>    (GameController::*UserCommFunc) (Name userName, std::string input);
-    typedef std::string              (CommandHandler::*CommHandFunc) (const Name& userName, const std::string& input);
-    typedef UserController::UserData (UserController::*LognCommFunc) (const Name& userName, std::string password, const networking::Connection);
+    using UserCommFunc = std::vector<Response>    (GameController::*) (Name userName, Input input);
+    using CommHandFunc = std::string              (CommandHandler::*) (const Name& userName, const Input& input);
+    using LognCommFunc = UserController::UserData (UserController::*) (const Name& userName, Password password, const Connection);
 
     using UserFunctionMap = std::unordered_map<Command, UserCommFunc>;
     using CommFunctionMap = std::unordered_map<Command, CommHandFunc>;
@@ -81,7 +88,7 @@ public:
      *
      * Post-Condition: Returns an output string
     */
-    std::string setAlias(const Name& userName, const std::string& input);
+    std::string setAlias(const Name& userName, const Input& input);
 
     /*
      * Parses the arguments for _removeAlias
@@ -91,7 +98,7 @@ public:
      *
      * Post-Condition: Returns an output string
     */
-    std::string removeAlias(const Name& userName, const std::string& input);
+    std::string removeAlias(const Name& userName, const Input& input);
 
     /*
      * Sets user alias for a command (Only works for game controller commands)
@@ -119,7 +126,7 @@ public:
      * Post-Condition: Returns a struct with CommandType, Command(std::string),
      *                  and the rest of the command(input)
     */
-    CommandInfo parseCommand(const std::string& input);
+    CommandInfo parseCommand(const Input& input);
 
 private:
     /*
@@ -135,8 +142,8 @@ private:
 struct CommandInfo
 {
     CommandType type;
-    CommandHandler::Command command;
-    std::string input;
+    Command command;
+    Input input;
 };
 
 #endif //WEBSOCKETNETWORKING_COMMANDHANDLER_H

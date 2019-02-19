@@ -1,13 +1,15 @@
 #include <utility>
-
-//
-// Created on 1/23/2019.
-//
-
 #include <iostream>
 #include <Character.h>
 
 
+Character::Character(const Name &name, ID characterID, ID roomID)
+{
+  this->name = name;
+  this->characterID = characterID;
+  this->roomID = roomID;
+  this->inventory = Inventory{};
+}
 Character::Character(const std::string &name, unsigned int characterID, unsigned int roomID) : name(name),
                                                                                                characterID(characterID),
                                                                                                roomID(roomID),
@@ -16,15 +18,15 @@ Character::Character(const std::string &name, unsigned int characterID, unsigned
     this->currentMP = maxMP;
 }
 
-std::string Character::getName(){
+Name Character::getName() const {
     return this->name;
 }
 
-unsigned int Character::getRoomID() {
+ID Character::getRoomID() const {
     return this->roomID;
 }
 
-unsigned int Character::getCharacterID() const {
+ID Character::getCharacterID() const {
     return characterID;
 }
 
@@ -32,15 +34,15 @@ bool Character::addItemToInventory(Object obj) {
     inventory.addItem(obj);
 }
 
-void Character::setRoomID(unsigned int roomID) {
+void Character::setRoomID(ID roomID) {
     Character::roomID = roomID;
 }
 
-bool Character::hasItem(unsigned int objectId) {
+bool Character::hasItem(ID objectId) {
     return inventory.doesItemExist(objectId);
 }
 
-void Character::dropItem(unsigned int objectId) {
+void Character::dropItem(ID objectId) {
     inventory.removeItem(objectId);
 }
 

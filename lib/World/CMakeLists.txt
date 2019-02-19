@@ -20,6 +20,9 @@ set_target_properties(world
                       CXX_STANDARD 17
 )
 
+target_link_libraries(world
+        utility)
+
 install(TARGETS world
   ARCHIVE DESTINATION lib
 )

@@ -3,12 +3,13 @@
 
 #include <string>
 
+#include <AlterSpace.h>
+
+using AlterSpace::Name;
+
 class User {
 
 public:
-
-    using Name = std::string;   // Type alias for username type
-
     User() = default;
 
     User(Name username)
@@ -26,7 +27,6 @@ public:
     std::size_t getHashedPassword() const;
 
 private:
-
     Name _username;
 
     std::size_t _hashedPassword;

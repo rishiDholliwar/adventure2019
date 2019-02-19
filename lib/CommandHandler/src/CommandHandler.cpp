@@ -38,9 +38,7 @@ CommandHandler::LognFunctionMap CommandHandler::_defLognMap = []
     return mapping;
 }();
 
-
-
-CommandInfo CommandHandler::parseCommand(const std::string& input)
+CommandInfo CommandHandler::parseCommand(const Input& input)
 {
 	std::vector<std::string> v = utility::popFront(input);
 	CommandInfo ci{ .type = CommandType::UNKNOWN };
@@ -61,7 +59,7 @@ CommandInfo CommandHandler::parseCommand(const std::string& input)
 	}
 	else if( _defLognMap.find(command) != _defLognMap.end() )
 	{
-		ci.type = CommandType::LOGIN;	
+		ci.type = CommandType::USERCONTROLLER;
 	}
 	else
 	{
@@ -116,7 +114,7 @@ CommandHandler::CommHandFunc CommandHandler::getCommFunc(const Command& command)
 	return _defCommMap[command];
 }
 
-std::string CommandHandler::setAlias(const Name& userName, const std::string& input)
+std::string CommandHandler::setAlias(const Name& userName, const Input& input)
 {
     std::vector<std::string> v = utility::tokenizeString(input);
     if(v.size() != 2)
@@ -129,7 +127,7 @@ std::string CommandHandler::setAlias(const Name& userName, const std::string& in
     return _setAlias(userName, command, alias);
 }
 
-std::string CommandHandler::removeAlias(const Name& userName, const std::string& input)
+std::string CommandHandler::removeAlias(const Name& userName, const Input& input)
 {
     std::vector<std::string> v = utility::tokenizeString(input);
     if(v.size() != 1)
@@ -180,7 +178,7 @@ std::string CommandHandler::_setAlias(const Name& userName, const Command& comma
 	{
 		return error;
 	}
-	
+
 	auto mapItr = userMap->insert(std::pair(newAlias, itr->second));
 	// Fails if there is already an alias with this name
 	if( ! mapItr.second )

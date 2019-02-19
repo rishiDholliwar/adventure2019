@@ -1,26 +1,23 @@
-//
-// Created on 1/22/2019.
-//
-
 #ifndef ALTERSPACE_OBJECT_H
 #define ALTERSPACE_OBJECT_H
 
-#include <stdio.h>
 #include <string>
-#include <utility>
+
+#include <AlterSpace.h>
+
+using AlterSpace::ID;
+using AlterSpace::Name;
 
 class Object {
 private:
-    unsigned int ID;
-    std::string name;
+    ID objectID;
+    Name objectName;
 
 public:
+    Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
 
-    Object(unsigned int ID, const std::string &name);
-
-    const std::string &getName() const;
-
-    unsigned int getID() const;
+    const Name& getName() const;
+    ID getID() const;
 };
 
 

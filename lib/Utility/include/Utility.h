@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
-#include <regex>
 
 namespace utility {
 
@@ -15,6 +14,15 @@ namespace utility {
         std::vector<T> result;
         std::copy_if(collection.begin(), collection.end(), result, predicate);
         return result;
+    }
+
+    static std::string trimStringToLength(std::string input, int length)
+    {
+        if ( input.length() > length )
+        {
+            input.erase(length, std::string::npos);
+        }
+        return input;
     }
 
     static std::vector<std::string> tokenizeString(const std::string& input)
@@ -36,14 +44,10 @@ namespace utility {
         std::string str;
         ss >> str;
         result.push_back(str);
-        std::string tmp;
-        ss >> tmp;
-        while ( ss >> str )
-        {
-            tmp += " " + str;
-        }
-        auto value = std::regex_replace(tmp, std::regex("^ +| +$|( ) +"), "$1");
-        result.push_back(value);
+        auto pos = input.find(" ", str.length()) + 1;
+        str = input;
+        str.erase(0, pos);
+        result.push_back(str);
         return result;
     }
 

@@ -1,7 +1,3 @@
-//
-// Created by evan on 30/01/19.
-//
-
 #include <algorithm>
 #include <RoomController.h>
 
@@ -30,31 +26,31 @@ RoomController::RoomController() {
 /*
  * Getters
  */
-const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
+std::vector<ID> RoomController::getCharacterList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return emptyIdVector;
+        return std::vector<ID> {};
     }
 
     return room->getCharacterList();
 }
 
-const std::vector<ID> & RoomController::getObjectList(ID roomId) {
+std::vector<ID> RoomController::getObjectList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return emptyIdVector;
+        return std::vector<ID> {};
     }
 
     return room->getObjectList();
 }
 
-const std::vector<std::string> & RoomController::getUsernameList(ID roomId) {
+std::vector<Name> RoomController::getUsernameList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return emptyStringVector;
+        return std::vector<Name> {};
     }
 
     return room->getUsernameList();
@@ -74,7 +70,7 @@ std::vector<ID> RoomController::getRoomIdList() const {
  * Adders
  */
 
-bool RoomController::generateRoom(ID roomId, const std::string& roomName) {
+bool RoomController::generateRoom(ID roomId, const Name& roomName) {
     auto tempRoom = RoomController::searchRoom(roomId);
 
     if (tempRoom == nullptr) {
@@ -94,7 +90,7 @@ bool RoomController::addObjectToRoom(ID objectId, ID roomId) {
     return (tempRoom != nullptr) && (tempRoom->addObject(objectId));
 }
 
-bool RoomController::addUserNameToRoom(const std::string &userName, ID roomId) {
+bool RoomController::addUserNameToRoom(const Name &userName, ID roomId) {
     auto tempRoom = this->searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->addUserName(userName));
 }
@@ -128,7 +124,7 @@ bool RoomController::removeObjectFromRoom(ID objectId, ID roomId) {
     return (tempRoom != nullptr) && (tempRoom->removeObject(objectId));
 }
 
-bool RoomController::removeUserNameFromRoom(const std::string &userName, ID roomId) {
+bool RoomController::removeUserNameFromRoom(const Name &userName, ID roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->removeUserName(userName));
 }

@@ -1,32 +1,36 @@
-//
-// Created on 1/24/2019.
-//
-
-#include <vector>
-#include <iostream>
 #include <algorithm>
 #include <Inventory.h>
-#include <Object.h>
-
 
 Inventory::Inventory() = default;
 
-void Inventory::addItem(Object object) {
+void Inventory::addItem(Object object)
+{
     objects.push_back(object);
 }
 
-bool Inventory::doesItemExist(unsigned int objectID) {
-    return find_if(objects.begin(), objects.end(),
-                   [objectID](Object const& obj)->bool{return obj.getID() == objectID;}) != objects.end();
+bool Inventory::doesItemExist(ID objectID)
+{
+    auto it = find_if(objects.begin(), objects.end(),
+                      [ objectID ] ( Object const& obj )->bool {
+                          return obj.getID() == objectID;
+                        });
+    return it != objects.end();
 }
 
-void Inventory::removeItem(unsigned int objectID) {
-    auto it = find_if(objects.begin(), objects.end(), [objectID](Object const& obj)->bool{return obj.getID() == objectID;});
-    objects.erase(it);
+bool Inventory::removeItem(ID objectID)
+{
+    auto it = find_if(objects.begin(), objects.end(),
+                        [objectID] (Object const& obj)->bool {
+                            return obj.getID() == objectID;
+                        });
+    if (it != objects.end())
+        it = objects.erase(it);
+        return true;
+    return false;
 }
 
-std::string Inventory::listInventory() {
-
+std::string Inventory::listInventory()
+{
     if (objects.empty()) {
         return std::string();
     }

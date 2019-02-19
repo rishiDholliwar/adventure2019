@@ -19,8 +19,3 @@ std::size_t User::getHashedPassword() const {
 bool operator<(const User& t, const User& o) {
 	return (t.getusername() < o.getusername());
 }
-
-/*
-./bin/chatserver
-./bin/chatserver 4002 ../adventure2019/webchat.html
-*/

@@ -1,4 +1,3 @@
-
 #ifndef OOP_ROOM_H
 #define OOP_ROOM_H
 
@@ -6,8 +5,12 @@
 #include <string>
 #include <memory>
 #include <string_view>
+#include <map>
 
-using ID = unsigned int;
+#include <AlterSpace.h>
+
+using AlterSpace::Name;
+using AlterSpace::ID;
 
 enum class Direction{
     NORTH,
@@ -16,32 +19,43 @@ enum class Direction{
     WEST
 };
 
+namespace ASDirection
+{
+    static std::map<std::string, Direction>
+    directionMap = {
+                    {"north", Direction::NORTH},
+                    {"south", Direction::SOUTH},
+                    {"east", Direction::EAST},
+                    {"west", Direction::WEST}
+                   };
+}
+
 class Room
 {
 public:
 
-    Room(ID id, const std::string& name);
+    Room(ID id, const Name& name);
 
     // Getters
     ID const& getId() const{return id;};
-    std::string const& getName() const{return name;};
+    Name const& getName() const{return name;};
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
     std::vector<ID> const& getCharacterList() const{return characterList;};
     std::vector<ID> const& getObjectList() const{return objectList;};
-    std::vector<std::string> const& getUsernameList() const{return usernameList;};
+    std::vector<Name> const& getUsernameList() const{return usernameList;};
 
     // Adders
     void addDescription(const std::string& description);
     void addExtendedDescription(const std::string& extDescription);
     bool addCharacter(ID characterId);
     bool addObject(ID objectId);
-    bool addUserName(const std::string& userName);
+    bool addUserName(const Name& userName);
 
     // Removers
     bool removeCharacter(ID characterId);
     bool removeObject(ID objectId);
-    bool removeUserName(const std::string& userName);
+    bool removeUserName(const Name& userName);
 
     // Link Rooms
     // use character 'n','e','s','w' to represent direction
@@ -56,12 +70,12 @@ public:
 
 private:
     ID  id;
-    std::string name;
+    Name name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
     std::vector<ID> characterList;
     std::vector<ID> objectList;
-    std::vector<std::string> usernameList;
+    std::vector<Name> usernameList;
 
     struct LinkingRoomList{
         ID north = 0;

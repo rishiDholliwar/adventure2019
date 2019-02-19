@@ -2,7 +2,7 @@
 #include <Room.h>
 #include <iostream>
 
-Room::Room(ID id, const std::string& name){
+Room::Room(ID id, const Name& name){
     this->id = id;
     this->name = name;
 }
@@ -27,7 +27,7 @@ bool Room::addObject(ID objectId) {
     return addUniqueItemToList(objectId, this->objectList);
 }
 
-bool Room::addUserName(const std::string &userName) {
+bool Room::addUserName(const Name &userName) {
     return addUniqueItemToList(userName, this->usernameList);
 }
 /*
@@ -42,7 +42,7 @@ bool Room::removeObject(ID objectId) {
     return removeUniqueItemFromList(objectId, this->objectList);
 }
 
-bool Room::removeUserName(const std::string &userName) {
+bool Room::removeUserName(const Name &userName) {
     return removeUniqueItemFromList(userName, this->usernameList);
 }
 /*
