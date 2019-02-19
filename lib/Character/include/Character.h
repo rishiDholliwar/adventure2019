@@ -49,12 +49,36 @@ public:
 
     auto getWearingIterator(ID objectId);
 
+    /*
+     * checks to see if character is wearing specified item
+     *
+     * Pre-Condition: id of the item
+     *
+     * Post-Condition: Returns true if the item is being worn
+    */
     bool isWearing(ID objectId);
 
+    /*
+     * overloaded
+     */
     bool isWearing(Name objectName);
 
+    /*
+     * the user equips the specified item
+     *
+     * Pre-Condition: the item
+     *
+     * Post-Condition: Returns true if the item is equipped
+    */
     bool wear(Object obj);
 
+    /*
+     * unequips the specified item
+     *
+     * Pre-Condition: the item
+     *
+     * Post-Condition: Returns true if the item is unequipped
+    */
     bool remove(Object obj);
 
     /*
@@ -74,6 +98,7 @@ public:
      * Post-Condition: Item will be dropped if it exists, returns true if dropped
     */
     bool dropItem(ID objectId);
+
 
     std::string listWearing() const;
 
