@@ -12,18 +12,7 @@ using AlterSpace::ID;
 using AlterSpace::Name;
 
 class Character {
-private:
-    Name name;
-    ID characterID;
-    ID roomID;
-    Inventory inventory;
-
 public:
-    Character(const Name &name, ID characterID, ID roomID);
-    Name getName() const;
-    ID getRoomID() const;
-    ID getCharacterID() const;
-    public:
     /*
     * A Character has a status that limits the actions a character can do.
     */
@@ -33,13 +22,31 @@ public:
         MINIGAME,
         DEFAULT
     };
+private:
+    Name name;
+    ID characterID;
+    ID roomID;
+    Inventory inventory;
+    CharacterStatus status = CharacterStatus::DEFAULT;
+    std::vector<std::string> characterSpells;
+
+    /*
+     * Character stats
+     */
+    unsigned int currentHP;
+    unsigned int currentMP;
+    unsigned int attack = 1;
+    unsigned int defense = 1;
+
+    unsigned int maxHP = 100;
+    unsigned int maxMP = 100;
 
 
-    Character(const std::string &name, unsigned int characterID, unsigned int roomID);
-
-    std::string getName();
-
-    unsigned int getRoomID();
+public:
+    Character(const Name &name, ID characterID, ID roomID);
+    Name getName() const;
+    ID getRoomID() const;
+    ID getCharacterID() const;
 
     void setRoomID(ID roomID);
 
@@ -114,6 +121,21 @@ public:
     bool doesSpellExist(std::string &spellName);
 
     /*
+     * Add a spell to the character
+     *
+     * Pre-Condition: Valid spell name
+     *
+     * Post-Condition: The character learns a new spell
+     *
+     */
+    void addSpellToCharacter(std::string &spellName);
+
+
+    //Set up characters default spell
+    void addDefaultSpells();
+
+
+    /*
      * Character Stats
      */
 
@@ -122,25 +144,6 @@ public:
     void setCharacterCurrentHP(unsigned int hp);
     void setCharacterCurrentMP(unsigned int mp);
 
-
-private:
-    std::string name;
-    unsigned int characterID;
-    unsigned int roomID;
-    Inventory inventory;
-    CharacterStatus status = CharacterStatus::DEFAULT;
-    std::vector<std::string> characterSpells;
-
-    /*
-     * Character stats
-     */
-    unsigned int currentHP;
-    unsigned int currentMP;
-    unsigned int attack = 1;
-    unsigned int defense = 1;
-
-    unsigned int maxHP = 100;
-    unsigned int maxMP = 100;
 
 };
 

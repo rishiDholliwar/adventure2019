@@ -9,13 +9,8 @@ Character::Character(const Name &name, ID characterID, ID roomID)
   this->characterID = characterID;
   this->roomID = roomID;
   this->inventory = Inventory{};
-}
-Character::Character(const std::string &name, unsigned int characterID, unsigned int roomID) : name(name),
-                                                                                               characterID(characterID),
-                                                                                               roomID(roomID),
-                                                                                               inventory() {
-    this->currentHP = maxHP;
-    this->currentMP = maxMP;
+  addDefaultSpells();
+
 }
 
 Name Character::getName() const {
@@ -70,6 +65,7 @@ std::string Character::getListOfSpells() {
 }
 
 
+
 unsigned int Character::getCharacterCurrentHP() {
     return currentHP;
 }
@@ -98,6 +94,14 @@ bool Character::doesSpellExist(std::string &spellName) {
     return false;
 }
 
+
+void Character::addDefaultSpells(){
+
+}
+
+void Character::addSpellToCharacter(std::string &spellName) {
+    this->characterSpells.push_back(spellName);
+}
 
 
 

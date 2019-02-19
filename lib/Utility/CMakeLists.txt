@@ -2,7 +2,8 @@
 add_library(utility
         src/Utility.cpp
         include/Utility.h
-        include/AlterSpace.h)
+        include/AlterSpace.h
+        include/StringLibrary.h)
 
 add_library(returnCode
         include/Response.h

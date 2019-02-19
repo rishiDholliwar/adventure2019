@@ -167,10 +167,8 @@ std::vector<Response> GameController::swap(Name username, Name target) {
 
 std::vector<Response> GameController::cast(std::string username, std::string target) {
     std::vector<std::string> message = utility::tokenizeString(target);
-
-    // check user if user is logged in
-    if(!characterController.doesCharacterExist(username)){
-        characterController.addToOnlineUsers(username, roomController);
+    for(auto &a : message){
+        std::cout<< a << std::endl;
     }
 
     // checks game to see if spell exists in game
@@ -185,7 +183,7 @@ std::vector<Response> GameController::cast(std::string username, std::string tar
     }
 
     //Check if second parameter is a valid character
-    if(characterController.doesCharacterExist(message[1])){
+    if(!characterController.doesCharacterExist(message[1])){
         Response userResponse = Response("The target does not exist!",username);
         return formulateResponse(userResponse);
     }

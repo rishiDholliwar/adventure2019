@@ -4,6 +4,7 @@
 
 #include <SpellController.h>
 #include <Spells.h>
+#include <StringLibrary.h>
 
 
 SpellController::SpellController() {
@@ -13,9 +14,9 @@ SpellController::SpellController() {
      * Format:
      * (SpellName , SpellType , ManaCost , SpellDamage)
      */
-    SpellList.push_back(Spells("swap",Spells::SpellType::CHARACTER,0,0));
-    SpellList.push_back(Spells("confuse",Spells::SpellType::CHARACTER,0,0));
-    SpellList.push_back(Spells("decoy",Spells::SpellType::COMBAT,0,0));
+    SpellList.push_back(Spells(StringLibrary::spellSwap ,Spells::SpellType::CHARACTER,0,0));
+    SpellList.push_back(Spells(StringLibrary::spellConfuse,Spells::SpellType::CHARACTER,0,0));
+    SpellList.push_back(Spells(StringLibrary::spellDecoy,Spells::SpellType::COMBAT,0,0));
 }
 
 bool SpellController::doesSpellExist(std::string &spellName) {
@@ -26,3 +27,4 @@ bool SpellController::doesSpellExist(std::string &spellName) {
     }
     return false;
 }
+
