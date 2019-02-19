@@ -8,7 +8,7 @@ void Inventory::addItem(Object object)
     objects.push_back(object);
 }
 
-auto Inventory::getItemIteratorByID(ID objectID)
+auto Inventory::getItemIterator(ID objectID)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectID ] ( Object const& obj )->bool {
@@ -21,10 +21,10 @@ auto Inventory::getItemIteratorByID(ID objectID)
 bool Inventory::doesItemExist(ID objectID)
 {
     
-    return getItemIteratorByID(objectID) != objects.end();
+    return getItemIterator(objectID) != objects.end();
 }
 
-auto Inventory::getItemIteratorByName(Name objectName)
+auto Inventory::getItemIterator(Name objectName)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectName ] ( Object const& obj )->bool {
@@ -34,28 +34,28 @@ auto Inventory::getItemIteratorByName(Name objectName)
     return it;
 }
 
-bool Inventory::doesItemExistByName(Name objectName)
+bool Inventory::doesItemExist(Name objectName)
 {
     
-    return getItemIteratorByName(objectName) != objects.end();
+    return getItemIterator(objectName) != objects.end();
 }
 
-Object Inventory::getItemByName(Name objectName)
+Object Inventory::getItem(Name objectName)
 {
 
-    if (doesItemExistByName(objectName) == false)
+    if (doesItemExist(objectName) == false)
     {
         return Object();
     }
 
-    auto it = getItemIteratorByName(objectName);
+    auto it = getItemIterator(objectName);
 
     return *it;
 }
 
 bool Inventory::removeItem(ID objectID)
 {
-    auto it = getItemIteratorByID(objectID);
+    auto it = getItemIterator(objectID);
 
     if (it != objects.end())
     {

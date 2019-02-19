@@ -63,8 +63,33 @@ public:
 
     std::vector<Name> getAllCharacterNames();
 
+    std::string getCharacterInfo(Name &username);
 
-    void swapCharacters( Character &userCharacter,  Character &targetCharacter);
+    ID getCharacterRoomID(Name &username);
+
+    void setCharacterRoomID(Name &username, ID roomID);
+
+    bool characterHasItem(Name &username, ID itemID);
+
+    bool characterHasItem(Name &username, Name itemName);
+
+    void addItemToCharacterInventory(Name &username, Object item);
+
+    bool dropItemFromCharacterInventory(Name &username, ID objectID);
+
+    Object getItemFromCharacterInventory(Name &username, Name itemName);
+
+    bool characterIsWearingItem(Name &username, ID objectID);
+
+    bool characterIsWearingItem(Name &username, Name itemName);
+
+    bool characterWearItem(Name &username, Object item);
+
+    bool characterRemoveItem(Name &username, Object item);
+
+    std::string characterListInventory(Name &username);
+
+    void swapCharacters(Name &userCharacterName, Name &targetCharacterName);
 };
 
 

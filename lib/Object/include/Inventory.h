@@ -13,9 +13,9 @@ class Inventory {
 private:
     std::vector<Object> objects;
 
-    auto getItemIteratorByID(ID objectID);
+    auto getItemIterator(ID objectID);
 
-    auto getItemIteratorByName(Name objectName);
+    auto getItemIterator(Name objectName);
 
 public:
     Inventory();
@@ -48,7 +48,7 @@ public:
      * Post: returns true if found
      *
      * */
-    bool doesItemExistByName(Name objectName);
+    bool doesItemExist(Name objectName);
 
     /* Get Item By Name:
      *
@@ -58,7 +58,7 @@ public:
      * Post: returns Object if found
      *
      * */
-    Object getItemByName(Name objectName);
+    Object getItem(Name objectName);
 
     /* Remove Item:
      *

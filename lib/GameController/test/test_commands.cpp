@@ -42,10 +42,10 @@ int main() {
     std::string objName = obj.getName();
     std::string obj2Name = obj2.getName();
     std::cout << objName << std::endl;
-    std::cout << character.hasItemByName(objName) << std::endl;
+    std::cout << character.hasItem(objName) << std::endl;
     std::cout << std::endl;
     std::cout << obj2Name << std::endl;
-    std::cout << character.hasItemByName(obj2Name) << std::endl;
+    std::cout << character.hasItem(obj2Name) << std::endl;
     std::cout << std::endl;
 
     character.wear(obj2);
@@ -55,7 +55,7 @@ int main() {
     std::cout << std::endl;
     std::cout << character.getInfo() << std::endl;
     std::cout << std::endl;
-    character.takeOff(obj2);
+    character.remove(obj2);
     std::cout << character.getName() + ": " << std::endl;
     std::cout << character.listInventory() << std::endl;
     std::cout << character.isWearing(obj2.getID()) << std::endl;

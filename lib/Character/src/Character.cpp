@@ -38,8 +38,8 @@ std::string Character::getInfo() const {
 	return charIDInfo + charNameInfo + roomInfo + charWearInfo;
 }
 
-Object Character::getItemFromInventoryByName(Name objectName) {
-    return inventory.getItemByName(objectName); 
+Object Character::getItemFromInventory(Name objectName) {
+    return inventory.getItem(objectName); 
 }
 
 bool Character::addItemToInventory(Object obj) {
@@ -54,11 +54,11 @@ bool Character::hasItem(ID objectId) {
     return inventory.doesItemExist(objectId);
 }
 
-bool Character::hasItemByName(Name &objectName) {
-    return inventory.doesItemExistByName(objectName);
+bool Character::hasItem(Name &objectName) {
+    return inventory.doesItemExist(objectName);
 }
 
-auto Character::getWearingIteratorByID(ID objectId) {
+auto Character::getWearingIterator(ID objectId) {
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objectId] ( Object const& obj )->bool {
                           return obj.getID() == objectId;
@@ -68,10 +68,10 @@ auto Character::getWearingIteratorByID(ID objectId) {
 
 bool Character::isWearing(ID objectId) {
 
-    return getWearingIteratorByID(objectId) != wearing.end();
+    return getWearingIterator(objectId) != wearing.end();
 }
 
-bool Character::isWearingByName(Name objectName) {
+bool Character::isWearing(Name objectName) {
 
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objectName ] ( Object const& obj )->bool {
@@ -87,8 +87,8 @@ bool Character::wear(Object obj) {
     return isWearing(obj.getID());
 }
 
-bool Character::takeOff(Object obj) {
-    auto it = getWearingIteratorByID(obj.getID());
+bool Character::remove(Object obj) {
+    auto it = getWearingIterator(obj.getID());
 
     if (it != wearing.end()) {
         it = wearing.erase(it);

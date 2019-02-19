@@ -27,7 +27,7 @@ public:
 
     void setRoomID(ID roomID);
 
-    Object getItemFromInventoryByName(Name objectName);
+    Object getItemFromInventory(Name objectName);
 
     /*
      * Checks to see if character has the item in question
@@ -45,17 +45,17 @@ public:
      *
      * Post-Condition: Returns true if item exists in inventory
     */
-    bool hasItemByName(Name &objectName);
+    bool hasItem(Name &objectName);
 
-    auto getWearingIteratorByID(ID objectId);
+    auto getWearingIterator(ID objectId);
 
     bool isWearing(ID objectId);
 
-    bool isWearingByName(Name objectName);
+    bool isWearing(Name objectName);
 
     bool wear(Object obj);
 
-    bool takeOff(Object obj);
+    bool remove(Object obj);
 
     /*
      * Adds the specified item to inventory (as a copy)
