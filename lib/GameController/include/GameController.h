@@ -23,6 +23,8 @@ private:
 public:
     GameController();
 
+    std::vector<Response> info(Name username, Input message);
+
     /*
      * loadCharacter:
      *
@@ -40,7 +42,7 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern
     */
-    std::vector<Response> say(Name username, std::string message);
+    std::vector<Response> say(Name username, Input message);
 
     /*
      * whisper:
@@ -49,7 +51,7 @@ public:
      *
      * Post-Condition: Returns a message to the target it may concern
     */
-    std::vector<Response> whisper(Name username, std::string inputs);
+    std::vector<Response> whisper(Name username, Input inputs);
 
     /*
      * Broadcast:
@@ -58,7 +60,7 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern (Global)
     */
-    std::vector<Response> broadcast(Name username, std::string message);
+    std::vector<Response> broadcast(Name username, Input message);
 
     /* Move:
      *
@@ -68,7 +70,7 @@ public:
      * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    std::vector<Response> move(Name username, std::string direction);
+    std::vector<Response> move(Name username, Input direction);
 
     /* Does the direction exist:
      *
@@ -88,7 +90,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    std::vector<Response> pickUp(Name username, Name itemName);
+    std::vector<Response> pickUp(Name username, Input itemName);
 
     /* Drop:
      *
@@ -98,7 +100,7 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    std::vector<Response> drop(Name username, Name itemName);
+    std::vector<Response> drop(Name username, Input itemName);
 
      /* Give:
      *
@@ -118,7 +120,7 @@ public:
      * Post: wears the item unless the item does not exist in inventory
      *
      * */
-    std::vector<Response> wear(Name username, std::string itemName);
+    std::vector<Response> wear(Name username, Input itemName);
 
      /* Take off:
      *
@@ -128,7 +130,7 @@ public:
      * Post: Takes off the item that the user is wearing
      *
      * */
-    std::vector<Response> takeOff(Name username, std::string itemName);
+    std::vector<Response> takeOff(Name username, Input itemName);
 
     /* Inventory:
      *

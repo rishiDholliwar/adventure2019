@@ -17,6 +17,13 @@ bool GameController::loadCharacter(Name username)
     return characterController.addCharacter(username, roomController);
 }
 
+std::vector<Response> GameController::info(Name username, Input message) {
+    Character character = characterController.getCharacter(username);
+    
+    Response userResponse = Response(character.getInfo(), username);
+    return formulateResponse(userResponse);
+}
+
 std::vector<Response> GameController::say(Name username, Input message) {
     std::cout << "Say " << message << std::endl;
 
@@ -28,7 +35,7 @@ std::vector<Response> GameController::say(Name username, Input message) {
     return formulateResponse(userResponse, roomController.getUsernameList(character.getRoomID()),genericMessage);
 }
 
-std::vector<Response> GameController::whisper(Name username, std::string inputs) {
+std::vector<Response> GameController::whisper(Name username, Input inputs) {
     std::vector<std::string> inputStrings = utility::popFront(inputs);
 
     //check if user input format is incorrect
@@ -62,7 +69,7 @@ std::vector<Response> GameController::broadcast(Name username, Input message) {
     return formulateResponse(userResponse, broadcast ,genericMessage);
 }
 
-std::vector<Response> GameController::move(Name username, std::string direction) {
+std::vector<Response> GameController::move(Name username, Input direction) {
     std::cout << "Move: " << direction << std::endl;
 
     // Obtain character object based on userName (dummy)
@@ -91,7 +98,7 @@ std::vector<Response> GameController::move(Name username, std::string direction)
     return formulateResponse(userResponse, roomController.getUsernameList(character->getRoomID()),genericMessage);
 }
 
-std::vector<Response> GameController::pickUp(Name username, std::string itemName) {
+std::vector<Response> GameController::pickUp(Name username, Input itemName) {
     std::cout << "Pick Up: " << itemName << std::endl;
 
     // Obtain character object based on userName (dummy)
@@ -120,7 +127,7 @@ std::vector<Response> GameController::pickUp(Name username, std::string itemName
 
 }
 
-std::vector<Response> GameController::drop(Name username, std::string itemName) {
+std::vector<Response> GameController::drop(Name username, Input itemName) {
     std::cout << "Drop: " << itemName << std::endl;
 
     // Obtain character object based on userName (dummy)
@@ -222,7 +229,7 @@ std::vector<Response> GameController::give(Name username, Input message) {
 
 }
 
-std::vector<Response> GameController::wear(Name username, std::string itemName) {
+std::vector<Response> GameController::wear(Name username, Input itemName) {
 	// check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
         characterController.addCharacter(username, roomController);
@@ -262,7 +269,7 @@ std::vector<Response> GameController::wear(Name username, std::string itemName) 
         return formulateResponse(userResponse);
 }
 
-std::vector<Response> GameController::takeOff(Name username, std::string itemName) {
+std::vector<Response> GameController::takeOff(Name username, Input itemName) {
 	// check user if user is logged in
     if(!characterController.doesCharacterExist(username)){
         characterController.addCharacter(username, roomController);
