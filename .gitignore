@@ -1,4 +1,5 @@
 .DS_Store
 networkbuild/
 .idea/
-
+cmake-build-debug/
+web-socket-networking/
