@@ -1,0 +1,183 @@
+diff --git a/lib/Object/include/Object.h b/lib/Object/include/Object.h
+index 3a3e37c..2fe0925 100644
+--- a/lib/Object/include/Object.h
++++ b/lib/Object/include/Object.h
+@@ -28,14 +28,10 @@ private:
+     extraDescription extra;
+ 
+ public:
+-	Object();
++    Object();
+ 
+     Object(ID objID, const Name &objType) : objID(objID), objType(objType) {}
+ 
+-    //Struct not working with this constructor
+-//    Object(ID objID,std::vector<std::string> keywords , std::string shortdesc,std::vector<std::string> longdesc,std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc)
+-//    : objID(objID),keywords(keywords),shortdesc(shortdesc),longdesc(longdesc), extra(extraKeywords),extraDescription(extraDesc){}
+-
+     Object(ID objID, Name objType, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
+            std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc) {
+         this->objID = objID;
+diff --git a/lib/Utility/include/JSONObjects.h b/lib/Utility/include/JSONObjects.h
+index 038f835..883786b 100644
+--- a/lib/Utility/include/JSONObjects.h
++++ b/lib/Utility/include/JSONObjects.h
+@@ -35,91 +35,83 @@ namespace JSONObjects {
+     /*
+      * Read in a list of values for an item's specified property
+      *
+-     * Pre-Condition: Name of desired property, and an indexes for where to retrieve its values from JSON
++     * Pre-Condition: Name of desired property, and indexes for where to retrieve its values from JSON
+      *
+      * Post-Condition: Returns a list of property values
+     */
+     inline std::vector<std::string> getArray(int iObj, json j, std::string property) {
+         std::vector<std::string> values{};
+ 
+-        for (auto str : j[iObj][property].items()) {
+-            values.push_back(str.value());
++        for (auto& str : j[iObj][property]) {
++            values.push_back(str);
+         }
++        return values;
++    }
+ 
+-        // int numValues = j[iObj][property].size();
++    /*
++     * Concatenate strings from an array
++     *
++     * Pre-Condition: Name of desired property, and indexes for where to retrieve its values from JSON
++     *
++     * Post-Condition: Returns a string of property values
++    */
++    inline std::string getStrFromArray(int iObj, json j, std::string property) {
++        std::string combinedStr = std::string();
+ 
+-        // for (unsigned int i = 0; i < numValues; i++) {
+-        //     values.push_back(j[iObj][property][i]);
+-        // }
++        for (auto& str : j[iObj][property]) {
++            combinedStr += str;
++        }
++        return combinedStr;
++    }
+ 
+-        return values;
++    /*
++     * Read in the value for a specified key
++     *
++     * Pre-Condition: Name of key to search for, and indexes for where to retrieve its value from JSON
++     *
++     * Post-Condition: Returns the key's corresponding value
++    */
++    inline std::string getValue(int iObj, json j, std::string key) {
++        std::string value = std::string();
++
++        value += j[iObj][key];
++
++        return value;
+     }
+ 
+     /*
+      * Read in a list of key-value pairs for an item's specified property
+      *
+-     * Pre-Condition: Name of desired property, and an indexes for where to retrieve its values from JSON
++     * Pre-Condition: Name of desired property, and indexes for where to retrieve its values from JSON
+      *
+      * Post-Condition: Returns a list of key-value pairs
+     */
+     inline std::unordered_map<std::string, std::string> getPairs(int iObj, json j, std::string property) {
+         std::unordered_map<std::string, std::string> pairs{};
++        int numObjects = j[iObj][property].size();
+ 
+         for (auto pair : j[iObj][property].items()) {
+             pairs.insert(std::pair<std::string, std::string>(pair.key(), pair.value()));
+         }
++        return pairs;
+     }
+ 
+     /*
+      * Read in a list of values for an item's specified property
+      *
+-     * Pre-Condition: Name of desired (nested) property, and an indexes for where to retrieve its values from JSON
++     * Pre-Condition: Name of desired (nested) property, and indexes for where to retrieve its values from JSON
+      *
+      * Post-Condition: Returns a list of property values
+     */
+-    inline std::vector<std::string> getNestedArray(int iObj, json j, std::string arr, std::string subarr) {
++    inline std::vector<std::string> getNestedArray(int iObj, int iSubObj, json j, std::string property, std::string subproperty) {
+         std::vector<std::string> values{};
+ 
+-        for (auto obj : j[iObj][arr].items()) {
+-            for (auto str : j[iObj][arr][subarr]) {
+-                values.push_back(str.key());
+-            }
++        for (auto& str : j[iObj][property][iSubObj][subproperty]) {
++            values.push_back(str);
+         }
+-
+-        //int sizeArr = j[iObj][arr].size();
+-        //
+-        // for (unsigned int iArr = 0; iArr < sizeArr; iArr++) {
+-        //     int sizeSubarray = j[iObj][property][iArr][subproperty].size();
+-
+-        //     for (unsigned int iSubarr = 0; iSubarr < sizeSubarray; iSubarr++) {
+-        //         values.push_back(j[iObj][property][iArr][subproperty][iSubarr].get<std::string>());
+-        //     }
+-        // }
+         return values;
+     }
+ 
+-    /*
+-     * Concatenate strings from an array
+-     *
+-     * Pre-Condition: Name of desired property, and an indexes for where to retrieve its values from JSON
+-     *
+-     * Post-Condition: Returns a string of property values
+-    */
+-    inline std::string getStrFromArray(int iObj, json j, std::string property) {
+-        std::string combinedStr = std::string();
+-
+-        for (auto str : j[iObj][property].items()) {
+-            combinedStr += str.key();
+-        }
+-
+-        // int numValues = j[iObj][property].size();
+-
+-        // for (unsigned int i = 0; i < numValues; i++) {
+-        //     combinedStr += j[iObj][property][i];
+-        // }
+-        return combinedStr;
+-    }
+-
+     /*
+      * Read in a list of objects from a specified JSON file
+      *
+@@ -129,12 +121,9 @@ namespace JSONObjects {
+     */
+     static std::vector<Object> getObjects(const std::string &name) {
+         json j = setupRead(name);
+-        std::cout << "read json" << std::endl;
+         std::vector<Object> objects{};
+-        std::cout << "initialized object vector" << std::endl;
+ 
+         int numObjects = j["OBJECTS"].size();
+-        std::cout << "number of objects: " << numObjects << std::endl;
+         j = j["OBJECTS"];
+ 
+         for (unsigned int i = 0; i < numObjects; i++) {
+@@ -142,11 +131,10 @@ namespace JSONObjects {
+                        getStrFromArray(i, j, "keywords"),
+                        getPairs(i, j, "abilities"),
+                        getArray(i, j, "keywords"),
+-                       j[i]["shortdesc"],
++                       getValue(i, j, "shortdesc"),
+                        getArray(i, j, "longdesc"),
+-                       getNestedArray(i, j, "extra", "keywords"),
+-                       getNestedArray(i, j, "extra", "desc"));
+-            std::cout << "Created object " << i << std::endl;
++                       getNestedArray(i, 0, j, "extra", "keywords"),
++                       getNestedArray(i, 0, j, "extra", "desc"));
+ 
+             objects.push_back(obj);
+         }

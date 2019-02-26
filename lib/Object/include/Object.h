@@ -28,13 +28,9 @@ private:
     extraDescription extra;
 
 public:
-	Object();
+    Object();
 
     Object(ID objID, const Name &objType) : objID(objID), objType(objType) {}
-
-    //Struct not working with this constructor
-//    Object(ID objID,std::vector<std::string> keywords , std::string shortdesc,std::vector<std::string> longdesc,std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc)
-//    : objID(objID),keywords(keywords),shortdesc(shortdesc),longdesc(longdesc), extra(extraKeywords),extraDescription(extraDesc){}
 
     Object(ID objID, Name objType, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
            std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc) {
