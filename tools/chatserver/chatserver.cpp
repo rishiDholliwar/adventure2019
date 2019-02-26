@@ -111,7 +111,8 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
                     }
                     UserController::UserData response = ((*_userController).*func)(username, v.at(0), message.connection);
                     output = Return::ReturnCodeToString(response.returnCode);
-                    if ( response.returnCode == ReturnCode::LOGIN_SUCCESS )
+                    if ( response.returnCode == ReturnCode::LOGIN_SUCCESS ||
+                         response.returnCode == ReturnCode::CREATE_SUCCESS )
                     {
                         _gameController->loadCharacter(username);
                     }
