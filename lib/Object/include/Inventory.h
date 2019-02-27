@@ -13,9 +13,9 @@ class Inventory {
 private:
     std::vector<Object> objects;
 
-    auto getItemIterator(ID objectID);
+    std::vector<Object>::iterator getItemIterator(ID objectID);
 
-    auto getItemIterator(Name objectName);
+    std::vector<Object>::iterator getItemIterator(Name objectName);
 
 public:
     Inventory();

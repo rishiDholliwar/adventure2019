@@ -143,7 +143,7 @@ std::vector<Response> GameController::drop(Name username, Input itemName) {
 }
 
 std::vector<Response> GameController::give(Name username, Input message) {
-	std::vector<std::string> inputStrings = utility::tokenizeString(message);
+	std::vector<std::string> inputStrings = utility::popFront(message);
 
 	//check if user input format is incorrect
 	if (inputStrings.size() != 2) {

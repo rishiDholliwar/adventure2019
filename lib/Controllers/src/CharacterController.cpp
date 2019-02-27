@@ -11,7 +11,7 @@ bool CharacterController::addCharacter(Name &username, RoomController &roomContr
      * if character not found one will be made and then loaded*/
 
     // Dummy Data for all logged in users
-    Character dummyCharacter(username, CHARACTER_ID, ROOM_ID);
+    Character dummyCharacter(username, ROOM_ID);
     roomController.addUserNameToRoom(dummyCharacter.getName(),dummyCharacter.getRoomID());
 
     return _characters.emplace(username,dummyCharacter).second;

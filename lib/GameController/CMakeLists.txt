@@ -20,6 +20,7 @@ target_link_libraries(gameController
     controllers
   PRIVATE
     utility
+    uniqueID
     ${Boost_LIBRARIES}
 )
 
@@ -47,6 +48,7 @@ set_target_properties(gameControllerTest
 target_link_libraries(gameControllerTest
   gameController
   utility
+  uniqueID
   ${Boost_LIBRARIES})
 
 

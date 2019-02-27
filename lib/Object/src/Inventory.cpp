@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <sstream>
 #include <Inventory.h>
 
 Inventory::Inventory() = default;
@@ -8,7 +9,7 @@ void Inventory::addItem(Object object)
     objects.push_back(object);
 }
 
-auto Inventory::getItemIterator(ID objectID)
+std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectID ] ( Object const& obj )->bool {
@@ -24,7 +25,7 @@ bool Inventory::doesItemExist(ID objectID)
     return getItemIterator(objectID) != objects.end();
 }
 
-auto Inventory::getItemIterator(Name objectName)
+std::vector<Object>::iterator Inventory::getItemIterator(Name objectName)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectName ] ( Object const& obj )->bool {
@@ -43,11 +44,6 @@ bool Inventory::doesItemExist(Name objectName)
 Object Inventory::getItem(Name objectName)
 {
 
-    if (doesItemExist(objectName) == false)
-    {
-        return Object();
-    }
-
     auto it = getItemIterator(objectName);
 
     return *it;
@@ -57,12 +53,13 @@ bool Inventory::removeItem(ID objectID)
 {
     auto it = getItemIterator(objectID);
 
-    if (it != objects.end())
+    if (it == objects.end())
     {
-        it = objects.erase(it);
-        return (doesItemExist(objectID) == false);
+        return false;
     }
-    return false;
+
+    it = objects.erase(it);
+    return (!doesItemExist(objectID)); // fix this for multiple items later!!!
 }
 
 std::string Inventory::listInventory()
@@ -72,14 +69,12 @@ std::string Inventory::listInventory()
     }
 
     int objectCount = 1;
-    std::string inventoryList;
+    std::stringstream inventoryList;
 
     for(auto &obj : objects){
 
-        std::string objectString = std::to_string(objectCount) + ". " + obj.getName() + "\n";
-        inventoryList += objectString;
-
+        inventoryList << objectCount << ". " << obj.getName() << "\n";
         objectCount++;
     }
-    return inventoryList;
+    return inventoryList.str();
 }

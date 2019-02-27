@@ -1,15 +1,16 @@
-#include <utility>
 #include <iostream>
 #include <algorithm>
 #include <Character.h>
+#include <sstream>
+#include <ios>
 
-
-Character::Character(const Name &name, ID characterID, ID roomID)
+Character::Character(const Name &name, ID roomID)
 {
   this->name = name;
-  this->characterID = characterID;
   this->roomID = roomID;
   this->inventory = Inventory{};
+  this->inventory.addItem(Object(100,"Basic Sword"));
+  this->inventory.addItem(Object(200,"Basic Armor"));
   this->wearing = std::vector<Object>();
 }
 
@@ -22,20 +23,16 @@ ID Character::getRoomID() const {
 }
 
 ID Character::getCharacterID() const {
-    return characterID;
+    return characterID.id;
 }
 
 std::string Character::getInfo() const {
-	std::string charIDInfo;
-	charIDInfo = "ID: " + std::to_string(getCharacterID()) + "\n";
-	std::string charNameInfo;
-	charNameInfo = "Name: " + getName() + "\n";
-	std::string charWearInfo;
-	charWearInfo = "Wearing: \n\t" + listWearing();
-	std::string roomInfo;
-	roomInfo = "Room ID: " + std::to_string(getRoomID()) + "\n";
 
-	return charIDInfo + charNameInfo + roomInfo + charWearInfo;
+  std::stringstream retString;
+  retString << "ID: " << getCharacterID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n\t" << listWearing() << "Room ID: " << getRoomID() << "\n";
+
+
+	return retString.str();
 }
 
 Object Character::getItemFromInventory(Name objectName) {
@@ -58,7 +55,7 @@ bool Character::hasItem(Name &objectName) {
     return inventory.doesItemExist(objectName);
 }
 
-auto Character::getWearingIterator(ID objectId) {
+std::vector<Object>::iterator Character::getWearingIterator(ID objectId) {
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objectId] ( Object const& obj )->bool {
                           return obj.getID() == objectId;
@@ -78,7 +75,7 @@ bool Character::isWearing(Name objectName) {
                           return obj.getName() == objectName;
                         });
 
-    return !(it == wearing.end());
+    return it != wearing.end();
 }
 
 bool Character::wear(Object obj) {
@@ -105,16 +102,15 @@ bool Character::dropItem(ID objectId) {
 }
 
 std::string Character::listWearing() const {
-	std::string wearList = "";
+	std::stringstream wearList;
 	int wearCount = 1;
 
-	for (Object obj : wearing) {
-		std::string wearIndex = std::to_string(wearCount) + ". " + obj.getName() + "\n";
-		wearList += wearIndex;
+	for (auto &obj : wearing) {
+		wearList << wearCount << ". " << obj.getName() << "\n";
 		wearCount++;
 	}
 
-	return wearList;
+	return wearList.str();
 }
 
 std::string Character::listInventory() {

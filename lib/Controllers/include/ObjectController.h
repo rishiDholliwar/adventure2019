@@ -42,6 +42,12 @@ public:
      *
      * */
     const Object &getObjectFromListByName(const Name &objectName) const;
+
+    // look and examine
+    std::string lookItem(ID roomId, ID objectID);
+    std::string lookItem(ID roomId, Name itemName);
+    std::string examineItem(ID roomId, ID objectID);
+    std::string examineItem(ID roomId, Name itemName);
 };
 
 #endif //ALTERSPACE_OBJECTCONTROLLER_H

@@ -11,7 +11,6 @@ using AlterSpace::ID;
 using AlterSpace::Name;
 
 //dummy values
-#define CHARACTER_ID 90
 #define ROOM_ID 1000
 
 class CharacterController {
@@ -182,6 +181,10 @@ public:
      * Post-Condition: Returns a modified string listing inventory of user
     */
     std::string characterListInventory(Name &username);
+
+    // look and examine 
+    std::string lookCharacter(Name& userName);
+    std::string examineCharacter(Name& userName);
 
     void swapCharacters(Name &userCharacterName, Name &targetCharacterName);
 };

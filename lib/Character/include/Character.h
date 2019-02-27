@@ -5,7 +5,9 @@
 #include <vector>
 #include <AlterSpace.h>
 #include <Inventory.h>
+#include <UniqueID.h>
 #include <Object.h>
+#include <utility>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
@@ -13,13 +15,15 @@ using AlterSpace::Name;
 class Character {
 private:
     Name name;
-    ID characterID;
+    UniqueID characterID;
     ID roomID;
     Inventory inventory;
     std::vector<Object> wearing;
 
+    std::vector<Object>::iterator getWearingIterator(ID objectId);
+
 public:
-    Character(const Name &name, ID characterID, ID roomID);
+    Character(const Name &name, ID roomID);
     Name getName() const;
     ID getRoomID() const;
     ID getCharacterID() const;
@@ -47,8 +51,6 @@ public:
     */
     bool hasItem(Name &objectName);
 
-    auto getWearingIterator(ID objectId);
-
     /*
      * checks to see if character is wearing specified item
      *
@@ -64,20 +66,20 @@ public:
     bool isWearing(Name objectName);
 
     /*
-     * the user equips the specified item
+     * the user wears the specified item
      *
      * Pre-Condition: the item
      *
-     * Post-Condition: Returns true if the item is equipped
+     * Post-Condition: Returns true if the item is worn
     */
     bool wear(Object obj);
 
     /*
-     * unequips the specified item
+     * unwears the specified item
      *
      * Pre-Condition: the item
      *
-     * Post-Condition: Returns true if the item is unequipped
+     * Post-Condition: Returns true if the item is taken off
     */
     bool remove(Object obj);
 
@@ -108,6 +110,10 @@ public:
     // CharacterController should generate the response
     // based on the Character's inventory
     std::string listInventory();
+
+    // look and examine
+    std::string look();
+    std::string examine();
 };
 
 

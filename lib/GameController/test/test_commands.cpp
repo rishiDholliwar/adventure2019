@@ -9,7 +9,7 @@
 int main() {
 
 	std::string testCharacterName = "lora";
-    Character character(testCharacterName, 0, 0);
+    Character character(testCharacterName, 0);
     std::string testObjectName = "Basic Sword";
     std::string testObjectName2 = "Basic Armor";
     Object object(0, testObjectName2);
@@ -24,7 +24,7 @@ int main() {
     // std::cout << character.getRoomID() << std::endl;
 
     std::string test2CharacterName = "bryan";
-    Character character2(test2CharacterName, 1, 0);
+    Character character2(test2CharacterName, 0);
     character2.addItemToInventory(obj);
 
     std::cout << character2.getName() + ": " << std::endl;

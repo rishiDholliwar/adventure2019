@@ -11,7 +11,7 @@
 int main(){
 
     std::string testCharacterName = "character01";
-    Character character(testCharacterName, 0, 0);
+    Character character(testCharacterName, 0);
     std::string testObjectName = "object01";
     std::string testObjectName2 = "object02";
     Object object(0, testObjectName2);
