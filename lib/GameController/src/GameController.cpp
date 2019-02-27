@@ -151,14 +151,14 @@ std::vector<Response> GameController::give(Name username, Input message) {
 		return formulateResponse(userResponse);
 	}
 
-	//if gift target character doesn't exist
-	if (!characterController.doesCharacterExist(inputStrings.at(0))) {
-		Response userResponse = Response("Character name " + inputStrings.at(0) + " does not exist for you to gift to.", username);
-		return formulateResponse(userResponse);
-	}
-
     Name targetCharacterName = inputStrings.at(0);
     Name giftName = inputStrings.at(1);
+
+	//if gift target character doesn't exist
+	if (!characterController.doesCharacterExist(targetCharacterName)) {
+		Response userResponse = Response("Character name " + targetCharacterName + " does not exist for you to gift to.", username);
+		return formulateResponse(userResponse);
+	}
 
 	//check if gift item exists in user inventory
 	if (!characterController.characterHasItem(username, giftName)) {
