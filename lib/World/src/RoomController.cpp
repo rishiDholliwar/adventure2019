@@ -1,63 +1,47 @@
+//
+// Created by evan on 30/01/19.
+//
+
 #include <algorithm>
 #include <RoomController.h>
 
-RoomController::RoomController() {
-
-    generateRoom(1000, "Room1");
-    generateRoom(1001, "Room2");
-    generateRoom(1002, "Room3");
-    generateRoom(1003, "Room4");
-
-
-    linkRoom(Direction::NORTH, 1000, 1001);
-    linkRoom(Direction::SOUTH, 1001, 1000);
-
-    linkRoom(Direction::EAST, 1001, 1002);
-    linkRoom(Direction::WEST, 1002, 1001);
-
-    linkRoom(Direction::SOUTH, 1002, 1003);
-    linkRoom(Direction::NORTH, 1003, 1002);
-
-    linkRoom(Direction::WEST, 1003, 1000);
-    linkRoom(Direction::EAST, 1000, 1003);
-};
-
+RoomController::RoomController() = default;
 
 /*
  * Getters
  */
-std::vector<ID> RoomController::getCharacterList(ID roomId) {
+const std::vector<RoomController::ID> & RoomController::getCharacterList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return std::vector<ID> {};
+        return emptyIdVector;
     }
 
     return room->getCharacterList();
 }
 
-std::vector<ID> RoomController::getObjectList(ID roomId) {
+const std::vector<RoomController::ID> & RoomController::getObjectList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return std::vector<ID> {};
+        return emptyIdVector;
     }
 
     return room->getObjectList();
 }
 
-std::vector<Name> RoomController::getUsernameList(ID roomId) {
+const std::vector<std::string>& RoomController::getUsernameList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return std::vector<Name> {};
+        return emptyStringVector;
     }
 
     return room->getUsernameList();
 }
 
-std::vector<ID> RoomController::getRoomIdList() const {
-    std::vector<ID> integerRoomList;
+std::vector<RoomController::ID> RoomController::getRoomIdList() const {
+    std::vector<RoomController::ID> integerRoomList;
 
     std::transform(this->roomList.begin(), this->roomList.end(),
             std::back_inserter(integerRoomList),
@@ -70,7 +54,7 @@ std::vector<ID> RoomController::getRoomIdList() const {
  * Adders
  */
 
-bool RoomController::generateRoom(ID roomId, const Name& roomName) {
+bool RoomController::generateRoom(RoomController::ID roomId, const std::string& roomName) {
     auto tempRoom = RoomController::searchRoom(roomId);
 
     if (tempRoom == nullptr) {
@@ -90,7 +74,7 @@ bool RoomController::addObjectToRoom(ID objectId, ID roomId) {
     return (tempRoom != nullptr) && (tempRoom->addObject(objectId));
 }
 
-bool RoomController::addUserNameToRoom(const Name &userName, ID roomId) {
+bool RoomController::addUserNameToRoom(const std::string &userName, ID roomId) {
     auto tempRoom = this->searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->addUserName(userName));
 }
@@ -124,7 +108,7 @@ bool RoomController::removeObjectFromRoom(ID objectId, ID roomId) {
     return (tempRoom != nullptr) && (tempRoom->removeObject(objectId));
 }
 
-bool RoomController::removeUserNameFromRoom(const Name &userName, ID roomId) {
+bool RoomController::removeUserNameFromRoom(const std::string &userName, ID roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->removeUserName(userName));
 }
@@ -132,16 +116,20 @@ bool RoomController::removeUserNameFromRoom(const Name &userName, ID roomId) {
 /*
  *  Link Rooms
  */
-void RoomController::linkRoom(Direction dir, ID room1Id, ID room2Id) {
-    auto room = searchRoom(room1Id);
-    if (room != nullptr) {
-        room->linkRoom(dir, room2Id);
-    }
+bool RoomController::addDoorToRoom(RoomController::ID roomId, RoomController::ID doorId,
+                                   RoomController::ID destinatedRoomId, const std::string &direction) {
+    auto room = searchRoom(roomId);
+    return room->addDoor(doorId, destinatedRoomId, direction);
 }
 
-ID RoomController::getLinkedRoom(Direction dir, ID roomId) {
+bool RoomController::removeDoorFromRoom(RoomController::ID roomId, ID doorId) {
     auto room = searchRoom(roomId);
-    return room->getLinkedRoom(dir);
+    return room->removeDoor(doorId);
+}
+
+std::string RoomController::getTextOfRoomDetails(RoomController::ID roomId) {
+    auto room = searchRoom(roomId);
+    return room->getTextOfRoomDetails();
 }
 
 /*
@@ -161,3 +149,4 @@ Room* RoomController::searchRoom(ID roomId) {
 
     return tempRoom.base();
 }
+

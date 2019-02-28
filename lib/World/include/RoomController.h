@@ -1,47 +1,78 @@
+//
+// Created by evan on 30/01/19.
+//
+
+#include <Room.h>
+
 #ifndef ALTERSPACE_ROOMCONTROLLER_H
 #define ALTERSPACE_ROOMCONTROLLER_H
 
-#include <AlterSpace.h>
-#include <Room.h>
-
-using AlterSpace::Name;
-using AlterSpace::ID;
-
 class RoomController {
-public:
-    RoomController();
+    public:
+        using ID = Room::ID;
 
-    //Getters
-    std::vector<ID> getCharacterList (ID roomId);
-    std::vector<ID> getObjectList (ID roomId);
-    std::vector<Name> getUsernameList (ID roomId);
-    std::vector<ID> getRoomIdList() const;
+        RoomController();
 
-    // Adders
-    // return true if succeed, else return false
-    bool generateRoom(ID roomId, const Name& roomName);
-    bool addCharacterToRoom(ID characterId, ID roomId);
-    bool addObjectToRoom(ID objectId, ID roomId);
-    bool addUserNameToRoom(const Name& userName, ID roomId);
+        //Getters
+        const std::vector<ID> & getCharacterList (ID roomId);
+        const std::vector<ID> & getObjectList (ID roomId);
+        const std::vector<std::string> & getUsernameList (ID roomId);
+        std::vector<ID> getRoomIdList() const;
 
-    // Removers
-    bool removeCharacterFromRoom(ID characterId, ID roomId);
-    bool removeObjectFromRoom(ID objectId, ID roomId);
-    bool removeRoom(ID roomId);
-    bool removeUserNameFromRoom(const Name &userName, ID roomId);
+        /*
+         * The function gives information of the room including room details and doors details
+         * Post-condition:
+         *          return string of information of room
+         */
+        std::string getTextOfRoomDetails(ID roomId);
 
-    // Link Rooms
-    // char 'n', 'e', 's', 'w' represents north, east, south, west
-    // link room2 to room1 in the direction of room1,
-    // return true if succeed, else return false
-    void linkRoom(Direction dir, ID room1Id, ID room2Id);
-    // return 0 indicates no room is linked in the direction
-    ID getLinkedRoom(Direction dir, ID roomId);
+        /*
+         * create a room according to the roomID and roomName inside RoomController
+         * Post-condition:
+         *          return true if the room is successfully created
+         *          return false otherwise
+         */
+        bool generateRoom(ID roomId, const std::string& roomName);
 
-private:
-     std::vector<Room> roomList;
+        /*
+         * Delete the room in roomController according to the roomId
+         * Post-condition:
+         *          return true if the room is successfully deleted
+         *          return false otherwise
+         */
+        bool removeRoom(ID roomId);
 
-     Room* searchRoom(ID roomId);
+        /*
+         * The 3 functions can add unique id or unique userName into the room
+         * Post-condition:
+         *          return true if the element is successfully added
+         *          return false otherwise
+         */
+        bool addCharacterToRoom(ID characterId, ID roomId);
+        bool addObjectToRoom(ID objectId, ID roomId);
+        bool addUserNameToRoom(const std::string& userName, ID roomId);
+
+        /*
+         * The 3 functions can remove unique id or unique userName from the room
+         * Post-condition:
+         *          return true if the element is successfully removed
+         *          return false otherwise
+         */
+        bool removeCharacterFromRoom(ID characterId, ID roomId);
+        bool removeObjectFromRoom(ID objectId, ID roomId);
+        bool removeUserNameFromRoom(const std::string &userName, ID roomId);
+
+        // Link Rooms
+        bool addDoorToRoom(ID roomId, ID doorId, ID destinatedRoomId, const std::string &direction);
+        bool removeDoorFromRoom(ID roomId, ID doorId);
+
+
+    private:
+         std::vector<Room> roomList;
+         std::vector<ID> emptyIdVector;
+         std::vector<std::string> emptyStringVector;
+
+         Room* searchRoom(ID roomId);
 
 
 };
