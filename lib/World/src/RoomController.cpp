@@ -132,6 +132,33 @@ std::string RoomController::getTextOfRoomDetails(RoomController::ID roomId) {
     return room->getTextOfRoomDetails();
 }
 
+RoomController::ID RoomController::getDesignatedRoomId(RoomController::ID roomId, RoomController::ID doorId) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return -1;
+    }
+    return room->getDesignatedRoomId(doorId);
+
+}
+
+bool RoomController::setDoorLocked(RoomController::ID roomId, RoomController::ID doorId) {
+    auto room = searchRoom(roomId);
+    if (room != nullptr){
+        auto door = room->searchDoor(doorId);
+        return (door != nullptr) && (door->setDoorLocked());
+    }
+    return (room != nullptr);
+}
+
+bool RoomController::setDoorUnlocked(RoomController::ID roomId, RoomController::ID doorId) {
+    auto room = searchRoom(roomId);
+    if (room != nullptr){
+        auto door = room->searchDoor(doorId);
+        return (door != nullptr) && (door->setDoorUnlocked());
+    }
+    return (room != nullptr);
+}
+
 /*
  * private functions
  */

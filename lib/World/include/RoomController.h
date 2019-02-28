@@ -66,6 +66,30 @@ class RoomController {
         bool addDoorToRoom(ID roomId, ID doorId, ID destinatedRoomId, const std::string &direction);
         bool removeDoorFromRoom(ID roomId, ID doorId);
 
+        /*
+         * This function returns the designated room ID of the door
+         * Post-condition:
+         *      return 0 if door not exist
+         *      return designated room ID (>0)
+         */
+        ID getDesignatedRoomId(ID roomId, ID doorId);
+
+        /*
+         * This function the lock status of the door
+         * Post-condition:
+         *      return DoorStatus
+         */
+        Door::DoorStatus getDoorStatus(ID roomId, ID doorId);
+
+        /*
+         * Set the door status to locked or unlocked
+         * Post-condition:
+         *      return true if the action is successful
+         *      return false otherwise
+         */
+        bool setDoorLocked(ID roomId, ID doorId);
+        bool setDoorUnlocked(ID roomId, ID doorId);
+
 
     private:
          std::vector<Room> roomList;

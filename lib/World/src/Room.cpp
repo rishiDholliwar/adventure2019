@@ -119,12 +119,26 @@ Room::ID const& Room::getDesignatedRoomId(Room::ID doorId) {
                         {return door.getId() == doorId;});
 
     // if id exist
-    if (it != list.end())
-        return it.base()->getId();
-
+    if (it != list.end()) {
+        auto door = it.base();
+        return door->getDestinatedRoomId();
+    }
     return unfoundDoorId;
 }
 
+Door* Room::searchDoor(Room::ID doorId) {
+    auto list= this->doorList;
+
+    auto it = std::find_if(list.begin(), list.end(),
+                           [&doorId](const Door& door)
+                           {return door.getId() == doorId;});
+
+    if (it != list.end()) {
+        return it.base();
+    }else{
+        return nullptr;
+    }
+}
 
 /*
  *  private functions

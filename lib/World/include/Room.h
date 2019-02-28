@@ -70,6 +70,11 @@ public:
      */
     ID const& getDesignatedRoomId(ID doorId);
 
+    /*
+     * this function returns the Door object according to the door id
+     */
+    Door* searchDoor(ID doorId);
+
 private:
     ID  id;
     std::string name;
