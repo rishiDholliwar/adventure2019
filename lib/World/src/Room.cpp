@@ -80,14 +80,16 @@ std::string const Room::getTextOfRoomDetails() {
     std::string outputString;
     outputString += "ID: " + std::to_string(this->getId()) + "\n" +
                     "Room Name: " + this->getName() + "\n";
+
     for (auto &description : this->descriptions){
         outputString += description + "\n";
     }
+
     for (auto &description : this->extendedDescriptions){
         outputString += description + "\n";
     }
-    outputString += "Doors ID, Direction, Destination, Status\n";
 
+    outputString += "Doors ID, Direction, Destination, Status\n";
     outputString += this->getTextOfDoorDetails();
     return outputString;
 }

@@ -20,9 +20,11 @@ public:
 
     Door(ID  id, ID  destinatedRoomId, const std::string& direction);
 
+    // Adders
     void addDescription(const std::string& description);
     void addKeyword(const std::string& keyword);
 
+    // Getters
     ID const& getId() const{return id;};
     ID const& getDestinatedRoomId() const{return designatedRoomID;};
     std::string const& getDirection() const{return direction;};
