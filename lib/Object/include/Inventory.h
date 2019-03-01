@@ -8,6 +8,7 @@
 #include "Object.h"
 
 using AlterSpace::ID;
+using AlterSpace::Name;
 
 class Inventory {
 private:
@@ -58,7 +59,9 @@ public:
      * Post: returns Object if found
      *
      * */
-    Object getItem(Name objectName);
+    Object getItem(Name &objectName);
+
+    Object getItem(ID objectID);
 
     /* Remove Item:
      *

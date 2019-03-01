@@ -9,8 +9,6 @@ Character::Character(const Name &name, ID roomID)
   this->name = name;
   this->roomID = roomID;
   this->inventory = Inventory{};
-  this->inventory.addItem(Object(100,"Basic Sword"));
-  this->inventory.addItem(Object(200,"Basic Armor"));
   this->wearing = std::vector<Object>();
 }
 
@@ -22,14 +20,14 @@ ID Character::getRoomID() const {
     return this->roomID;
 }
 
-ID Character::getCharacterID() const {
-    return characterID.id;
+ID Character::getID() const {
+    return id;
 }
 
 std::string Character::getInfo() const {
 
   std::stringstream retString;
-  retString << "ID: " << getCharacterID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n\t" << listWearing() << "Room ID: " << getRoomID() << "\n";
+  retString << "ID: " << getID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n\t" << listWearing() << "Room ID: " << getRoomID() << "\n";
 
 
 	return retString.str();
@@ -37,6 +35,10 @@ std::string Character::getInfo() const {
 
 Object Character::getItemFromInventory(Name objectName) {
     return inventory.getItem(objectName); 
+}
+
+Object Character::getItemFromInventory(ID objectId) {
+    return inventory.getItem(objectId);
 }
 
 bool Character::addItemToInventory(Object obj) {
@@ -78,10 +80,10 @@ bool Character::isWearing(Name objectName) {
     return it != wearing.end();
 }
 
-bool Character::wear(Object obj) {
-    wearing.push_back(obj);
-    dropItem(obj.getID());
-    return isWearing(obj.getID());
+bool Character::wear(ID objectId) {
+    wearing.push_back(getItemFromInventory(objectId));
+    dropItem(objectId);
+    return isWearing(objectId);
 }
 
 bool Character::remove(Object obj) {

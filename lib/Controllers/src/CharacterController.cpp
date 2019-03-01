@@ -1,10 +1,11 @@
 #include <iostream>
+#include <string>
 #include <CharacterController.h>
 #include <RoomController.h>
 
 CharacterController::CharacterController() = default;
 
-bool CharacterController::addCharacter(Name &username, RoomController &roomController) {
+bool CharacterController::addCharacter(Name &username, RoomController &roomController, ObjectController &objectController) {
 
     //find and load character based on username
     /* json work
@@ -13,6 +14,13 @@ bool CharacterController::addCharacter(Name &username, RoomController &roomContr
     // Dummy Data for all logged in users
     Character dummyCharacter(username, ROOM_ID);
     roomController.addUserNameToRoom(dummyCharacter.getName(),dummyCharacter.getRoomID());
+
+    dummyCharacter.addItemToInventory(Object("Basic Sword"));
+    objectController.addObjectToList(dummyCharacter.getItemFromInventory("Basic Sword"));
+
+    dummyCharacter.addItemToInventory(Object("Basic Armor"));
+    objectController.addObjectToList(dummyCharacter.getItemFromInventory("Basic Armor"));
+
 
     return _characters.emplace(username,dummyCharacter).second;
 }
@@ -69,6 +77,14 @@ Object CharacterController::getItemFromCharacterInventory(Name &username, Name i
     return getCharacter(username).getItemFromInventory(itemName);
 }
 
+Object CharacterController::getItemFromCharacterInventory(Name &username, ID itemID) {
+    return getCharacter(username).getItemFromInventory(itemID);
+}
+
+ID CharacterController::getItemIDFromCharacterInventory(Name &username, Name itemName) {
+    return getItemFromCharacterInventory(username, itemName).getID();
+}
+
 bool CharacterController::characterIsWearingItem(Name &username, ID objectID) {
     return getCharacter(username).isWearing(objectID);
 }
@@ -77,8 +93,9 @@ bool CharacterController::characterIsWearingItem(Name &username, Name itemName) 
     return getCharacter(username).isWearing(itemName);
 }
 
-bool CharacterController::characterWearItem(Name &username, Object item) {
-    return getCharacter(username).wear(item);
+bool CharacterController::characterWearItem(Name &username, Name itemName) {
+    ID itemID = getItemIDFromCharacterInventory(username, itemName);
+    return getCharacter(username).wear(itemID);
 }
 
 bool CharacterController::characterRemoveItem(Name &username, Object item) {
@@ -97,5 +114,3 @@ void CharacterController::swapCharacters(Name &userCharacterName, Name &targetCh
     }
 
 }
-
-

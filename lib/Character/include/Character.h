@@ -12,10 +12,9 @@
 using AlterSpace::ID;
 using AlterSpace::Name;
 
-class Character {
+class Character : public UniqueID {
 private:
     Name name;
-    UniqueID characterID;
     ID roomID;
     Inventory inventory;
     std::vector<Object> wearing;
@@ -26,12 +25,14 @@ public:
     Character(const Name &name, ID roomID);
     Name getName() const;
     ID getRoomID() const;
-    ID getCharacterID() const;
+    ID getID() const;
     std::string getInfo() const;
 
     void setRoomID(ID roomID);
 
     Object getItemFromInventory(Name objectName);
+
+    Object getItemFromInventory(ID objectId);
 
     /*
      * Checks to see if character has the item in question
@@ -72,7 +73,7 @@ public:
      *
      * Post-Condition: Returns true if the item is worn
     */
-    bool wear(Object obj);
+    bool wear(ID objectId);
 
     /*
      * unwears the specified item

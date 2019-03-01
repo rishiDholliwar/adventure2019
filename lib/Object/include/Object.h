@@ -4,19 +4,17 @@
 #include <string>
 
 #include <AlterSpace.h>
+#include <UniqueID.h>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
 
-class Object {
+class Object : public UniqueID {
 private:
-    ID objectID;
     Name objectName;
 
 public:
-	Object();
-	
-    Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
+    Object(const Name &objectName) : objectName(objectName) {}
 
     const Name& getName() const;
     ID getID() const;

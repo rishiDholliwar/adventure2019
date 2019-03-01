@@ -12,9 +12,9 @@ int main() {
     Character character(testCharacterName, 0);
     std::string testObjectName = "Basic Sword";
     std::string testObjectName2 = "Basic Armor";
-    Object object(0, testObjectName2);
-    Object obj(100, testObjectName);
-    Object obj2(200, testObjectName2);
+    Object object(testObjectName2);
+    Object obj(testObjectName);
+    Object obj2(testObjectName2);
     character.addItemToInventory(obj);
     character.addItemToInventory(obj2);
     std::cout << character.getName() + ": " << std::endl;
@@ -48,7 +48,7 @@ int main() {
     std::cout << character.hasItem(obj2Name) << std::endl;
     std::cout << std::endl;
 
-    character.wear(obj2);
+    character.wear(obj2.getID());
     std::cout << character.getName() + ": " << std::endl;
     std::cout << character.listInventory() << std::endl;
     std::cout << character.isWearing(obj2.getID()) << std::endl;

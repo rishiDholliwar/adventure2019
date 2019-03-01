@@ -1,11 +1,16 @@
 #ifndef UNIQUE_H
 #define UNIQUE_H
 
+#include <AlterSpace.h>
+
+using AlterSpace::ID;
+
 class UniqueID {
+private:
+	static int nextID;
 protected:
-   static int nextID;
+   ID id;
 public:
-   int id;
    UniqueID();
    // UniqueID(const UniqueID& orig);
    // UniqueID& operator=(const UniqueID& orig);

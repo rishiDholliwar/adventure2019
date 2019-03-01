@@ -14,7 +14,7 @@ GameController::GameController()
 
 bool GameController::loadCharacter(Name username)
 {
-    return characterController.addCharacter(username, roomController);
+    return characterController.addCharacter(username, roomController, objectController);
 }
 
 std::vector<Response> GameController::info(Name username, Input message) {
@@ -96,13 +96,15 @@ std::vector<Response> GameController::move(Name username, Input direction) {
 std::vector<Response> GameController::pickUp(Name username, Input itemName) {
     std::cout << "Pick Up: " << itemName << std::endl;
 
-    if(!objectController.doesObjectExist(itemName)){
+    if(!objectController.doesObjectOfThisNameExist(itemName)){
         Response userResponse = Response("This item does not exist!", username);
         return formulateResponse(userResponse);
     }
 
-    // Obtain item through input
-    Object item = objectController.getObjectFromListByName(itemName);
+    // // Obtain item through input
+    // Object item = objectController.getObjectFromListByName(itemName);
+
+    Object item = Object("Basic Sword");
 
 
     if(!roomController.removeObjectFromRoom(item.getID(), characterController.getCharacterRoomID(username))) {
@@ -120,23 +122,24 @@ std::vector<Response> GameController::pickUp(Name username, Input itemName) {
 
 std::vector<Response> GameController::drop(Name username, Input itemName) {
 
-    if(!objectController.doesObjectExist(itemName)){
+    if(!objectController.doesObjectOfThisNameExist(itemName)){
         Response userResponse = Response("This item does not exist!", username);
         return formulateResponse(userResponse);
     }
-    //obtain item through input
-    Object item = objectController.getObjectFromListByName(itemName);
 
     // Verify if the character has item
-    if(!characterController.characterHasItem(username, item.getID())){
+    if(!characterController.characterHasItem(username, itemName)) {
         Response userResponse = Response("You don't have this item in your inventory!", username);
         return formulateResponse(userResponse);
     }
+
+    ID itemID = characterController.getItemIDFromCharacterInventory(username, itemName);
+
     // Remove item from character's inventory
-    characterController.dropItemFromCharacterInventory(username, item.getID());
+    characterController.dropItemFromCharacterInventory(username, itemID);
 
     // Add item to room's item List
-    roomController.addObjectToRoom(item.getID(), characterController.getCharacterRoomID(username));
+    roomController.addObjectToRoom(itemID, characterController.getCharacterRoomID(username));
 
     Response userResponse = Response("You dropped " + itemName + " in the room!", username);
     return formulateResponse(userResponse);
@@ -166,18 +169,18 @@ std::vector<Response> GameController::give(Name username, Input message) {
 		return formulateResponse(userResponse);
 	}
 
-	Object gift = characterController.getItemFromCharacterInventory(username, giftName);
+	ID giftID = characterController.getItemIDFromCharacterInventory(username, giftName);
 
 	//drop item from user inventory
-	if (!characterController.dropItemFromCharacterInventory(username, gift.getID())) {
+	if (!characterController.dropItemFromCharacterInventory(username, giftID)) {
         Response userResponse = Response("dropping failed for userChar", username);
         return formulateResponse(userResponse);
     }
 
 	//add item to target user inventory
-	characterController.addItemToCharacterInventory(targetCharacterName, gift);
+	characterController.addItemToCharacterInventory(targetCharacterName, objectController.getObjectFromList(giftID));
 
-	if (!characterController.characterHasItem(targetCharacterName, gift.getID())) {
+	if (!characterController.characterHasItem(targetCharacterName, giftID)) {
 		Response userResponse = Response("Giving " + giftName + " to character " + targetCharacterName + " has failed.", username);
 		return formulateResponse(userResponse);
 	}
@@ -202,35 +205,35 @@ std::vector<Response> GameController::wear(Name username, Input itemName) {
     }
 
     //obtain item through input
-    Object item = objectController.getObjectFromListByName(itemName);
+    ID itemID = characterController.getItemIDFromCharacterInventory(username, itemName);
 
     //wear item
-    if (!characterController.characterWearItem(username, item)) {
-        Response userResponse = Response("Wearing " + item.getName() + " has failed!", username);
+    if (!characterController.characterWearItem(username, itemName)) {
+        Response userResponse = Response("Wearing " + itemName + " has failed!", username);
         return formulateResponse(userResponse);
     }
 
-    Response userResponse = Response("Wearing " + item.getName() + " succesfully!", username);
+    Response userResponse = Response("Wearing " + itemName + " succesfully!", username);
     return formulateResponse(userResponse);
 }
 
 std::vector<Response> GameController::takeOff(Name username, Input itemName) {
-	//obtain item through input
-    Object item = objectController.getObjectFromListByName(itemName);
 
     //check if character is already wearing this item
-    if (!characterController.characterIsWearingItem(username, item.getID())) {
+    if (!characterController.characterIsWearingItem(username, itemName)) {
     	Response userResponse = Response("You don't have this item equipped!", username);
         return formulateResponse(userResponse);
     }
 
-    if (!characterController.characterRemoveItem(username, item)) {
-        Response userResponse = Response("Taking off " + item.getName() + " has failed!", username);
+    ID itemID = characterController.getItemIDFromCharacterInventory(username, itemName);
+
+    if (!characterController.characterRemoveItem(username, objectController.getObjectFromList(itemID))) {
+        Response userResponse = Response("Taking off " + itemName + " has failed!", username);
         return formulateResponse(userResponse);
     	
     }
 
-    Response userResponse = Response("Took off " + item.getName() + " succesfully!", username);
+    Response userResponse = Response("Took off " + itemName + " succesfully!", username);
     return formulateResponse(userResponse);
 }
 

@@ -41,10 +41,17 @@ bool Inventory::doesItemExist(Name objectName)
     return getItemIterator(objectName) != objects.end();
 }
 
-Object Inventory::getItem(Name objectName)
+Object Inventory::getItem(Name& objectName)
 {
 
     auto it = getItemIterator(objectName);
+
+    return *it;
+}
+
+Object Inventory::getItem(ID objectID)
+{
+    auto it = getItemIterator(objectID);
 
     return *it;
 }

@@ -18,10 +18,12 @@ using AlterSpace::Name;
 class ObjectController
 {
 private:
-    std::unordered_map<Name, Object> objects;
+    std::unordered_map<ID, Object> objects;
 
 public:
     ObjectController();
+
+    bool addObjectToList(const Object &object);
 
     /* Does Object Exist:
      *
@@ -31,7 +33,9 @@ public:
      * Post: returns true if object exists
      *
      * */
-    bool doesObjectExist(const Name &objectName);
+    bool doesObjectExist(const ID objectID);
+
+    bool doesObjectOfThisNameExist(const Name objectName);
 
     /* Get Object By Name:
      *
@@ -41,13 +45,11 @@ public:
      * Post: returns the object
      *
      * */
-    const Object &getObjectFromListByName(const Name &objectName) const;
+    const Object &getObjectFromList(const ID objectID) const;
 
     // look and examine
     std::string lookItem(ID roomId, ID objectID);
-    std::string lookItem(ID roomId, Name itemName);
     std::string examineItem(ID roomId, ID objectID);
-    std::string examineItem(ID roomId, Name itemName);
 };
 
 #endif //ALTERSPACE_OBJECTCONTROLLER_H

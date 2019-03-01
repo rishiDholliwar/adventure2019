@@ -6,6 +6,7 @@
 #include <AlterSpace.h>
 #include <Character.h>
 #include <RoomController.h>
+#include <ObjectController.h>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
@@ -31,7 +32,7 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    bool addCharacter(Name &username, RoomController &roomController);
+    bool addCharacter(Name &username, RoomController &roomController, ObjectController &objectController);
 
     /*
      * Remove user from the list of characters
@@ -141,6 +142,10 @@ public:
     */
     Object getItemFromCharacterInventory(Name &username, Name itemName);
 
+    Object getItemFromCharacterInventory(Name &username, ID itemID);
+
+    ID getItemIDFromCharacterInventory(Name &username, Name itemName);
+
     /*
      * checks to see if character is wearing specified item
      *
@@ -162,7 +167,7 @@ public:
      *
      * Post-Condition: Returns true if the item is equipped
     */
-    bool characterWearItem(Name &username, Object item);
+    bool characterWearItem(Name &username, Name itemName);
 
     /*
      * unequips the specified item
