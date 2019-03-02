@@ -20,6 +20,7 @@ private:
     std::vector<Object> wearing;
 
     std::vector<Object>::iterator getWearingIterator(ID objectId);
+    std::vector<Object>::iterator getWearingIterator(Name objectName);
 
 public:
     Character(const Name &name, ID roomID);
@@ -83,6 +84,8 @@ public:
      * Post-Condition: Returns true if the item is taken off
     */
     bool remove(Object obj);
+
+    ID getWearingID(Name objectName);
 
     /*
      * Adds the specified item to inventory (as a copy)

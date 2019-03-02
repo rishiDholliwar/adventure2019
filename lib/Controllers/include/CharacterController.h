@@ -178,6 +178,8 @@ public:
     */
     bool characterRemoveItem(Name &username, Object item);
 
+    ID getItemIDFromCharacterWearing(Name &username, Name itemName);
+
     /*
      * lists (in order) the items in a users inventory
      *

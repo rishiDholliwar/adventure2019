@@ -98,6 +98,10 @@ bool CharacterController::characterWearItem(Name &username, Name itemName) {
     return getCharacter(username).wear(itemID);
 }
 
+ID CharacterController::getItemIDFromCharacterWearing(Name &username, Name itemName) {
+    return getCharacter(username).getWearingID(itemName);
+}
+
 bool CharacterController::characterRemoveItem(Name &username, Object item) {
     return getCharacter(username).remove(item);
 }

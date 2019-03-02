@@ -27,7 +27,7 @@ ID Character::getID() const {
 std::string Character::getInfo() const {
 
   std::stringstream retString;
-  retString << "ID: " << getID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n\t" << listWearing() << "Room ID: " << getRoomID() << "\n";
+  retString << "ID: " << getID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n" << listWearing() << "Room ID: " << getRoomID() << "\n";
 
 
 	return retString.str();
@@ -65,6 +65,14 @@ std::vector<Object>::iterator Character::getWearingIterator(ID objectId) {
     return it;
 }
 
+std::vector<Object>::iterator Character::getWearingIterator(Name objectName) {
+    auto it = find_if(wearing.begin(), wearing.end(),
+                      [ objectName ] ( Object const& obj )->bool {
+                          return obj.getName() == objectName;
+                        });
+    return it;
+}
+
 bool Character::isWearing(ID objectId) {
 
     return getWearingIterator(objectId) != wearing.end();
@@ -84,6 +92,11 @@ bool Character::wear(ID objectId) {
     wearing.push_back(getItemFromInventory(objectId));
     dropItem(objectId);
     return isWearing(objectId);
+}
+
+ID Character::getWearingID(Name objectName) {
+    auto it = getWearingIterator(objectName);
+    return (*it).getID();
 }
 
 bool Character::remove(Object obj) {
@@ -108,7 +121,7 @@ std::string Character::listWearing() const {
 	int wearCount = 1;
 
 	for (auto &obj : wearing) {
-		wearList << wearCount << ". " << obj.getName() << "\n";
+		wearList << "\t" << wearCount << ". " << obj.getName() << "\n";
 		wearCount++;
 	}
 

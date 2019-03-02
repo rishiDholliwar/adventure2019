@@ -198,12 +198,6 @@ std::vector<Response> GameController::wear(Name username, Input itemName) {
 		return formulateResponse(userResponse);
 	}
 
-    //check if character is already wearing this item
-    if (characterController.characterIsWearingItem(username, itemName)) {
-    	Response userResponse = Response("You are already wearing this item!", username);
-        return formulateResponse(userResponse);
-    }
-
     //obtain item through input
     ID itemID = characterController.getItemIDFromCharacterInventory(username, itemName);
 
@@ -225,7 +219,7 @@ std::vector<Response> GameController::takeOff(Name username, Input itemName) {
         return formulateResponse(userResponse);
     }
 
-    ID itemID = characterController.getItemIDFromCharacterInventory(username, itemName);
+    ID itemID = characterController.getItemIDFromCharacterWearing(username, itemName);
 
     if (!characterController.characterRemoveItem(username, objectController.getObjectFromList(itemID))) {
         Response userResponse = Response("Taking off " + itemName + " has failed!", username);
