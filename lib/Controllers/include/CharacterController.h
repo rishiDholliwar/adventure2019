@@ -194,6 +194,10 @@ public:
     std::string examineCharacter(Name& userName);
 
     void swapCharacters(Name &userCharacterName, Name &targetCharacterName);
+
+    void confuseCharacter(Name &targetCharacterName);
+
+    bool isCharacterConfused(Name &username);
 };
 
 

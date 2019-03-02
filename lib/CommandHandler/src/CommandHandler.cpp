@@ -20,6 +20,7 @@ CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
     mapping["/inventory"] = &GameController::inventory;
     mapping["/swap"] = &GameController::swap;
     mapping["/give"] = &GameController::give;
+    mapping["/confuse"] = &GameController::confuse;
     return mapping;
 }();
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <GameController.h>
 #include <Utility.h>
+#include <pigLatin.h>
 
 using ASDirection::directionMap;
 
@@ -247,11 +248,7 @@ std::vector<Response> GameController::inventory(Name username, Input message) {
 }
 
 std::vector<Response> GameController::swap(Name username, Name target) {
-    //check if target is valid
-    if(!characterController.doesCharacterExist(target)){
-        Response userResponse = Response("The target does not exist!", username);
-    }
-
+    
     // swap spell
     characterController.swapCharacters(username, target);
 
@@ -261,19 +258,37 @@ std::vector<Response> GameController::swap(Name username, Name target) {
     return formulateResponse(userResponse, targetResponse);
 }
 
-std::vector<Response>
-GameController::formulateResponse(Response &userResponse, std::vector<Name> characterList, Input message)
-{
+std::vector<Response> GameController::confuse(Name username, Input target) {
+    // confuse spell
+    characterController.confuseCharacter(target);
+
+    Response userResponse = Response("Successfully confused!", username);
+    Response targetResponse = Response("A confuse spell was cast on you!", target);
+
+    return formulateResponse(userResponse, targetResponse);
+}
+
+std::vector<Response> GameController::formulateResponse(Response &userResponse, std::vector<Name> characterList, Input message) {
     std::vector<Response> response;
 
     for(auto &character : characterList){
         if(character == userResponse.username){
             continue;
         }
-        response.emplace_back(message, character);
+        if(characterController.isCharacterConfused(character)) {
+            response.emplace_back(translate(message), character);
+        } else {
+            response.emplace_back(message, character);
+        }
     }
 
-    response.push_back(userResponse);
+    if(characterController.isCharacterConfused(userResponse.username)){
+        userResponse.message = translate(userResponse.message);
+        response.push_back(userResponse);
+    } else {
+        response.push_back(userResponse);
+    }
+    
     return response;
 }
 

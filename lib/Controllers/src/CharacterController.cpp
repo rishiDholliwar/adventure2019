@@ -118,3 +118,12 @@ void CharacterController::swapCharacters(Name &userCharacterName, Name &targetCh
     }
 
 }
+
+void CharacterController::confuseCharacter(Name &targetCharacterName){
+    getCharacter(targetCharacterName).confuse();
+}
+
+bool CharacterController::isCharacterConfused(Name &username) {
+    return getCharacter(username).getIsConfused();
+}
+
