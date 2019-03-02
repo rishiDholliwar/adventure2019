@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <sstream>
 #include <Inventory.h>
 
 Inventory::Inventory() = default;
@@ -8,25 +9,64 @@ void Inventory::addItem(Object object)
     objects.push_back(object);
 }
 
-bool Inventory::doesItemExist(ID objectID)
+std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectID ] ( Object const& obj )->bool {
                           return obj.getID() == objectID;
                         });
-    return it != objects.end();
+
+    return it;    
+}
+
+bool Inventory::doesItemExist(ID objectID)
+{
+    
+    return getItemIterator(objectID) != objects.end();
+}
+
+std::vector<Object>::iterator Inventory::getItemIterator(Name objectName)
+{
+    auto it = find_if(objects.begin(), objects.end(),
+                      [ objectName ] ( Object const& obj )->bool {
+                          return obj.getName() == objectName;
+                        });
+
+    return it;
+}
+
+bool Inventory::doesItemExist(Name objectName)
+{
+    
+    return getItemIterator(objectName) != objects.end();
+}
+
+Object Inventory::getItem(Name& objectName)
+{
+
+    auto it = getItemIterator(objectName);
+
+    return *it;
+}
+
+Object Inventory::getItem(ID objectID)
+{
+    auto it = getItemIterator(objectID);
+
+    return *it;
 }
 
 bool Inventory::removeItem(ID objectID)
 {
-    auto it = find_if(objects.begin(), objects.end(),
-                        [objectID] (Object const& obj)->bool {
-                            return obj.getID() == objectID;
-                        });
-    if (it != objects.end())
-        it = objects.erase(it);
-        return true;
-    return false;
+    auto it = getItemIterator(objectID);
+
+    if (it == objects.end())
+    {
+        return false;
+    }
+
+    it = objects.erase(it);
+    return true; //TODO: fix this for multiple items later!!!
 }
 
 std::string Inventory::listInventory()
@@ -36,14 +76,11 @@ std::string Inventory::listInventory()
     }
 
     int objectCount = 1;
-    std::string inventoryList;
+    std::stringstream inventoryList;
 
     for(auto &obj : objects){
 
-        std::string objectString = std::to_string(objectCount) + ". " + obj.getName() + "\n";
-        inventoryList += objectString;
-
-        objectCount++;
+        inventoryList << objectCount++ << ". " << obj.getName() << "\n";
     }
-    return inventoryList;
+    return inventoryList.str();
 }

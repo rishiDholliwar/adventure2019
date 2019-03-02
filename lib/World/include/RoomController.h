@@ -30,6 +30,28 @@ public:
     bool removeRoom(ID roomId);
     bool removeUserNameFromRoom(const Name &userName, ID roomId);
 
+    // to decouple room from game controller: (edit this comment later)
+
+    // Validity checkers
+    bool roomExists(ID roomId);
+    bool roomHasCharacter(ID roomId, Name& userName);
+    bool roomHasItem(ID roomId, ID objectId);
+    bool roomHasItem(ID roomId, Name itemName);
+    // bool roomHasNPC(ID roomId);
+    // bool roomHasDoor(ID roomId);
+    // bool roomHasKeywod(ID roomId, std::string keyword);
+
+    // look and examines
+    std::string lookDoor(ID roomId);
+    std::string examineDoor(ID roomId);
+
+    std::string lookRoom(ID roomId);
+    std::string examineRoom(ID roomId);
+    std::string lookRoomKeyword(ID roomId, std::string keyword);
+
+    // std::string lookNPC(ID roomId);
+    // std::string examineNPC(ID roomId);
+
     // Link Rooms
     // char 'n', 'e', 's', 'w' represents north, east, south, west
     // link room2 to room1 in the direction of room1,

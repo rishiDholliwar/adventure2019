@@ -1,15 +1,26 @@
 #include <ObjectController.h>
+#include <algorithm>
 
 ObjectController::ObjectController(){
-    objects.insert( {"Basic Sword", Object(100,"Basic Sword")} );
-    objects.insert( {"Basic Armor", Object(200,"Basic Armor")} );
+	//
 };
 
-bool ObjectController::doesObjectExist(const Name &objectName) {
-    return objects.find(objectName) != objects.end();
+bool ObjectController::addObjectToList(const Object &object) {
+	objects.insert( { object.getID(), object } );
 }
 
-const Object &ObjectController::getObjectFromListByName(const Name &objectName) const {
-    return objects.find(objectName)->second;
+bool ObjectController::doesObjectExist(const ID objectID) {
+    return objects.find(objectID) != objects.end();
 }
 
+bool ObjectController::doesObjectOfThisNameExist(const Name objectName) {
+	auto itr = find_if(objects.begin(), objects.end(), [ objectName ] (std::pair<ID, Object> const& objPair )->bool {
+		return objPair.second.getName() == objectName;
+	});
+
+	return itr != objects.end();
+}
+
+const Object &ObjectController::getObjectFromList(const ID objectID) const {
+    return objects.find(objectID)->second;
+}

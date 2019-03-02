@@ -23,14 +23,17 @@ set_target_properties(test_character
 target_link_libraries(Character
         PUBLIC
                 Inventory
+		utility
+                uniqueID
         )
 
 target_link_libraries(test_character
         Character
         Object
         Inventory
+        utility
+        uniqueID
         )
-
 
 install(TARGETS Character
         ARCHIVE DESTINATION lib

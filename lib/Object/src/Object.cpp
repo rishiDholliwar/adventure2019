@@ -5,5 +5,5 @@ const Name& Object::getName() const {
 }
 
 ID Object::getID() const {
-    return this->objectID;
+    return id;
 }
