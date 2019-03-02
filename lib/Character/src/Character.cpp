@@ -100,15 +100,16 @@ ID Character::getWearingID(Name objectName) {
 }
 
 bool Character::remove(Object obj) {
-    auto it = getWearingIterator(obj.getID());
-
-    if (it != wearing.end()) {
-        it = wearing.erase(it);
-        addItemToInventory(obj);
-        return (!isWearing(obj.getID()) && hasItem(obj.getID()));
+  
+    if (!(isWearing(obj.getID()))) {
+      return false;
     }
 
-    return !isWearing(obj.getID());
+    auto it = getWearingIterator(obj.getID());
+    
+    it = wearing.erase(it);
+    addItemToInventory(obj);
+    return true;
 }
 
 

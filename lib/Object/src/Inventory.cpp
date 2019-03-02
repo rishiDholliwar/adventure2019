@@ -66,7 +66,7 @@ bool Inventory::removeItem(ID objectID)
     }
 
     it = objects.erase(it);
-    return (!doesItemExist(objectID)); // fix this for multiple items later!!!
+    return true; //TODO: fix this for multiple items later!!!
 }
 
 std::string Inventory::listInventory()
@@ -80,8 +80,7 @@ std::string Inventory::listInventory()
 
     for(auto &obj : objects){
 
-        inventoryList << objectCount << ". " << obj.getName() << "\n";
-        objectCount++;
+        inventoryList << objectCount++ << ". " << obj.getName() << "\n";
     }
     return inventoryList.str();
 }

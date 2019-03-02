@@ -173,7 +173,7 @@ std::vector<Response> GameController::give(Name username, Input message) {
 
 	//drop item from user inventory
 	if (!characterController.dropItemFromCharacterInventory(username, giftID)) {
-        Response userResponse = Response("dropping failed for userChar", username);
+        Response userResponse = Response("Gifting item has failed.", username);
         return formulateResponse(userResponse);
     }
 
@@ -181,6 +181,7 @@ std::vector<Response> GameController::give(Name username, Input message) {
 	characterController.addItemToCharacterInventory(targetCharacterName, objectController.getObjectFromList(giftID));
 
 	if (!characterController.characterHasItem(targetCharacterName, giftID)) {
+        characterController.addItemToCharacterInventory(username, objectController.getObjectFromList(giftID));
 		Response userResponse = Response("Giving " + giftName + " to character " + targetCharacterName + " has failed.", username);
 		return formulateResponse(userResponse);
 	}
