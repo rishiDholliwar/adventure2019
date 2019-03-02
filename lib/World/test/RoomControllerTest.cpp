@@ -54,9 +54,13 @@ int main(){
     for (auto i : rc.getRoomIdList()){
         std::cout<<i<<"\n";
     }
-
+    auto door = rc.searchDoor(1000, 1);
+    auto room = rc.searchRoom(1000);
     std::cout << "add door1 (direction up, connect to room2) to room1: " << rc.addDoorToRoom(1,1,2, "up") << std::endl;
-    std::cout << rc.getTextOfRoomDetails(1) << std::endl;
+    std::cout << rc.getTextOfRoomDetails(1000) << std::endl;
+    std::cout << "designated door id of door 1: " << room->getId() << std::endl;
+    std::cout << "designated door id of door 1: " << door->getStatus() << std::endl;
+    std::cout << "designated door id of door 1: " << door->getId() << std::endl;
 
 
     std::cout << "end" << std::endl;

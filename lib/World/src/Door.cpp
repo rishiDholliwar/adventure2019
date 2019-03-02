@@ -1,16 +1,12 @@
-//
-// Created by evan on 17/01/19.
-//
-
 #include <Door.h>
 #include <iostream>
 
 
-Door::Door(Door::ID id, Door::ID destinatedRoomId, const std::string &direction) {
-    this->id = id;
-    this->designatedRoomID = destinatedRoomId;
-    this->direction = direction;
-    this->status = UNLOCKED;
+Door::Door(Door::ID _id, Door::ID _designatedRoomId, const std::string & _direction) {
+    id = _id;
+    designatedRoomID = _designatedRoomId;
+    direction = _direction;
+    status = UNLOCKED;
 }
 
 void Door::addKeyword(const std::string &keyword) {
@@ -21,10 +17,10 @@ void Door::addDescription(const std::string &description) {
     this->descriptions.push_back(description);
 }
 
-bool Door::setDoorLocked() {
-    return (status == UNLOCKED) && (status = LOCKED);
+void Door::setDoorLocked() {
+    status = LOCKED;
 }
 
-bool Door::setDoorUnlocked() {
-    return (status == LOCKED) && (status = UNLOCKED);
+void Door::setDoorUnlocked() {
+    status = UNLOCKED;
 }

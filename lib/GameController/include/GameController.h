@@ -8,6 +8,7 @@
 #include <RoomController.h>
 #include <Response.h>
 
+#include <algorithm>
 #include <vector>
 #include <map>
 
@@ -19,6 +20,8 @@ private:
     CharacterController characterController;
     ObjectController objectController;
     RoomController roomController;
+
+    bool isDigit(const std::string& str);
 
 public:
     GameController();
@@ -51,25 +54,25 @@ public:
     */
     std::vector<Response> broadcast(Name username, std::string message);
 
+    /* Inspect:
+     *
+     * Function: Display the information of the current room
+     *
+     * Pre-Condition: None
+     * Post-Condition: Display the information of the current room on user's windows
+     */
+    std::vector<Response> inspect(Name username, Input message);
+
     /* Move:
      *
      * Function: Moves the user that sent the message in the direction of their choice (if valid)
      *
-     * Pre-Condition: requires the userName of the person issuing the command and their direction of choice
-     * Post: If direction is a valid one, user will move to the room with the specified direction
+     * Pre-Condition: requires the userName of the person issuing the command and door ID of choice
+     * Post: If door ID is a valid one, user will move to the room with the specified door.
      *
      * */
-    std::vector<Response> move(Name username, std::string direction);
+    std::vector<Response> move(Name username, std::string inputDoorId);
 
-    /* Does the direction exist:
-     *
-     * Function: Checks to see if direction exists in the map
-     *
-     * Pre-Condition: requires the direction in question
-     * Post: returns true if direction exists
-     *
-     * */
-    bool directionExists(Name direction);
 
     /* PickUp:
      *

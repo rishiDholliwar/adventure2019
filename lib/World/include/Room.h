@@ -2,20 +2,19 @@
 #ifndef OOP_ROOM_H
 #define OOP_ROOM_H
 
-#include <string_view>
+
 #include <Door.h>
 
 
 class Room
 {
 public:
-    using ID = Door::ID;
 
-    Room(ID id, const std::string& name);
+    Room(ID id, const Name& name);
 
     // Getters
     ID const& getId() const{return id;};
-    std::string const& getName() const{return name;};
+    Name const& getName() const{return name;};
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
     std::vector<ID> const& getCharacterList() const{return characterList;};
@@ -34,8 +33,8 @@ public:
      */
     bool addCharacter(ID characterId);
     bool addObject(ID objectId);
-    bool addUserName(const std::string& userName);
-    bool addDoor(ID doorId, ID destinatedRoomId, const std::string& direction);
+    bool addUserName(const Name& userName);
+    bool addDoor(ID doorId, ID designatedRoomId, const std::string& direction);
 
     /*
      * Remover functions
@@ -64,13 +63,6 @@ public:
     std::string const getTextOfDoorDetails();
 
     /*
-     * This function return designated RoomId of the door
-     * Post-condition:
-     *              return: ID, designated RoomId of the door
-     */
-    ID const& getDesignatedRoomId(ID doorId);
-
-    /*
      * this function returns the Door object according to the door id
      */
     Door* searchDoor(ID doorId);
@@ -84,8 +76,6 @@ private:
     std::vector<ID> objectList;
     std::vector<std::string> usernameList;
     std::vector<Door> doorList;
-
-    ID unfoundDoorId = 0;
 
     template <typename T>
     bool addUniqueItemToList(T id, std::vector<T> &list);

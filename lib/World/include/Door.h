@@ -1,24 +1,25 @@
-//
-// Created by evan on 17/01/19.
-//
 
 #ifndef WEBSOCKETNETWORKING_DOOR_H
 #define WEBSOCKETNETWORKING_DOOR_H
 
 #include <vector>
 #include <string>
-#include <memory>
+#include "AlterSpace.h"
+
+using AlterSpace::Name;
+using AlterSpace::ID;
+
 
 class Door {
 public:
-    using ID = unsigned int;
+    const static ID unfoundDoorId = 0;
 
     enum DoorStatus{
         LOCKED = 0,
         UNLOCKED = 1,
     };
 
-    Door(ID  id, ID  destinatedRoomId, const std::string& direction);
+    Door(ID  id, ID  targetRoomID, const std::string& direction);
 
     // Adders
     void addDescription(const std::string& description);
@@ -26,7 +27,7 @@ public:
 
     // Getters
     ID const& getId() const{return id;};
-    ID const& getDestinatedRoomId() const{return designatedRoomID;};
+    ID const& getDesignatedRoomId() const{return designatedRoomID;};
     std::string const& getDirection() const{return direction;};
 
     /*
@@ -35,8 +36,8 @@ public:
      *      return true if the action is successful
      *      return false otherwise
      */
-    bool setDoorLocked();
-    bool setDoorUnlocked();
+    void setDoorLocked();
+    void setDoorUnlocked();
 
     /*
      * return the status of the door

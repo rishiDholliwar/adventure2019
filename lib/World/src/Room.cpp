@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <Room.h>
 
-Room::Room(ID id, const std::string& name){
+Room::Room(ID id, const Name& name){
     this->id = id;
     this->name = name;
 }
@@ -26,7 +26,7 @@ bool Room::addObject(ID objectId) {
     return addUniqueItemToList(objectId, this->objectList);
 }
 
-bool Room::addUserName(const std::string &userName) {
+bool Room::addUserName(const Name &userName) {
     return addUniqueItemToList(userName, this->usernameList);
 }
 /*
@@ -41,22 +41,23 @@ bool Room::removeObject(ID objectId) {
     return removeUniqueItemFromList(objectId, this->objectList);
 }
 
-bool Room::removeUserName(const std::string &userName) {
+bool Room::removeUserName(const Name &userName) {
     return removeUniqueItemFromList(userName, this->usernameList);
 }
 /*
  *  Link Rooms
  */
 
-bool Room::addDoor(ID doorId, ID destinatedRoomId, const std::string &direction) {
+bool Room::addDoor(ID doorId, ID designatedRoomId, const std::string &direction) {
     auto size = this->doorList.size();
     auto it = std::find_if(this->doorList.begin(), this->doorList.end(),
                   [&doorId](const Door& door)
                   {return door.getId() == doorId;});
 
     // if id not exist
-    if(it == this->doorList.end())
-        this->doorList.emplace_back(doorId, destinatedRoomId, direction);
+    if(it == this->doorList.end()) {
+        this->doorList.emplace_back(doorId, designatedRoomId, direction);
+    }
 
     return size != this->doorList.size();
 }
@@ -78,7 +79,7 @@ bool Room::removeDoor(ID doorId) {
 
 std::string const Room::getTextOfRoomDetails() {
     std::string outputString;
-    outputString += "ID: " + std::to_string(this->getId()) + "\n" +
+    outputString += "Room ID: " + std::to_string(this->getId()) + "\n" +
                     "Room Name: " + this->getName() + "\n";
 
     for (auto &description : this->descriptions){
@@ -98,9 +99,9 @@ std::string const Room::getTextOfDoorDetails() {
     std::string outputString;
     for (const auto &door: this->doorList){
         ID doorId = door.getId();
-        outputString += std::to_string(doorId) + " " + door.getDirection() +
-                        " " + std::to_string(door.getDestinatedRoomId()) +
-                        " ";
+        outputString += std::to_string(doorId) + ", " + door.getDirection() +
+                        ", " + std::to_string(door.getDesignatedRoomId()) +
+                        ", ";
         if (door.getStatus()){
             outputString += "Unlocked";
         }else{
@@ -111,29 +112,13 @@ std::string const Room::getTextOfDoorDetails() {
     return outputString;
 }
 
-Room::ID const& Room::getDesignatedRoomId(Room::ID doorId) {
-    auto list= this->doorList;
+Door* Room::searchDoor(ID doorId) {
 
-    auto it = std::find_if(list.begin(), list.end(),
-                        [&doorId](const Door& door)
-                        {return door.getId() == doorId;});
-
-    // if id exist
-    if (it != list.end()) {
-        auto door = it.base();
-        return door->getDestinatedRoomId();
-    }
-    return unfoundDoorId;
-}
-
-Door* Room::searchDoor(Room::ID doorId) {
-    auto list= this->doorList;
-
-    auto it = std::find_if(list.begin(), list.end(),
+    auto it = std::find_if(doorList.begin(), doorList.end(),
                            [&doorId](const Door& door)
                            {return door.getId() == doorId;});
 
-    if (it != list.end()) {
+    if (it != doorList.end()) {
         return it.base();
     }else{
         return nullptr;

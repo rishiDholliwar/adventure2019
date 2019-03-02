@@ -1,16 +1,27 @@
-//
-// Created by evan on 30/01/19.
-//
 
 #include <algorithm>
 #include <RoomController.h>
 
-RoomController::RoomController() = default;
+RoomController::RoomController(){
+    generateRoom(1000, "Room1");
+    generateRoom(1001, "Room2");
+    generateRoom(1002, "Room3");
+    generateRoom(1003, "Room4");
+
+    addDoorToRoom(1000, 1, 1001, "To the sky");
+    addDoorToRoom(1000, 2, 1002, "To the cave");
+    addDoorToRoom(1000, 3, 1003, "To the forest");
+
+    addDoorToRoom(1001, 1, 1000, "Down to the floor");
+    addDoorToRoom(1002, 1, 1000, "Out of the cave");
+    addDoorToRoom(1003, 1, 1000, "Out of the forest");
+
+}
 
 /*
  * Getters
  */
-const std::vector<RoomController::ID> & RoomController::getCharacterList(ID roomId) {
+const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
@@ -20,7 +31,7 @@ const std::vector<RoomController::ID> & RoomController::getCharacterList(ID room
     return room->getCharacterList();
 }
 
-const std::vector<RoomController::ID> & RoomController::getObjectList(ID roomId) {
+const std::vector<ID> & RoomController::getObjectList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
@@ -40,8 +51,8 @@ const std::vector<std::string>& RoomController::getUsernameList(ID roomId) {
     return room->getUsernameList();
 }
 
-std::vector<RoomController::ID> RoomController::getRoomIdList() const {
-    std::vector<RoomController::ID> integerRoomList;
+std::vector<ID> RoomController::getRoomIdList() const {
+    std::vector<ID> integerRoomList;
 
     std::transform(this->roomList.begin(), this->roomList.end(),
             std::back_inserter(integerRoomList),
@@ -54,7 +65,7 @@ std::vector<RoomController::ID> RoomController::getRoomIdList() const {
  * Adders
  */
 
-bool RoomController::generateRoom(RoomController::ID roomId, const std::string& roomName) {
+bool RoomController::generateRoom(ID roomId, const Name& roomName) {
     auto tempRoom = RoomController::searchRoom(roomId);
 
     if (tempRoom == nullptr) {
@@ -74,7 +85,7 @@ bool RoomController::addObjectToRoom(ID objectId, ID roomId) {
     return (tempRoom != nullptr) && (tempRoom->addObject(objectId));
 }
 
-bool RoomController::addUserNameToRoom(const std::string &userName, ID roomId) {
+bool RoomController::addUserNameToRoom(const Name &userName, ID roomId) {
     auto tempRoom = this->searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->addUserName(userName));
 }
@@ -116,56 +127,31 @@ bool RoomController::removeUserNameFromRoom(const std::string &userName, ID room
 /*
  *  Link Rooms
  */
-bool RoomController::addDoorToRoom(RoomController::ID roomId, RoomController::ID doorId,
-                                   RoomController::ID destinatedRoomId, const std::string &direction) {
+bool RoomController::addDoorToRoom(ID roomId, ID doorId,
+                                   ID designatedRoomId, const std::string &direction) {
     auto room = searchRoom(roomId);
-    return room->addDoor(doorId, destinatedRoomId, direction);
+    auto designatedRoom = searchRoom(designatedRoomId);
+    return (room!=nullptr) && (designatedRoom != nullptr)&& (room->addDoor(doorId, designatedRoomId, direction));
 }
 
-bool RoomController::removeDoorFromRoom(RoomController::ID roomId, ID doorId) {
+bool RoomController::removeDoorFromRoom(ID roomId, ID doorId) {
     auto room = searchRoom(roomId);
-    return room->removeDoor(doorId);
+    return (room!=nullptr) && room->removeDoor(doorId);
 }
 
-std::string RoomController::getTextOfRoomDetails(RoomController::ID roomId) {
+std::string RoomController::getTextOfRoomDetails(ID roomId) {
     auto room = searchRoom(roomId);
     return room->getTextOfRoomDetails();
 }
 
-RoomController::ID RoomController::getDesignatedRoomId(RoomController::ID roomId, RoomController::ID doorId) {
-    auto room = searchRoom(roomId);
-    if (room == nullptr){
-        return -1;
-    }
-    return room->getDesignatedRoomId(doorId);
-
-}
-
-bool RoomController::setDoorLocked(RoomController::ID roomId, RoomController::ID doorId) {
-    auto room = searchRoom(roomId);
-    if (room != nullptr){
-        auto door = room->searchDoor(doorId);
-        return (door != nullptr) && (door->setDoorLocked());
-    }
-    return (room != nullptr);
-}
-
-bool RoomController::setDoorUnlocked(RoomController::ID roomId, RoomController::ID doorId) {
-    auto room = searchRoom(roomId);
-    if (room != nullptr){
-        auto door = room->searchDoor(doorId);
-        return (door != nullptr) && (door->setDoorUnlocked());
-    }
-    return (room != nullptr);
-}
 
 /*
- * private functions
+ * search functions
  */
 
 Room* RoomController::searchRoom(ID roomId) {
 
-    auto tempRoom = std::find_if(this->roomList.begin(), this->roomList.end(),
+    auto tempRoom = std::find_if(roomList.begin(), roomList.end(),
                                  [&roomId](const Room& room)
                                  {return room.getId() == roomId;}
     );
@@ -177,3 +163,10 @@ Room* RoomController::searchRoom(ID roomId) {
     return tempRoom.base();
 }
 
+Door* RoomController::searchDoor(ID roomId, ID doorId) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return nullptr;
+    }
+    return room->searchDoor(doorId);
+}

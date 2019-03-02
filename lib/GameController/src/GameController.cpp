@@ -3,7 +3,6 @@
 #include <iostream>
 #include <GameController.h>
 
-using ASDirection::directionMap;
 
 GameController::GameController()
 {
@@ -40,32 +39,61 @@ std::vector<Response> GameController::broadcast(Name username, Input message) {
     return formulateResponse(userResponse, broadcast ,genericMessage);
 }
 
-std::vector<Response> GameController::move(Name username, std::string direction) {
-    std::cout << "Move: " << direction << std::endl;
+std::vector<Response> GameController::inspect(Name username, Input message) {
+
+    Character* character = &characterController.getCharacter(username);
+    Response userResponse = Response(roomController.getTextOfRoomDetails(character->getRoomID()), username);
+    return formulateResponse(userResponse);
+}
+
+std::vector<Response> GameController::move(Name username, std::string inputDoorId) {
+
+    std::cout << "Move: " << inputDoorId << std::endl;
+
+    if (!isDigit(inputDoorId)){
+        Response userResponse = Response("Invalid input, please input the door ID!", username);
+        return formulateResponse(userResponse);
+    }
 
     // Obtain character object based on userName (dummy)
     Character* character = &characterController.getCharacter(username);
 
-    // check if direction exists
-    if(!directionExists(direction)){
-        Response userResponse = Response("There is no such direction!", username);
+    RoomController::ID doorId = (unsigned int) stoi(inputDoorId);
+    RoomController::ID roomId = character->getRoomID();
+
+
+    auto door = roomController.searchDoor(roomId, doorId);
+    RoomController::ID designatedRoomId = door->getDesignatedRoomId();
+
+    std::cout << "designated Room: "<<designatedRoomId << std::endl;
+
+
+    // check if door exists
+    if (designatedRoomId == Door::unfoundDoorId){
+        Response userResponse = Response("Door not exist!", username);
         return formulateResponse(userResponse);
     }
 
-    // Verify if direction is valid
-    unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(direction), character->getRoomID());
-    if( destinationRoomID == 0){
-        Response userResponse = Response("That isn't a valid direction!", username);
+
+    // Verify if door is locked
+    if( door->getStatus() == Door::LOCKED){
+        Response userResponse = Response("Door is locked!", username);
         return formulateResponse(userResponse);
     }
+
 
     // Update roomList to account for character moving
     roomController.removeUserNameFromRoom(character->getName(),character->getRoomID());
-    roomController.addUserNameToRoom(character->getName(), destinationRoomID);
-    character->setRoomID(destinationRoomID);
+    roomController.addUserNameToRoom(character->getName(), designatedRoomId);
+    character->setRoomID(designatedRoomId);
 
-    Response userResponse = Response("Headed " + direction, username);
+    Response userResponse = Response("Headed " + door->getDirection(), username);
     return formulateResponse(userResponse);
+}
+
+bool GameController::isDigit(const std::string &str) {
+    return !str.empty() &&  std::find_if(str.begin(),
+                                         str.end(), [](char c) { return !std::isdigit(c); }) == str.end();
 }
 
 std::vector<Response> GameController::pickUp(Name username, std::string itemName) {
@@ -192,8 +220,4 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
     return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
-}
-
-bool GameController::directionExists(std::string direction) {
-    return directionMap.find(direction) != directionMap.end();
 }
