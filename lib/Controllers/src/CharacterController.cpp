@@ -124,6 +124,6 @@ void CharacterController::confuseCharacter(Name &targetCharacterName){
 }
 
 bool CharacterController::isCharacterConfused(Name &username) {
-    return getCharacter(username).getIsConfused();
+    return getCharacter(username).isConfused();
 }
 

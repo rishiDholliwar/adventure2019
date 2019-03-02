@@ -18,7 +18,7 @@ private:
     ID roomID;
     Inventory inventory;
     std::vector<Object> wearing;
-    bool isConfused;
+    bool confused;
 
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
@@ -29,7 +29,7 @@ public:
     ID getRoomID() const;
     ID getID() const;
     std::string getInfo() const;
-    bool getIsConfused();
+    bool isConfused();
 
     void setRoomID(ID roomID);
 
