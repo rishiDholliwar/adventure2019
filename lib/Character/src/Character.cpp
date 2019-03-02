@@ -9,6 +9,7 @@ Character::Character(const Name &name, ID roomID)
   this->name = name;
   this->roomID = roomID;
   this->inventory = Inventory{};
+  this->confused = false;
   this->wearing = std::vector<Object>();
 }
 
@@ -134,8 +135,18 @@ std::string Character::listInventory() {
 }
 
 
+void Character::confuse() {
+    if(confused){
+        confused = false;
+    }else {
+        confused = true;
+    }
+}
 
 
+bool Character::isConfused() {
+  return confused;
+}
 
 
 

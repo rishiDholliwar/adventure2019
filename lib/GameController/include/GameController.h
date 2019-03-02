@@ -142,6 +142,8 @@ public:
      * */
     std::vector<Response> inventory(Name username, Input message);
 
+    std::vector<Response> confuse(Name username, Input target);
+
     std::vector<Response> swap(Name username, Name target);
 
     /* Formulate Response:

@@ -21,6 +21,7 @@ target_link_libraries(gameController
   PRIVATE
     utility
     uniqueID
+    pigLatin
     ${Boost_LIBRARIES}
 )
 
@@ -49,6 +50,7 @@ target_link_libraries(gameControllerTest
   gameController
   utility
   uniqueID
+  pigLatin
   ${Boost_LIBRARIES})
 
 

@@ -1,8 +1,8 @@
 
 add_library(utility
         src/Utility.cpp
-        include/Utility.h
-        include/AlterSpace.h)
+        include/AlterSpace.h
+        )
 
 add_library(returnCode
         include/Response.h
@@ -10,6 +10,9 @@ add_library(returnCode
 
 add_library(uniqueID
           src/UniqueID.cpp)
+
+add_library(pigLatin
+          src/pigLatin.cpp)
 
 target_include_directories(utility
   PUBLIC
@@ -37,6 +40,14 @@ target_include_directories(uniqueID
     ${Boost_INCLUDE_DIR}
 )
 
+target_include_directories(pigLatin
+  PUBLIC
+    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PRIVATE
+    ${Boost_INCLUDE_DIR}
+)
+
 set_target_properties(utility
                       PROPERTIES
                       LINKER_LANGUAGE CXX
@@ -55,6 +66,12 @@ set_target_properties(uniqueID
                       CXX_STANDARD 17
 )
 
+set_target_properties(pigLatin
+                      PROPERTIES
+                      LINKER_LANGUAGE CXX
+                      CXX_STANDARD 17
+)
+
 install(TARGETS utility
   ARCHIVE DESTINATION lib
 )
@@ -64,5 +81,9 @@ install(TARGETS returnCode
 )
 
 install(TARGETS uniqueID
+  ARCHIVE DESTINATION lib
+)
+
+install(TARGETS pigLatin
   ARCHIVE DESTINATION lib
 )
