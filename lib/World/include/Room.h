@@ -57,6 +57,8 @@ public:
     bool removeObject(ID objectId);
     bool removeUserName(const Name& userName);
 
+    // get descriptions: look, examine
+
     // Link Rooms
     // use character 'n','e','s','w' to represent direction
 
