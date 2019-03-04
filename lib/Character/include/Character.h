@@ -96,7 +96,7 @@ public:
      *
      * Post-Condition: Returns true if addition was successful
     */
-    bool addItemToInventory(Object obj);
+    void addItemToInventory(Object obj);
 
     /*
      * Removes specified object from inventory
