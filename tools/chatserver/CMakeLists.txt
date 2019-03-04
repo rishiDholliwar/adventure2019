@@ -16,6 +16,8 @@ target_link_libraries(chatserver
   PUBLIC
     networking
   PRIVATE
+    scheduler
+    commands
     commandHandler
     gameController
     userController

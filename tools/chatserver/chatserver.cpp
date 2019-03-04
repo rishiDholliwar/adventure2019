@@ -15,7 +15,11 @@
 #include <sstream>
 #include <unistd.h>
 #include <Utility.h>
+#include <Scheduler.h>
 #include <ReturnCodes.h>
+
+#include <GameCommands.h>
+#include <UserCommands.h>
 
 // We must decide on how to handle onConnect and onDisconnect
 // The reason why our game is a global is because the methods
@@ -30,6 +34,11 @@ void onDisconnect(Connection c) {
     game->removeConnection(c);
 }
 
+void Game::registerCommands() {
+    _commandHandler->registerCommand("/say", Say(&_gameController).clone());
+    _commandHandler->registerCommand("/login", Login(&_userController, &_gameController).clone());
+}
+
 void
 Game::addConnection(Connection c) {
     std::cout << "New connection found: " << c.id << "\n";
@@ -40,9 +49,9 @@ Game::addConnection(Connection c) {
 void
 Game::removeConnection(Connection c) {
     std::cout << "Connection lost: " << c.id << "\n";
-    if (_userController->isConnectionLoggedIn(c)) {
-        std::string username = _userController->getUsernameWithConnection(c);
-        _userController->logoutUser(username);
+    if (_userController.isConnectionLoggedIn(c)) {
+        std::string username = _userController.getUsernameWithConnection(c);
+        _userController.logoutUser(username);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
     }
@@ -63,95 +72,39 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         }
 
         std::string trimmed = utility::trimStringToLength(message.text, 2048);
-        CommandInfo info = _commandHandler->parseCommand(trimmed);
-        if ( (! _userController->isConnectionLoggedIn(message.connection)) && (info.type != CommandType::USERCONTROLLER))
+        auto input = utility::popFront(trimmed);
+        while ( input.size() < 2 ) {
+            input.push_back("");
+        }
+        std::string invocationWord = input.at(0);
+        std::string text = input.at(1);
+
+        if ( (! _userController.isConnectionLoggedIn(message.connection)) && (invocationWord != "/login"))
         {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
         }
 
-        std::string username = _userController->getUsernameWithConnection(message.connection);
-        std::string output = "Unknown";
-        switch ( info.type )
-        {
-            case CommandType::GAMECONTROLLER:
-            {
-                auto func = _commandHandler->getUserFunc(username, info.command);
-                if (func != nullptr)
-                {
-                    auto responses = ((*_gameController).*func)(username, info.input);
-                    for ( auto& res : responses )
-                    {
-                        Connection conn = _userController->getConnectionWithUsername(res.username);
-                        std::cout << conn.id << std::endl;
-                        result.push_back(Message{conn.id, res.message});
-                    }
-                }
-                else
-                {
-                    output = "Invalid command";
-                }
-                break;
-            }
-            case CommandType::USERCONTROLLER:
-            {
-                auto func = _commandHandler->getLognFunc(info.command);
-                if (func != nullptr)
-                {
-                    std::vector<std::string> v = utility::tokenizeString(info.input);
-                    while ( v.size() < 2 )
-                    {
-                        v.push_back("");
-                    }
-                    if ( username.empty() )
-                    {
-                        username = v.front();
-                        v.front() = std::move(v.back());
-                        v.pop_back();
-                    }
-                    UserController::UserData response = ((*_userController).*func)(username, v.at(0), message.connection);
-                    output = Return::ReturnCodeToString(response.returnCode);
-                    if ( response.returnCode == ReturnCode::LOGIN_SUCCESS ||
-                         response.returnCode == ReturnCode::CREATE_SUCCESS )
-                    {
-                        _gameController->loadCharacter(username);
-                    }
-                    // output = "OK";
-                }
-                else
-                {
-                    output = "Invalid command";
-                }
-                break;
-            }
-            case CommandType::COMMANDHANDLER:
-            {
-                auto func = _commandHandler->getCommFunc(info.command);
-                if (func != nullptr)
-                {
-                    output = ((*_commandHandler).*func)(username, info.input);
-                }
-                else
-                {
-                    output = "Invalid command";
-                }
-                break;
-            }
-            case CommandType::UNKNOWN:
-            {
-                break;
-            }
-            default:
-            {
-                std::cout << "I dont even know how" << std::endl;
-            }
-        }
-        if ( result.empty() )
-        {
+        std::string username = _userController.getUsernameWithConnection(message.connection);
+        std::string output = "Invalid command";
+
+        auto command = _commandHandler->getCommand(username, invocationWord, text, message.connection);
+        if ( command == nullptr ) {
             Message msg{message.connection, output};
             result.push_back(msg);
+            continue;
         }
+        _scheduler->schedule(std::move(command), 0);
     }
+
+    auto responses = _scheduler->update();
+    for ( auto& res : responses )
+    {
+        Connection conn = _userController.getConnectionWithUsername(res.username);
+        std::cout << conn.id << std::endl;
+        result.push_back(Message{conn.id, res.message});
+    }
+
     return result;
 }
 
@@ -171,7 +124,6 @@ Game::run()
         auto incoming = _server->receive();
         auto log = processMessages(incoming, done);
         _server->send(log);
-        sleep(_heartbeat);
     }
     return done;
 }
@@ -179,9 +131,11 @@ Game::run()
 Game::Game(Config config)
 {
     _server = std::make_unique<Server>(config.port, config.webpage, onConnect, onDisconnect);
-    _gameController = std::make_unique<GameController>();
-    _userController = std::make_unique<UserController>();
+    _gameController = GameController();
+    _userController = UserController();
     _commandHandler = std::make_unique<CommandHandler>();
+    _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
+    this->registerCommands();
 }
 
 std::string
