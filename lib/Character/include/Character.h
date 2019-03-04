@@ -8,6 +8,7 @@
 #include <UniqueID.h>
 #include <Object.h>
 #include <utility>
+#include "Spells.h"
 
 using AlterSpace::ID;
 using AlterSpace::Name;
@@ -22,7 +23,6 @@ private:
 
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
-    CharacterStatus status = CharacterStatus::DEFAULT;
     std::vector<std::string> characterSpells;
 
     /*
@@ -110,7 +110,7 @@ public:
      *
      * Post-Condition: Returns true if addition was successful
     */
-    bool addItemToInventory(Object obj);
+    void addItemToInventory(Object obj);
 
     /*
      * Removes specified object from inventory
@@ -134,6 +134,16 @@ public:
     // look and examine
     std::string look();
     std::string examine();
+
+
+    /*
+     * Returns a string list of character known spells
+     *
+     * Pre-condition: Character has a list of spells
+     *
+     * Post-Condition: Return string of all character known spells
+     */
+    std::string getListOfSpells();
 
     /*
      * Returns a string list of character spells based on spell type

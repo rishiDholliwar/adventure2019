@@ -23,7 +23,7 @@ CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
     mapping["/cast"] = &GameController::cast;
     mapping["/swap"] = &GameController::swap;
     mapping["/give"] = &GameController::give;
-    mapping["/confuse"] = &GameController::confuse;
+    //mapping["/confuse"] = &GameController::confuse;
     return mapping;
 }();
 

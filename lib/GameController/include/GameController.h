@@ -151,6 +151,7 @@ public:
     std::vector<Response> cast(std::string username, std::string target);
 
 
+
     /* Formulate Response:
      *
      * Function: Constructs messages to send to every player

@@ -5,7 +5,7 @@ ObjectController::ObjectController(){
 	//
 };
 
-bool ObjectController::addObjectToList(const Object &object) {
+void ObjectController::addObjectToList(const Object &object) {
 	objects.insert( { object.getID(), object } );
 }
 

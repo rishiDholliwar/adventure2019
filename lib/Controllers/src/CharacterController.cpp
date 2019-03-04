@@ -116,8 +116,15 @@ void CharacterController::swapCharacters(Name &userCharacterName, Name &targetCh
     if ((item1 != _characters.end()) && (item2 != _characters.end())){
         std::swap(item1->second, item2->second);
     }
-
 }
+
+
+bool CharacterController::doesCharacterHaveSpell(std::string &username, std::string &spellName) {
+    Character character = getCharacter(username);
+    return(character.doesSpellExist(spellName));
+}
+
+
 
 void CharacterController::confuseCharacter(Name &targetCharacterName){
     getCharacter(targetCharacterName).confuse();

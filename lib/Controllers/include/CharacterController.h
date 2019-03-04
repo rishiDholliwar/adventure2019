@@ -189,6 +189,8 @@ public:
     */
     std::string characterListInventory(Name &username);
 
+    bool doesCharacterHaveSpell(std::string &username, std::string &spellName);
+
     // look and examine 
     std::string lookCharacter(Name& userName);
     std::string examineCharacter(Name& userName);

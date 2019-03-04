@@ -4,6 +4,7 @@
 #include <GameController.h>
 #include <Utility.h>
 #include <pigLatin.h>
+#include <StringLibrary.h>
 
 using ASDirection::directionMap;
 
@@ -260,38 +261,58 @@ std::vector<Response> GameController::swap(Name username, Name target) {
 
 std::vector<Response> GameController::cast(std::string username, std::string target) {
     std::vector<std::string> message = utility::tokenizeString(target);
-    for(auto &a : message){
-        std::cout<< a << std::endl;
+    for (auto &a : message) {
+        std::cout << a << std::endl;
     }
     std::cout << message.size() << std::endl;
     // checks game to see if spell exists in game
-    if(!spellController.doesSpellExist(message[0])){
+    if (!spellController.doesSpellExist(message[0])) {
         Response userResponse = Response("The spell doesn't exist", username);
         return formulateResponse(userResponse);
     }
     // checks to see if character has knowledge of spells
-    if(!characterController.doesCharacterHaveSpell(username,message[0])) {
+    if (!characterController.doesCharacterHaveSpell(username, message[0])) {
         Response userResponse = Response("You do not know this spell.", username);
         return formulateResponse(userResponse);
     }
 
     Spells spell = spellController.getSpell(message[0]);
+
     //If spell is of type CHARACTER, then a target is required
-    if(spell.getType()==Spells::SpellType::CHARACTER){
+    if (spell.getType()==Spells::SpellType::CHARACTER) {
         //Check if second parameter exists
-        if(message.size() > 1){
+        std::cout << "character type \n";
+        if (message.size() > 1) {
             //Check if second parameter target exists
-            if(!characterController.doesCharacterExist(message[1])){
-                Response userResponse = Response("The target does not exist!",username);
+            if (!characterController.doesCharacterExist(message[1])) {
+                Response userResponse = Response("The target does not exist!", username);
                 return formulateResponse(userResponse);
             }
             //TODO::GAME LOGIC ON SPELL CAST
-        } else{
-            Response userResponse = Response("No target selected",username);
+            //Confuse Spell Logic
+            if(spell.getName() == StringLibrary::spellConfuse){
+                characterController.confuseCharacter(message[1]);
+
+                Response userResponse = Response("Successfully confused!", username);
+                Response targetResponse = Response("A confuse spell was cast on you!", message[1]);
+
+                return formulateResponse(userResponse, targetResponse);
+            }
+        } else {
+            Response userResponse = Response("No target selected", username);
             return formulateResponse(userResponse);
         }
+    } else{
+        //TODO::IN COMBAT STATE OR TARGET NOT SPECIFIED
+        Response userResponse = Response("No targets found", username);
+        return formulateResponse(userResponse);
     }
-    //TODO::IN COMBAT STATE OR TARGET NOT SPECIFIED
+
+}
+
+/*
+ * Function can be deleted
+ */
 std::vector<Response> GameController::confuse(Name username, Input target) {
     // confuse spell
     characterController.confuseCharacter(target);
@@ -299,12 +320,9 @@ std::vector<Response> GameController::confuse(Name username, Input target) {
     Response userResponse = Response("Successfully confused!", username);
     Response targetResponse = Response("A confuse spell was cast on you!", target);
 
-    Response targetResponse = Response("A swap spell was cast on you!", username);
-
     return formulateResponse(userResponse, targetResponse);
+
 }
-    return formulateResponse(targetResponse);
-};
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse, std::vector<Name> characterList, Input message) {
     std::vector<Response> response;

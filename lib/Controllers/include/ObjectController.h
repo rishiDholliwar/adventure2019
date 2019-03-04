@@ -23,7 +23,7 @@ private:
 public:
     ObjectController();
 
-    bool addObjectToList(const Object &object);
+    void addObjectToList(const Object &object);
 
     /* Does Object Exist:
      *
