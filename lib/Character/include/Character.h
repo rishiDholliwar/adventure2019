@@ -2,46 +2,40 @@
 #define ALTERSPACE_CHARACTER_H
 
 #include <string>
+#include <vector>
 #include <AlterSpace.h>
 #include <Inventory.h>
+#include <UniqueID.h>
 #include <Object.h>
-#include <Spells.h>
-
+#include <utility>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
 
-class Character {
+class Character : public UniqueID {
 private:
     Name name;
-    ID characterID;
     ID roomID;
     Inventory inventory;
+    std::vector<Object> wearing;
+    bool confused;
+
+    std::vector<Object>::iterator getWearingIterator(ID objectId);
+    std::vector<Object>::iterator getWearingIterator(Name objectName);
 
 public:
-    Character(const Name &name, ID characterID, ID roomID);
+    Character(const Name &name, ID roomID);
     Name getName() const;
     ID getRoomID() const;
-    ID getCharacterID() const;
-    public:
-    /*
-    * A Character has a status that limits the actions a character can do.
-    */
-    enum class CharacterStatus {
-        UNDERSPELL,
-        COMBAT,
-        MINIGAME,
-        DEFAULT
-    };
-
-
-    Character(const std::string &name, unsigned int characterID, unsigned int roomID);
-
-    std::string getName();
-
-    unsigned int getRoomID();
+    ID getID() const;
+    std::string getInfo() const;
+    bool isConfused();
 
     void setRoomID(ID roomID);
+
+    Object getItemFromInventory(Name objectName);
+
+    Object getItemFromInventory(ID objectId);
 
     /*
      * Checks to see if character has the item in question
@@ -51,6 +45,49 @@ public:
      * Post-Condition: Returns true if item exists in inventory
     */
     bool hasItem(ID objectId);
+
+    /*
+     * Checks to see if character has the item in question by name
+     *
+     * Pre-Condition: Name of the Object
+     *
+     * Post-Condition: Returns true if item exists in inventory
+    */
+    bool hasItem(Name &objectName);
+
+    /*
+     * checks to see if character is wearing specified item
+     *
+     * Pre-Condition: id of the item
+     *
+     * Post-Condition: Returns true if the item is being worn
+    */
+    bool isWearing(ID objectId);
+
+    /*
+     * overloaded
+     */
+    bool isWearing(Name objectName);
+
+    /*
+     * the user wears the specified item
+     *
+     * Pre-Condition: the item
+     *
+     * Post-Condition: Returns true if the item is worn
+    */
+    bool wear(ID objectId);
+
+    /*
+     * unwears the specified item
+     *
+     * Pre-Condition: the item
+     *
+     * Post-Condition: Returns true if the item is taken off
+    */
+    bool remove(Object obj);
+
+    ID getWearingID(Name objectName);
 
     /*
      * Adds the specified item to inventory (as a copy)
@@ -66,9 +103,12 @@ public:
      *
      * Pre-Condition: ID of the Object
      *
-     * Post-Condition: Item will be dropped if it exists
+     * Post-Condition: Item will be dropped if it exists, returns true if dropped
     */
-    void dropItem(ID objectId);
+    bool dropItem(ID objectId);
+
+
+    std::string listWearing() const;
 
 
     // This should be getInventory
@@ -77,71 +117,11 @@ public:
     // based on the Character's inventory
     std::string listInventory();
 
-    /*
-     * Updates a characters status
-     *
-     * Pre-Condition: A status requirement that doesn't conflict with another status.
-     *
-     * Post-Condition: Character status will be updated if possible
-     */
-    void updateCharacterStatus(CharacterStatus status);
+    // look and examine
+    std::string look();
+    std::string examine();
 
-    /*
-     * Returns a string list of all character spells
-     *
-     * Pre-Condition: Character has a list of spells
-     *
-     * Post-Condition: Returns all character spells
-     */
-    std::string getListOfSpells();
-
-    /*
-     * Returns a string list of character spells based on spell type
-     *
-     * Pre-Condition: Character has a list of spells of said type
-     *
-     * Post-Condition: Return all character spells of said type
-     */
-    std::string getListOfSpells(Spells::SpellType spellType);
-
-    /*
-     * Returns true or false depending if the character has a given spell name
-     *
-     * Pre-Condition: Character has a list of spells
-     *
-     * Post-Condition: True if character has spell learned
-     */
-    bool doesSpellExist(std::string &spellName);
-
-    /*
-     * Character Stats
-     */
-
-    unsigned int getCharacterCurrentHP();
-    unsigned int getCharacterCurrentMP();
-    void setCharacterCurrentHP(unsigned int hp);
-    void setCharacterCurrentMP(unsigned int mp);
-
-
-private:
-    std::string name;
-    unsigned int characterID;
-    unsigned int roomID;
-    Inventory inventory;
-    CharacterStatus status = CharacterStatus::DEFAULT;
-    std::vector<std::string> characterSpells;
-
-    /*
-     * Character stats
-     */
-    unsigned int currentHP;
-    unsigned int currentMP;
-    unsigned int attack = 1;
-    unsigned int defense = 1;
-
-    unsigned int maxHP = 100;
-    unsigned int maxMP = 100;
-
+    void confuse();
 };
 
 

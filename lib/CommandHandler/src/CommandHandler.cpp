@@ -8,14 +8,20 @@
 CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
 {
     CommandHandler::UserFunctionMap mapping;
+    mapping["/info"] = &GameController::info;
     mapping["/say"]  = &GameController::say;
+    mapping["/whisper"] = &GameController::whisper;
     mapping["/broadcast"] = &GameController::broadcast;
     mapping["/move"] = &GameController::move;
     mapping["/get"] = &GameController::pickUp;
     mapping["/drop"] = &GameController::drop;
     // mapping["/logout"] = &GameController::logout;
+    mapping["/wear"] = &GameController::wear;
+    mapping["/takeoff"] = &GameController::takeOff;
     mapping["/inventory"] = &GameController::inventory;
     mapping["/swap"] = &GameController::swap;
+    mapping["/give"] = &GameController::give;
+    mapping["/confuse"] = &GameController::confuse;
     return mapping;
 }();
 

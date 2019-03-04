@@ -6,12 +6,12 @@
 #include <AlterSpace.h>
 #include <Character.h>
 #include <RoomController.h>
+#include <ObjectController.h>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
 
 //dummy values
-#define CHARACTER_ID 90
 #define ROOM_ID 1000
 
 class CharacterController {
@@ -32,7 +32,7 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    bool addCharacter(Name &username, RoomController &roomController);
+    bool addCharacter(Name &username, RoomController &roomController, ObjectController &objectController);
 
     /*
      * Remove user from the list of characters
@@ -61,21 +61,143 @@ public:
     */
     bool doesCharacterExist(Name &userName);
 
+    /*
+     * Obtain a list of all users currently in the game
+     *
+     * Pre-Condition:
+     *
+     * Post-Condition: Returns all users in the game
+    */
     std::vector<Name> getAllCharacterNames();
 
     /*
-     * Checks to see if character has knowledge of given spell
+     * obtain character info
      *
-     * Pre-Condition: the spell name that the character is casting
+     * Pre-Condition: info of the specified user
      *
-     * Post-Condition: returns true if the character has knowledge of given spell
+     * Post-Condition: string of the user's info
+    */
+    std::string getCharacterInfo(Name &username);
+
+    /*
+     * obtain room id of the character in question
+     *
+     * Pre-Condition: name of the user
+     *
+     * Post-Condition: current room id of the user
+    */
+    ID getCharacterRoomID(Name &username);
+
+    /*
+     * modify the room id of the character in question
+     *
+     * Pre-Condition: username of the character and the new room id
+     *
+     * Post-Condition:
+    */
+    void setCharacterRoomID(Name &username, ID roomID);
+
+    /*
+     * checks to see if character has specified item
+     *
+     * Pre-Condition: username of the person and the id of the item
+     *
+     * Post-Condition: Returns true if the item exists
+    */
+    bool characterHasItem(Name &username, ID itemID);
+
+    /*
+     * checks to see if character has specified item
+     *
+     * Pre-Condition: username of the person and the name of the item
+     *
+     * Post-Condition: Returns true if the item exists
+    */
+    bool characterHasItem(Name &username, Name itemName);
+
+    /*
+     * adds specified item to character inventory
+     *
+     * Pre-Condition: username of the person and the item
+     *
+     * Post-Condition:
+    */
+    void addItemToCharacterInventory(Name &username, Object item);
+
+    /*
+     * deletes item from the character inventory
+     *
+     * Pre-Condition: username of the person and the id of the item
+     *
+     * Post-Condition: Returns true if the item has been dropped
+    */
+    bool dropItemFromCharacterInventory(Name &username, ID objectID);
+
+    /*
+     * obtain item from users inventory
+     *
+     * Pre-Condition: username of the person and the name of the item
+     *
+     * Post-Condition: Returns the item if it exists
+    */
+    Object getItemFromCharacterInventory(Name &username, Name itemName);
+
+    Object getItemFromCharacterInventory(Name &username, ID itemID);
+
+    ID getItemIDFromCharacterInventory(Name &username, Name itemName);
+
+    /*
+     * checks to see if character is wearing specified item
+     *
+     * Pre-Condition: username of the person and the id of the item
+     *
+     * Post-Condition: Returns true if the item is being worn
+    */
+    bool characterIsWearingItem(Name &username, ID objectID);
+
+    /*
+     * overloaded (by item name)
      */
-    bool doesCharacterHaveSpell(std::string &username, std::string &spellName);
+    bool characterIsWearingItem(Name &username, Name itemName);
 
-    std::vector<std::string> getNamesOfOnlineUsers();
+    /*
+     * the user equips the specified item
+     *
+     * Pre-Condition: username of the person and the item
+     *
+     * Post-Condition: Returns true if the item is equipped
+    */
+    bool characterWearItem(Name &username, Name itemName);
 
+    /*
+     * unequips the specified item
+     *
+     * Pre-Condition: username of the person and the item
+     *
+     * Post-Condition: Returns true if the item is unequipped
+    */
+    bool characterRemoveItem(Name &username, Object item);
 
-    void swapCharacters( Character &userCharacter,  Character &targetCharacter);
+    ID getItemIDFromCharacterWearing(Name &username, Name itemName);
+
+    /*
+     * lists (in order) the items in a users inventory
+     *
+     * Pre-Condition: username of the character
+     *
+     * Post-Condition: Returns a modified string listing inventory of user
+    */
+    std::string characterListInventory(Name &username);
+
+    // look and examine 
+    std::string lookCharacter(Name& userName);
+    std::string examineCharacter(Name& userName);
+
+    void swapCharacters(Name &userCharacterName, Name &targetCharacterName);
+
+    void confuseCharacter(Name &targetCharacterName);
+
+    bool isCharacterConfused(Name &username);
 };
 
 

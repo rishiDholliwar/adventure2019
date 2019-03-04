@@ -10,8 +10,6 @@ void UserController::addActiveUser(const Name username, Connection connection) {
 }
 
 bool UserController::isUserActive(const Name& username) {
-	//check if username exists in activeUsers.
-	//if true, return true. else, this user is not yet logged in or created.
 
 	return activeUsers.find(username) != activeUsers.end();
 }
@@ -26,15 +24,8 @@ auto UserController::getIteratorWithConnection(const Connection connection) {
 }
 
 bool UserController::isConnectionLoggedIn(const Connection connection) {
-	bool isLoggedIn = false;
 
-	if (getIteratorWithConnection(connection) != activeUsers.end()) {
-
-		isLoggedIn = true;
-
-	}
-
-	return isLoggedIn;
+    return (getIteratorWithConnection(connection) != activeUsers.end());
 }
 
 std::string UserController::getUsernameWithConnection(const Connection connection) {
@@ -94,8 +85,7 @@ ReturnCode UserController::validateLoginUserData(const Name username, Password p
 	}
 
 	auto hashedPassword = hashPassword(password);
-	//look for username.json in some .../user/userdata/ directory
-	//using json library api parser that will eventually be created by the group,
+	//look for username.json in DataFiles/Users/
 
 	//if username.json doesn't exist, ReturnCode::USERNAME_FAIL
 
@@ -148,7 +138,6 @@ UserController::UserData UserController::logoutUser(const Name& username) {
 		return result;
 	}
 
-	// + character data
 	result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 
 	return result;
