@@ -8,7 +8,6 @@
 #include <RoomController.h>
 #include <Response.h>
 
-#include <algorithm>
 #include <vector>
 #include <map>
 
@@ -21,10 +20,10 @@ private:
     ObjectController objectController;
     RoomController roomController;
 
-    bool isDigit(const std::string& str);
-
 public:
     GameController();
+
+    std::vector<Response> info(Name username, Input message);
 
     /*
      * loadCharacter:
@@ -43,7 +42,16 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern
     */
-    std::vector<Response> say(Name username, std::string message);
+    std::vector<Response> say(Name username, Input message);
+
+    /*
+     * whisper:
+     *
+     * Pre-Condition: username of the user sending the message, the message and their target
+     *
+     * Post-Condition: Returns a message to the target it may concern
+    */
+    std::vector<Response> whisper(Name username, Input inputs);
 
     /*
      * Broadcast:
@@ -52,27 +60,21 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern (Global)
     */
-    std::vector<Response> broadcast(Name username, std::string message);
-
-    /* Inspect:
-     *
-     * Function: Display the information of the current room
-     *
-     * Pre-Condition: None
-     * Post-Condition: Display the information of the current room on user's windows
-     */
-    std::vector<Response> inspect(Name username, Input message);
+    std::vector<Response> broadcast(Name username, Input message);
 
     /* Move:
      *
      * Function: Moves the user that sent the message in the direction of their choice (if valid)
      *
-     * Pre-Condition: requires the userName of the person issuing the command and door ID of choice
-     * Post: If door ID is a valid one, user will move to the room with the specified door.
+     * Pre-Condition: requires the userName of the person issuing the command and their direction of choice
+     * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    std::vector<Response> move(Name username, std::string inputDoorId);
+    std::vector<Response> move(Name username, Input direction);
 
+    // dummy function for now
+    // TODO: complete the examine command
+    std::vector<Response> examine(Name username, Input message);
 
     /* PickUp:
      *
@@ -82,7 +84,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    std::vector<Response> pickUp(Name username, Name itemName);
+    std::vector<Response> pickUp(Name username, Input itemName);
 
     /* Drop:
      *
@@ -92,7 +94,37 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    std::vector<Response> drop(Name username, Name itemName);
+    std::vector<Response> drop(Name username, Input itemName);
+
+     /* Give:
+     *
+     * Function: Gives an item from a user's inventory to another user
+     *
+     * Pre-Condition: requires the userName of the person issuing the command and the userName of the gift recipient and name of the item being given
+     * Post: gives the item to target's inventory unless the person doesn't have the item
+     *
+     * */
+    std::vector<Response> give(Name username, Input message);
+
+     /* Wear:
+     *
+     * Function: Wears an item from a user's inventory
+     *
+     * Pre-Condition: requires the userName of the person issuing the command and the name of the item being given
+     * Post: wears the item unless the item does not exist in inventory
+     *
+     * */
+    std::vector<Response> wear(Name username, Input itemName);
+
+     /* Take off:
+     *
+     * Function: Takes off an item that a user is wearing
+     *
+     * Pre-Condition: requires the userName of the person issuing the command and the name of the item being given
+     * Post: Takes off the item that the user is wearing
+     *
+     * */
+    std::vector<Response> takeOff(Name username, Input itemName);
 
     /* Inventory:
      *
@@ -103,6 +135,8 @@ public:
      *
      * */
     std::vector<Response> inventory(Name username, Input message);
+
+    std::vector<Response> confuse(Name username, Input target);
 
     std::vector<Response> swap(Name username, Name target);
 

@@ -4,6 +4,7 @@
 
 
 #include <Door.h>
+#include <sstream>
 
 
 class Room
@@ -53,19 +54,20 @@ public:
      * Post-condition:
      *              return: string, information of the room
      */
-    std::string const getTextOfRoomDetails();
+    std::stringstream getTextOfRoomDetails();
 
     /*
      * This function return the doors information
      * Post-condition:
      *              return: string, information of all the doors in the room
      */
-    std::string const getTextOfDoorDetails();
+    std::stringstream getTextOfDoorDetails();
 
     /*
      * this function returns the Door object according to the door id
      */
     Door* searchDoor(ID doorId);
+    Door* searchDoorByDirection(const std::string& direction);
 
 private:
     ID  id;

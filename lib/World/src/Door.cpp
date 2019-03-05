@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-Door::Door(Door::ID _id, Door::ID _designatedRoomId, const std::string & _direction) {
+Door::Door(AlterSpace::ID _id, AlterSpace::ID _designatedRoomId, const std::string & _direction) {
     id = _id;
     designatedRoomID = _designatedRoomId;
     direction = _direction;

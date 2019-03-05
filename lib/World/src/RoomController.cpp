@@ -139,9 +139,48 @@ bool RoomController::removeDoorFromRoom(ID roomId, ID doorId) {
     return (room!=nullptr) && room->removeDoor(doorId);
 }
 
-std::string RoomController::getTextOfRoomDetails(ID roomId) {
+std::stringstream RoomController::getTextOfRoomDetails(ID roomId) {
     auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return std::stringstream();
+    }
     return room->getTextOfRoomDetails();
+}
+
+ID RoomController::getDoorIdByDirection(ID roomId, const std::string &direction) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return Door::unfoundDoorId;
+    }
+
+    auto door = room->searchDoorByDirection(direction);
+    if (door == nullptr){
+        return Door::unfoundDoorId;
+    }
+
+    return door->getId();
+}
+
+Door::DoorStatus RoomController::getDoorStatus(ID roomId, ID doorId) {
+    auto door = searchDoor(roomId, doorId);
+    return door->getStatus();
+}
+
+ID RoomController::getDoorDesignatedRoomId(ID roomId, ID doorId) {
+    auto door = searchDoor(roomId, doorId);
+    if (door == nullptr){
+        return Door::unfoundDoorId;
+    }
+    return door->getDesignatedRoomId();
+}
+
+const std::string& RoomController::getDoorDirection(ID roomId, ID doorId) {
+    auto door = searchDoor(roomId, doorId);
+    if (door == nullptr){
+        static std::string empty;
+        return empty;
+    }
+    return door->getDirection();
 }
 
 

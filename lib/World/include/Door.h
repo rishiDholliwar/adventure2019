@@ -6,6 +6,7 @@
 #include <string>
 #include "AlterSpace.h"
 
+
 using AlterSpace::Name;
 using AlterSpace::ID;
 

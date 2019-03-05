@@ -19,13 +19,17 @@ class RoomController {
         const std::vector<Name> & getUsernameList (ID roomId);
         std::vector<ID> getRoomIdList() const;
 
+        ID getDoorIdByDirection(ID roomId, const std::string& direction);
+        Door::DoorStatus getDoorStatus(ID roomId, ID doorId);
+        ID getDoorDesignatedRoomId(ID roomId, ID doorId);
+        const std::string& getDoorDirection(ID roomId, ID doorId);
+
         /*
          * The function gives information of the room including room details and doors details
          * Post-condition:
          *          return string of information of room
          */
-        // TODO: change return value type to streams
-        std::string getTextOfRoomDetails(ID roomId);
+        std::stringstream getTextOfRoomDetails(ID roomId);
 
         /*
          * create a room according to the roomID and roomName inside RoomController
@@ -69,7 +73,7 @@ class RoomController {
          *          return true if the door is successfully created
          *          return false otherwise
          */
-        bool addDoorToRoom(ID roomId, ID doorId, ID destinatedRoomId, const std::string &direction);
+        bool addDoorToRoom(ID roomId, ID doorId, ID designatedRoomId, const std::string &direction);
 
         /*
          * The function removes door from the room according to the IDs

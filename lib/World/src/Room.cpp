@@ -77,37 +77,37 @@ bool Room::removeDoor(ID doorId) {
     return size != list.size();
 }
 
-std::string const Room::getTextOfRoomDetails() {
-    std::string outputString;
-    outputString += "Room ID: " + std::to_string(this->getId()) + "\n" +
-                    "Room Name: " + this->getName() + "\n";
+std::stringstream Room::getTextOfRoomDetails() {
+    std::stringstream outputString;
+    outputString << "Room ID: " << std::to_string(this->getId()) << "\n" <<
+                    "Room Name: " << this->getName() << "\n";
 
     for (auto &description : this->descriptions){
-        outputString += description + "\n";
+        outputString << description + "\n";
     }
 
     for (auto &description : this->extendedDescriptions){
-        outputString += description + "\n";
+        outputString << description + "\n";
     }
 
-    outputString += "Doors ID, Direction, Destination, Status\n";
-    outputString += this->getTextOfDoorDetails();
+    outputString << getTextOfDoorDetails().str();
     return outputString;
 }
 
-std::string const Room::getTextOfDoorDetails() {
-    std::string outputString;
+std::stringstream Room::getTextOfDoorDetails() {
+    std::stringstream outputString;
+    outputString << "Doors ID, Direction, Destination, Status\n";
     for (const auto &door: this->doorList){
         ID doorId = door.getId();
-        outputString += std::to_string(doorId) + ", " + door.getDirection() +
+        outputString << std::to_string(doorId) + ", " + door.getDirection() +
                         ", " + std::to_string(door.getDesignatedRoomId()) +
                         ", ";
         if (door.getStatus()){
-            outputString += "Unlocked";
+            outputString << "Unlocked";
         }else{
-            outputString += "Locked";
+            outputString << "Locked";
         }
-        outputString += "\n";
+        outputString << "\n";
     }
     return outputString;
 }
@@ -117,6 +117,18 @@ Door* Room::searchDoor(ID doorId) {
     auto it = std::find_if(doorList.begin(), doorList.end(),
                            [&doorId](const Door& door)
                            {return door.getId() == doorId;});
+
+    if (it != doorList.end()) {
+        return it.base();
+    }else{
+        return nullptr;
+    }
+}
+
+Door* Room::searchDoorByDirection(const std::string& direction) {
+    auto it = std::find_if(doorList.begin(), doorList.end(),
+                           [&direction](const Door& door)
+                           {return door.getDirection() == direction;});
 
     if (it != doorList.end()) {
         return it.base();
