@@ -275,16 +275,9 @@ std::vector<Response> GameController::inventory(Name username, Input message) {
 }
 
 std::vector<Response> GameController::swap(Name username, Name target) {
-    
-    // // swap spell
-    if (!characterController.doesCharacterExist(username)) {
-        Response userResponse = Response("Apparently you don't exist? This is so sad Alexa play despacito :)", username);
-
-        return formulateResponse(userResponse);
-    }
 
     if (!(characterController.findCharacter(target))) {
-    	//  || npcController.findNPC(target)
+
         Response userResponse = Response("Target doesn't exist, sorry!", username);
 
         return formulateResponse(userResponse);
