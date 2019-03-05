@@ -78,11 +78,9 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             case CommandType::GAMECONTROLLER:
             {
                 auto func = _commandHandler->getUserFunc(username, info.command);
-                std::cout << "username: " + username << std::endl;
                 if (func != nullptr)
                 {
                     auto responses = ((*_gameController).*func)(username, info.input);
-                    std::cout << responses.size() << std::endl;
                     for ( auto& res : responses )
                     {
                         Connection conn = _userController->getConnectionWithUsername(res.username);

@@ -278,7 +278,7 @@ std::vector<Response> GameController::swap(Name username, Name target) {
     
     // // swap spell
     if (!characterController.doesCharacterExist(username)) {
-        Response userResponse = Response("Apparently you don't exist?!", username);
+        Response userResponse = Response("Apparently you don't exist? This is so sad Alexa play despacito :)", username);
 
         return formulateResponse(userResponse);
     }
