@@ -42,7 +42,7 @@ Object Character::getItemFromInventory(ID objectId) {
     return inventory.getItem(objectId);
 }
 
-bool Character::addItemToInventory(Object obj) {
+void Character::addItemToInventory(Object obj) {
     inventory.addItem(obj);
 }
 
