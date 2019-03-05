@@ -41,7 +41,7 @@ public:
      *
      * Post-Condition: Returns true if removal is successful
     */
-    bool removeCharacter(Name &username);
+    bool removeCharacter(Name &username, RoomController &roomController);
 
     bool findCharacter(Name username);
 

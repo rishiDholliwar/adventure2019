@@ -25,7 +25,8 @@ bool CharacterController::addCharacter(Name &username, RoomController &roomContr
     return _characters.emplace(username,dummyCharacter).second;
 }
 
-bool CharacterController::removeCharacter(Name &username){
+bool CharacterController::removeCharacter(Name &username, RoomController &roomController){
+    roomController.removeUserNameFromRoom(username, getCharacterRoomID(username));
     return _characters.erase(username) > 0;
 }
 

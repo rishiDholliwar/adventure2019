@@ -19,7 +19,7 @@ bool GameController::loadCharacter(Name username) {
 
 bool GameController::removeCharacter(Name username) {
 	Name charName = characterController.getCharacter(username).getName();
-    return characterController.removeCharacter(charName);
+    return characterController.removeCharacter(charName, roomController);
 }
 
 std::vector<Response> GameController::info(Name username, Input message) {
