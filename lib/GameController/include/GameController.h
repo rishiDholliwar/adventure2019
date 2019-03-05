@@ -6,6 +6,7 @@
 #include <CharacterController.h>
 #include <ObjectController.h>
 #include <RoomController.h>
+#include <NPCController.h>
 #include <Response.h>
 
 #include <vector>
@@ -19,6 +20,7 @@ private:
     CharacterController characterController;
     ObjectController objectController;
     RoomController roomController;
+    NPCController npcController;
 
 public:
     GameController();
@@ -34,6 +36,8 @@ public:
      *                         false if character already loaded
     */
     bool loadCharacter(Name username);
+
+    bool removeCharacter(Name username);
 
     /*
      * say:

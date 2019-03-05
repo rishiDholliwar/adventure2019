@@ -45,6 +45,7 @@ Game::removeConnection(Connection c) {
         _userController->logoutUser(username);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
+        _gameController->removeCharacter(username);
     }
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
     _clients.erase(eraseBegin, std::end(_clients));

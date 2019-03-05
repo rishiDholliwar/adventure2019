@@ -5,7 +5,6 @@
 #include <vector>
 #include <AlterSpace.h>
 #include <UniqueID.h>
-#include <Object.h>
 #include <utility>
 
 using AlterSpace::ID;
