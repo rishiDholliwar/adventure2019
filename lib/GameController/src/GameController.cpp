@@ -5,27 +5,37 @@
 #include <Utility.h>
 #include <pigLatin.h>
 
+using ASDirection::directionMap;
+
 GameController::GameController()
 {
     this->characterController = CharacterController();
     this->objectController = ObjectController();
 }
 
-bool GameController::loadCharacter(Name username)
-{
+bool GameController::loadCharacter(Name username) {
     return characterController.addCharacter(username, roomController, objectController);
 }
 
+bool GameController::removeCharacter(Name username) {
+	Name charName = characterController.getCharacter(username).getName();
+    return characterController.removeCharacter(charName);
+}
+
 std::vector<Response> GameController::info(Name username, Input message) {
+    Name charName = characterController.getCharacter(username).getName();
     Response userResponse = Response(characterController.getCharacterInfo(username), username);
     return formulateResponse(userResponse);
 }
 
 std::vector<Response> GameController::say(Name username, Input message) {
     std::cout << "Say " << message << std::endl;
+    Name charName = characterController.getCharacter(username).getName();
 
     Response userResponse = Response("Me: " + message, username);
-    std::string genericMessage = username + ": "+ message;
+    // std::string genericMessage = username + ": "+ message;
+    std::string genericMessage = charName + ": "+ message;
+    std::cout << genericMessage << std::endl;
 
     return formulateResponse(userResponse, roomController.getUsernameList(characterController.getCharacterRoomID(username)), genericMessage);
 }
@@ -39,14 +49,17 @@ std::vector<Response> GameController::whisper(Name username, Input inputs) {
         return formulateResponse(userResponse);
     }
 
+    Name charName = characterController.getCharacter(username).getName();
+    Name targetCharName = characterController.getCharacter(inputStrings.at(0)).getName();
+
     //if whisper target character is not currently logged in
     if (!characterController.doesCharacterExist(inputStrings.at(0))) {
         Response userResponse = Response(inputStrings.at(0) + ": is not currently logged in", username);
         return formulateResponse(userResponse);
     }
 
-    Response userResponse = Response("To [" + inputStrings.at(0) + "]: " + inputStrings.at(1), username);
-    Response targetResponse = Response("From [" + username + "]: " + inputStrings.at(1), inputStrings.at(0));
+    Response userResponse = Response("To [" + targetCharName + "]: " + inputStrings.at(1), username);
+    Response targetResponse = Response("From [" + charName + "]: " + inputStrings.at(1), inputStrings.at(0));
 
     return formulateResponse(userResponse, targetResponse);
 }
@@ -56,9 +69,10 @@ std::vector<Response> GameController::broadcast(Name username, Input message) {
 
     std::vector<std::string> broadcast = characterController.getAllCharacterNames();
 
+    Name charName = characterController.getCharacter(username).getName();
 
     Response userResponse = Response("Me: " + message, username);
-    std::string genericMessage = username + ": " + message;
+    std::string genericMessage = charName + ": " + message;
 
     return formulateResponse(userResponse, broadcast, genericMessage);
 }
@@ -121,6 +135,7 @@ std::vector<Response> GameController::examine(Name username, Input message) {
 
 }
 
+
 std::vector<Response> GameController::pickUp(Name username, Input itemName) {
     std::cout << "Pick Up: " << itemName << std::endl;
 
@@ -166,8 +181,10 @@ std::vector<Response> GameController::drop(Name username, Input itemName) {
     // Remove item from character's inventory
     characterController.dropItemFromCharacterInventory(username, itemID);
 
+    Name charName = characterController.getCharacter(username).getName();
+
     // Add item to room's item List
-    roomController.addObjectToRoom(itemID, characterController.getCharacterRoomID(username));
+    roomController.addObjectToRoom(itemID, characterController.getCharacterRoomID(charName));
 
     Response userResponse = Response("You dropped " + itemName + " in the room!", username);
     return formulateResponse(userResponse);
@@ -182,12 +199,14 @@ std::vector<Response> GameController::give(Name username, Input message) {
 		return formulateResponse(userResponse);
 	}
 
-    Name targetCharacterName = inputStrings.at(0);
+    Name targetUserName = inputStrings.at(0);
+    Name targetCharName = characterController.getCharacter(targetUserName).getName();
+    Name charName = characterController.getCharacter(username).getName();
     Name giftName = inputStrings.at(1);
 
 	//if gift target character doesn't exist
-	if (!characterController.doesCharacterExist(targetCharacterName)) {
-		Response userResponse = Response("Character name " + targetCharacterName + " does not exist for you to gift to.", username);
+	if (!characterController.doesCharacterExist(targetUserName)) {
+		Response userResponse = Response("Character name " + targetUserName + " does not exist for you to gift to.", username);
 		return formulateResponse(userResponse);
 	}
 
@@ -205,18 +224,27 @@ std::vector<Response> GameController::give(Name username, Input message) {
         return formulateResponse(userResponse);
     }
 
+    Name targetCharacterName;
+
+    if (targetUserName != targetCharName) {
+    	targetCharacterName = targetCharName;
+    } else {
+    	targetCharacterName = targetUserName;
+    }
+
 	//add item to target user inventory
 	characterController.addItemToCharacterInventory(targetCharacterName, objectController.getObjectFromList(giftID));
 
 	if (!characterController.characterHasItem(targetCharacterName, giftID)) {
         characterController.addItemToCharacterInventory(username, objectController.getObjectFromList(giftID));
-		Response userResponse = Response("Giving " + giftName + " to character " + targetCharacterName + " has failed.", username);
+		Response userResponse = Response("Giving " + giftName + " to character " + targetUserName + " has failed.", username);
 		return formulateResponse(userResponse);
 	}
 
 	//generate response
-	Response userResponse = Response("You have given " + giftName + " to character " + targetCharacterName + "!", username);
-	return formulateResponse(userResponse);
+	Response userResponse = Response("You have given " + giftName + " to character " + targetUserName + "!", username);
+    Response targetResponse = Response(username + " has given " + giftName + " to you!", targetUserName);
+	return formulateResponse(userResponse, targetResponse);
 
 }
 
@@ -275,14 +303,37 @@ std::vector<Response> GameController::inventory(Name username, Input message) {
 }
 
 std::vector<Response> GameController::swap(Name username, Name target) {
-    
-    // swap spell
-    characterController.swapCharacters(username, target);
 
-    Response userResponse = Response("Successfully swapped!", username);
-    Response targetResponse = Response("A swap spell was cast on you!", target);
+    if (!(characterController.findCharacter(target))) {
 
-    return formulateResponse(userResponse, targetResponse);
+        Response userResponse = Response("Target doesn't exist, sorry!", username);
+
+        return formulateResponse(userResponse);
+    }
+
+    Name userKey = username;
+    Name targetKey = characterController.getCharacter(username).getName();
+
+    if ((userKey != targetKey) && (userKey == characterController.getCharacter(targetKey).getName())) {
+
+    	Name targetCharName = characterController.getCharacter(username).getName();
+
+    	characterController.swapCharacter(userKey, targetKey);
+
+    	Response userResponse = Response("Successfully unswapped!", userKey);
+    	Response targetResponse = Response("You have been successfully unswapped!", targetKey);
+
+    	return formulateResponse(userResponse, targetResponse);
+
+    } else {
+
+    	characterController.swapCharacter(username, target);
+
+    	Response userResponse = Response("Successfully swapped!", username);
+    	Response targetResponse = Response("A swap spell was cast on you!", target);
+
+    	return formulateResponse(userResponse, targetResponse);
+    }
 }
 
 std::vector<Response> GameController::confuse(Name username, Input target) {
@@ -331,4 +382,8 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
     return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
+}
+
+bool GameController::directionExists(std::string direction) {
+    return directionMap.find(direction) != directionMap.end();
 }

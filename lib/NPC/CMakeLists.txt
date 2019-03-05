@@ -11,7 +11,6 @@ target_include_directories(NPC
         )
 
 target_link_libraries(NPC
-        PUBLIC
 		utility
                 uniqueID
         )

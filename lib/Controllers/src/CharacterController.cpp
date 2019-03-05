@@ -29,6 +29,11 @@ bool CharacterController::removeCharacter(Name &username){
     return _characters.erase(username) > 0;
 }
 
+bool CharacterController::findCharacter(Name username) {
+    //
+    return _characters.find(username) != _characters.end();
+}
+
 Character &CharacterController::getCharacter(Name &username) {
     return _characters.find(username)->second;
 }
@@ -110,11 +115,11 @@ std::string CharacterController::characterListInventory(Name &username) {
     return getCharacter(username).listInventory();
 }
 
-void CharacterController::swapCharacters(Name &userCharacterName, Name &targetCharacterName) {
+void CharacterController::swapCharacter(Name &userCharacterName, Name &targetCharacterName) {
     auto item1 = _characters.find(userCharacterName);
     auto item2 = _characters.find(targetCharacterName);
     if ((item1 != _characters.end()) && (item2 != _characters.end())){
-        std::swap(item1->second, item2->second);
+        std::swap((item1->second), (item2->second));
     }
 
 }
@@ -126,4 +131,3 @@ void CharacterController::confuseCharacter(Name &targetCharacterName){
 bool CharacterController::isCharacterConfused(Name &username) {
     return getCharacter(username).isConfused();
 }
-
