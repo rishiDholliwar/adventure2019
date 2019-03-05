@@ -119,7 +119,7 @@ void CharacterController::swapCharacter(Name &userCharacterName, Name &targetCha
     auto item1 = _characters.find(userCharacterName);
     auto item2 = _characters.find(targetCharacterName);
     if ((item1 != _characters.end()) && (item2 != _characters.end())){
-        std::swap(item1->second, item2->second);
+        std::swap((item1->second), (item2->second));
     }
 
 }
