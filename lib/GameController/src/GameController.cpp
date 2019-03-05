@@ -5,8 +5,6 @@
 #include <Utility.h>
 #include <pigLatin.h>
 
-using ASDirection::directionMap;
-
 GameController::GameController()
 {
     this->characterController = CharacterController();
@@ -382,8 +380,4 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
     return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
-}
-
-bool GameController::directionExists(std::string direction) {
-    return directionMap.find(direction) != directionMap.end();
 }
