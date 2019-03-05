@@ -5,10 +5,10 @@ ObjectController::ObjectController(){
     objects.insert( {"Basic Armor", Object(200,"Basic Armor")} );
 };
 
-bool ObjectController::doesObjectExist(const Name &objType) {
-    return objects.find(objType) != objects.end();
+bool ObjectController::doesObjectExist(const Name &objectName) {
+    return objects.find(objectName) != objects.end();
 }
 
-const Object &ObjectController::getObjectFromListByName(const Name &objType) const {
-    return objects.find(objType)->second;
+const Object &ObjectController::getObjectFromListByName(const Name &objectName) const {
+    return objects.find(objectName)->second;
 }

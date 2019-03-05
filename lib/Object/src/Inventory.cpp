@@ -6,55 +6,55 @@ void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
 
-auto Inventory::getItemIteratorByID(ID objID) {
+auto Inventory::getItemIteratorByID(ID objectID) {
     auto it = find_if(objects.begin(), objects.end(),
-                      [ objID ] ( Object const& obj )->bool {
-                          return obj.getID() == objID;
+                      [ objectID ] ( Object const& obj )->bool {
+                          return obj.getID() == objectID;
                         });
 
     return it;
 }
 
-bool Inventory::doesItemExist(ID objID) {
+bool Inventory::doesItemExist(ID objectID) {
 
-    return getItemIteratorByID(objID) != objects.end();
+    return getItemIteratorByID(objectID) != objects.end();
 }
 
-auto Inventory::getItemIteratorByName(Name objType) {
+auto Inventory::getItemIteratorByName(Name objectName) {
     auto it = find_if(objects.begin(), objects.end(),
-                      [ objType ] ( Object const& obj )->bool {
-                          return obj.getType() == objType;
+                      [ objectName ] ( Object const& obj )->bool {
+                          return obj.getType() == objectName;
                         });
 
     return it;
 }
 
-bool Inventory::doesItemExistByName(Name objType) {
+bool Inventory::doesItemExistByName(Name objectName) {
 
-    return getItemIteratorByName(objType) != objects.end();
+    return getItemIteratorByName(objectName) != objects.end();
 }
 
-Object Inventory::getItemByType(Name objType)
+Object Inventory::getItemByType(Name objectName)
 {
 
-    if (doesItemExistByName(objType) == false)
+    if (doesItemExistByName(objectName) == false)
     {
         return Object();
     }
 
-    auto it = getItemIteratorByName(objType);
+    auto it = getItemIteratorByName(objectName);
 
     return *it;
 }
 
-bool Inventory::removeItem(ID objID)
+bool Inventory::removeItem(ID objectID)
 {
-    auto it = getItemIteratorByID(objID);
+    auto it = getItemIteratorByID(objectID);
 
     if (it != objects.end())
     {
         it = objects.erase(it);
-        return (doesItemExist(objID) == false);
+        return (doesItemExist(objectID) == false);
     }
     return false;
 }

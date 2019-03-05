@@ -14,9 +14,9 @@ class Inventory {
 private:
     std::vector<Object> objects;
 
-    auto getItemIteratorByID(ID objID);
+    auto getItemIteratorByID(ID objectID);
 
-    auto getItemIteratorByName(Name objType);
+    auto getItemIteratorByName(Name objectName);
 
 public:
 
@@ -40,7 +40,7 @@ public:
      * Post: returns true if found
      *
      * */
-    bool doesItemExist(ID objID);
+    bool doesItemExist(ID objectID);
 
     /* Does Item Exist By Name:
      *
@@ -50,7 +50,7 @@ public:
      * Post: returns true if found
      *
      * */
-    bool doesItemExistByName(Name objType);
+    bool doesItemExistByName(Name objectName);
 
     /* Get Item By Name:
      *
@@ -60,7 +60,7 @@ public:
      * Post: returns item if found
      *
      * */
-    Object getItemByType(Name objType);
+    Object getItemByType(Name objectName);
 
     /* Remove Item:
      *
@@ -70,7 +70,7 @@ public:
      * Post: Removes the item from the inventory, returns true if removed successfully
      *
      * */
-    bool removeItem(ID objID);
+    bool removeItem(ID objectID);
 
     /* List Inventory:
      *

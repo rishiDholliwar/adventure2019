@@ -14,8 +14,8 @@ using AlterSpace::Value;
 
 class Object {
 private:
-    ID objID;
-    Name objType;
+    ID objectID;
+    Name objectName;
     std::unordered_map<Property, Value> abilities;
     std::vector<std::string> keywords;
     std::string shortdesc;
@@ -30,12 +30,12 @@ private:
 public:
     Object();
 
-    Object(ID objID, const Name &objType) : objID(objID), objType(objType) {}
+    Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
 
-    Object(ID objID, Name objType, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
+    Object(ID objectID, Name objectName, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
            std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc) {
-        this->objID = objID;
-        this->objType = objType;
+        this->objectID = objectID;
+        this->objectName = objectName;
         this->abilities = abilities;
         this->keywords = keywords;
         this->shortdesc = shortdesc;
