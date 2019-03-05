@@ -81,17 +81,13 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
                 std::cout << "username: " + username << std::endl;
                 if (func != nullptr)
                 {
-                    std::cout << "func != nullptr" << std::endl;
                     auto responses = ((*_gameController).*func)(username, info.input);
                     std::cout << responses.size() << std::endl;
                     for ( auto& res : responses )
                     {
-                        std::cout << "username: " + res.username << std::endl;
                         Connection conn = _userController->getConnectionWithUsername(res.username);
-                        std::cout << "debug1" << std::endl;
                         std::cout << conn.id << std::endl;
                         result.push_back(Message{conn.id, res.message});
-                        std::cout << "debug2" << std::endl;
                     }
                 }
                 else

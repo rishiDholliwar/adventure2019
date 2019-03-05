@@ -33,7 +33,6 @@ std::vector<Response> GameController::say(Name username, Input message) {
     Name charName = characterController.getCharacter(username).getName();
 
     Response userResponse = Response("Me: " + message, username);
-    std::cout << "within gc say, username: " + username << std::endl;
     // std::string genericMessage = username + ": "+ message;
     std::string genericMessage = charName + ": "+ message;
     std::cout << genericMessage << std::endl;
@@ -278,9 +277,8 @@ std::vector<Response> GameController::inventory(Name username, Input message) {
 std::vector<Response> GameController::swap(Name username, Name target) {
     
     // // swap spell
-    // characterController.swapCharacters(username, target);
     if (!characterController.doesCharacterExist(username)) {
-        Response userResponse = Response("Apparently you don't exist???!", username);
+        Response userResponse = Response("Apparently you don't exist?!", username);
 
         return formulateResponse(userResponse);
     }
@@ -292,7 +290,6 @@ std::vector<Response> GameController::swap(Name username, Name target) {
         return formulateResponse(userResponse);
     }
 
-    // if (characterController.findCharacter(target)) {
     Name userKey = username;
     Name targetKey = characterController.getCharacter(username).getName();
 
@@ -301,8 +298,6 @@ std::vector<Response> GameController::swap(Name username, Name target) {
     	Name targetCharName = characterController.getCharacter(username).getName();
 
     	characterController.swapCharacter(userKey, targetKey);
-
-    	std::cout << "if loop" << std::endl;
 
     	Response userResponse = Response("Successfully unswapped!", userKey);
     	Response targetResponse = Response("You have been successfully unswapped!", targetKey);
@@ -313,37 +308,11 @@ std::vector<Response> GameController::swap(Name username, Name target) {
 
     	characterController.swapCharacter(username, target);
 
-    	std::cout << "else loop" << std::endl;
-
     	Response userResponse = Response("Successfully swapped!", username);
     	Response targetResponse = Response("A swap spell was cast on you!", target);
 
     	return formulateResponse(userResponse, targetResponse);
     }
-
-    
-    
-    // } else if (npcController.findNPC(target)) {
-        
-    //     ID NPCID = npcController.findNPCID(target);
-    //     npcController.swapNPC(characterController.getCharacter(username).getID(), NPCID);
-    //     characterController.swapCharacter(target, username);
-
-    //     Response userResponse = Response("Successfully swapped!", username);
-    //     Response targetResponse = Response("A swap spell was cast on you!", target);
-
-    //     return formulateResponse(userResponse, targetResponse);
-
-    // } else {
-    //     Response userResponse = Response("Swap failed!", username);
-
-    //     return formulateResponse(userResponse);
-    // }
-
-    // Response userResponse = Response("Swap failed!", username);
-    // Response targetResponse = Response("Swap failed!", target);
-
-    // return formulateResponse(userResponse, targetResponse);
 }
 
 std::vector<Response> GameController::confuse(Name username, Input target) {
