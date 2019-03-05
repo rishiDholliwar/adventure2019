@@ -59,24 +59,27 @@ bool Inventory::removeItem(ID objectID)
     return false;
 }
 
-std::string Inventory::listInventory()
-{
+std::string Inventory::listInventory() {
+
     if (objects.empty()) {
         return std::string();
     }
 
+    // get unique object names
+    std::unordered_set<std::string> objectNames;
+    for (Object obj : objects) {
+        objectNames.insert(obj.getName());
+    }
 
-    /////
-
-    int objectCount = 1;
-    std::string inventoryList;
-
-    for(auto &obj : objects){
-
-        std::string objectString = std::to_string(objectCount) + ". " + obj.getName() + "\n";
-        inventoryList += objectString;
-
-        objectCount++;
+    // get inventory, grouped by name
+    std::string inventoryList = std::string();
+    for (std::string name : objectNames) {
+        int nameCount = count_if(objects.begin(), objects.end(),
+                    [] (const Object& obj) {
+                        return obj.getName() == name
+                    });
+        std::string nameStr = name + "  x" + nameCount + "\n";
+        inventoryList += nameStr;
     }
     return inventoryList;
 }
