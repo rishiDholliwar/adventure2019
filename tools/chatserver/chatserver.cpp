@@ -45,6 +45,7 @@ Game::removeConnection(Connection c) {
         _userController->logoutUser(username);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
+        _gameController->removeCharacter(username);
     }
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
     _clients.erase(eraseBegin, std::end(_clients));
@@ -77,14 +78,20 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             case CommandType::GAMECONTROLLER:
             {
                 auto func = _commandHandler->getUserFunc(username, info.command);
+                std::cout << "username: " + username << std::endl;
                 if (func != nullptr)
                 {
+                    std::cout << "func != nullptr" << std::endl;
                     auto responses = ((*_gameController).*func)(username, info.input);
+                    std::cout << responses.size() << std::endl;
                     for ( auto& res : responses )
                     {
+                        std::cout << "username: " + res.username << std::endl;
                         Connection conn = _userController->getConnectionWithUsername(res.username);
+                        std::cout << "debug1" << std::endl;
                         std::cout << conn.id << std::endl;
                         result.push_back(Message{conn.id, res.message});
+                        std::cout << "debug2" << std::endl;
                     }
                 }
                 else
