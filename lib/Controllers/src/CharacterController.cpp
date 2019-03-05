@@ -31,7 +31,7 @@ bool CharacterController::removeCharacter(Name &username){
 
 bool CharacterController::findCharacter(Name username) {
     //
-    return true;
+    return _characters.find(username) != _characters.end();
 }
 
 Character &CharacterController::getCharacter(Name &username) {
