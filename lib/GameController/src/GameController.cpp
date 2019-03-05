@@ -251,11 +251,11 @@ std::vector<Response> GameController::wear(Name username, std::string itemName) 
 
     //wear item
     if (character.wear(item) == true) {
-    	Response userResponse = Response("Wearing " + item.getType() + " succesfully!", username);
+    	Response userResponse = Response("Wearing " + item.getName() + " succesfully!", username);
         return formulateResponse(userResponse);
     }
 
-    Response userResponse = Response("Wearing " + item.getType() + " has failed!", username);
+    Response userResponse = Response("Wearing " + item.getName() + " has failed!", username);
         return formulateResponse(userResponse);
 }
 
@@ -290,11 +290,11 @@ std::vector<Response> GameController::takeOff(Name username, std::string itemNam
     }
 
     if (character.takeOff(item) == true) {
-    	Response userResponse = Response("Took off " + item.getType() + " succesfully!", username);
+    	Response userResponse = Response("Took off " + item.getName() + " succesfully!", username);
         return formulateResponse(userResponse);
     }
 
-    Response userResponse = Response("Taking off " + item.getType() + " has failed!", username);
+    Response userResponse = Response("Taking off " + item.getName() + " has failed!", username);
     return formulateResponse(userResponse);
 }
 

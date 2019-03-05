@@ -46,7 +46,7 @@ public:
 
     ID getID() const;
 
-    Name getType() const;
+    Name getName() const;
 
     std::unordered_map<Property, Value> getAbilities() {
       return abilities;

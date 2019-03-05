@@ -6,7 +6,7 @@ index 8ac9916..c7701ec 100644
  
      void setRoomID(ID roomID);
  
--    Object getItemFromInventoryByName(Name objType);
+-    Object getItemFromInventoryByName(Name objName);
 +    Object getItemFromInventoryByName(Name objectName);
  
      /*
@@ -15,14 +15,14 @@ index 8ac9916..c7701ec 100644
       *
       * Post-Condition: Returns true if item exists in inventory
      */
--    bool hasItemByName(Name objType);
+-    bool hasItemByName(Name objName);
 +    bool hasItemByName(Name objectName);
  
      auto getWearingIteratorByID(ID objectId);
  
      bool isWearing(ID objectId);
  
--    bool isWearingByName(Name objType);
+-    bool isWearingByName(Name objName);
 +    bool isWearingByName(Name objectName);
  
      bool wear(Object obj);
@@ -35,10 +35,10 @@ index 939d729..2f2e034 100644
      return characterID;
  }
  
--Object Character::getItemFromInventoryByName(Name objType) {
--    return inventory.getItemByType(objType);
+-Object Character::getItemFromInventoryByName(Name objName) {
+-    return inventory.getItemByName(objName);
 +Object Character::getItemFromInventoryByName(Name objectName) {
-+    return inventory.getItemByType(objectName);
++    return inventory.getItemByName(objectName);
  }
  
  bool Character::addItemToInventory(Object obj) {
@@ -46,8 +46,8 @@ index 939d729..2f2e034 100644
      return inventory.doesItemExist(objectId);
  }
  
--bool Character::hasItemByName(Name objType) {
--    return inventory.doesItemExistByName(objType);
+-bool Character::hasItemByName(Name objName) {
+-    return inventory.doesItemExistByName(objName);
 +bool Character::hasItemByName(Name objectName) {
 +    return inventory.doesItemExistByName(objectName);
  }
@@ -57,19 +57,19 @@ index 939d729..2f2e034 100644
      return getWearingIteratorByID(objectId) != wearing.end();
  }
  
--bool Character::isWearingByName(Name objType) {
--    if (hasItemByName(objType) == false) {
--        return hasItemByName(objType);
+-bool Character::isWearingByName(Name objName) {
+-    if (hasItemByName(objName) == false) {
+-        return hasItemByName(objName);
 +bool Character::isWearingByName(Name objectName) {
 +    if (hasItemByName(objectName) == false) {
 +        return hasItemByName(objectName);
      }
  
      auto it = find_if(wearing.begin(), wearing.end(),
--                      [ objType ] ( Object const& obj )->bool {
--                          return obj.getType() == objType;
+-                      [ objName ] ( Object const& obj )->bool {
+-                          return obj.getName() == objName;
 +                      [ objectName ] ( Object const& obj )->bool {
-+                          return obj.getType() == objectName;
++                          return obj.getName() == objectName;
                          });
  
      return !(it == wearing.end());
@@ -81,7 +81,7 @@ index d296ce3..2e10942 100644
       * Post: returns true if object exists
       *
       * */
--    bool doesObjectExist(const Name &objType);
+-    bool doesObjectExist(const Name &objName);
 +    bool doesObjectExist(const Name &objectName);
  
      /* Get Object By Name:
@@ -90,7 +90,7 @@ index d296ce3..2e10942 100644
       * Post: returns the object
       *
       * */
--    const Object &getObjectFromListByName(const Name &objType) const;
+-    const Object &getObjectFromListByName(const Name &objName) const;
 +    const Object &getObjectFromListByName(const Name &objectName) const;
  };
  
@@ -103,14 +103,14 @@ index 7df5dc8..5f4ee4f 100644
      objects.insert( {"Basic Armor", Object(200,"Basic Armor")} );
  };
  
--bool ObjectController::doesObjectExist(const Name &objType) {
--    return objects.find(objType) != objects.end();
+-bool ObjectController::doesObjectExist(const Name &objName) {
+-    return objects.find(objName) != objects.end();
 +bool ObjectController::doesObjectExist(const Name &objectName) {
 +    return objects.find(objectName) != objects.end();
  }
  
--const Object &ObjectController::getObjectFromListByName(const Name &objType) const {
--    return objects.find(objType)->second;
+-const Object &ObjectController::getObjectFromListByName(const Name &objName) const {
+-    return objects.find(objName)->second;
 +const Object &ObjectController::getObjectFromListByName(const Name &objectName) const {
 +    return objects.find(objectName)->second;
  }
@@ -125,7 +125,7 @@ index 3f68016..1fa513a 100644
 -    auto getItemIteratorByID(ID objID);
 +    auto getItemIteratorByID(ID objectID);
  
--    auto getItemIteratorByName(Name objType);
+-    auto getItemIteratorByName(Name objName);
 +    auto getItemIteratorByName(Name objectName);
  
  public:
@@ -143,7 +143,7 @@ index 3f68016..1fa513a 100644
       * Post: returns true if found
       *
       * */
--    bool doesItemExistByName(Name objType);
+-    bool doesItemExistByName(Name objName);
 +    bool doesItemExistByName(Name objectName);
  
      /* Get Item By Name:
@@ -152,8 +152,8 @@ index 3f68016..1fa513a 100644
       * Post: returns item if found
       *
       * */
--    Object getItemByType(Name objType);
-+    Object getItemByType(Name objectName);
+-    Object getItemByName(Name objName);
++    Object getItemByName(Name objectName);
  
      /* Remove Item:
       *
@@ -175,7 +175,7 @@ index 2fe0925..8d20444 100644
  class Object {
  private:
 -    ID objID;
--    Name objType;
+-    Name objName;
 +    ID objectID;
 +    Name objectName;
      std::unordered_map<Property, Value> abilities;
@@ -185,14 +185,14 @@ index 2fe0925..8d20444 100644
  public:
      Object();
  
--    Object(ID objID, const Name &objType) : objID(objID), objType(objType) {}
+-    Object(ID objID, const Name &objName) : objID(objID), objName(objName) {}
 +    Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
  
--    Object(ID objID, Name objType, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
+-    Object(ID objID, Name objName, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
 +    Object(ID objectID, Name objectName, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
             std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc) {
 -        this->objID = objID;
--        this->objType = objType;
+-        this->objName = objName;
 +        this->objectID = objectID;
 +        this->objectName = objectName;
          this->abilities = abilities;
@@ -225,36 +225,36 @@ index ebf6f79..23ce515 100644
 +    return getItemIteratorByID(objectID) != objects.end();
  }
  
--auto Inventory::getItemIteratorByName(Name objType) {
+-auto Inventory::getItemIteratorByName(Name objName) {
 +auto Inventory::getItemIteratorByName(Name objectName) {
      auto it = find_if(objects.begin(), objects.end(),
--                      [ objType ] ( Object const& obj )->bool {
--                          return obj.getType() == objType;
+-                      [ objName ] ( Object const& obj )->bool {
+-                          return obj.getName() == objName;
 +                      [ objectName ] ( Object const& obj )->bool {
-+                          return obj.getType() == objectName;
++                          return obj.getName() == objectName;
                          });
  
      return it;
  }
  
--bool Inventory::doesItemExistByName(Name objType) {
+-bool Inventory::doesItemExistByName(Name objName) {
 +bool Inventory::doesItemExistByName(Name objectName) {
  
--    return getItemIteratorByName(objType) != objects.end();
+-    return getItemIteratorByName(objName) != objects.end();
 +    return getItemIteratorByName(objectName) != objects.end();
  }
  
--Object Inventory::getItemByType(Name objType)
-+Object Inventory::getItemByType(Name objectName)
+-Object Inventory::getItemByName(Name objName)
++Object Inventory::getItemByName(Name objectName)
  {
  
--    if (doesItemExistByName(objType) == false)
+-    if (doesItemExistByName(objName) == false)
 +    if (doesItemExistByName(objectName) == false)
      {
          return Object();
      }
  
--    auto it = getItemIteratorByName(objType);
+-    auto it = getItemIteratorByName(objName);
 +    auto it = getItemIteratorByName(objectName);
  
      return *it;
@@ -286,8 +286,8 @@ index 53211f9..569fced 100644
 +    return this->objectID;
  }
  
- Name Object::getType() const {
--    return this->objType;
+ Name Object::getName() const {
+-    return this->objName;
 +    return this->objectName;
  }
 diff --git a/lib/User/include/UserController.h b/lib/User/include/UserController.h
@@ -298,7 +298,7 @@ index 1d08e7c..cfb25f6 100644
  
      /* if username exists and isn't logged in already, logs them in and returns the outcome
       *
--     * Pre-Condition: username as const reference Name objType, password as string and a const Connection object
+-     * Pre-Condition: username as const reference Name objName, password as string and a const Connection object
 +     * Pre-Condition: username as const reference Name objectName, password as string and a const Connection object
       *
       * Post-Condition: a struct of username and a login result
@@ -307,7 +307,7 @@ index 1d08e7c..cfb25f6 100644
  	/*
       * if no such username exists already, creates a user with such username and password
       *
--     * Pre-Condition: username as const reference Name objType, password as string and a const Connection object
+-     * Pre-Condition: username as const reference Name objName, password as string and a const Connection object
 +     * Pre-Condition: username as const reference Name objectName, password as string and a const Connection object
       *
       * Post-Condition: a struct of username and a user creation result
@@ -316,7 +316,7 @@ index 1d08e7c..cfb25f6 100644
  	/*
       * logs out a username by deleting it from the map of activeUsers
       *
--     * Pre-Condition: username as const reference Name objType
+-     * Pre-Condition: username as const reference Name objName
 +     * Pre-Condition: username as const reference Name objectName
       *
       * Post-Condition: a struct of username and a logout result
@@ -325,7 +325,7 @@ index 1d08e7c..cfb25f6 100644
       * If a user is already logged in with such username or if the password is inaccurate, login fails
       * Password passed in is hashed for security
       *
--     * Pre-Condition: username as const reference Name objType, password as string
+-     * Pre-Condition: username as const reference Name objName, password as string
 +     * Pre-Condition: username as const reference Name objectName, password as string
       *
       * Post-Condition: a result value of whether a user is found and validated successfully
@@ -334,7 +334,7 @@ index 1d08e7c..cfb25f6 100644
  	 * creates a file to store the login information for the future
  	 * password is hashed for security before being stored
       *
--     * Pre-Condition: username as const reference Name objType, password as string
+-     * Pre-Condition: username as const reference Name objName, password as string
 +     * Pre-Condition: username as const reference Name objectName, password as string
       *
       * Post-Condition: a result value of whether a new user is created succesfully
@@ -355,13 +355,13 @@ index 44e17d2..1f4640b 100644
 --	Object();
 -+    Object();
 - 
--     Object(ID objID, const Name &objType) : objID(objID), objType(objType) {}
+-     Object(ID objID, const Name &objName) : objID(objID), objName(objName) {}
 - 
 --    //Struct not working with this constructor
 --//    Object(ID objID,std::vector<std::string> keywords , std::string shortdesc,std::vector<std::string> longdesc,std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc)
 --//    : objID(objID),keywords(keywords),shortdesc(shortdesc),longdesc(longdesc), extra(extraKeywords),extraDescription(extraDesc){}
 --
--     Object(ID objID, Name objType, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
+-     Object(ID objID, Name objName, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc,
 -            std::vector<std::string> extraKeywords, std::vector<std::string> extraDesc) {
 -         this->objID = objID;
 -diff --git a/lib/Utility/include/JSONObjects.h b/lib/Utility/include/JSONObjects.h

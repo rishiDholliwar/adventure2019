@@ -60,7 +60,7 @@ public:
      * Post: returns item if found
      *
      * */
-    Object getItemByType(Name objectName);
+    Object getItemByName(Name objectName);
 
     /* Remove Item:
      *

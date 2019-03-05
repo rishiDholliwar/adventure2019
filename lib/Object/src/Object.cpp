@@ -6,6 +6,6 @@ ID Object::getID() const {
     return this->objectID;
 }
 
-Name Object::getType() const {
+Name Object::getName() const {
     return this->objectName;
 }

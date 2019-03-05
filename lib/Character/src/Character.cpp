@@ -26,7 +26,7 @@ ID Character::getCharacterID() const {
 }
 
 Object Character::getItemFromInventoryByName(Name objectName) {
-    return inventory.getItemByType(objectName);
+    return inventory.getItemByName(objectName);
 }
 
 bool Character::addItemToInventory(Object obj) {
@@ -68,7 +68,7 @@ bool Character::isWearingByName(Name objectName) {
 
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objectName ] ( Object const& obj )->bool {
-                          return obj.getType() == objectName;
+                          return obj.getName() == objectName;
                         });
 
     return !(it == wearing.end());
