@@ -44,9 +44,12 @@ namespace utility {
         std::string str;
         ss >> str;
         result.push_back(str);
+        str = "";
         auto pos = input.find(" ", str.length()) + 1;
-        str = input;
-        str.erase(0, pos);
+        if ( input.find(" ", str.length()) != std::string::npos ) {
+            str = input;
+            str.erase(0, pos);
+        }
         result.push_back(str);
         return result;
     }
