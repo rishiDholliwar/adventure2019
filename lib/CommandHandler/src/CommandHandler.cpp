@@ -1,20 +1,14 @@
 #include <CommandHandler.h>
 #include <GameController.h>
-#include <iostream>
 #include <Utility.h>
 
-// Initialize the default user function map
-CommandHandler::CommandMap CommandHandler::_defCommandMap = []
-{
-    CommandHandler::CommandMap mapping;
-    return mapping;
-}();
+#include <iostream>
 
 void CommandHandler::registerCommand(const Invocation& invokeWord, std::unique_ptr<Command> command) {
     CommandHandler::_defCommandMap[invokeWord] = std::move(command);
 }
 
-std::unique_ptr<Command> CommandHandler::getCommand(const Name& userName, const Invocation& invokeWord, const Input& input, const Connection connection)
+std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const Invocation& invokeWord, const Input& input, const Connection connection)
 {
 	// For user configurable spellings
 	// We need to look for the user's custom command map first
@@ -31,7 +25,7 @@ std::unique_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
             // Update with new input
 			auto command = itr->second->clone(userName, input, connection);
             itr->second = std::move(command);
-            return itr->second->clone(userName, input, connection);
+            return itr->second;
 		}
 	}
 	if(_defCommandMap.find(invokeWord) == _defCommandMap.end())
@@ -41,9 +35,10 @@ std::unique_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
     if( _defCommandMap[invokeWord]->isInteractable() ) {
         auto ret = _userCommandMap.insert(std::pair(userName, CommandHandler::CommandMap{}));
         ret.first->second[invokeWord] = _defCommandMap[invokeWord]->clone(userName, input, connection);
+        return ret.first->second[invokeWord];
     }
 
-	return _defCommandMap[invokeWord]->clone(userName, input, connection);
+	return std::move(_defCommandMap[invokeWord]->clone(userName, input, connection));
 }
 
 std::string CommandHandler::setAlias(const Name& userName, const Input& input)

@@ -94,7 +94,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             result.push_back(msg);
             continue;
         }
-        _scheduler->schedule(std::move(command), 0);
+        _scheduler->schedule(command, 0);
     }
 
     auto responses = _scheduler->update();

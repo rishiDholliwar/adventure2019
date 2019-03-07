@@ -25,9 +25,9 @@ protected:
 public:
     Command() = default;
     ~Command() = default;
-    virtual std::pair<std::vector<Response>, bool> execute();
+    virtual std::pair<std::vector<Response>, bool> execute() = 0;
     virtual std::pair<std::vector<Response>, bool> callback();
-    virtual std::string help();
+    virtual std::string help() = 0;
     virtual std::pair<std::vector<Response>, bool> interact();
     virtual std::unique_ptr<Command> clone() const = 0;
     virtual std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const = 0;

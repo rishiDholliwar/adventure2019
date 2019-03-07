@@ -4,10 +4,11 @@
 #include <sstream>
 
 std::pair<std::vector<Response>, bool> Say::execute() {
-    if (interactions.size() > 1 && interactions.at(0) == "interact") {
+    auto words = utility::tokenizeString(input);
+    if (interactions.size() > 0 && words.size() > 0 && words.at(0) == "interact") {
         return this->interact();
     }
-    interactions = utility::tokenizeString(input);
+    interactions = words;
     std::stringstream ss;
     ss << "Possible interactions:\n";
     int counter = 0;
@@ -15,7 +16,7 @@ std::pair<std::vector<Response>, bool> Say::execute() {
         ss << "\t" << ++counter << ". " << word << "\n";
     }
     auto res = gameController->say(username, input);
-    // res.emplace_back(ss.str(), username);
+    res.emplace_back(ss.str(), username);
     return std::make_pair(res, true);
 }
 
@@ -25,6 +26,7 @@ std::pair<std::vector<Response>, bool> Say::callback() {
 }
 
 std::pair<std::vector<Response>, bool> Say::interact() {
+    std::cout << "interacting" << std::endl;
     std::vector<std::string> v = utility::tokenizeString(input);
     if ( v.size() != 2 ) {
         std::cout << "Too many arguments..." << std::endl;
@@ -36,7 +38,7 @@ std::pair<std::vector<Response>, bool> Say::interact() {
     int index = -1;
     ss >> index;
     index--;
-    if ( index > interactions.size() || index < 0 ) {
+    if ( index >= interactions.size() || index < 0 ) {
         std::cout << "Invalid argument..." << index << std::endl;
         return std::make_pair(gameController->say(username, input), false);
     }
@@ -47,14 +49,12 @@ std::pair<std::vector<Response>, bool> Say::interact() {
 std::unique_ptr<Command> Say::clone(Name username, Input input, Connection connection = Connection{}) const {
     auto say = std::make_unique<Say>(this->gameController, username, input);
     say->setInteractions(this->interactions);
-    say->setCallback(this->ranCallback);
     return std::move(say);
 }
 
 std::unique_ptr<Command> Say::clone() const {
     auto say = std::make_unique<Say>(this->gameController, this->username, this->input);
     say->setInteractions(this->interactions);
-    say->setCallback(this->ranCallback);
     return std::move(say);
 }
 

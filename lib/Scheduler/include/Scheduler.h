@@ -10,7 +10,7 @@
 #include <Command.h>
 #include <Response.h>
 
-using Job = std::pair<long, std::unique_ptr<Command>>;
+using Job = std::pair<long, std::shared_ptr<Command>>;
 
 struct LessThanByJob
 {
@@ -25,7 +25,7 @@ class Scheduler
 public:
     Scheduler(long heartbeat):heartbeatPerMilliseconds(heartbeat){};
     ~Scheduler() = default;
-    void schedule(std::unique_ptr<Command> job, int deferral);
+    void schedule(std::shared_ptr<Command> job, int deferral);
     [[nodiscard]] std::vector<Response> update();
 private:
     long heartbeatPerMilliseconds;

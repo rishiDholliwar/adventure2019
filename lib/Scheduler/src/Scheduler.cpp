@@ -9,47 +9,39 @@
 // I believe this is fine because it is in the source file
 using namespace std::chrono;
 
-inline long getCurrentTime()
-{
+inline long getCurrentTime() {
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 }
 
-void Scheduler::schedule(std::unique_ptr<Command> job, int deferral)
-{
+void Scheduler::schedule(std::shared_ptr<Command> job, int deferral) {
     long currentTime = getCurrentTime();
     long scheduledTime = currentTime + deferral * heartbeatPerMilliseconds;
-    jobs.push(std::pair(scheduledTime, job->clone()));
+    jobs.push(std::pair(scheduledTime, job));
 }
 
 [[nodiscard]]
-std::vector<Response> Scheduler::update()
-{
+std::vector<Response> Scheduler::update() {
     std::vector<Response> res;
     long currentTime = getCurrentTime();
     auto timeToSleep = heartbeatPerMilliseconds - (currentTime - this->lastUpdated);
-    if( timeToSleep == 0 )
-    {
+    if( timeToSleep == 0 ) {
         std::cout << "Some idiot probably has an Scheduler::update scheduled" << std::endl;
         return res;
     }
-    if( timeToSleep > 0 )
-    {
-        // std::cout << timeToSleep << std::endl;
+    if( timeToSleep > 0 ) {
         sleep(timeToSleep / 1000);
     }
     currentTime = getCurrentTime();
     this->lastUpdated = currentTime;
-    while ( ! jobs.empty() )
-    {
-        if( currentTime - jobs.top().first < 0 )
-        {
+    while ( ! jobs.empty() ) {
+        if( currentTime - jobs.top().first < 0 ) {
             break;
         }
-        auto job = jobs.top().second->clone();
+        auto job = jobs.top().second;
         auto [responses, result] = job->execute();
         if ( result && job->hasCallback() && job->runCallback() ) {
             job->setCallback(true);
-            this->schedule(std::move(job), job->getCallbackTime());
+            this->schedule(job, job->getCallbackTime());
         }
 
         res.reserve(res.size() + responses.size());
