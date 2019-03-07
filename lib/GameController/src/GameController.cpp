@@ -107,22 +107,13 @@ std::vector<Response> GameController::move(Name username, Input direction) {
     roomController.addUserNameToRoom(username, designatedRoomId);
     characterController.setCharacterRoomID(username, designatedRoomId);
 
-//    // broadcast leaving message to users in the current room
-//    auto userList = roomController.getUsernameList(roomId);
-//    std::string broadcastMessage = username + " has left the room";
-//    for (const auto& user : userList){
-//        broadcast(user, broadcastMessage);
-//    }
-//
-//    // broadcast entry message to user in the designated room
-//    userList = roomController.getUsernameList(designatedRoomId);
-//    broadcastMessage = username + " has entered the room";
-//    for (const auto& user : userList){
-//        broadcast(user, broadcastMessage);
-//    }
+     // list of users to notify that character moved north
+    std::vector<std::string> userList = roomController.getUsernameList(characterController.getCharacterRoomID(username));
 
-    Response userResponse = Response("Headed " + roomController.getDoorDirection(roomId, doorId), username);
-    return formulateResponse(userResponse);
+    Response userResponse = Response("Headed " + direction, username);
+    std::string genericMessage = charName + " headed " + direction;
+
+    return formulateResponse(userResponse, userList, genericMessage);
 
 }
 
