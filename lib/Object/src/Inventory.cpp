@@ -3,9 +3,6 @@
 #include <Inventory.h>
 #include <JSONObjects.h>
 
-
-Inventory::Inventory() = default;
-
 void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
@@ -30,7 +27,7 @@ std::vector<Object>::iterator Inventory::getItemIterator(Name objectName)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectName ] ( Object const& obj )->bool {
-                          return obj.getType() == objectName;
+                          return obj.getName() == objectName;
                         });
 
     return it;
@@ -72,22 +69,5 @@ bool Inventory::removeItem(ID objectID)
 
 std::string Inventory::listInventory()
 {
-    if (objects.empty()) {
-        return std::string();
-    }
-
-
-    /////
-
-    int objectCount = 1;
-    std::stringstream inventoryList;
-
-    for(auto &obj : objects){
-
-        std::string objectString = std::to_string(objectCount) + ". " + obj.getType() + "\n";
-        inventoryList += objectString;
-
-        objectCount++;
-    }
-    return inventoryList.str();
+    // next merge will have this function
 }
