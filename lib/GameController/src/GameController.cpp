@@ -101,17 +101,17 @@ std::vector<Response> GameController::move(Name username, Input direction) {
         return formulateResponse(userResponse);
     }
 
+    // list of users to notify that character moved north
+    std::vector<std::string> userList = roomController.getUsernameList(characterController.getCharacterRoomID(username));
 
     // Update roomList to account for character moving
     roomController.removeUserNameFromRoom(username, roomId);
     roomController.addUserNameToRoom(username, designatedRoomId);
     characterController.setCharacterRoomID(username, designatedRoomId);
 
-     // list of users to notify that character moved north
-    std::vector<std::string> userList = roomController.getUsernameList(characterController.getCharacterRoomID(username));
-
+    // send message to the moving user and another message to users in the room
     Response userResponse = Response("Headed " + direction, username);
-    std::string genericMessage = charName + " headed " + direction;
+    std::string genericMessage = username + " headed " + direction;
 
     return formulateResponse(userResponse, userList, genericMessage);
 

@@ -8,13 +8,13 @@ RoomController::RoomController(){
     generateRoom(1002, "Room3");
     generateRoom(1003, "Room4");
 
-    addDoorToRoom(1000, 1, 1001, "To the sky");
-    addDoorToRoom(1000, 2, 1002, "To the cave");
-    addDoorToRoom(1000, 3, 1003, "To the forest");
+    addDoorToRoom(1000, 1, 1001, "Up");
+    addDoorToRoom(1000, 2, 1002, "Inside the cave");
+    addDoorToRoom(1000, 3, 1003, "Inside the forest");
 
-    addDoorToRoom(1001, 1, 1000, "Down to the floor");
-    addDoorToRoom(1002, 1, 1000, "Out of the cave");
-    addDoorToRoom(1003, 1, 1000, "Out of the forest");
+    addDoorToRoom(1001, 1, 1000, "Down");
+    addDoorToRoom(1002, 1, 1000, "Outside the cave");
+    addDoorToRoom(1003, 1, 1000, "Outside the forest");
 
 }
 
