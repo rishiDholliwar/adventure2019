@@ -2,7 +2,7 @@
 
 Object::Object() = default;
 
-Name& Object::getName() const {
+Name Object::getName() const {
     return objectName;
 }
 
