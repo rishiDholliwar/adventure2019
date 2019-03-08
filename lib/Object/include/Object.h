@@ -15,6 +15,7 @@ using AlterSpace::Value;
 
 class Object : public UniqueID {
 private:
+    ID objectID;
     Name objectName;
     std::unordered_map<Property, Value> abilities;
     std::vector<std::string> keywords;
@@ -28,7 +29,7 @@ private:
     extraDescription extra;
 
 public:
-  
+
     Object(const Name &objectName) : objectName(objectName) {}
 
     Object();
@@ -47,9 +48,9 @@ public:
         this->extra.desc = extraDesc;
     }
 
-    ID getID() const;
+    Name& Object::getName() const
 
-    Name getType() const;
+    ID getID() const;
 
     std::unordered_map<Property, Value> getAbilities() {
       return abilities;
