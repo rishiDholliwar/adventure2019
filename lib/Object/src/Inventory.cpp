@@ -1,11 +1,9 @@
 #include <algorithm>
 #include <sstream>
 #include <Inventory.h>
+#include <JSONObjects.h>
 
-Inventory::Inventory() = default;
-
-void Inventory::addItem(Object object)
-{
+void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
 
@@ -16,12 +14,12 @@ std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
                           return obj.getID() == objectID;
                         });
 
-    return it;    
+    return it;
 }
 
 bool Inventory::doesItemExist(ID objectID)
 {
-    
+
     return getItemIterator(objectID) != objects.end();
 }
 
@@ -29,7 +27,7 @@ std::vector<Object>::iterator Inventory::getItemIterator(Name objectName)
 {
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectName ] ( Object const& obj )->bool {
-                          return obj.getName() == objectName;
+                          return obj.getType() == objectName;
                         });
 
     return it;
@@ -37,7 +35,7 @@ std::vector<Object>::iterator Inventory::getItemIterator(Name objectName)
 
 bool Inventory::doesItemExist(Name objectName)
 {
-    
+
     return getItemIterator(objectName) != objects.end();
 }
 
@@ -75,12 +73,18 @@ std::string Inventory::listInventory()
         return std::string();
     }
 
+
+    /////
+
     int objectCount = 1;
     std::stringstream inventoryList;
 
     for(auto &obj : objects){
 
-        inventoryList << objectCount++ << ". " << obj.getName() << "\n";
+        std::string objectString = std::to_string(objectCount) + ". " + obj.getType() + "\n";
+        inventoryList += objectString;
+
+        objectCount++;
     }
     return inventoryList.str();
 }

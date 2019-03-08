@@ -39,7 +39,11 @@ public:
 
     /* if username exists and isn't logged in already, logs them in and returns the outcome
      *
+<<<<<<< HEAD
      * Pre-Condition: login credentials for user attempting login
+=======
+     * Pre-Condition: username as const reference Name objectName, password as string and a const Connection object
+>>>>>>> inventory
      *
      * Post-Condition: returns username and success/failure of user login
      */
@@ -49,7 +53,11 @@ public:
 	/*
      * if no such username exists already, creates a user with such username and password
      *
+<<<<<<< HEAD
      * Pre-Condition: login credentials for user being created
+=======
+     * Pre-Condition: username as const reference Name objectName, password as string and a const Connection object
+>>>>>>> inventory
      *
      * Post-Condition: returns username and success/failure code for user created
 	*/
@@ -58,7 +66,11 @@ public:
 	/*
      * logs out a username by deleting it from the map of activeUsers
      *
+<<<<<<< HEAD
      * Pre-Condition: username of user logging out
+=======
+     * Pre-Condition: username as const reference Name objectName
+>>>>>>> inventory
      *
      * Post-Condition: returns username and success/failure of user logout
 	*/
@@ -80,7 +92,11 @@ private:
      * If a user is already logged in with such username or if the password is inaccurate, login fails
      * Password passed in is hashed for security
      *
+<<<<<<< HEAD
      * Pre-Condition: login credentials to authenticate user
+=======
+     * Pre-Condition: username as const reference Name objectName, password as string
+>>>>>>> inventory
      *
      * Post-Condition: returns a success/failure code for finding and validating user
 	*/
@@ -93,7 +109,11 @@ private:
 	 	 * creates a file to store the login information for the future
 	 	 * password is hashed for security before being stored
      *
+<<<<<<< HEAD
      * Pre-Condition: login credentials for new user
+=======
+     * Pre-Condition: username as const reference Name objectName, password as string
+>>>>>>> inventory
      *
      * Post-Condition: returns a success/failure code for validating new user
 	*/

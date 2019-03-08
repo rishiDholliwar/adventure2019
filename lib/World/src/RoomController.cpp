@@ -57,7 +57,7 @@ std::vector<Name> RoomController::getUsernameList(ID roomId) {
 }
 
 std::vector<ID> RoomController::getRoomIdList() const {
-    std::vector<ID> integerRoomList;
+    std::vector<ID> integerRoomList{};
 
     std::transform(this->roomList.begin(), this->roomList.end(),
             std::back_inserter(integerRoomList),

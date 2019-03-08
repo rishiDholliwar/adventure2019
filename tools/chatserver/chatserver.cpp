@@ -8,6 +8,7 @@
 
 #include "json.hpp"
 #include "chatserver.h"
+#include <JSONObjects.h>
 
 #include <experimental/filesystem>
 #include <fstream>
@@ -55,7 +56,7 @@ Game::removeConnection(Connection c) {
 std::deque<Message>
 Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
     std::deque<Message> result{};
-    for (auto& message : incoming) {
+    for (auto &message : incoming) {
         if (message.text == "quit") {
             _server->disconnect(message.connection);
         } else if (message.text == "shutdown") {
@@ -65,52 +66,43 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
 
         std::string trimmed = utility::trimStringToLength(message.text, 2048);
         CommandInfo info = _commandHandler->parseCommand(trimmed);
-        if ( (! _userController->isConnectionLoggedIn(message.connection)) && (info.type != CommandType::USERCONTROLLER))
-        {
+        if ((!_userController->isConnectionLoggedIn(message.connection)) &&
+            (info.type != CommandType::USERCONTROLLER)) {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
         }
 
         std::string username = _userController->getUsernameWithConnection(message.connection);
         std::string output = "Unknown";
-        switch ( info.type )
-        {
-            case CommandType::GAMECONTROLLER:
-            {
+        switch (info.type) {
+            case CommandType::GAMECONTROLLER: {
                 auto func = _commandHandler->getUserFunc(username, info.command);
-                if (func != nullptr)
-                {
+                if (func != nullptr) {
                     auto responses = ((*_gameController).*func)(username, info.input);
-                    for ( auto& res : responses )
-                    {
+                    for (auto &res : responses) {
                         Connection conn = _userController->getConnectionWithUsername(res.username);
                         std::cout << conn.id << std::endl;
                         result.push_back(Message{conn.id, res.message});
                     }
-                }
-                else
-                {
+                } else {
                     output = "Invalid command";
                 }
                 break;
             }
-            case CommandType::USERCONTROLLER:
-            {
+            case CommandType::USERCONTROLLER: {
                 auto func = _commandHandler->getLognFunc(info.command);
-                if (func != nullptr)
-                {
+                if (func != nullptr) {
                     std::vector<std::string> v = utility::tokenizeString(info.input);
-                    while ( v.size() < 2 )
-                    {
+                    while (v.size() < 2) {
                         v.push_back("");
                     }
-                    if ( username.empty() )
-                    {
+                    if (username.empty()) {
                         username = v.front();
                         v.front() = std::move(v.back());
                         v.pop_back();
                     }
-                    UserController::UserData response = ((*_userController).*func)(username, v.at(0), message.connection);
+                    UserController::UserData response = ((*_userController).*func)(username, v.at(0),
+                                                                                   message.connection);
                     output = Return::ReturnCodeToString(response.returnCode);
                     if ( response.returnCode == ReturnCode::LOGIN_SUCCESS ||
                          response.returnCode == ReturnCode::CREATE_SUCCESS )
@@ -118,37 +110,28 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
                         _gameController->loadCharacter(username);
                     }
                     // output = "OK";
-                }
-                else
-                {
+                } else {
                     output = "Invalid command";
                 }
                 break;
             }
-            case CommandType::COMMANDHANDLER:
-            {
+            case CommandType::COMMANDHANDLER: {
                 auto func = _commandHandler->getCommFunc(info.command);
-                if (func != nullptr)
-                {
+                if (func != nullptr) {
                     output = ((*_commandHandler).*func)(username, info.input);
-                }
-                else
-                {
+                } else {
                     output = "Invalid command";
                 }
                 break;
             }
-            case CommandType::UNKNOWN:
-            {
+            case CommandType::UNKNOWN: {
                 break;
             }
-            default:
-            {
+            default: {
                 std::cout << "I dont even know how" << std::endl;
             }
         }
-        if ( result.empty() )
-        {
+        if (result.empty()) {
             Message msg{message.connection, output};
             result.push_back(msg);
         }
@@ -157,13 +140,12 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
 }
 
 bool
-Game::run()
-{
+Game::run() {
     bool done = false;
     while (!done) {
         try {
             _server->update();
-        } catch (std::exception& e) {
+        } catch (std::exception &e) {
             std::cerr << "Exception from Server feedUpdate:\n"
                       << " " << e.what() << "\n\n";
             done = true;
@@ -177,8 +159,7 @@ Game::run()
     return done;
 }
 
-Game::Game(Config config)
-{
+Game::Game(Config config) {
     _server = std::make_unique<Server>(config.port, config.webpage, onConnect, onDisconnect);
     _gameController = std::make_unique<GameController>();
     _userController = std::make_unique<UserController>();
@@ -186,8 +167,8 @@ Game::Game(Config config)
 }
 
 std::string
-getHTTPMessage(const char* htmlLocation) {
-    if (access(htmlLocation, R_OK ) != -1) {
+getHTTPMessage(const char *htmlLocation) {
+    if (access(htmlLocation, R_OK) != -1) {
         std::ifstream infile{htmlLocation};
         return std::string{std::istreambuf_iterator<char>(infile),
                            std::istreambuf_iterator<char>()};
@@ -201,13 +182,64 @@ getHTTPMessage(const char* htmlLocation) {
 
 
 int
-main(int argc, char* argv[]) {
+main(int argc, char *argv[]) {
     if (argc < 3) {
         std::cerr << "Usage:\n    " << argv[0] << " <port> <html response>\n"
                   << "    e.g. " << argv[0] << " 4002 ./webchat.html\n";
         return 1;
     }
+    using namespace std;
+////////////////////////////
 
+    std::string fileName = "mirkwood";
+
+    if (JSONObjects::fileExists(fileName)) {
+        cout << "file exists\n";
+    } else {
+        cout << "error, no such file\n";
+    }
+
+    std::vector<Object> objects = JSONObjects::getObjects(fileName);
+
+    // for (auto &obj : objects) {
+    //     std::cout << "ID: " << obj.getID() << std::endl;
+
+    //     std::cout << "Type: " << obj.getType() << std::endl;
+
+    //     std::cout << "Abilities: " << std::endl;
+    //     for (auto &a : obj.getAbilities()) {
+    //       std::cout << "\t" << a.first << ", " << a.second << std::endl;
+    //     }
+
+    //     std::cout << " Keywords: " << std::endl;
+    //     for (auto &kw : obj.getKeywords()) {
+    //         std::cout << "\t" << kw << std::endl;
+    //     }
+
+    //     std::cout << " Shortdesc: " << obj.getShortDesc() << std::endl;
+
+    //     std::cout << " Longdesc: " << std::endl;
+    //     for (auto &ld : obj.getLongDesc()) {
+    //         std::cout << "\t" << ld << std::endl;
+    //     }
+
+    //     std::cout << " Extra: " << std::endl;
+    //     std::cout << "\tKeywords: " << std::endl;
+    //     for (auto &ekw : obj.getExtraKeywords()) {
+    //         std::cout << " \t" << ekw << std::endl;
+    //     }
+
+    //     std::cout << std::endl;
+
+    //     std::cout << "\tDesc: " << std::endl;
+    //     for (auto &ed : obj.getExtraDesc()) {
+    //         std::cout << " \t" << ed << std::endl;
+    //     }
+
+    //     std::cout << std::endl;
+    // }
+
+/////////////////////////////
     unsigned short port = std::stoi(argv[1]);
     auto webpage = getHTTPMessage(argv[2]);
 
