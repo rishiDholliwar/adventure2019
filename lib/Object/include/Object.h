@@ -48,7 +48,7 @@ public:
         this->extra.desc = extraDesc;
     }
 
-    Name& Object::getName() const
+    Name& getName() const;
 
     ID getID() const;
 
