@@ -3,6 +3,9 @@
 #include <Inventory.h>
 #include <JSONObjects.h>
 
+
+Inventory::Inventory() = default;
+
 void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
