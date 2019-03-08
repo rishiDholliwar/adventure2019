@@ -121,7 +121,7 @@ set_target_properties(pigLatin
 
 install(TARGETS utility
         ARCHIVE DESTINATION lib
-        )
+)
 
 install(TARGETS returnCode
   ARCHIVE DESTINATION lib
@@ -134,13 +134,11 @@ install(TARGETS uniqueID
 install(TARGETS pigLatin
   ARCHIVE DESTINATION lib
 )
-        ARCHIVE DESTINATION lib
-        )
 
 install(TARGETS jsonUser
         ARCHIVE DESTINATION lib
-        )
+)
 
 install(TARGETS jsonObjects
         ARCHIVE DESTINATION lib
-        )
+)
