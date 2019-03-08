@@ -343,6 +343,16 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
     return response;
 }
 
+std::vector<Response> GameController::formulateResponse(Response &userResponse, Response &targetResponse) {
+
+    std::vector<Response> response;
+
+    response.push_back(userResponse);
+    response.push_back(targetResponse);
+
+    return response;
+}
+
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
     return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
 }
