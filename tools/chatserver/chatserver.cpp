@@ -204,7 +204,7 @@ main(int argc, char *argv[]) {
     // for (auto &obj : objects) {
     //     std::cout << "ID: " << obj.getID() << std::endl;
 
-    //     std::cout << "Type: " << obj.getType() << std::endl;
+    //     std::cout << "Type: " << obj.getName() << std::endl;
 
     //     std::cout << "Abilities: " << std::endl;
     //     for (auto &a : obj.getAbilities()) {
