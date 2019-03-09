@@ -25,6 +25,7 @@ const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
+        static std::vector<ID> emptyIdVector;
         return emptyIdVector;
     }
 
@@ -35,6 +36,7 @@ const std::vector<ID> & RoomController::getObjectList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
+        static std::vector<ID> emptyIdVector;
         return emptyIdVector;
     }
 
@@ -45,6 +47,7 @@ const std::vector<std::string>& RoomController::getUsernameList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
+        static std::vector<std::string> emptyStringVector;
         return emptyStringVector;
     }
 

@@ -116,8 +116,6 @@ class RoomController {
 
 private:
          std::vector<Room> roomList;
-         std::vector<ID> emptyIdVector;
-         std::vector<std::string> emptyStringVector;
 
 };
 

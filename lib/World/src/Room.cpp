@@ -99,9 +99,8 @@ std::stringstream Room::getTextOfDoorDetails() {
     outputString << "Doors ID, Direction, Destination, Status\n";
     for (const auto &door: this->doorList){
         ID doorId = door.getId();
-        outputString << std::to_string(doorId) + ", " + door.getDirection() +
-                        ", " + std::to_string(door.getDesignatedRoomId()) +
-                        ", ";
+        outputString << std::to_string(doorId) << ", " << door.getDirection() <<
+                        ", " << door.getDesignatedRoomId() << ", ";
         if (door.getStatus()){
             outputString << "Unlocked";
         }else{
