@@ -14,6 +14,7 @@ CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
     mapping["/move"] = &GameController::move;
     mapping["/get"] = &GameController::pickUp;
     mapping["/drop"] = &GameController::drop;
+    mapping["/examine"] = &GameController::examine;
     // mapping["/logout"] = &GameController::logout;
     mapping["/wear"] = &GameController::wear;
     mapping["/takeoff"] = &GameController::takeOff;

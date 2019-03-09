@@ -5,8 +5,6 @@
 #include <Utility.h>
 #include <pigLatin.h>
 
-using ASDirection::directionMap;
-
 GameController::GameController()
 {
     this->characterController = CharacterController();
@@ -78,35 +76,54 @@ std::vector<Response> GameController::broadcast(Name username, Input message) {
 }
 
 std::vector<Response> GameController::move(Name username, Input direction) {
+
     std::cout << "Move: " << direction << std::endl;
 
-    // check if direction exists
-    if(!directionExists(direction)){
-        Response userResponse = Response("There is no such direction!", username);
+    AlterSpace::ID roomId = characterController.getCharacterRoomID(username);
+    AlterSpace::ID doorId = roomController.getDoorIdByDirection(roomId, direction);
+
+
+    AlterSpace::ID designatedRoomId = roomController.getDoorDesignatedRoomId(roomId, doorId);
+
+    std::cout << "designated Room: "<<designatedRoomId << std::endl;
+
+
+    // check if door exists
+    if (designatedRoomId == Door::unfoundDoorId){
+        Response userResponse = Response("Door not exist!", username);
         return formulateResponse(userResponse);
     }
 
-    // Verify if direction is valid
-    unsigned int destinationRoomID = roomController.getLinkedRoom(directionMap.at(direction), characterController.getCharacterRoomID(username));
-    if( destinationRoomID == 0){
-        Response userResponse = Response("That isn't a valid direction!", username);
+
+    // Verify if door is locked
+    if( roomController.getDoorStatus(roomId, doorId) == Door::LOCKED){
+        Response userResponse = Response("Door is locked!", username);
         return formulateResponse(userResponse);
     }
 
     // list of users to notify that character moved north
     std::vector<std::string> userList = roomController.getUsernameList(characterController.getCharacterRoomID(username));
 
-    Name charName = characterController.getCharacter(username).getName();
-
     // Update roomList to account for character moving
-    roomController.removeUserNameFromRoom(charName, characterController.getCharacterRoomID(username));
-    roomController.addUserNameToRoom(charName, destinationRoomID);
-    characterController.setCharacterRoomID(username, destinationRoomID);
+    roomController.removeUserNameFromRoom(username, roomId);
+    roomController.addUserNameToRoom(username, designatedRoomId);
+    characterController.setCharacterRoomID(username, designatedRoomId);
 
+    // send message to the moving user and another message to users in the room
     Response userResponse = Response("Headed " + direction, username);
-    std::string genericMessage = charName + " headed " + direction;
+    std::string genericMessage = username + " headed " + direction;
+
     return formulateResponse(userResponse, userList, genericMessage);
+
 }
+
+std::vector<Response> GameController::examine(Name username, Input message) {
+    AlterSpace::ID roomId = characterController.getCharacterRoomID(username);
+    Response userResponse = Response(roomController.getTextOfRoomDetails(roomId), username);
+    return formulateResponse(userResponse);
+
+}
+
 
 std::vector<Response> GameController::pickUp(Name username, Input itemName) {
     std::cout << "Pick Up: " << itemName << std::endl;
@@ -354,8 +371,4 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
 
 std::vector<Response> GameController::formulateResponse(Response &userResponse) {
     return formulateResponse(userResponse, std::vector<std::string>{}, std::string{});
-}
-
-bool GameController::directionExists(std::string direction) {
-    return directionMap.find(direction) != directionMap.end();
 }

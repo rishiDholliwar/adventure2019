@@ -1,34 +1,11 @@
+
 #ifndef OOP_ROOM_H
 #define OOP_ROOM_H
 
-#include <vector>
-#include <string>
-#include <memory>
-#include <string_view>
-#include <map>
 
-#include <AlterSpace.h>
+#include <Door.h>
+#include <sstream>
 
-using AlterSpace::Name;
-using AlterSpace::ID;
-
-enum class Direction{
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
-};
-
-namespace ASDirection
-{
-    static std::map<std::string, Direction>
-    directionMap = {
-                    {"north", Direction::NORTH},
-                    {"south", Direction::SOUTH},
-                    {"east", Direction::EAST},
-                    {"west", Direction::WEST}
-                   };
-}
 
 class Room
 {
@@ -48,45 +25,59 @@ public:
     // Adders
     void addDescription(const std::string& description);
     void addExtendedDescription(const std::string& extDescription);
+
+    /*
+     * Adder functions
+     * Post-condition:
+         *          return true if the element is successfully added
+         *          return false otherwise
+     */
     bool addCharacter(ID characterId);
     bool addObject(ID objectId);
     bool addUserName(const Name& userName);
+    bool addDoor(ID doorId, ID designatedRoomId, const std::string& direction);
 
-    // Removers
+    /*
+     * Remover functions
+     * Post-condition:
+         *          return true if the element is successfully removed
+         *          return false otherwise
+     */
     bool removeCharacter(ID characterId);
     bool removeObject(ID objectId);
     bool removeUserName(const Name& userName);
-
-    // get descriptions: look, examine
-
-    // Link Rooms
-    // use character 'n','e','s','w' to represent direction
-
-    // linkRoom will assign targetRoom to the coordinate Room*
-    void linkRoom(Direction dir, ID targetRoomId);
-    // return 0 indicates no room is linked in the direction
-    ID getLinkedRoom(Direction dir);
+    bool removeDoor(ID doorId);
 
 
-    bool hasObject(ID objectId);
+    /*
+     * This function return the information of the room including room descriptions and doors information
+     * Post-condition:
+     *              return: string, information of the room
+     */
+    std::string getTextOfRoomDetails();
+
+    /*
+     * This function return the doors information
+     * Post-condition:
+     *              return: string, information of all the doors in the room
+     */
+    std::string getTextOfDoorDetails();
+
+    /*
+     * this function returns the Door object according to the door id
+     */
+    Door* searchDoor(ID doorId);
+    Door* searchDoorByDirection(const std::string& direction);
 
 private:
     ID  id;
-    Name name;
+    std::string name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
     std::vector<ID> characterList;
     std::vector<ID> objectList;
     std::vector<Name> usernameList;
-
-    struct LinkingRoomList{
-        ID north = 0;
-        ID west = 0;
-        ID south = 0;
-        ID east = 0;
-    };
-
-    LinkingRoomList linkingRoomList;
+    std::vector<Door> doorList;
 
     template <typename T>
     bool addUniqueItemToList(T id, std::vector<T> &list);

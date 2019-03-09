@@ -76,15 +76,9 @@ public:
      * */
     std::vector<Response> move(Name username, Input direction);
 
-    /* Does the direction exist:
-     *
-     * Function: Checks to see if direction exists in the map
-     *
-     * Pre-Condition: requires the direction in question
-     * Post: returns true if direction exists
-     *
-     * */
-    bool directionExists(Name direction);
+    // dummy function for now
+    // TODO: complete the examine command
+    std::vector<Response> examine(Name username, Input message);
 
     /* PickUp:
      *
