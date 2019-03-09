@@ -29,7 +29,7 @@ class RoomController {
          * Post-condition:
          *          return string of information of room
          */
-        std::stringstream getTextOfRoomDetails(ID roomId);
+        std::string getTextOfRoomDetails(ID roomId);
 
         /*
          * create a room according to the roomID and roomName inside RoomController

@@ -56,7 +56,7 @@ int main(){
     }
 
     std::cout << "add door1 (direction up, connect to room2) to room1: " << rc.addDoorToRoom(1,1,2, "up") << std::endl;
-    std::cout << rc.getTextOfRoomDetails(1000).str() << std::endl;
+    std::cout << rc.getTextOfRoomDetails(1000) << std::endl;
     std::cout << "designated door id of door 1: " << rc.getDoorDesignatedRoomId(1000, 1) << std::endl;
 
 

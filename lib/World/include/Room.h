@@ -45,7 +45,7 @@ public:
      */
     bool removeCharacter(ID characterId);
     bool removeObject(ID objectId);
-    bool removeUserName(const std::string& userName);
+    bool removeUserName(const Name& userName);
     bool removeDoor(ID doorId);
 
 
@@ -54,14 +54,14 @@ public:
      * Post-condition:
      *              return: string, information of the room
      */
-    std::stringstream getTextOfRoomDetails();
+    std::string getTextOfRoomDetails();
 
     /*
      * This function return the doors information
      * Post-condition:
      *              return: string, information of all the doors in the room
      */
-    std::stringstream getTextOfDoorDetails();
+    std::string getTextOfDoorDetails();
 
     /*
      * this function returns the Door object according to the door id

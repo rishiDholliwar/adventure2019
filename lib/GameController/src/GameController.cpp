@@ -119,7 +119,7 @@ std::vector<Response> GameController::move(Name username, Input direction) {
 
 std::vector<Response> GameController::examine(Name username, Input message) {
     AlterSpace::ID roomId = characterController.getCharacterRoomID(username);
-    Response userResponse = Response(roomController.getTextOfRoomDetails(roomId).str(), username);
+    Response userResponse = Response(roomController.getTextOfRoomDetails(roomId), username);
     return formulateResponse(userResponse);
 
 }

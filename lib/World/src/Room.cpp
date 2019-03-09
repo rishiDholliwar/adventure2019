@@ -77,24 +77,24 @@ bool Room::removeDoor(ID doorId) {
     return size != list.size();
 }
 
-std::stringstream Room::getTextOfRoomDetails() {
+std::string Room::getTextOfRoomDetails() {
     std::stringstream outputString;
     outputString << "Room ID: " << std::to_string(this->getId()) << "\n" <<
                     "Room Name: " << this->getName() << "\n";
 
     for (auto &description : this->descriptions){
-        outputString << description + "\n";
+        outputString << description << "\n";
     }
 
     for (auto &description : this->extendedDescriptions){
-        outputString << description + "\n";
+        outputString << description << "\n";
     }
 
-    outputString << getTextOfDoorDetails().str();
-    return outputString;
+    outputString << getTextOfDoorDetails();
+    return outputString.str();
 }
 
-std::stringstream Room::getTextOfDoorDetails() {
+std::string Room::getTextOfDoorDetails() {
     std::stringstream outputString;
     outputString << "Doors ID, Direction, Destination, Status\n";
     for (const auto &door: this->doorList){
@@ -108,7 +108,7 @@ std::stringstream Room::getTextOfDoorDetails() {
         }
         outputString << "\n";
     }
-    return outputString;
+    return outputString.str();
 }
 
 Door* Room::searchDoor(ID doorId) {
