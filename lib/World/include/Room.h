@@ -20,7 +20,7 @@ public:
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
     std::vector<ID> const& getCharacterList() const{return characterList;};
     std::vector<ID> const& getObjectList() const{return objectList;};
-    std::vector<std::string> const& getUsernameList() const{return usernameList;};
+    std::vector<Name> const& getUsernameList() const{return usernameList;};
 
     // Adders
     void addDescription(const std::string& description);
@@ -76,7 +76,7 @@ private:
     std::vector<std::string> extendedDescriptions;
     std::vector<ID> characterList;
     std::vector<ID> objectList;
-    std::vector<std::string> usernameList;
+    std::vector<Name> usernameList;
     std::vector<Door> doorList;
 
     template <typename T>
