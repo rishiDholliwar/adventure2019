@@ -20,7 +20,7 @@ class Command
 protected:
     bool registerInteraction = false;
     bool registerCallback = false;
-    bool ranCallback = false;
+    bool _isCallback = false;
     int callbackAfterHeartbeats = 0;
 public:
     Command() = default;
@@ -28,12 +28,11 @@ public:
     virtual std::pair<std::vector<Response>, bool> execute() = 0;
     virtual std::pair<std::vector<Response>, bool> callback();
     virtual std::string help() = 0;
-    virtual std::pair<std::vector<Response>, bool> interact();
     virtual std::unique_ptr<Command> clone() const = 0;
     virtual std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const = 0;
 
-    bool runCallback() const;
-    bool hasCallback() const;
+    bool isCallback() const;
+    bool callbackable() const;
     int getCallbackTime() const;
     void setCallback(bool callback);
     bool isInteractable() const;

@@ -21,12 +21,7 @@ std::pair<std::vector<Response>, bool> Command::callback() {
     return std::make_pair(noResponse(), false);
 }
 
-std::pair<std::vector<Response>, bool> Command::interact() {
-    std::cout << "Using base interact..." << std::endl;
-    return std::make_pair(noResponse(), false);
-}
-
-bool Command::hasCallback() const {
+bool Command::callbackable() const {
     return registerCallback;
 }
 
@@ -34,12 +29,12 @@ int Command::getCallbackTime() const {
     return callbackAfterHeartbeats;
 }
 
-bool Command::runCallback() const {
-    return ! this->ranCallback;
+bool Command::isCallback() const {
+    return this->_isCallback;
 }
 
 void Command::setCallback(bool callback) {
-    this->ranCallback = callback;
+    this->_isCallback = ! callback;
 }
 
 bool Command::isInteractable() const{

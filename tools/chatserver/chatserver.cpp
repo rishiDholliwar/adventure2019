@@ -79,6 +79,10 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         std::string invocationWord = input.at(0);
         std::string text = input.at(1);
 
+        // TODO: Add a command parser around here in the future
+        // Should return an enum on the type of the command
+        // CommandHandler should map enums to Commands
+        // This "/login" will be changed to the login enum
         if ( (! _userController.isConnectionLoggedIn(message.connection)) && (invocationWord != "/login"))
         {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});

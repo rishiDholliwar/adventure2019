@@ -31,7 +31,8 @@ using networking::Connection;
 class CommandHandler {
 public:
 
-    using CommandMap = std::unordered_map<Invocation, std::shared_ptr<Command>>;
+    using CommandMap = std::unordered_map<Invocation, std::unique_ptr<Command>>;
+    using UserMap = std::unordered_map<Invocation, std::shared_ptr<Command>>;
 
     CommandHandler() = default;
 
@@ -91,7 +92,7 @@ private:
     */
     CommandMap _defCommandMap;
 
-    std::unordered_map<Name, CommandMap> _userCommandMap;
+    std::unordered_map<Name, UserMap> _userCommandMap;
 };
 
 #endif //WEBSOCKETNETWORKING_COMMANDHANDLER_H

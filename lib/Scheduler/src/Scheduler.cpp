@@ -25,7 +25,6 @@ std::vector<Response> Scheduler::update() {
     long currentTime = getCurrentTime();
     auto timeToSleep = heartbeatPerMilliseconds - (currentTime - this->lastUpdated);
     if( timeToSleep == 0 ) {
-        std::cout << "Some idiot probably has an Scheduler::update scheduled" << std::endl;
         return res;
     }
     if( timeToSleep > 0 ) {
@@ -33,15 +32,20 @@ std::vector<Response> Scheduler::update() {
     }
     currentTime = getCurrentTime();
     this->lastUpdated = currentTime;
-    while ( ! jobs.empty() ) {
-        if( currentTime - jobs.top().first < 0 ) {
-            break;
-        }
+
+    while ( ! jobs.empty() && currentTime - jobs.top().first >= 0 ) {
         auto job = jobs.top().second;
-        auto [responses, result] = job->execute();
-        if ( result && job->hasCallback() && job->runCallback() ) {
-            job->setCallback(true);
-            this->schedule(job, job->getCallbackTime());
+        std::vector<Response> responses;
+        if( job->callbackable() && job->isCallback() ) {
+            auto ret = job->callback();
+            responses = ret.first;
+        } else {
+            auto ret = job->execute();
+            responses = ret.first;
+            if( job->callbackable() && ret.second ) {
+                job->setCallback(false);
+                this->schedule(job, job->getCallbackTime());
+            }
         }
 
         res.reserve(res.size() + responses.size());

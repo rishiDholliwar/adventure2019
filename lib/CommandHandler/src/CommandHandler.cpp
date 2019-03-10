@@ -33,11 +33,10 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
 		return nullptr;
 	}
     if( _defCommandMap[invokeWord]->isInteractable() ) {
-        auto ret = _userCommandMap.insert(std::pair(userName, CommandHandler::CommandMap{}));
+        auto ret = _userCommandMap.insert(std::pair(userName, CommandHandler::UserMap{}));
         ret.first->second[invokeWord] = _defCommandMap[invokeWord]->clone(userName, input, connection);
         return ret.first->second[invokeWord];
     }
-
 	return std::move(_defCommandMap[invokeWord]->clone(userName, input, connection));
 }
 

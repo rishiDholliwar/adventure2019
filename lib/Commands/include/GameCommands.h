@@ -33,7 +33,7 @@ public:
     ~Say() = default;
     std::pair<std::vector<Response>, bool> execute() override;
     std::pair<std::vector<Response>, bool> callback() override;
-    std::pair<std::vector<Response>, bool> interact() override;
+    std::pair<std::vector<Response>, bool> interact();
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
     std::string help() override;
