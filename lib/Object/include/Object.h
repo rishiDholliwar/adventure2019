@@ -14,10 +14,11 @@ private:
     Name objectName;
 
 public:
-    Object(const Name &objectName) : UniqueID(), objectName(objectName) {}
+    Object(const Name &objectName) : objectName(objectName) {}
 
     const Name& getName() const;
     ID getID() const;
+
 };
 
 
