@@ -43,6 +43,8 @@ public:
     */
     bool removeCharacter(Name &username);
 
+    bool findCharacter(Name username);
+
     /*
      * Returns a character object of the specified username
      *
@@ -193,7 +195,7 @@ public:
     std::string lookCharacter(Name& userName);
     std::string examineCharacter(Name& userName);
 
-    void swapCharacters(Name &userCharacterName, Name &targetCharacterName);
+    void swapCharacter(Name &userCharacterName, Name &targetCharacterName);
 
     void confuseCharacter(Name &targetCharacterName);
 

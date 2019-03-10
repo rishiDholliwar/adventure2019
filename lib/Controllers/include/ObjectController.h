@@ -1,7 +1,3 @@
-//
-// Created by bshetty on 2/2/19.
-//
-
 #ifndef ALTERSPACE_OBJECTCONTROLLER_H
 #define ALTERSPACE_OBJECTCONTROLLER_H
 

@@ -1,56 +1,54 @@
+
 #include <algorithm>
 #include <RoomController.h>
 
-RoomController::RoomController() {
-
+RoomController::RoomController(){
     generateRoom(1000, "Room1");
     generateRoom(1001, "Room2");
     generateRoom(1002, "Room3");
     generateRoom(1003, "Room4");
 
+    addDoorToRoom(1000, 1, 1001, "Up");
+    addDoorToRoom(1000, 2, 1002, "Inside the cave");
+    addDoorToRoom(1000, 3, 1003, "Inside the forest");
 
-    linkRoom(Direction::NORTH, 1000, 1001);
-    linkRoom(Direction::SOUTH, 1001, 1000);
+    addDoorToRoom(1001, 1, 1000, "Down");
+    addDoorToRoom(1002, 1, 1000, "Outside the cave");
+    addDoorToRoom(1003, 1, 1000, "Outside the forest");
 
-    linkRoom(Direction::EAST, 1001, 1002);
-    linkRoom(Direction::WEST, 1002, 1001);
-
-    linkRoom(Direction::SOUTH, 1002, 1003);
-    linkRoom(Direction::NORTH, 1003, 1002);
-
-    linkRoom(Direction::WEST, 1003, 1000);
-    linkRoom(Direction::EAST, 1000, 1003);
-};
-
+}
 
 /*
  * Getters
  */
-std::vector<ID> RoomController::getCharacterList(ID roomId) {
+const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return std::vector<ID> {};
+        static std::vector<ID> emptyIdVector;
+        return emptyIdVector;
     }
 
     return room->getCharacterList();
 }
 
-std::vector<ID> RoomController::getObjectList(ID roomId) {
+const std::vector<ID> & RoomController::getObjectList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return std::vector<ID> {};
+        static std::vector<ID> emptyIdVector;
+        return emptyIdVector;
     }
 
     return room->getObjectList();
 }
 
-std::vector<Name> RoomController::getUsernameList(ID roomId) {
+const std::vector<Name>& RoomController::getUsernameList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
-        return std::vector<Name> {};
+        static std::vector<std::string> emptyStringVector;
+        return emptyStringVector;
     }
 
     return room->getUsernameList();
@@ -132,25 +130,71 @@ bool RoomController::removeUserNameFromRoom(const Name &userName, ID roomId) {
 /*
  *  Link Rooms
  */
-void RoomController::linkRoom(Direction dir, ID room1Id, ID room2Id) {
-    auto room = searchRoom(room1Id);
-    if (room != nullptr) {
-        room->linkRoom(dir, room2Id);
-    }
+bool RoomController::addDoorToRoom(ID roomId, ID doorId,
+                                   ID designatedRoomId, const std::string &direction) {
+    auto room = searchRoom(roomId);
+    auto designatedRoom = searchRoom(designatedRoomId);
+    return (room!=nullptr) && (designatedRoom != nullptr)&& (room->addDoor(doorId, designatedRoomId, direction));
 }
 
-ID RoomController::getLinkedRoom(Direction dir, ID roomId) {
+bool RoomController::removeDoorFromRoom(ID roomId, ID doorId) {
     auto room = searchRoom(roomId);
-    return room->getLinkedRoom(dir);
+    return (room!=nullptr) && room->removeDoor(doorId);
 }
+
+std::string RoomController::getTextOfRoomDetails(ID roomId) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        static std::string roomNotFoundMessage = "Room does not exist.";
+        return roomNotFoundMessage;
+    }
+    return room->getTextOfRoomDetails();
+}
+
+ID RoomController::getDoorIdByDirection(ID roomId, const std::string &direction) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return Door::unfoundDoorId;
+    }
+
+    auto door = room->searchDoorByDirection(direction);
+    if (door == nullptr){
+        return Door::unfoundDoorId;
+    }
+
+    return door->getId();
+}
+
+Door::DoorStatus RoomController::getDoorStatus(ID roomId, ID doorId) {
+    auto door = searchDoor(roomId, doorId);
+    return door->getStatus();
+}
+
+ID RoomController::getDoorDesignatedRoomId(ID roomId, ID doorId) {
+    auto door = searchDoor(roomId, doorId);
+    if (door == nullptr){
+        return Door::unfoundDoorId;
+    }
+    return door->getDesignatedRoomId();
+}
+
+const std::string& RoomController::getDoorDirection(ID roomId, ID doorId) {
+    auto door = searchDoor(roomId, doorId);
+    if (door == nullptr){
+        const static std::string doorNotFoundMessage = "Door does not exist.\n";
+        return doorNotFoundMessage;
+    }
+    return door->getDirection();
+}
+
 
 /*
- * private functions
+ * search functions
  */
 
 Room* RoomController::searchRoom(ID roomId) {
 
-    auto tempRoom = std::find_if(this->roomList.begin(), this->roomList.end(),
+    auto tempRoom = std::find_if(roomList.begin(), roomList.end(),
                                  [&roomId](const Room& room)
                                  {return room.getId() == roomId;}
     );
@@ -160,4 +204,12 @@ Room* RoomController::searchRoom(ID roomId) {
         return nullptr;
 
     return tempRoom.base();
+}
+
+Door* RoomController::searchDoor(ID roomId, ID doorId) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return nullptr;
+    }
+    return room->searchDoor(doorId);
 }

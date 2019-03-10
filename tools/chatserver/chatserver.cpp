@@ -21,19 +21,6 @@
 #include <GameCommands.h>
 #include <UserCommands.h>
 
-// We must decide on how to handle onConnect and onDisconnect
-// The reason why our game is a global is because the methods
-// can not reference the Game class easily
-std::unique_ptr<Game> game;
-
-void onConnect(Connection c) {
-    game->addConnection(c);
-}
-
-void onDisconnect(Connection c) {
-    game->removeConnection(c);
-}
-
 void Game::registerCommands() {
     _commandHandler->registerCommand("/say", Say(&_gameController).clone());
     _commandHandler->registerCommand("/login", Login(&_userController, &_gameController).clone());
@@ -54,6 +41,7 @@ Game::removeConnection(Connection c) {
         _userController.logoutUser(username);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
+        _gameController.removeCharacter(username);
     }
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
     _clients.erase(eraseBegin, std::end(_clients));
@@ -134,7 +122,9 @@ Game::run()
 
 Game::Game(Config config)
 {
-    _server = std::make_unique<Server>(config.port, config.webpage, onConnect, onDisconnect);
+    _server = std::make_unique<Server>(config.port, config.webpage,
+                                        [this](Connection c){this->addConnection(c);},
+                                        [this](Connection c){this->removeConnection(c);});
     _gameController = GameController();
     _userController = UserController();
     _commandHandler = std::make_unique<CommandHandler>();
@@ -170,7 +160,7 @@ main(int argc, char* argv[]) {
 
     Config config = {.port = port, .webpage = webpage};
 
-    game = std::make_unique<Game>(config);
+    auto game = std::make_unique<Game>(config);
     game->run();
 
     return 0;

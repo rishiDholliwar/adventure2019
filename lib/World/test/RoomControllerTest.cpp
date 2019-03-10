@@ -55,12 +55,12 @@ int main(){
         std::cout<<i<<"\n";
     }
 
-    rc.linkRoom(Direction::NORTH,1,2);
-    std::cout<< "link room 2 to the north of room1" << "\n";
-    rc.linkRoom(Direction::SOUTH,2,1);
-    std::cout<< "link room 1 to the south of room2" << "\n";
-    std::cout<< "north of room1 is " << rc.getLinkedRoom(Direction::NORTH, 1)<<"\n";
-    std::cout<< "south of room2 is " << rc.getLinkedRoom(Direction::SOUTH, 2)<<"\n";
+    std::cout << "add door1 (direction up, connect to room2) to room1: " << rc.addDoorToRoom(1,1,2, "up") << std::endl;
+    std::cout << rc.getTextOfRoomDetails(1000) << std::endl;
+    std::cout << "designated door id of door 1: " << rc.getDoorDesignatedRoomId(1000, 1) << std::endl;
+
+
+
     std::cout << "end" << std::endl;
 
 }

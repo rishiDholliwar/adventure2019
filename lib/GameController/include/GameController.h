@@ -6,6 +6,7 @@
 #include <CharacterController.h>
 #include <ObjectController.h>
 #include <RoomController.h>
+#include <NPCController.h>
 #include <Response.h>
 
 #include <vector>
@@ -19,6 +20,7 @@ private:
     CharacterController characterController;
     ObjectController objectController;
     RoomController roomController;
+    NPCController npcController;
 
 public:
     GameController();
@@ -34,6 +36,8 @@ public:
      *                         false if character already loaded
     */
     bool loadCharacter(Name username);
+
+    bool removeCharacter(Name username);
 
     /*
      * say:
@@ -72,15 +76,9 @@ public:
      * */
     std::vector<Response> move(Name username, Input direction);
 
-    /* Does the direction exist:
-     *
-     * Function: Checks to see if direction exists in the map
-     *
-     * Pre-Condition: requires the direction in question
-     * Post: returns true if direction exists
-     *
-     * */
-    bool directionExists(Name direction);
+    // dummy function for now
+    // TODO: complete the examine command
+    std::vector<Response> examine(Name username, Input message);
 
     /* PickUp:
      *
