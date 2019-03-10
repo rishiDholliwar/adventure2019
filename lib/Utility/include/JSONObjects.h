@@ -48,6 +48,16 @@ namespace JSONObjects {
         return values;
     }
 
+    static unsigned int getLengthStrArr(std::vector<std::string> strArr) {
+
+        unsigned int length = 0;
+
+        for (auto& str : strArr) {
+            length += str.length();
+        }
+        return length;
+    }
+
     /*
      * Concatenate strings from an array
      *
@@ -56,7 +66,11 @@ namespace JSONObjects {
      * Post-Condition: Returns a string of property values
     */
     inline std::string getStrFromArray(int iObj, json j, std::string property) {
+
+        // Preallocate expected string length, to avoid reallocation & get cache locality
+        unsigned int length = getLengthStrArr(j[iObj][property]);
         std::string combinedStr = std::string();
+        combinedStr.reserve(length);
 
         for (auto& str : j[iObj][property]) {
             combinedStr += str;
