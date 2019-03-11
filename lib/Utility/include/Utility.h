@@ -54,6 +54,31 @@ namespace utility {
         return result;
     }
 
+    template <typename EntityType>
+    static std::string lookEntity(const EntityType& entity){
+        std::stringstream ss;
+        const auto &descriptions = entity.getDescriptions();
+        std::string indentation = "    ";
+        for (const auto &description : descriptions ){
+            ss << indentation << description << "\n";
+        }
+        return ss.str();
+    }
+
+    template <typename EntityType>
+    static std::string examineEntity(const EntityType& entity){
+        std::stringstream ss;
+        const auto &descriptions = entity.getExtendedDescriptions();
+        if (descriptions.size() == 0){
+            return lookEntity(entity);
+        }
+        std::string indentation = "    ";
+        for (const auto &description : descriptions ){
+            ss << indentation << description << "\n";
+        }
+        return ss.str();
+    }
+
 }
 
 

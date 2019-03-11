@@ -18,13 +18,16 @@ public:
     Name const& getName() const{return name;};
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
+    std::vector<std::string> const& getKeywords() const{return keywords;};
     std::vector<ID> const& getCharacterList() const{return characterList;};
     std::vector<ID> const& getObjectList() const{return objectList;};
     std::vector<Name> const& getUsernameList() const{return usernameList;};
+    std::vector<Door> const& getDoorList() const{return doorList;};
 
     // Adders
     void addDescription(const std::string& description);
     void addExtendedDescription(const std::string& extDescription);
+    void addKeywords(const std::string& keyword);
 
     /*
      * Adder functions
@@ -74,6 +77,7 @@ private:
     std::string name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
+    std::vector<std::string> keywords;
     std::vector<ID> characterList;
     std::vector<ID> objectList;
     std::vector<Name> usernameList;
