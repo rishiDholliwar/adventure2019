@@ -15,7 +15,7 @@ namespace JSONObjects {
     const std::string FILE_PATH = "./DataFiles/";
     const std::string EXTENSION = ".json";
 
-    static json setupRead(const std::string_view &name) {
+    static json setupRead(const std::string &name) {
         std::ifstream ifs(FILE_PATH + name + EXTENSION);
         json j;
 
@@ -26,7 +26,7 @@ namespace JSONObjects {
         return j;
     }
 
-    static bool fileExists(const std::string_view &name) {
+    static bool fileExists(const std::string &name) {
         std::string fileName = FILE_PATH + name + EXTENSION;
         std::ifstream f(fileName);
         return f.good();
@@ -39,7 +39,7 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a list of property values
     */
-    inline std::vector<std::string> getArray(int iObj, json &j, std::string_view property) {
+    inline std::vector<std::string> getArray(int iObj, json &j, const std::string &property) {
         std::vector<std::string> values{};
 
         for (const auto& str : j[iObj][property]) {
@@ -48,7 +48,7 @@ namespace JSONObjects {
         return values;
     }
 
-    static unsigned int getLengthStrArr(std::vector<std::string> &strArr) {
+    static unsigned int getLengthStrArr(const std::vector<std::string> &strArr) {
 
         unsigned int length = 0;
 
@@ -65,7 +65,7 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a string of property values
     */
-    inline std::string getStrFromArray(int iObj, json &j, std::string_view property) {
+    inline std::string getStrFromArray(int iObj, json &j, const std::string &property) {
 
         // Preallocate expected string length, to avoid reallocation & get cache locality
         unsigned int length = getLengthStrArr(j[iObj][property]);
@@ -85,7 +85,7 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns the key's corresponding value
     */
-    inline std::string getValue(int iObj, json &j, std::string_view key) {
+    inline std::string getValue(int iObj, json &j, const std::string &key) {
         std::string value = std::string();
 
         value += j[iObj][key];
@@ -100,7 +100,7 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a list of key-value pairs
     */
-    inline std::unordered_map<std::string, std::string> getPairs(int iObj, json &j, std::string_view property) {
+    inline std::unordered_map<std::string, std::string> getPairs(int iObj, json &j, const std::string &property) {
         std::unordered_map<std::string, std::string> pairs{};
         int numObjects = j[iObj][property].size();
 
@@ -117,7 +117,7 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a list of property values
     */
-    inline std::vector<std::string> getNestedArray(int iObj, int iSubObj, json &j, std::string_view property, std::string_view subproperty) {
+    inline std::vector<std::string> getNestedArray(int iObj, int iSubObj, json &j, const std::string &property, const std::string &subproperty) {
         std::vector<std::string> values{};
 
         for (const auto& str : j[iObj][property][iSubObj][subproperty]) {
@@ -133,7 +133,7 @@ namespace JSONObjects {
      *
      * Post-Condition: Returns a list of objects
     */
-    static std::vector<Object> getObjects(const std::string_view &name) {
+    static std::vector<Object> getObjects(const std::string &name) {
         json j = setupRead(name);
         std::vector<Object> objects{};
 
