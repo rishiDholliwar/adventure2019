@@ -257,6 +257,7 @@ std::vector<Response> GameController::wear(Name username, Input itemName) {
     return formulateResponse(userResponse);
 }
 
+
 std::vector<Response> GameController::takeOff(Name username, Input itemName) {
 
     //check if character is already wearing this item
@@ -270,7 +271,7 @@ std::vector<Response> GameController::takeOff(Name username, Input itemName) {
     if (!characterController.characterRemoveItem(username, objectController.getObjectFromList(itemID))) {
         Response userResponse = Response("Taking off " + itemName + " has failed!", username);
         return formulateResponse(userResponse);
-    	
+
     }
 
     Response userResponse = Response("Took off " + itemName + " succesfully!", username);
@@ -355,7 +356,7 @@ std::vector<Response> GameController::formulateResponse(Response &userResponse, 
     } else {
         response.push_back(userResponse);
     }
-    
+
     return response;
 }
 

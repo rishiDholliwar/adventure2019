@@ -34,6 +34,14 @@ FOREACH(PATCH ${SERVER_PATCHES})
 	EXECUTE_PROCESS(COMMAND git apply ${PATCH} WORKING_DIRECTORY "${NETWORKING_DIRECTORY}")
 ENDFOREACH(PATCH)
 
+set(DATA_FILES
+		"DataFiles/mirkwood.json"
+		)
+
+file(COPY
+		${DATA_FILES}
+		DESTINATION
+		${PROJECT_BINARY_DIR}/DataFiles)
 
 add_subdirectory(lib)
 add_subdirectory(tools)

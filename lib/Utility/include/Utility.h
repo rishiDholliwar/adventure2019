@@ -27,7 +27,7 @@ namespace utility {
 
     static std::vector<std::string> tokenizeString(const std::string& input)
     {
-    	std::vector<std::string> result;
+    	std::vector<std::string> result{};
     	std::stringstream ss(input);
     	std::string word;
     	while (ss >> word)
@@ -39,7 +39,7 @@ namespace utility {
 
     static std::vector<std::string> popFront(const std::string& input)
     {
-        std::vector<std::string> result;
+        std::vector<std::string> result{};
         std::stringstream ss(input);
         std::string str;
         ss >> str;

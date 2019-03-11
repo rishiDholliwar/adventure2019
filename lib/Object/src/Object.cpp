@@ -1,7 +1,7 @@
 #include <Object.h>
 
-const Name& Object::getName() const {
-    return this->objectName;
+Name Object::getName() const {
+    return objectName;
 }
 
 ID Object::getID() const {

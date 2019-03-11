@@ -24,6 +24,7 @@ target_link_libraries(chatserver
     controllers
     world
     Character
+    jsonObjects
     ${CMAKE_THREAD_LIBS_INIT}
 )
 

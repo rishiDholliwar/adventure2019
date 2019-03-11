@@ -5,6 +5,7 @@
 #include <string>
 
 #include <AlterSpace.h>
+#include <JSONObjects.h>
 #include "Object.h"
 
 using AlterSpace::ID;
@@ -19,7 +20,8 @@ private:
     std::vector<Object>::iterator getItemIterator(Name objectName);
 
 public:
-    Inventory();
+
+    Inventory() = default;
 
     /* Add Item:
      *
@@ -35,7 +37,7 @@ public:
      *
      * Function: Checks to see if user has such the item
      *
-     * Pre-Condition: ID of the item in question
+     * Pre-Condition: ID of the item to validate
      * Post: returns true if found
      *
      * */
@@ -45,7 +47,7 @@ public:
      *
      * Function: Checks to see if user has such the item
      *
-     * Pre-Condition: Name of the item in question
+     * Pre-Condition: Name of the item to validate
      * Post: returns true if found
      *
      * */
@@ -55,8 +57,8 @@ public:
      *
      * Function: Checks to see if user has such the item and returns the item if true
      *
-     * Pre-Condition: Name of the item in question
-     * Post: returns Object if found
+     * Pre-Condition: Name of the item to retrieve
+     * Post: returns item if found
      *
      * */
     Object getItem(Name &objectName);
@@ -67,8 +69,8 @@ public:
      *
      * Function: removes item from inventory
      *
-     * Pre-Condition: the ID of the item in question
-     * Post: will have removed the item from the inventory, returns true if removed
+     * Pre-Condition: ID of the item to remove
+     * Post: Removes the item from the inventory, returns true if removed successfully
      *
      * */
     bool removeItem(ID objectID);
@@ -77,8 +79,8 @@ public:
      *
      * Function: Lists Inventory to user
      *
-     * Pre-Condition:
-     * Post:
+     * Pre-Condition: inventory has an iterable list of items
+     * Post: Returns a list of objects in inventory
      *
      * */
     std::string listInventory();
