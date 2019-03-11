@@ -30,9 +30,9 @@ private:
 
 public:
 
-    Object(const Name &objectName) : objectName(objectName) {}
+    Object() = default;
 
-    Object();
+    Object(const Name &objectName) : objectName(objectName) {}
 
     Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
 
