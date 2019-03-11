@@ -1,11 +1,11 @@
+#ifndef ALTERSPACE_JSONOBJECTS_H
+#define ALTERSPACE_JSONOBJECTS_H
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include "json.hpp"
 #include <Object.h>
-
-#ifndef ALTERSPACE_JSONOBJECTS_H
-#define ALTERSPACE_JSONOBJECTS_H
 
 namespace JSONObjects {
 
