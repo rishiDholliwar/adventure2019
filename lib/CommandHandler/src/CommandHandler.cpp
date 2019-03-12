@@ -1,123 +1,42 @@
 #include <CommandHandler.h>
 #include <GameController.h>
-#include <iostream>
 #include <Utility.h>
 
-// Initialize the default user function map
-CommandHandler::UserFunctionMap CommandHandler::_defUserMap = []
-{
-    CommandHandler::UserFunctionMap mapping;
-    mapping["/info"] = &GameController::info;
-    mapping["/say"]  = &GameController::say;
-    mapping["/whisper"] = &GameController::whisper;
-    mapping["/broadcast"] = &GameController::broadcast;
-    mapping["/move"] = &GameController::move;
-    mapping["/get"] = &GameController::pickUp;
-    mapping["/drop"] = &GameController::drop;
-    mapping["/examine"] = &GameController::examine;
-    // mapping["/logout"] = &GameController::logout;
-    mapping["/wear"] = &GameController::wear;
-    mapping["/takeoff"] = &GameController::takeOff;
-    mapping["/inventory"] = &GameController::inventory;
-    mapping["/swap"] = &GameController::swap;
-    mapping["/give"] = &GameController::give;
-    mapping["/confuse"] = &GameController::confuse;
-    return mapping;
-}();
+#include <iostream>
 
-// Initialize the default command handler function map
-CommandHandler::CommFunctionMap CommandHandler::_defCommMap = []
-{
-    CommandHandler::CommFunctionMap mapping;
-    mapping["/alias"]  	= &CommandHandler::setAlias;
-    mapping["/unalias"] = &CommandHandler::removeAlias;
-    return mapping;
-}();
-
-// Initialize the default login function map
-CommandHandler::LognFunctionMap CommandHandler::_defLognMap = []
-{
-    CommandHandler::LognFunctionMap mapping;
-    mapping["/login"]  = &UserController::login;
-    mapping["/signup"] = &UserController::createUser;
-    mapping["/logout"] = &UserController::logoutUser;
-    return mapping;
-}();
-
-CommandInfo CommandHandler::parseCommand(const Input& input)
-{
-	std::vector<std::string> v = utility::popFront(input);
-	CommandInfo ci{ .type = CommandType::UNKNOWN };
-	if ( v.size() != 2 )
-	{
-		std::cout << "Error has occurred in parseCommand somehow..." << std::endl;
-		std::cout << "DEBUG: contents of vector" << std::endl;
-		for ( auto str : v )
-		{
-			std::cout << str << std::endl;
-		}
-		return ci;
-	}
-	std::string command = v[0];
-	if ( _defCommMap.find(command) != _defCommMap.end() )
-	{
-		ci.type = CommandType::COMMANDHANDLER;
-	}
-	else if( _defLognMap.find(command) != _defLognMap.end() )
-	{
-		ci.type = CommandType::USERCONTROLLER;
-	}
-	else
-	{
-		ci.type = CommandType::GAMECONTROLLER;
-	}
-
-	ci.command = v[0];
-	ci.input = v[1];
-	return ci;
+void CommandHandler::registerCommand(const Invocation& invokeWord, std::unique_ptr<Command> command) {
+    CommandHandler::_defCommandMap[invokeWord] = std::move(command);
 }
 
-CommandHandler::UserCommFunc CommandHandler::getUserFunc(const Name& userName, const Command& command)
+std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const Invocation& invokeWord, const Input& input, const Connection connection)
 {
 	// For user configurable spellings
 	// We need to look for the user's custom command map first
 
 	//Find user's map
-	auto mapItr = _userFuncMap.find(userName);
-	if(mapItr != _userFuncMap.end())
+	auto mapItr = _userCommandMap.find(userName);
+	if(mapItr != _userCommandMap.end())
 	{
 		// find command inside of user's map
-		auto userMap = mapItr->second;
-		auto itr = userMap.find(command);
-		if(itr != userMap.end())
+		auto userMap = &(mapItr->second);
+		auto itr = userMap->find(invokeWord);
+		if(itr != userMap->end())
 		{
-			return itr->second;
+            // Update with new input
+            itr->second = itr->second->clone(userName, input, connection);
+            return itr->second;
 		}
 	}
-	if(_defUserMap.find(command) == _defUserMap.end())
+	if(_defCommandMap.find(invokeWord) == _defCommandMap.end())
 	{
 		return nullptr;
 	}
-	return _defUserMap[command];
-}
-
-CommandHandler::LognCommFunc CommandHandler::getLognFunc( const Command& command )
-{
-	if( _defLognMap.find(command) == _defLognMap.end() )
-	{
-		return nullptr;
-	}
-	return _defLognMap[command];
-}
-
-
-CommandHandler::CommHandFunc CommandHandler::getCommFunc(const Command& command)
-{
-	if( _defCommMap.find(command) == _defCommMap.end() )
-	{
-		return nullptr;
-	}
-	return _defCommMap[command];
+    if( _defCommandMap[invokeWord]->isInteractable() ) {
+        auto ret = _userCommandMap.insert(std::pair(userName, CommandHandler::UserMap{}));
+        ret.first->second[invokeWord] = _defCommandMap[invokeWord]->clone(userName, input, connection);
+        return ret.first->second[invokeWord];
+    }
+	return _defCommandMap[invokeWord]->clone(userName, input, connection);
 }
 
 std::string CommandHandler::setAlias(const Name& userName, const Input& input)
@@ -145,12 +64,12 @@ std::string CommandHandler::removeAlias(const Name& userName, const Input& input
     return _removeAlias(userName, alias);
 }
 
-std::string CommandHandler::_setAlias(const Name& userName, const Command& command, const Alias& newAlias)
+std::string CommandHandler::_setAlias(const Name& userName, const Invocation& invokeWord, const Alias& newAlias)
 {
 	std::string error   = "Error: could not set alias for \"";
 	std::string success = "Successfully set alias for \"";
 
-	std::string response  = command;
+	std::string response  = invokeWord;
 				response += "\" to \"";
 				response += newAlias;
 				response += "\"";
@@ -160,37 +79,37 @@ std::string CommandHandler::_setAlias(const Name& userName, const Command& comma
 
 	// Initialize the user map with an empty one
 	// If it fails, it will return us the current map
-	auto ret = _userFuncMap.insert(std::pair(userName, CommandHandler::UserFunctionMap{}));
+	// auto ret = _userFuncMap.insert(std::pair(userName, CommandHandler::UserFunctionMap{}));
 
-	// Take the reference of the map... You don't want a copy
-	auto userMap = &(ret.first)->second;
+	// // Take the reference of the map... You don't want a copy
+	// auto userMap = &(ret.first)->second;
 
-	// Check both the user and default map to see if the command
-	// exists already or not
-	auto itr = userMap->find(command);
-	if (itr == userMap->end())
-	{
-		itr = _defUserMap.find(command);
-		if (itr == _defUserMap.end())
-		{
-			return error;
-		}
-	}
+	// // Check both the user and default map to see if the command
+	// // exists already or not
+	// auto itr = userMap->find(command);
+	// if (itr == userMap->end())
+	// {
+	// 	itr = _defUserMap.find(command);
+	// 	if (itr == _defUserMap.end())
+	// 	{
+	// 		return error;
+	// 	}
+	// }
 
-	// Do not allow an alias of the same name in our default map
-	if ( _defUserMap.find(newAlias) != _defUserMap.end() ||
-		 _defCommMap.find(newAlias) != _defCommMap.end() ||
-		 _defLognMap.find(newAlias) != _defLognMap.end() )
-	{
-		return error;
-	}
+	// // Do not allow an alias of the same name in our default map
+	// if ( _defUserMap.find(newAlias) != _defUserMap.end() ||
+	// 	 _defCommMap.find(newAlias) != _defCommMap.end() ||
+	// 	 _defLognMap.find(newAlias) != _defLognMap.end() )
+	// {
+	// 	return error;
+	// }
 
-	auto mapItr = userMap->insert(std::pair(newAlias, itr->second));
-	// Fails if there is already an alias with this name
-	if( ! mapItr.second )
-	{
-		return error;
-	}
+	// auto mapItr = userMap->insert(std::pair(newAlias, itr->second));
+	// // Fails if there is already an alias with this name
+	// if( ! mapItr.second )
+	// {
+	// 	return error;
+	// }
 	return success;
 }
 
@@ -198,18 +117,18 @@ std::string CommandHandler::_removeAlias(const Name& userName, const Alias& alia
 {
 	// Try and insert an empty function map for the user
 	// If it fails, it will return us the current map
-	auto userFuncMap = _userFuncMap.insert(std::pair(userName, CommandHandler::UserFunctionMap{}));
-	if(userFuncMap.second)
-	{
-		return "Alias does not exist";
-	}
+	// auto userFuncMap = _userFuncMap.insert(std::pair(userName, CommandHandler::UserFunctionMap{}));
+	// if(userFuncMap.second)
+	// {
+	// 	return "Alias does not exist";
+	// }
 
-	auto map = userFuncMap.first;
-	auto numErased = map->second.erase(alias);
+	// auto map = userFuncMap.first;
+	// auto numErased = map->second.erase(alias);
 
-	if ( numErased == 0 )
-	{
-		return "Failed to unalias: " + alias;
-	}
+	// if ( numErased == 0 )
+	// {
+	// 	return "Failed to unalias: " + alias;
+	// }
 	return "Successfully removed alias: " + alias;
 }
