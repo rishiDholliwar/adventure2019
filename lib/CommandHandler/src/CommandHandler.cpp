@@ -23,8 +23,7 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
 		if(itr != userMap->end())
 		{
             // Update with new input
-			auto command = itr->second->clone(userName, input, connection);
-            itr->second = std::move(command);
+            itr->second = itr->second->clone(userName, input, connection);
             return itr->second;
 		}
 	}
@@ -37,7 +36,7 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
         ret.first->second[invokeWord] = _defCommandMap[invokeWord]->clone(userName, input, connection);
         return ret.first->second[invokeWord];
     }
-	return std::move(_defCommandMap[invokeWord]->clone(userName, input, connection));
+	return _defCommandMap[invokeWord]->clone(userName, input, connection);
 }
 
 std::string CommandHandler::setAlias(const Name& userName, const Input& input)

@@ -23,8 +23,9 @@ private:
     std::vector<std::string> interactions;
     void setInteractions(std::vector<std::string> i);
 public:
+    explicit
     Say(GameController* gameController, Name username = "", Input input = "", Connection connection = Connection{})
-        : gameController(gameController), username(username), input(input) {
+        : gameController(gameController), username(std::move(username)), input(std::move(input)) {
             registerInteraction = true;
             registerCallback = true;
             callbackAfterHeartbeats = 10;

@@ -5,7 +5,7 @@
 
 std::pair<std::vector<Response>, bool> Say::execute() {
     auto words = utility::tokenizeString(input);
-    if (interactions.size() > 0 && words.size() > 0 && words.at(0) == "interact") {
+    if ( ! interactions.empty() && ! words.empty() && words.at(0) == "interact" ) {
         return this->interact();
     }
     interactions = words;

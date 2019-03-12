@@ -21,10 +21,11 @@ private:
     Input input;
     Connection connection;
 public:
+    explicit
     Login(UserController* userController, GameController* gameController,
             Name username = "", Input input = "", Connection connection = Connection{})
         : userController(userController), gameController(gameController),
-            username(username), input(input), connection(connection) {};
+            username(std::move(username)), input(std::move(input)), connection(connection) {};
 
     ~Login() = default;
     std::pair<std::vector<Response>, bool> execute() override;
