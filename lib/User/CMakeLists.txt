@@ -18,6 +18,7 @@ target_link_libraries(userController
   PUBLIC
     networking
     returnCode
+    jsonUser
   PRIVATE
     ${Boost_LIBRARIES}
 )

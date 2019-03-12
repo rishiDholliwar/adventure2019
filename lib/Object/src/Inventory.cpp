@@ -1,11 +1,9 @@
 #include <algorithm>
 #include <sstream>
 #include <Inventory.h>
+#include <JSONObjects.h>
 
-Inventory::Inventory() = default;
-
-void Inventory::addItem(Object object)
-{
+void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
 
@@ -16,12 +14,12 @@ std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
                           return obj.getID() == objectID;
                         });
 
-    return it;    
+    return it;
 }
 
 bool Inventory::doesItemExist(ID objectID)
 {
-    
+
     return getItemIterator(objectID) != objects.end();
 }
 
@@ -37,7 +35,7 @@ std::vector<Object>::iterator Inventory::getItemIterator(Name objectName)
 
 bool Inventory::doesItemExist(Name objectName)
 {
-    
+
     return getItemIterator(objectName) != objects.end();
 }
 
@@ -71,16 +69,5 @@ bool Inventory::removeItem(ID objectID)
 
 std::string Inventory::listInventory()
 {
-    if (objects.empty()) {
-        return std::string();
-    }
-
-    int objectCount = 1;
-    std::stringstream inventoryList;
-
-    for(auto &obj : objects){
-
-        inventoryList << objectCount++ << ". " << obj.getName() << "\n";
-    }
-    return inventoryList.str();
+    // next merge will have this function
 }

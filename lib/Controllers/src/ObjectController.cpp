@@ -27,15 +27,15 @@ const Object &ObjectController::getObjectFromList(const ID objectID) const {
 }
 
 std::string ObjectController::lookItem(ID objectID) {
-	auto object = getObjectFromList(objectID);
-	return utility::extractStringVector(object.getDescriptions());
+    auto object = getObjectFromList(objectID);
+    return object.getShortDesc()+"\n";
 }
 
 std::string ObjectController::examineItem(ID objectID) {
-	auto object = getObjectFromList(objectID);
-	auto extDescriptions = object.getExtendedDescriptions();
-	if (extDescriptions.empty()){
-		return lookItem(objectID);
-	}
-	return utility::extractStringVector(extDescriptions);
+    auto object = getObjectFromList(objectID);
+    auto extDescriptions = object.getLongDesc();
+    if (extDescriptions.empty()){
+        return lookItem(objectID);
+    }
+    return utility::extractStringVector(extDescriptions);
 }

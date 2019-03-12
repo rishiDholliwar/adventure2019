@@ -45,7 +45,7 @@ bool CharacterController::doesCharacterExist(Name &username) {
 }
 
 std::vector<Name> CharacterController::getAllCharacterNames() {
-    std::vector<std::string> usernameList;
+    std::vector<std::string> usernameList{};
     for(auto &characters : _characters) {
         usernameList.push_back(characters.first);
     }

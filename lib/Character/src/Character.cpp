@@ -40,7 +40,7 @@ std::string Character::getInfo() const {
 }
 
 Object Character::getItemFromInventory(Name objectName) {
-    return inventory.getItem(objectName); 
+    return inventory.getItem(objectName);
 }
 
 Object Character::getItemFromInventory(ID objectId) {
@@ -106,13 +106,13 @@ ID Character::getWearingID(Name objectName) {
 }
 
 bool Character::remove(Object obj) {
-  
+
     if (!(isWearing(obj.getID()))) {
       return false;
     }
 
     auto it = getWearingIterator(obj.getID());
-    
+
     it = wearing.erase(it);
     addItemToInventory(obj);
     return true;
@@ -152,12 +152,3 @@ void Character::confuse() {
 bool Character::isConfused() {
   return confused;
 }
-
-
-
-
-
-
-
-
-
