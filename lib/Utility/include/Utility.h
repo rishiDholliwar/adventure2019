@@ -63,9 +63,8 @@ namespace utility {
      */
     static std::string extractStringVector(const std::vector<std::string>& stringVector){
         std::stringstream ss;
-        std::string indentation = "    ";
         for (const auto &str : stringVector ){
-            ss << indentation << str << "\n";
+            ss << "\t" << str << "\n";
         }
         return ss.str();
     }

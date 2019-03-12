@@ -120,7 +120,6 @@ std::vector<Response> GameController::move(Name username, Input direction) {
 std::vector<Response> GameController::look(Name username, Input target) {
     std::stringstream ss;
     AlterSpace::ID roomId = characterController.getCharacterRoomID(username);
-    std::string indentation = "    ";
 
     auto usernameList = roomController.getUsernameList(roomId);
     auto npcList = roomController.getCharacterList(roomId);
@@ -132,20 +131,20 @@ std::vector<Response> GameController::look(Name username, Input target) {
 
         // format username into string stream
         ss << "Users in room: \n";
-        for (const Name& usernameInList : usernameList){
-            ss << indentation << usernameInList << "\n";
+        for (const auto& usernameInList : usernameList){
+            ss << "\t" << usernameInList << "\n";
         }
 
         // format character name into string stream
         ss << "NPCs in room: \n";
         for (const ID npcId : npcList){
-            ss <<  indentation <<npcController.getNPCName(npcId)<< "\n";
+            ss <<  "\t" <<npcController.getNPCName(npcId)<< "\n";
         }
 
         // format object name into string stream
         ss << "Items in room: \n";
         for (const ID objectId : objectList){
-            ss << indentation <<objectController.getObjectFromList(objectId).getName() << "\n";
+            ss << "\t" <<objectController.getObjectFromList(objectId).getName() << "\n";
         }
 
         ss << roomController.getAllDoorInformationInRoom(roomId);
@@ -159,7 +158,7 @@ std::vector<Response> GameController::look(Name username, Input target) {
     int index = 1;
 
     // search user
-    for (Name usernameInList : usernameList){
+    for (auto &usernameInList : usernameList){
         if (usernameInList == target) {
             ss << index << ". " << usernameInList << "\n" <<characterController.lookCharacter(usernameInList) << "\n";
             index += 1;
