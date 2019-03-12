@@ -54,12 +54,16 @@ std::vector<Name> CharacterController::getAllCharacterNames() {
 
 std::string CharacterController::lookCharacter(Name &userName) {
     auto character = getCharacter(userName);
-    return utility::lookEntity(character);
+    return utility::extractStringVector(character.getDescriptions());
 }
 
 std::string CharacterController::examineCharacter(Name &userName) {
     auto character = getCharacter(userName);
-    return utility::examineEntity(character);
+    auto extDescriptions = character.getExtendedDescriptions();
+    if (extDescriptions.empty()){
+        return lookCharacter(userName);
+    }
+    return utility::extractStringVector(extDescriptions);
 }
 
 std::string CharacterController::getCharacterInfo(Name &username) {

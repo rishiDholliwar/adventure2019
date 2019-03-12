@@ -28,10 +28,14 @@ const Object &ObjectController::getObjectFromList(const ID objectID) const {
 
 std::string ObjectController::lookItem(ID objectID) {
 	auto object = getObjectFromList(objectID);
-	return utility::lookEntity(object);
+	return utility::extractStringVector(object.getDescriptions());
 }
 
 std::string ObjectController::examineItem(ID objectID) {
 	auto object = getObjectFromList(objectID);
-	return utility::examineEntity(object);
+	auto extDescriptions = object.getExtendedDescriptions();
+	if (extDescriptions.empty()){
+		return lookItem(objectID);
+	}
+	return utility::extractStringVector(extDescriptions);
 }

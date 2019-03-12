@@ -54,30 +54,22 @@ namespace utility {
         return result;
     }
 
-    template <typename EntityType>
-    static std::string lookEntity(const EntityType& entity){
+    /*
+     *  Extract string in string vector into certain format and return the new string
+     *  Example:
+     *      string element 1
+     *      string element 2
+     *
+     */
+    static std::string extractStringVector(const std::vector<std::string>& stringVector){
         std::stringstream ss;
-        const auto &descriptions = entity.getDescriptions();
         std::string indentation = "    ";
-        for (const auto &description : descriptions ){
-            ss << indentation << description << "\n";
+        for (const auto &str : stringVector ){
+            ss << indentation << str << "\n";
         }
         return ss.str();
     }
 
-    template <typename EntityType>
-    static std::string examineEntity(const EntityType& entity){
-        std::stringstream ss;
-        const auto &descriptions = entity.getExtendedDescriptions();
-        if (descriptions.size() == 0){
-            return lookEntity(entity);
-        }
-        std::string indentation = "    ";
-        for (const auto &description : descriptions ){
-            ss << indentation << description << "\n";
-        }
-        return ss.str();
-    }
 
 }
 

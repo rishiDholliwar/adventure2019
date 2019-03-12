@@ -22,12 +22,16 @@ std::string NPCController::getNPCName(ID npcId) {
 // look and examine
 std::string NPCController::lookNPC(ID npcID) {
 	auto npc = (*_npcs.find(npcID)).second;
-	return utility::lookEntity(npc);
+	return utility::extractStringVector(npc.getDescriptions());
 }
 
 std::string NPCController::examineNPC(ID npcID) {
     auto npc = (*_npcs.find(npcID)).second;
-    return utility::examineEntity(npc);
+    auto extDescriptions = npc.getExtendedDescriptions();
+    if (extDescriptions.empty()){
+        return lookNPC(npcID);
+    }
+    return utility::extractStringVector(extDescriptions);
 }
 
 bool NPCController::swapNPC(ID swappingID, ID targetNPCID) {
