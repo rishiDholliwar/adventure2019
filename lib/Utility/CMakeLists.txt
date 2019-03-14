@@ -59,6 +59,7 @@ target_include_directories(jsonObjects
 target_link_libraries(jsonUser
         json
         userController
+        ${Boost_LIBRARIES}
         )
 
 target_link_libraries(jsonObjects

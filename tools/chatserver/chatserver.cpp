@@ -83,10 +83,10 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         std::string username = _userController.getUsernameWithConnection(message.connection);
         std::string output = "Invalid command";
 
-        if (username == "") {
+        if (username.empty()) {
 
             std::vector<std::string> tempInputParser = utility::tokenizeString(text);
-            
+
             if (tempInputParser.size() != 2) {
                 result.push_back(Message{message.connection, std::string{"System: temp input size is not 2"}});
                 return result;
@@ -105,7 +105,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         }
 
         _scheduler->schedule(command, 0);
-        
+
     }
 
     auto responses = _scheduler->update();

@@ -35,7 +35,7 @@ std::string Say::help() {
 std::pair<std::vector<Response>, bool> Swap::execute() {
 
     if (target.empty()) {
-        Response userResponse = Response("Target doesn't exist, sorry!", username);
+        Response userResponse = Response(help(), username);
 
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
