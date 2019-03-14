@@ -11,6 +11,7 @@ set_target_properties(chatserver
 )
 
 find_package(Threads REQUIRED)
+find_package(Boost 1.66 COMPONENTS system filesystem REQUIRED)
 
 target_link_libraries(chatserver
   PUBLIC
@@ -28,6 +29,7 @@ target_link_libraries(chatserver
     Character
     jsonObjects
     ${CMAKE_THREAD_LIBS_INIT}
+    ${Boost_LIBRARIES}
 )
 
 install(TARGETS chatserver

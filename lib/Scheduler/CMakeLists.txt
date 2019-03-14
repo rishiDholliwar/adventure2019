@@ -17,6 +17,10 @@ target_link_libraries(scheduler
     networking
     commands
     utility
+    controllers
+    Character
+    world
+    Object
     ${Boost_LIBRARIES}
 )
 
