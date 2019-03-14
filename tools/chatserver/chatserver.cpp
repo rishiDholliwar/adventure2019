@@ -23,8 +23,10 @@
 #include <UserCommands.h>
 
 void Game::registerCommands() {
-    _commandHandler->registerCommand("/say", Say(&_gameController).clone());
-    _commandHandler->registerCommand("/login", Login(&_userController, &_gameController).clone());
+    _commandHandler->registerCommand("/say", Say(&_characterController, &_roomController).clone());
+    _commandHandler->registerCommand("/swap", Swap(&_characterController).clone());
+    _commandHandler->registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler->registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
 }
 
 void
@@ -72,7 +74,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         // Should return an enum on the type of the command
         // CommandHandler should map enums to Commands
         // This "/login" will be changed to the login enum
-        if ( (! _userController.isConnectionLoggedIn(message.connection)) && (invocationWord != "/login"))
+        if ( (! _userController.isConnectionLoggedIn(message.connection)) && ((invocationWord != "/login") && (invocationWord != "/signup")) )
         {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
@@ -81,6 +83,19 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         std::string username = _userController.getUsernameWithConnection(message.connection);
         std::string output = "Invalid command";
 
+        if (username == "") {
+
+            std::vector<std::string> tempInputParser = utility::tokenizeString(text);
+            
+            if (tempInputParser.size() != 2) {
+                result.push_back(Message{message.connection, std::string{"System: temp input size is not 2"}});
+                return result;
+            }
+
+            username = tempInputParser.at(0);
+            text = tempInputParser.at(1);
+        }
+
         auto command = _commandHandler->getCommand(username, invocationWord, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
@@ -88,7 +103,9 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             result.push_back(msg);
             continue;
         }
+
         _scheduler->schedule(command, 0);
+        
     }
 
     auto responses = _scheduler->update();

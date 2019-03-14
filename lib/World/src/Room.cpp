@@ -79,7 +79,7 @@ bool Room::removeDoor(ID doorId) {
 
 std::string Room::getTextOfRoomDetails() {
     std::stringstream outputString;
-    outputString << "Room ID: " << std::to_string(this->getId()) << "\n" <<
+    outputString << "Room ID: " << this->getId() << "\n" <<
                     "Room Name: " << this->getName() << "\n";
 
     for (auto &description : this->descriptions){
@@ -99,7 +99,7 @@ std::string Room::getTextOfDoorDetails() {
     outputString << "Doors ID, Direction, Destination, Status\n";
     for (const auto &door: this->doorList){
         ID doorId = door.getId();
-        outputString << std::to_string(doorId) << ", " << door.getDirection() <<
+        outputString << doorId << ", " << door.getDirection() <<
                         ", " << door.getDesignatedRoomId() << ", ";
         if (door.getStatus()){
             outputString << "Unlocked";

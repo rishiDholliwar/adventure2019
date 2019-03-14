@@ -71,6 +71,9 @@ UserController::UserData UserController::login(const Name &username, Password pa
 
     result.returnCode = validateLoginUserData(username, password);
 
+    std::cout << "UserController::login, username is : " << username << std::endl;
+    std::cout << "UserController::login, connection id is : " << connection.id << std::endl; 
+
     if (result.returnCode == ReturnCode::LOGIN_SUCCESS) {
         addActiveUser(username, connection);
     }

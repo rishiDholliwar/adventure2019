@@ -4,6 +4,9 @@
 #include "Server.h"
 #include "GameController.h"
 #include <UserController.h>
+#include <CharacterController.h>
+#include <RoomController.h>
+#include <ObjectController.h>
 #include <CommandHandler.h>
 #include <Scheduler.h>
 
@@ -23,6 +26,9 @@ class Game
 private:
   GameController _gameController;
   UserController _userController;
+  CharacterController _characterController;
+  RoomController _roomController;
+  ObjectController _objectController;
   std::unique_ptr<Server> _server;
   std::unique_ptr<CommandHandler> _commandHandler;
   std::unique_ptr<Scheduler> _scheduler;

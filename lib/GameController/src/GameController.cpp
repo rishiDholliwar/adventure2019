@@ -30,6 +30,7 @@ std::vector<Response> GameController::say(Name username, Input message) {
     std::cout << "Say " << message << std::endl;
     Name charName = characterController.getCharacter(username).getName();
 
+
     Response userResponse = Response("Me: " + message, username);
     // std::string genericMessage = username + ": "+ message;
     std::string genericMessage = charName + ": "+ message;

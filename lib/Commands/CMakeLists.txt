@@ -19,6 +19,7 @@ target_link_libraries(commands
     networking
     gameController
     userController
+    controllers
     utility
     ${Boost_LIBRARIES}
 )

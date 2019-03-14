@@ -11,7 +11,7 @@ namespace JSONUser {
     using json = nlohmann::json;
     using jsonf = nlohmann::json;
 
-    const std::string FILE_PATH = "../DataFiles/Users/";
+    const std::string FILE_PATH = "./DataFiles/Users/";
     const std::string EXTENSION = ".json";
     const std::string USER_NAME = "name";
     const std::string USER_PASSWORD = "password";
