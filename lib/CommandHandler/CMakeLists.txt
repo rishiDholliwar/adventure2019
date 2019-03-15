@@ -1,4 +1,3 @@
-
 add_library(commandHandler
   src/CommandHandler.cpp)
 
@@ -15,6 +14,7 @@ target_include_directories(commandHandler
 
 target_link_libraries(commandHandler
   PRIVATE
+    commands
     gameController
     userController
     utility

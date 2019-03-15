@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <sstream>
 #include <Inventory.h>
 #include <JSONObjects.h>
 
@@ -6,7 +7,8 @@ void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
 
-auto Inventory::getItemIteratorByID(ID objectID) {
+std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
+{
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectID ] ( Object const& obj )->bool {
                           return obj.getID() == objectID;
@@ -15,12 +17,14 @@ auto Inventory::getItemIteratorByID(ID objectID) {
     return it;
 }
 
-bool Inventory::doesItemExist(ID objectID) {
+bool Inventory::doesItemExist(ID objectID)
+{
 
-    return getItemIteratorByID(objectID) != objects.end();
+    return getItemIterator(objectID) != objects.end();
 }
 
-auto Inventory::getItemIteratorByName(Name objectName) {
+std::vector<Object>::iterator Inventory::getItemIterator(Name objectName)
+{
     auto it = find_if(objects.begin(), objects.end(),
                       [ objectName ] ( Object const& obj )->bool {
                           return obj.getName() == objectName;
@@ -29,34 +33,38 @@ auto Inventory::getItemIteratorByName(Name objectName) {
     return it;
 }
 
-bool Inventory::doesItemExistByName(Name objectName) {
-
-    return getItemIteratorByName(objectName) != objects.end();
-}
-
-Object Inventory::getItemByName(Name objectName)
+bool Inventory::doesItemExist(Name objectName)
 {
 
-    if (doesItemExistByName(objectName) == false)
-    {
-        return Object();
-    }
+    return getItemIterator(objectName) != objects.end();
+}
 
-    auto it = getItemIteratorByName(objectName);
+Object Inventory::getItem(Name& objectName)
+{
+
+    auto it = getItemIterator(objectName);
+
+    return *it;
+}
+
+Object Inventory::getItem(ID objectID)
+{
+    auto it = getItemIterator(objectID);
 
     return *it;
 }
 
 bool Inventory::removeItem(ID objectID)
 {
-    auto it = getItemIteratorByID(objectID);
+    auto it = getItemIterator(objectID);
 
-    if (it != objects.end())
+    if (it == objects.end())
     {
-        it = objects.erase(it);
-        return (doesItemExist(objectID) == false);
+        return false;
     }
-    return false;
+
+    it = objects.erase(it);
+    return true; //TODO: fix this for multiple items later!!!
 }
 
 std::string Inventory::listInventory() {

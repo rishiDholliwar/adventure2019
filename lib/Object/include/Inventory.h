@@ -9,14 +9,15 @@
 #include "Object.h"
 
 using AlterSpace::ID;
+using AlterSpace::Name;
 
 class Inventory {
 private:
     std::vector<Object> objects;
 
-    auto getItemIteratorByID(ID objectID);
+    std::vector<Object>::iterator getItemIterator(ID objectID);
 
-    auto getItemIteratorByName(Name objectName);
+    std::vector<Object>::iterator getItemIterator(Name objectName);
 
 public:
 
@@ -50,7 +51,7 @@ public:
      * Post: returns true if found
      *
      * */
-    bool doesItemExistByName(Name objectName);
+    bool doesItemExist(Name objectName);
 
     /* Get Item By Name:
      *
@@ -60,7 +61,9 @@ public:
      * Post: returns item if found
      *
      * */
-    Object getItemByName(Name objectName);
+    Object getItem(Name &objectName);
+
+    Object getItem(ID objectID);
 
     /* Remove Item:
      *

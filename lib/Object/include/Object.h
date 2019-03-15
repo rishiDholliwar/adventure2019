@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <AlterSpace.h>
+#include <UniqueID.h>
 #include <unordered_map>
 
 using AlterSpace::ID;
@@ -12,7 +13,7 @@ using AlterSpace::Name;
 using AlterSpace::Property;
 using AlterSpace::Value;
 
-class Object {
+class Object : public UniqueID {
 private:
     ID objectID;
     Name objectName;
@@ -28,7 +29,10 @@ private:
     extraDescription extra;
 
 public:
-    Object();
+
+    Object() = default;
+
+    Object(const Name &objectName) : objectName(objectName) {}
 
     Object(ID objectID, const Name &objectName) : objectID(objectID), objectName(objectName) {}
 
@@ -44,9 +48,9 @@ public:
         this->extra.desc = extraDesc;
     }
 
-    ID getID() const;
-
     Name getName() const;
+
+    ID getID() const;
 
     std::unordered_map<Property, Value> getAbilities() {
       return abilities;

@@ -4,33 +4,23 @@
 #include <deque>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include <AlterSpace.h>
+#include <Command.h>
 #include <GameController.h>
 #include <UserController.h>
 #include <Server.h>
 #include <Response.h>
 
 using AlterSpace::Alias;
-using AlterSpace::Command;
+using AlterSpace::Invocation;
 using AlterSpace::Input;
 using AlterSpace::Name;
 using AlterSpace::Password;
 
 using networking::Connection;
 
-class GameController;
-class UserController;
-
-struct CommandInfo;
-
-enum CommandType
-{
-    GAMECONTROLLER,
-    USERCONTROLLER,
-    COMMANDHANDLER,
-    UNKNOWN
-};
 /*
      * Command Handler
      *
@@ -40,13 +30,9 @@ enum CommandType
 */
 class CommandHandler {
 public:
-    using UserCommFunc = std::vector<Response>    (GameController::*) (Name userName, Input input);
-    using CommHandFunc = std::string              (CommandHandler::*) (const Name& userName, const Input& input);
-    using LognCommFunc = UserController::UserData (UserController::*) (const Name& userName, Password password, const Connection);
 
-    using UserFunctionMap = std::unordered_map<Command, UserCommFunc>;
-    using CommFunctionMap = std::unordered_map<Command, CommHandFunc>;
-    using LognFunctionMap = std::unordered_map<Command, LognCommFunc>;
+    using CommandMap = std::unordered_map<Invocation, std::unique_ptr<Command>>;
+    using UserMap = std::unordered_map<Invocation, std::shared_ptr<Command>>;
 
     CommandHandler() = default;
 
@@ -58,27 +44,7 @@ public:
      * Post-Condition: Returns a member function pointer
      *                  or nullptr if fails to find command
     */
-    UserCommFunc getUserFunc(const Name& userName, const Command& command);
-
-    /*
-     * Retrieves the Command function pointer to a Command Handler function
-     *
-     * Pre-Condition: Takes in a Command(std::string)
-     *
-     * Post-Condition: Returns a member function pointer
-     *                  or nullptr if fails to find command
-    */
-    CommHandFunc getCommFunc(const Command& command);
-
-    /*
-     * Retrieves the login function pointer to a User Controller function
-     *
-     * Pre-Condition: Takes in a Command(std::string)
-     *
-     * Post-Condition: Returns a member function pointer
-     *                  or nullptr if fails to find command
-    */
-    LognCommFunc getLognFunc(const Command& command);
+    std::shared_ptr<Command> getCommand(const Name& userName, const Invocation& invokeWord, const Input& input, const Connection connection);
 
     /*
      * Parses the arguments for _setAlias
@@ -107,7 +73,7 @@ public:
      *
      * Post-Condition: Returns an output string
     */
-    std::string _setAlias(const Name& userName, const Command& command, const Alias& alias);
+    std::string _setAlias(const Name& userName, const Invocation& invokeWord, const Alias& alias);
 
     /*
      * removes user alias for a command (Only works for game controller commands)
@@ -118,32 +84,15 @@ public:
     */
     std::string _removeAlias(const Name& userName, const Alias& alias);
 
-    /*
-     * Parses input and determines the type of command it is
-     *
-     * Pre-Condition: Takes in input
-     *
-     * Post-Condition: Returns a struct with CommandType, Command(std::string),
-     *                  and the rest of the command(input)
-    */
-    CommandInfo parseCommand(const Input& input);
+    void registerCommand(const Invocation& invokeWord, std::unique_ptr<Command> command);
 
 private:
     /*
-     * Maps to function pointers
+     * Map to Commands
     */
-    static UserFunctionMap _defUserMap;
-    static CommFunctionMap _defCommMap;
-    static LognFunctionMap _defLognMap;
+    CommandMap _defCommandMap;
 
-    std::unordered_map<Name, UserFunctionMap> _userFuncMap;
-};
-
-struct CommandInfo
-{
-    CommandType type;
-    Command command;
-    Input input;
+    std::unordered_map<Name, UserMap> _userCommandMap;
 };
 
 #endif //WEBSOCKETNETWORKING_COMMANDHANDLER_H

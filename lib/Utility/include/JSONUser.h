@@ -3,6 +3,7 @@
 #include <fstream>
 #include "json.hpp"
 #include <User.h>
+#include <boost/filesystem.hpp>
 
 #ifndef ALTERSPACE_JSONUSER_H
 #define ALTERSPACE_JSONUSER_H
@@ -11,7 +12,7 @@ namespace JSONUser {
     using json = nlohmann::json;
     using jsonf = nlohmann::json;
 
-    const std::string FILE_PATH = "../DataFiles/Users/";
+    const std::string FILE_PATH = "./DataFiles/Users/";
     const std::string EXTENSION = ".json";
     const std::string USER_NAME = "name";
     const std::string USER_PASSWORD = "password";
@@ -30,6 +31,9 @@ namespace JSONUser {
     }
 
     static jsonf setupWrite(const std::string &username) {
+        if(! boost::filesystem::exists(FILE_PATH)) {
+            boost::filesystem::create_directory(FILE_PATH);
+        }
         std::ofstream file(FILE_PATH + username + EXTENSION);
         jsonf jsonfile;
 

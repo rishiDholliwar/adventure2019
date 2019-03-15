@@ -6,13 +6,13 @@
 namespace AlterSpace
 {
     using Alias     = std::string;
-    using Command   = std::string;
     using ID        = unsigned int;
     using Input     = std::string;
     using Name      = std::string;
     using Password  = std::string;
     using Property  = std::string;
     using Value     = std::string;
+    using Invocation= std::string;
 }
 
 

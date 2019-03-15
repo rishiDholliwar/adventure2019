@@ -10,9 +10,7 @@ void UserController::addActiveUser(const Name username, Connection connection) {
     activeUsers.insert(std::pair<std::string, Connection>(std::move(username), connection));
 }
 
-bool UserController::isUserActive(const Name &username) {
-    //check if username exists in activeUsers.
-    //if true, return true. else, this user is not yet logged in or created.
+bool UserController::isUserActive(const Name& username) {
 
     return activeUsers.find(username) != activeUsers.end();
 }
@@ -28,15 +26,8 @@ auto UserController::getIteratorWithConnection(const Connection connection) {
 }
 
 bool UserController::isConnectionLoggedIn(const Connection connection) {
-    bool isLoggedIn = false;
 
-    if (getIteratorWithConnection(connection) != activeUsers.end()) {
-
-        isLoggedIn = true;
-
-    }
-
-    return isLoggedIn;
+    return (getIteratorWithConnection(connection) != activeUsers.end());
 }
 
 std::string UserController::getUsernameWithConnection(const Connection connection) {
@@ -80,6 +71,9 @@ UserController::UserData UserController::login(const Name &username, Password pa
 
     result.returnCode = validateLoginUserData(username, password);
 
+    std::cout << "UserController::login, username is : " << username << std::endl;
+    std::cout << "UserController::login, connection id is : " << connection.id << std::endl; 
+
     if (result.returnCode == ReturnCode::LOGIN_SUCCESS) {
         addActiveUser(username, connection);
     }
@@ -95,9 +89,7 @@ ReturnCode UserController::validateLoginUserData(const Name username, Password p
         return ReturnCode::USER_ACTIVE;
     }
 
-    auto hashedPassword = hashPassword(password);
-    //look for username.json in some .../user/userdata/ directory
-    //using json library api parser that will eventually be created by the group,
+	   auto hashedPassword = hashPassword(password);
 
     //if username.json doesn't exist, ReturnCode::USERNAME_FAIL
     if (!JSONUser::doesFileExist(username)) {
@@ -161,7 +153,6 @@ UserController::UserData UserController::logoutUser(const Name &username) {
         return result;
     }
 
-    // + character data
     result.returnCode = ReturnCode::LOGOUT_SUCCESS;
 
     return result;

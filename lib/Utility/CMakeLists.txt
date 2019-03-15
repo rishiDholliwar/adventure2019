@@ -11,6 +11,12 @@ add_library(returnCode
         include/Response.h
         include/ReturnCodes.h)
 
+add_library(uniqueID
+          src/UniqueID.cpp)
+
+add_library(pigLatin
+          src/pigLatin.cpp)
+
 add_library(jsonUser
         include/JSONUser.h )
 
@@ -53,12 +59,30 @@ target_include_directories(jsonObjects
 target_link_libraries(jsonUser
         json
         userController
+        ${Boost_LIBRARIES}
         )
 
 target_link_libraries(jsonObjects
         json
         Object
         )
+
+target_include_directories(uniqueID
+  PUBLIC
+    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PRIVATE
+    utility
+    ${Boost_INCLUDE_DIR}
+)
+
+target_include_directories(pigLatin
+  PUBLIC
+    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PRIVATE
+    ${Boost_INCLUDE_DIR}
+)
 
 set_target_properties(utility
         PROPERTIES
@@ -84,18 +108,38 @@ set_target_properties(jsonObjects
         CXX_STANDARD 17
         )
 
+set_target_properties(uniqueID
+                      PROPERTIES
+                      LINKER_LANGUAGE CXX
+                      CXX_STANDARD 17
+)
+
+set_target_properties(pigLatin
+                      PROPERTIES
+                      LINKER_LANGUAGE CXX
+                      CXX_STANDARD 17
+)
+
 install(TARGETS utility
         ARCHIVE DESTINATION lib
-        )
+)
 
 install(TARGETS returnCode
-        ARCHIVE DESTINATION lib
-        )
+  ARCHIVE DESTINATION lib
+)
+
+install(TARGETS uniqueID
+  ARCHIVE DESTINATION lib
+)
+
+install(TARGETS pigLatin
+  ARCHIVE DESTINATION lib
+)
 
 install(TARGETS jsonUser
         ARCHIVE DESTINATION lib
-        )
+)
 
 install(TARGETS jsonObjects
         ARCHIVE DESTINATION lib
-        )
+)

@@ -6,6 +6,7 @@
 #include <CharacterController.h>
 #include <ObjectController.h>
 #include <RoomController.h>
+#include <NPCController.h>
 #include <Response.h>
 
 #include <vector>
@@ -19,9 +20,24 @@ private:
     CharacterController characterController;
     ObjectController objectController;
     RoomController roomController;
+    NPCController npcController;
 
 public:
     GameController();
+
+    std::vector<Response> info(Name username, Input message);
+
+    /*
+     * loadCharacter:
+     *
+     * Pre-Condition: username of the character that we are loading
+     *
+     * Post-Condition: Returns true if successfully loaded character
+     *                         false if character already loaded
+    */
+    bool loadCharacter(Name username);
+
+    bool removeCharacter(Name username);
 
     /*
      * say:
@@ -30,7 +46,16 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern
     */
-    std::vector<Response> say(Name username, std::string message);
+    std::vector<Response> say(Name username, Input message);
+
+    /*
+     * whisper:
+     *
+     * Pre-Condition: username of the user sending the message, the message and their target
+     *
+     * Post-Condition: Returns a message to the target it may concern
+    */
+    std::vector<Response> whisper(Name username, Input inputs);
 
     /*
      * Broadcast:
@@ -39,7 +64,7 @@ public:
      *
      * Post-Condition: Returns a vector of messages to whomever it may concern (Global)
     */
-    std::vector<Response> broadcast(Name username, std::string message);
+    std::vector<Response> broadcast(Name username, Input message);
 
     /* Move:
      *
@@ -49,17 +74,11 @@ public:
      * Post: If direction is a valid one, user will move to the room with the specified direction
      *
      * */
-    std::vector<Response> move(Name username, std::string direction);
+    std::vector<Response> move(Name username, Input direction);
 
-    /* Does the direction exist:
-     *
-     * Function: Checks to see if direction exists in the map
-     *
-     * Pre-Condition: requires the direction in question
-     * Post: returns true if direction exists
-     *
-     * */
-    bool directionExists(Name direction);
+    // dummy function for now
+    // TODO: complete the examine command
+    std::vector<Response> examine(Name username, Input message);
 
     /* PickUp:
      *
@@ -69,7 +88,7 @@ public:
      * Post: adds item to inventory unless there is no space
      *
      * */
-    std::vector<Response> pickUp(Name username, Name itemName);
+    std::vector<Response> pickUp(Name username, Input itemName);
 
     /* Drop:
      *
@@ -79,7 +98,7 @@ public:
      * Post: drops the item into the room unless the person doesn't have the item
      *
      * */
-    std::vector<Response> drop(Name username, Name itemName);
+    std::vector<Response> drop(Name username, Input itemName);
 
      /* Give:
      *
@@ -99,7 +118,7 @@ public:
      * Post: wears the item unless the item does not exist in inventory
      *
      * */
-    std::vector<Response> wear(Name username, std::string itemName);
+    std::vector<Response> wear(Name username, Input itemName);
 
      /* Take off:
      *
@@ -109,7 +128,7 @@ public:
      * Post: Takes off the item that the user is wearing
      *
      * */
-    std::vector<Response> takeOff(Name username, std::string itemName);
+    std::vector<Response> takeOff(Name username, Input itemName);
 
     /* Inventory:
      *
@@ -120,6 +139,8 @@ public:
      *
      * */
     std::vector<Response> inventory(Name username, Input message);
+
+    std::vector<Response> confuse(Name username, Input target);
 
     std::vector<Response> swap(Name username, Name target);
 

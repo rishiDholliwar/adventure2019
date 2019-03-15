@@ -4,7 +4,11 @@
 #include "Server.h"
 #include "GameController.h"
 #include <UserController.h>
+#include <CharacterController.h>
+#include <RoomController.h>
+#include <ObjectController.h>
 #include <CommandHandler.h>
+#include <Scheduler.h>
 
 using networking::Server;
 using networking::Connection;
@@ -14,23 +18,29 @@ struct Config
 {
   int port{0};
   std::string webpage{""};
+  long heartbeat{200};
 };
 
 class Game
 {
 private:
-  std::unique_ptr<GameController> _gameController;
-  std::unique_ptr<UserController> _userController;
+  GameController _gameController;
+  UserController _userController;
+  CharacterController _characterController;
+  RoomController _roomController;
+  ObjectController _objectController;
   std::unique_ptr<Server> _server;
   std::unique_ptr<CommandHandler> _commandHandler;
+  std::unique_ptr<Scheduler> _scheduler;
 
   std::vector<Connection> _clients;
-  float _heartbeat = 1.0;
+  long _heartbeat = 1000;
   int _port;
   std::string _webpage;
   std::deque<Message> processMessages(const std::deque<Message>&, bool&);
   Game(const Game&) = delete;
-  
+  void registerCommands();
+
 public:
 
   void addConnection(Connection);

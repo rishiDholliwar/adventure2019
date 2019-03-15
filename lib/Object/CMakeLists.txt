@@ -36,6 +36,7 @@ target_link_libraries(test_object
 
 target_link_libraries(Object
         utility
+        uniqueID
         )
 
 target_link_libraries(Inventory
