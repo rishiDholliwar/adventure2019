@@ -1,7 +1,8 @@
 add_library(commands
   src/Command.cpp
   src/GameCommands.cpp
-  src/UserCommands.cpp)
+  src/UserCommands.cpp
+  src/CombatCommands.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
@@ -21,6 +22,7 @@ target_link_libraries(commands
     userController
     controllers
     utility
+    combat
     ${Boost_LIBRARIES}
 )
 

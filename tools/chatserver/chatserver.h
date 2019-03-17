@@ -7,6 +7,7 @@
 #include <CharacterController.h>
 #include <RoomController.h>
 #include <ObjectController.h>
+#include <CombatController.h>
 #include <CommandHandler.h>
 #include <Scheduler.h>
 
@@ -29,6 +30,8 @@ private:
   CharacterController _characterController;
   RoomController _roomController;
   ObjectController _objectController;
+  CombatController _combatController;
+
   std::unique_ptr<Server> _server;
   std::unique_ptr<CommandHandler> _commandHandler;
   std::unique_ptr<Scheduler> _scheduler;

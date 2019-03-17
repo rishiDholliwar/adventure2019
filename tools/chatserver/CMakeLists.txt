@@ -28,6 +28,7 @@ target_link_libraries(chatserver
     world
     Character
     jsonObjects
+    combat
     ${CMAKE_THREAD_LIBS_INIT}
     ${Boost_LIBRARIES}
 )

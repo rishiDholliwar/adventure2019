@@ -200,6 +200,9 @@ public:
     void confuseCharacter(Name &targetCharacterName);
 
     bool isCharacterConfused(Name &username);
+
+    //for combat
+    void setCharacterHP(Name &username,unsigned int hp);
 };
 
 

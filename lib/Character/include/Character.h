@@ -20,6 +20,15 @@ private:
     std::vector<Object> wearing;
     bool confused;
 
+    //For combat
+    unsigned int currentHP;
+    unsigned int currentMP;
+    unsigned int attack = 5;
+    unsigned int defense = 1;
+
+    unsigned int maxHP = 10;
+    unsigned int maxMP = 10;
+
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
@@ -122,6 +131,29 @@ public:
     std::string examine();
 
     void confuse();
+
+    //For combat:
+    void giveFullHP() {
+        currentHP = maxHP;
+    }
+
+    unsigned int getCurrentHP() const;
+
+    void setCurrentHP(unsigned int currentHP);
+
+    unsigned int getAttack() const;
+
+    void setAttack(unsigned int attack);
+
+    unsigned int getDefense() const;
+
+    void setDefense(unsigned int defense);
+
+    unsigned int getMaxHP() const;
+
+    void setMaxHP(unsigned int maxHP);
+
+    std::string examineCombat();
 };
 
 

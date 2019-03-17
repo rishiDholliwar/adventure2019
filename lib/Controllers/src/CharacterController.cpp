@@ -14,6 +14,7 @@ bool CharacterController::addCharacter(Name &username, RoomController &roomContr
     // Dummy Data for all logged in users
     Character dummyCharacter(username, ROOM_ID);
     roomController.addUserNameToRoom(dummyCharacter.getName(),dummyCharacter.getRoomID());
+    dummyCharacter.giveFullHP(); //TODO remove full health once config is done
 
     dummyCharacter.addItemToInventory(Object("Basic Sword"));
     objectController.addObjectToList(dummyCharacter.getItemFromInventory("Basic Sword"));
@@ -130,4 +131,8 @@ void CharacterController::confuseCharacter(Name &targetCharacterName){
 
 bool CharacterController::isCharacterConfused(Name &username) {
     return getCharacter(username).isConfused();
+}
+
+void CharacterController::setCharacterHP( Name &username,unsigned int hp){
+    getCharacter(username).setCurrentHP(hp);
 }

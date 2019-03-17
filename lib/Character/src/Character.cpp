@@ -147,3 +147,52 @@ void Character::confuse() {
 bool Character::isConfused() {
   return confused;
 }
+
+
+//For combat:
+unsigned int Character::getCurrentHP() const {
+    return currentHP;
+}
+
+void Character::setCurrentHP(unsigned int currentHP) {
+    if(currentHP <=0){
+
+    }  else {
+        Character::currentHP = 0;
+    }
+    Character::currentHP = currentHP;
+}
+
+unsigned int Character::getAttack() const {
+    return attack;
+}
+
+void Character::setAttack(unsigned int attack) {
+    Character::attack = attack;
+}
+
+unsigned int Character::getDefense() const {
+    return defense;
+}
+
+void Character::setDefense(unsigned int defense) {
+    Character::defense = defense;
+}
+
+unsigned int Character::getMaxHP() const {
+    return maxHP;
+}
+
+void Character::setMaxHP(unsigned int maxHP) {
+    Character::maxHP = maxHP;
+}
+
+std::string Character::examineCombat() {
+    return "\tName: " + name + "\n"
+           + "\tcurrentHP: " + std::to_string(currentHP) + "\n"
+           //<< "\t\tcurrentMP: " << currentMP << + "\n"
+           + "\tmaxHP: " + std::to_string(maxHP) + "\n"
+           //<< "\t\tmaxMP: " << maxMP << std::endl
+           + "\tattack: " + std::to_string(attack) + "\n"
+           + "\tdefence: " + std::to_string(defense) + "\n";
+}

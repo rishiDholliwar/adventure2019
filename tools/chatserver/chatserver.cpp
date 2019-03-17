@@ -21,12 +21,19 @@
 
 #include <GameCommands.h>
 #include <UserCommands.h>
+#include <CombatCommands.h>
 
 void Game::registerCommands() {
     _commandHandler->registerCommand("/say", Say(&_characterController, &_roomController).clone());
     _commandHandler->registerCommand("/swap", Swap(&_characterController).clone());
     _commandHandler->registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler->registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
+
+    //For combat
+    _commandHandler->registerCommand("/combat", CombatExamine(&_userController, &_characterController, &_roomController, &_objectController, &_combatController).clone());
+    _commandHandler->registerCommand("/attack", CombatAttack(&_userController, &_characterController, &_roomController, &_objectController, &_combatController).clone());
+    _commandHandler->registerCommand("/battles", CombatBattles(&_userController, &_characterController, &_roomController, &_objectController, &_combatController).clone());
+
 }
 
 void
