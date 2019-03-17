@@ -177,5 +177,5 @@ std::unique_ptr<Command> Drop::clone() const {
 }
 
 std::string Drop::help() {
-    return "/Drop [username] [password] - login as user with password";
+    return "/Drop - drop an item";
 }
