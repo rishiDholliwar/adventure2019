@@ -138,3 +138,44 @@ std::unique_ptr<Command> Broadcast::clone() const {
 std::string Broadcast::help() {
     return "/broadcast - sends messages to current and adjacent rooms";
 }
+
+//Drop
+std::pair<std::vector<Response>, bool> Drop::execute() {
+    Name itemName = input;
+    if (!objectController->doesObjectOfThisNameExist(itemName)) {
+        Response userResponse = Response("This item does not exist!", username);
+       auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    // Verify if the character has item
+    if (!characterController->characterHasItem(username, itemName)) {
+        Response userResponse = Response("You don't have this item in your inventory!", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    ID itemID = characterController->getItemIDFromCharacterInventory(username, itemName);
+
+    // Remove item from character's inventory
+    characterController->dropItemFromCharacterInventory(username, itemID);
+
+    // Add item to room's item List
+    roomController->addObjectToRoom(itemID, characterController->getCharacterRoomID(username));
+
+    Response userResponse = Response("You dropped " + itemName + " in the room!", username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Drop::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<Drop>(this->userController, this->characterController, this->roomController, this->objectController, username, input, connection);
+}
+
+std::unique_ptr<Command> Drop::clone() const {
+    return std::make_unique<Drop>(this->userController, this->characterController, this->roomController, this->objectController, this->username, this->input, this->connection);
+}
+
+std::string Drop::help() {
+    return "/Drop [username] [password] - login as user with password";
+}
