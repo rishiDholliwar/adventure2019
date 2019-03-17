@@ -37,6 +37,31 @@ public:
     std::string help() override;
 };
 
+// tell
+class Tell : public Command
+{
+private:
+    const unsigned int TARGET_CHARACTER_NAME = 0;
+    const unsigned int MESSAGE = 1;
+
+    Name username;
+    Input target;
+public:
+    explicit
+    Tell(CharacterController* characterController, Name username = "", Input target = "", Connection connection = Connection{})
+            : username(std::move(username)), target(std::move(target)) {
+        this->characterController = characterController;
+    };
+
+    ~Tell() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
+    std::string help() override;
+};
+
+
+// swap
 class Swap : public Command
 {
 private:
@@ -62,6 +87,8 @@ public:
     std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
     std::string help() override;
 };
+
+
 
 
 #endif //ALTERSPACE_GAMECOMMANDS_H

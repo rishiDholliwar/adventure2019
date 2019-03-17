@@ -31,6 +31,53 @@ std::string Say::help() {
     return "/say [message] - sends message to other players in the room";
 }
 
+
+// tell
+std::pair<std::vector<Response>, bool> Tell::execute() {
+    std::vector<std::string> inputStrings = utility::popFront(target);
+
+    //check if user input format is incorrect
+    if (inputStrings.size() != 2 || target.empty()) {
+        Response userResponse = Response(help(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    Name charName = characterController->getCharacter(username).getName();
+    Name targetCharName = characterController->getCharacter(inputStrings.at(TARGET_CHARACTER_NAME)).getName();
+
+    //if tell target character is not currently logged in
+    if (!characterController->doesCharacterExist(targetCharName)) {
+        Response userResponse = Response(targetCharName + ": is not currently logged in", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    std::string message = inputStrings.at(MESSAGE);
+
+    Response userResponse = Response("To [" + targetCharName + "]: " + message, username);
+    Response targetResponse = Response("From [" + charName + "]: " + message, targetCharName);
+
+    auto res = formulateResponse(userResponse, targetResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Tell::clone(Name username, Input target, Connection connection = Connection{}) const {
+    auto tell = std::make_unique<Tell>(this->characterController, username, target);
+    return std::move(tell);
+}
+
+std::unique_ptr<Command> Tell::clone() const {
+    auto tell = std::make_unique<Tell>(this->characterController, this->username, this->target);
+    return std::move(tell);
+}
+
+std::string Tell::help() {
+    return "/tell [target] [message] - Send a message to a specific player in the world";
+};
+
+
+
 //Swap
 std::pair<std::vector<Response>, bool> Swap::execute() {
 
@@ -108,3 +155,4 @@ std::unique_ptr<Command> Swap::clone() const {
 std::string Swap::help() {
     return "/swap [target username] - swap with the target character with this username";
 }
+
