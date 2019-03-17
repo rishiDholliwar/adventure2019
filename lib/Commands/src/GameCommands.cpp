@@ -10,10 +10,12 @@ std::pair<std::vector<Response>, bool> Say::execute() {
 
     Response userResponse = Response("Me: " + input, username);
 
-    std::string genericMessage = charName + ": "+ input;
+    std::string genericMessage = charName + ": " + input;
     std::cout << genericMessage << std::endl;
 
-    auto res = formulateResponse(userResponse, roomController->getUsernameList(characterController->getCharacterRoomID(username)), genericMessage);
+    auto res = formulateResponse(userResponse,
+                                 roomController->getUsernameList(characterController->getCharacterRoomID(username)),
+                                 genericMessage);
     return std::make_pair(res, true);
 }
 
@@ -52,7 +54,8 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
     Name userKey = username;
     Name targetKey = characterController->getCharacter(username).getName();
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) &&
+        (userKey == characterController->getCharacter(targetKey).getName())) {
 
         Response userResponse = Response("You are already under a swap spell!", userKey);
         Response targetResponse = Response("You are already under a swap spell!", targetKey);
@@ -74,7 +77,8 @@ std::pair<std::vector<Response>, bool> Swap::callback() {
     Name userKey = username;
     Name targetKey = characterController->getCharacter(username).getName();
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) &&
+        (userKey == characterController->getCharacter(targetKey).getName())) {
 
         Name targetCharName = characterController->getCharacter(username).getName();
 
@@ -107,4 +111,30 @@ std::unique_ptr<Command> Swap::clone() const {
 
 std::string Swap::help() {
     return "/swap [target username] - swap with the target character with this username";
+}
+
+//todo this class could get big, maybe move these types of commands called SocialCommands
+//Broadcast
+std::pair<std::vector<Response>, bool> Broadcast::execute() {
+    std::vector<std::string> broadcast = characterController->getAllCharacterNames();
+
+    Response userResponse = Response("Me: " + input, username);
+    std::string genericMessage = username + ": " + input;
+    auto res = formulateResponse(userResponse, broadcast, genericMessage);
+
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Broadcast::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<Broadcast>( this->characterController,
+                                        username, input, connection);
+}
+
+std::unique_ptr<Command> Broadcast::clone() const {
+    return std::make_unique<Broadcast>( this->characterController,
+                                        this->username, this->input, this->connection);
+}
+
+std::string Broadcast::help() {
+    return "/broadcast - sends messages to current and adjacent rooms";
 }
