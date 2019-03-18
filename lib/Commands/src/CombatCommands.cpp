@@ -16,7 +16,7 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
 
-    std::string output = "examine: \n";
+    std::string output = "combat examine: \n";
 
     bool whiteSpacesOnly = std::all_of(input.begin(), input.end(), isspace);
     if (input == "" || whiteSpacesOnly) {
@@ -42,7 +42,7 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
 
     //print characters the user has entered
     for (auto &targetName: inputs) {
-        if (isCharacterInRoom(roomController, character, targetName)) {
+        if (isTargetInRoom(roomController, character, targetName)) {
             Character targetCharacter = characterController->getCharacter(targetName);
             output += targetCharacter.examineCombat();
             output += "\n";
@@ -72,7 +72,7 @@ std::string CombatExamine::help() {
     return "/combatExamine look at combat stats";
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
@@ -84,16 +84,16 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     //character is attacking himself
     if (character.getName() == targetName) {
-        std::string userResponse = combatController->selfAttack();
-        res.emplace_back(commandName + userResponse, username);
+        std::string userOutput = combatController->selfAttack();
+        Response userResponse = Response(commandName + userOutput, username);
+        auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
 
-    if (isCharacterInRoom(roomController, character, targetName)) {
-
+    if (isTargetInRoom(roomController, character, targetName)) {
+        Character targetCharacter = characterController->getCharacter(targetName);
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
-            Character targetCharacter = characterController->getCharacter(targetName);
             combatController->createNewBattle(character, targetCharacter);
 
             Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
@@ -117,7 +117,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
-                Character targetCharacter = characterController->getCharacter(targetName);
                 std::string combatResults = combatController->executeBattle(character, targetCharacter, input);
 
                 for (auto &fighter: combatController->getFighters(username, targetName)) {
@@ -147,8 +146,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
-
-    res.emplace_back(commandName + " error\n", username);
+    res.emplace_back(commandName + "attack error\n", username);
     return std::make_pair(res, true);
 
 }
@@ -168,7 +166,7 @@ std::string CombatAttack::help() {
     return "/combatAttack ";
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 std::pair<std::vector<Response>, bool> CombatBattles::execute() {
     Character character = characterController->getCharacter(username);
@@ -179,8 +177,6 @@ std::pair<std::vector<Response>, bool> CombatBattles::execute() {
                                      username);
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
-
-
 }
 
 std::unique_ptr<Command> CombatBattles::clone(Name username, Input input, Connection connection = Connection{}) const {
@@ -214,7 +210,7 @@ void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *c
     }
 }
 
-bool isCharacterInRoom(RoomController *rc, Character &instigator, Name target) {
+bool isTargetInRoom(RoomController *rc, Character &instigator, Name target) {
     for (auto &ch : rc->getUsernameList(instigator.getRoomID())) {
         if (ch == target) {
             return true;

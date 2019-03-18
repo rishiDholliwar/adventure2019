@@ -13,7 +13,7 @@ using AlterSpace::Input;
 //Helper functions:
 void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *characterCtrl, Character player,
                                 std::vector<Character> &charactersInRoom);
-bool isCharacterInRoom(RoomController *rc, Character &instigator, Name target);
+bool isTargetInRoom(RoomController *rc, Character &instigator, Name target);
 
 //removes all extra whitespaces to correct user errors when typing
 void removeExtraWhiteSpaces(Input &input); //todo put in utility
