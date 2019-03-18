@@ -67,7 +67,46 @@ bool Inventory::removeItem(ID objectID)
     return true; //TODO: fix this for multiple items later!!!
 }
 
-std::string Inventory::listInventory()
-{
-    // next merge will have this function
+template <typename Container> inline unsigned int Inventory::getLengthStrArr(const Container& strArr) {
+
+    unsigned int length = 0;
+
+    for (const auto& str : strArr) {
+        length += str.length();
+    }
+    return length;
+}
+
+std::string Inventory::listInventory(Name& username) {
+
+    if (objects.empty()) {
+        return std::string();
+    }
+
+    // get unique object names
+    std::unordered_set<std::string> objectNames;
+    for (Object obj : objects) {
+        objectNames.insert(obj.getName());
+    }
+
+    // Preallocate expected string length, to avoid reallocation & get cache locality
+    unsigned int length = 0;
+    length = getLengthStrArr<std::unordered_set<std::string>>(objectNames) + (4 * objectNames.size());
+    std::string inventoryList = std::string();
+    inventoryList.reserve(length);
+
+    // list inventory, grouped by name
+    for (auto& name : objectNames) {
+        int nameCount = count_if(objects.begin(), objects.end(),
+                    [name] (const Object& obj) {
+                        return obj.getName() == name;
+                    });
+        std::string nameStr = name + "  x" + std::to_string(nameCount) + "\n";
+        inventoryList += nameStr;
+    }
+    return inventoryList;
+
+    //  ** Return type vector<Response> ?
+    //  Response userResponse = Response(inventoryList, username);
+    //  return formulateResponse(userResponse);
 }
