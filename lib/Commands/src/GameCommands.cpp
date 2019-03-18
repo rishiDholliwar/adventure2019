@@ -104,7 +104,7 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
 
     Response userResponse = Response("To [" + targetCharName + "]: " + message, username);
     Response targetResponse = Response("From [" + charName + "]: " + message, targetCharName);
-    std::string modifiedMessage = "From [" + charName + "] to [ " + username + " ]: " + whisperModifier(message);
+    std::string modifiedMessage = "From [" + charName + "] to [ " + targetCharName + " ]: " + whisperModifier(message);
 
     Response empty = Response();
     std::vector<std::string> characterList = roomController->getUsernameList(characterController->getCharacterRoomID(username));
