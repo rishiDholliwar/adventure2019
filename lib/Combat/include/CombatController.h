@@ -29,7 +29,7 @@ public:
 
     bool replyPendingRequest(const Name &instigator, const Name &target);
 
-    const std::string executeBattle(const Name &fighter1, const Name &fighter2, const Input &input);
+    const std::string executeBattle(Character &fighter1, Character &fighter2, const Input &input);
 
     bool isGameOver(const Name &fighter1, const Name &fighter2);
 

@@ -57,6 +57,8 @@ public:
 
     bool battleReady();
 
+    void updateFighters(Character &f1, Character &f2);
+
     std::string runCombat();
 
     std::string attack(Character &attacker, Character &defender);

@@ -60,6 +60,12 @@ bool Combat::battleReady() {
     return false;
 }
 
+void Combat::updateFighters(Character &f1, Character &f2) {
+    fighters.clear();
+    fighters.push_back(f1);
+    fighters.push_back(f2);
+}
+
 std::string Combat::runCombat() {
     setCombatState();
     int roundCounter = 0;

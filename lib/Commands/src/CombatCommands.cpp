@@ -117,7 +117,8 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
-                std::string combatResults = combatController->executeBattle(username, targetName, input);
+                Character targetCharacter = characterController->getCharacter(targetName);
+                std::string combatResults = combatController->executeBattle(character, targetCharacter, input);
 
                 for (auto &fighter: combatController->getFighters(username, targetName)) {
                     Name name = fighter.getName();
@@ -200,13 +201,6 @@ std::string CombatBattles::help() {
 //Helper functions:
 
 void removeExtraWhiteSpaces(Input &input) {
-//    boost::trim_right(input);
-//    boost::trim_left(input);
-//    input.erase(std::remove_if(
-//            begin(input), end(input),
-//            [l = std::locale{}](auto ch) { return std::isspace(ch, l); }
-//    ), end(input));
-
     input = std::regex_replace(input, std::regex("^ +| +$|( ) +"), "$1");
 }
 

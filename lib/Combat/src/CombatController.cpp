@@ -77,9 +77,11 @@ bool CombatController::replyPendingRequest(const Name &instigator, const Name &t
 }
 
 const std::string
-CombatController::executeBattle(const Name &fighter1, const Name &fighter2, const Input &input) {
+CombatController::executeBattle(Character &fighter1, Character &fighter2, const Input &input) {
     //return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
-    std::string results = getBattle(fighter1, fighter2).runCombat();
+    auto &battle = getBattle(fighter1.getName(), fighter2.getName());
+    battle.updateFighters(fighter1, fighter2);
+    std::string results = battle.runCombat();
 
     return results;
 }
@@ -160,7 +162,7 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
 std::string CombatController::printAllBattles() {
     std::string output;
     output += "Battles:\n";
-    if(!battleList.empty()){
+    if (!battleList.empty()) {
         for (auto &game: battleList) {
             output += "\t Owner: " + game.getOwner() + "\n";
             output += "\t Pending requests to: " + game.getPendingNames() + "\n\n";
@@ -176,7 +178,7 @@ std::string CombatController::printAllBattles() {
 std::string CombatController::sendInvitationMsg(const Name &inviterName) {
     std::string output = "\n\t" + inviterName + " wants to attack you \n" +
                          "\tEnter '/attack " + inviterName + "' to battle\n";
-                         //"\tEnter '/flee " + inviterName + "' to surrender.\n";
+    //"\tEnter '/flee " + inviterName + "' to surrender.\n";
     return output;
 }
 
