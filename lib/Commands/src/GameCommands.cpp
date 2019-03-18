@@ -2,6 +2,7 @@
 #include <iostream>
 #include <Utility.h>
 #include <sstream>
+#include <CommandsListing.h>
 
 //Say
 std::pair<std::vector<Response>, bool> Say::execute() {
@@ -107,4 +108,26 @@ std::unique_ptr<Command> Swap::clone() const {
 
 std::string Swap::help() {
     return "/swap [target username] - swap with the target character with this username";
+}
+
+//CommandLister
+std::pair<std::vector<Response>, bool> CommandLister::execute() {
+Response userResponse = Response(CommandsListing::getCommands(),username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+
+std::unique_ptr<Command> CommandLister::clone(Name username, Input target, Connection connection = Connection{}) const {
+    auto swap = std::make_unique<CommandLister>(this->characterController, username, target);
+    return std::move(swap);
+}
+
+std::unique_ptr<Command> CommandLister::clone() const {
+    auto swap = std::make_unique<CommandLister>(this->characterController, this->username, this->target);
+    return std::move(swap);
+}
+
+std::string CommandLister::help() {
+    return "/commands - print all the commands and their descriptions";
 }

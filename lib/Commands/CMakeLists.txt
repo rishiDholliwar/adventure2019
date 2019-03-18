@@ -23,6 +23,7 @@ target_link_libraries(commands
     controllers
     utility
     combat
+    commandsListing
     ${Boost_LIBRARIES}
 )
 
