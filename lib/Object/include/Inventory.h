@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_set>
 
 #include <AlterSpace.h>
 #include <JSONObjects.h>
@@ -75,6 +76,8 @@ public:
      * */
     bool removeItem(ID objectID);
 
+    template <typename Container> inline unsigned int getLengthStrArr(const Container& strArr);
+
     /* List Inventory:
      *
      * Function: Lists Inventory to user
@@ -83,7 +86,7 @@ public:
      * Post: Returns a list of objects in inventory
      *
      * */
-    std::string listInventory();
+    std::string listInventory(Name& username);
 };
 
 

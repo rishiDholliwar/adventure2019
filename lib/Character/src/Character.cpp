@@ -131,7 +131,7 @@ std::string Character::listWearing() const {
 }
 
 std::string Character::listInventory() {
-    return inventory.listInventory();
+    return inventory.listInventory(name);
 }
 
 
