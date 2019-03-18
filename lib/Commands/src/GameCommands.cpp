@@ -139,11 +139,7 @@ void Whisper::removeTargets(std::vector<std::string> &characterList, Name userna
             characterList.end());
 }
 
-
-
-
-
-
+// Confuse
 std::pair<std::vector<Response>, bool> Confuse::execute(){
 
     if(target.empty()) {
@@ -189,10 +185,6 @@ std::unique_ptr<Command> Confuse::clone(Name username, Input target, Connection 
 std::string Confuse::help(){
     return "/confuse [target] - confuses a target and they see weird things";
 }
-
-
-
-
 
 //Swap
 std::pair<std::vector<Response>, bool> Swap::execute() {
