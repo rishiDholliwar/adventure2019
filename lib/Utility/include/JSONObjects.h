@@ -48,7 +48,7 @@ namespace JSONObjects {
         return values;
     }
 
-    inline unsigned int getLengthStrArr(const std::vector<std::string> &strArr) {
+    static unsigned int getLengthStrArr(const std::vector<std::string> &strArr) {
 
         unsigned int length = 0;
 
