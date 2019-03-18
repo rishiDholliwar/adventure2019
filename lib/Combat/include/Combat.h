@@ -28,7 +28,6 @@ private:
 
     std::vector<Character> fighters;
     Name owner;
-    //TODO need id??
 
 public:
 
@@ -84,7 +83,6 @@ private :
 
     void setEndState();
 
-    //https://stackoverflow.com/questions/1340729/how-do-you-generate-a-random-double-uniformly-distributed-between-0-and-1-from-c/1340762
     double attackMultiplier();
 
     int getNetDamage(unsigned int damage, unsigned int defence);

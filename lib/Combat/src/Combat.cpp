@@ -174,13 +174,6 @@ Character &Combat::getFighter(int i) {
     return fighters[i];
 }
 
-//todo wip
-bool Combat::surrenderFighter(const Name &surrenderer) {
-    fighters.erase(std::remove_if(fighters.begin(), fighters.end(),
-                                  [&surrenderer](Character c) { return c.getName() == surrenderer; }),
-                   fighters.end());
-}
-
 void Combat::setPendingState() {
     currentState = STATE::PENDING;
 }

@@ -78,7 +78,7 @@ bool CombatController::replyPendingRequest(const Name &instigator, const Name &t
 
 const std::string
 CombatController::executeBattle(const Name &fighter1, const Name &fighter2, const Input &input) {
-    //return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented
+    //return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
     std::string results = getBattle(fighter1, fighter2).runCombat();
 
     return results;
@@ -175,8 +175,8 @@ std::string CombatController::printAllBattles() {
 
 std::string CombatController::sendInvitationMsg(const Name &inviterName) {
     std::string output = "\n\t" + inviterName + " wants to attack you \n" +
-                         "\tEnter '/attack " + inviterName + "' to battle\n" +
-                         "\tEnter '/surrender " + inviterName + "' to surrender.\n";
+                         "\tEnter '/attack " + inviterName + "' to battle\n";
+                         //"\tEnter '/flee " + inviterName + "' to surrender.\n";
     return output;
 }
 

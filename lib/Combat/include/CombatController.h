@@ -49,8 +49,6 @@ public:
 
     std::string sendTargetFightingMsg(const Name &target);
 
-    //TODO need specifc one for by name
-    //for debug
     std::string printAllBattles();
 
 private:
@@ -63,65 +61,3 @@ private:
 };
 
 #endif //ALTERSPACE_COMBATCONTROLLER_H
-
-/*
- *  std::string sendSurrenderMesg(const Name &surrenderer) {
-        return surrenderer + " has surrendered";
-    }
-
-
-      //TODO surrender should remove character from fighters, if only 1 character left, delete game (if owner delete game)(Need to test if owner delted the game)
-    //todo will need message for each individual to surrender as well as game quit message,
-    //todo also message if they surrender to wrong person
-    std::string surrender(const Name &joiner, const Name &owner) {
-//        std::string output = "";
-//        if (isBattle(owner)) {
-//            auto battle = getBattle(owner);
-//
-//            //if owner is deleting there own game
-//            if (joiner == battle.getOwner()) {
-//                deleteGame(owner);
-//                output += sendSurrenderMesg(owner);
-//            }
-//
-//            if (battle.nameIsPendingWithOwner(joiner, owner)) {
-//                battle.surrenderFighter(joiner);
-//                output += sendSurrenderMesg(joiner);
-//            }
-//        }
-
-        return "";
-    }
-
-
-    //TODO finish or test
-    std::string surrenderFromOwner(const Name &owner) {
-       // deleteGame(owner);
-       return "";
-    }
-    //TODO finish
-    bool ownerSurrender(Name &fighter1, Name &fighter2) {
-//        if (isBattle(fighter1, fighter2)) {
-//            auto battle = getBattle(fighter1, fighter2);
-//            return battle.getFighters();
-//        }
-//        if (isBattle(owner)) {
-//            //if owner is deleting there own game
-//            if (joiner == getBattle(owner).getOwner()) {
-//                return true;
-//
-//            }
-//            return false;
-//        }
-        return false;
-    }
-
-
-
-
-
-
-
- *
- *
- */
