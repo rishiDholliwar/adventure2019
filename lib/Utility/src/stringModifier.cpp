@@ -54,7 +54,7 @@ std::string whisperModifier(std::string message) {
 
     while(s >> word){
         std::replace_if( word.begin( ), word.end( ), [] ( const char c ) {
-            return std::string( "etanidufkq" ).find( c ) != std::string::npos;
+            return std::string( "etanidufkqETANIDUFKQ" ).find( c ) != std::string::npos;
         }, '.');
 
         retString << word << " ";
