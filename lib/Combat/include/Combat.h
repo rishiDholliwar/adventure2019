@@ -10,6 +10,10 @@
 #include "Character.h"
 #include "AlterSpace.h"
 
+/*
+ * Combat contains all the logic for a battle.
+ */
+
 using AlterSpace::Name;
 using AlterSpace::ID;
 using AlterSpace::Input;

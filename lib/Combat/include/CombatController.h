@@ -8,6 +8,11 @@
 #include <algorithm>
 #include <sstream>
 
+/*
+ * Combat controller is used to handle combat.
+ * Currently combat is only 1 vs 1  and all rounds is executed in once instance.
+ */
+
 class CombatController {
 private:
 
