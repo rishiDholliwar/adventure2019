@@ -93,6 +93,7 @@ bool CombatController::isGameOver(const Name &fighter1, const Name &fighter2) {
             return true;
         }
     }
+
     return false;
 }
 
@@ -162,6 +163,7 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
 std::string CombatController::printAllBattles() {
     std::string output;
     output += "Battles:\n";
+
     if (!battleList.empty()) {
         for (auto &game: battleList) {
             output += "\t Owner: " + game.getOwner() + "\n";
@@ -171,14 +173,13 @@ std::string CombatController::printAllBattles() {
         output += "\tNo battles\n";
     }
 
-
     return output;
 }
 
 std::string CombatController::sendInvitationMsg(const Name &inviterName) {
     std::string output = "\n\t" + inviterName + " wants to attack you \n" +
                          "\tEnter '/attack " + inviterName + "' to battle\n";
-    //"\tEnter '/flee " + inviterName + "' to surrender.\n";
+                          //"\tEnter '/flee " + inviterName + "' to surrender.\n";
     return output;
 }
 

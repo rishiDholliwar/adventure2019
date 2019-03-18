@@ -69,10 +69,12 @@ std::unique_ptr<Command> CombatExamine::clone() const {
 }
 
 std::string CombatExamine::help() {
-    return "/combatExamine look at combat stats";
+    return "/combat: Displays combat information for all players in room.\n"
+           "/combat [name]: Displays combat information for [name].";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
@@ -163,7 +165,7 @@ std::unique_ptr<Command> CombatAttack::clone() const {
 }
 
 std::string CombatAttack::help() {
-    return "/combatAttack ";
+    return "/combatAttack [name] - Send battle request to [name] or accept if sent a request.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +193,7 @@ std::unique_ptr<Command> CombatBattles::clone() const {
 }
 
 std::string CombatBattles::help() {
-    return "/combatExamine look at combat stats";
+    return "/battles - See list of pending battles.";
 }
 
 //Helper functions:

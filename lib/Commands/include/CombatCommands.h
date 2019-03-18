@@ -15,10 +15,9 @@ void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *c
                                 std::vector<Character> &charactersInRoom);
 bool isTargetInRoom(RoomController *rc, Character &instigator, Name target);
 
-//removes all extra whitespaces to correct user errors when typing
-void removeExtraWhiteSpaces(Input &input); //todo put in utility
-std::string toMSG(const Name &name); //todo put in utility
-std::string fromMSG(const Name &name); //todo put in utility
+void removeExtraWhiteSpaces(Input &input); //removes all extra whitespaces to correct user errors when typing
+std::string toMSG(const Name &name);
+std::string fromMSG(const Name &name);
 
 class CombatExamine : public Command
 {
