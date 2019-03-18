@@ -60,6 +60,32 @@ public:
     std::string help() override;
 };
 
+// whisper
+class Whisper : public Command
+{
+private:
+    const unsigned int TARGET_CHARACTER_NAME = 0;
+    const unsigned int MESSAGE = 1;
+
+    RoomController* roomController;
+    Name username;
+    Input input;
+public:
+    explicit
+    Whisper(CharacterController* characterController, RoomController* roomController, Name username = "", Input input = "", Connection connection = Connection{})
+            : roomController(roomController) ,username(std::move(username)), input(std::move(input)) {
+        this->characterController = characterController;
+    };
+
+    ~Whisper() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
+    std::string help() override;
+
+    void removeTargets(std::vector<std::string> &characterList, Name username, Name targetName);
+};
+
 
 // swap
 class Swap : public Command

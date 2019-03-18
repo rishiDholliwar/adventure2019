@@ -44,7 +44,7 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
     }
 
     Name charName = characterController->getCharacter(username).getName();
-    Name targetCharName = characterController->getCharacter(inputStrings.at(TARGET_CHARACTER_NAME)).getName();
+    Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
 
     //if tell target character is not currently logged in
     if (!characterController->doesCharacterExist(targetCharName)) {
@@ -77,6 +77,67 @@ std::string Tell::help() {
 };
 
 
+
+// whisper
+std::pair<std::vector<Response>, bool> Whisper::execute() {
+    std::vector<std::string> inputStrings = utility::popFront(input);
+
+    if (input.empty() || inputStrings.size() != 2) {
+        Response userResponse = Response(help(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    Name charName = characterController->getCharacter(username).getName();
+    Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
+
+    //if tell target character is not currently logged in
+    if (!characterController->doesCharacterExist(targetCharName)) {
+        Response userResponse = Response(targetCharName + ": is not currently logged in", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+
+
+    std::string message = inputStrings.at(MESSAGE);
+
+    Response userResponse = Response("To [" + targetCharName + "]: " + message, username);
+    Response targetResponse = Response("From [" + charName + "]: " + message, targetCharName);
+    std::string modifiedMessage = "From [" + charName + "] to [ " + username + " ]: " + whisperModifier(message);
+
+    Response empty = Response();
+    std::vector<std::string> characterList = roomController->getUsernameList(characterController->getCharacterRoomID(username));
+    removeTargets(characterList, username, targetCharName);
+
+    auto res = formulateResponse(userResponse, targetResponse);
+    auto resModified = formulateResponse(empty, characterList, modifiedMessage);
+
+    res.insert(res.end(), resModified.begin(), resModified.end());
+
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Whisper::clone() const {
+    auto whisper = std::make_unique<Whisper>(this->characterController, this->roomController, this->username, this->input);
+    return std::move(whisper);
+}
+
+std::unique_ptr<Command> Whisper::clone(Name username, Input input, Connection connection = Connection{}) const {
+    auto whisper = std::make_unique<Whisper>(this->characterController, this->roomController, username, input);
+    return std::move(whisper);
+}
+
+std::string Whisper::help() {
+    return "/whisper [target] [message] - Send a message to a specific player in the world ... but beware of prying ears";
+}
+
+void Whisper::removeTargets(std::vector<std::string> &characterList, Name username, Name targetName) {
+    characterList.erase(
+            std::remove_if(characterList.begin(), characterList.end(),
+                           [username, targetName](const std::string &character) { return (character == username) || (character == targetName); }),
+            characterList.end());
+}
 
 //Swap
 std::pair<std::vector<Response>, bool> Swap::execute() {
