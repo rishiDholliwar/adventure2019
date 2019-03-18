@@ -139,6 +139,61 @@ void Whisper::removeTargets(std::vector<std::string> &characterList, Name userna
             characterList.end());
 }
 
+
+
+
+
+
+std::pair<std::vector<Response>, bool> Confuse::execute(){
+
+    if(target.empty()) {
+        Response userResponse(help(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    //if tell target character is not currently logged in
+    if (!characterController->doesCharacterExist(target)) {
+        Response userResponse = Response(target + ": is not currently logged in", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    characterController->confuseCharacter(target);
+
+    Response userResponse = Response("Successfully confused!", username);
+    Response targetResponse = Response("A confuse spell was cast on you!", target);
+
+    auto res = formulateResponse(userResponse, targetResponse);
+    return std::make_pair(res, true);
+}
+std::pair<std::vector<Response>, bool> Confuse::callback(){
+
+    characterController->confuseCharacter(target);
+
+    Response userResponse = Response("Your target is no longer confused", username);
+    Response targetResponse = Response("You are no longer confused", target);
+
+    auto res = formulateResponse(userResponse, targetResponse);
+    return std::make_pair(res, true);
+
+}
+std::unique_ptr<Command> Confuse::clone() const {
+    auto confuse = std::make_unique<Confuse>(this->characterController, this->roomController, this->username, this->target);
+    return std::move(confuse);
+}
+std::unique_ptr<Command> Confuse::clone(Name username, Input target, Connection connection) const {
+    auto confuse = std::make_unique<Confuse>(this->characterController, this->roomController, username, target);
+    return std::move(confuse);
+}
+std::string Confuse::help(){
+    return "/confuse [target] - confuses a target and they see weird things";
+}
+
+
+
+
+
 //Swap
 std::pair<std::vector<Response>, bool> Swap::execute() {
 
@@ -146,7 +201,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         Response userResponse = Response(help(), username);
 
         auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+        return std::make_pair(res, false);
     }
 
     if (!(characterController->findCharacter(target))) {
@@ -154,7 +209,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         Response userResponse = Response("Target doesn't exist, sorry!", username);
 
         auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+        return std::make_pair(res, false);
     }
 
     Name userKey = username;

@@ -86,6 +86,30 @@ public:
     void removeTargets(std::vector<std::string> &characterList, Name username, Name targetName);
 };
 
+// confuse
+class Confuse : public Command
+{
+private:
+    RoomController* roomController;
+    Name username;
+    Input target;
+public:
+    explicit
+    Confuse(CharacterController* characterController, RoomController* roomController, Name username = "", Input target = "", Connection connection = Connection{})
+            : roomController(roomController), username(std::move(username)), target(std::move(target)) {
+        this->characterController = characterController;
+        registerInteraction = true;
+        registerCallback = true;
+        callbackAfterHeartbeats = 300;
+    };
+
+    ~Confuse() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> callback() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+};
 
 // swap
 class Swap : public Command
