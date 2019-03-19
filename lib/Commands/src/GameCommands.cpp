@@ -45,9 +45,10 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
 
     Name charName = characterController->getCharacter(username).getName();
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
+    Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
     //if tell target character is not currently logged in
-    if (!characterController->doesCharacterExist(targetCharName)) {
+    if (!characterController->doesCharacterExist(targetUserName)) {
         Response userResponse = Response(targetCharName + ": is not currently logged in", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
@@ -56,7 +57,7 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
     std::string message = inputStrings.at(MESSAGE);
 
     Response userResponse = Response("To [" + targetCharName + "]: " + message, username);
-    Response targetResponse = Response("From [" + charName + "]: " + message, targetCharName);
+    Response targetResponse = Response("From [" + charName + "]: " + message, targetUserName);
 
     auto res = formulateResponse(userResponse, targetResponse);
     return std::make_pair(res, true);
@@ -90,9 +91,10 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
 
     Name charName = characterController->getCharacter(username).getName();
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
+    Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
     //if tell target character is not currently logged in
-    if (!characterController->doesCharacterExist(targetCharName)) {
+    if (!characterController->doesCharacterExist(targetUserName)) {
         Response userResponse = Response(targetCharName + ": is not currently logged in", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
@@ -103,12 +105,12 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
     std::string message = inputStrings.at(MESSAGE);
 
     Response userResponse = Response("To [" + targetCharName + "]: " + message, username);
-    Response targetResponse = Response("From [" + charName + "]: " + message, targetCharName);
+    Response targetResponse = Response("From [" + charName + "]: " + message, targetUserName);
     std::string modifiedMessage = "From [" + charName + "] to [ " + targetCharName + " ]: " + whisperModifier(message);
 
     Response empty = Response();
-    std::vector<std::string> characterList = roomController->getUsernameList(characterController->getCharacterRoomID(username));
-    removeTargets(characterList, username, targetCharName);
+    std::vector<std::string> characterList = roomController->getUsernameList(characterController->getCharacterRoomID(charName));
+    removeTargets(characterList, username, targetUserName);
 
     auto res = formulateResponse(userResponse, targetResponse);
     auto resModified = formulateResponse(empty, characterList, modifiedMessage);
@@ -155,33 +157,41 @@ std::pair<std::vector<Response>, bool> Confuse::execute(){
         return std::make_pair(res, false);
     }
 
-    characterController->confuseCharacter(target);
+    Name targetUserName = characterController->getUsernameOfCharacter(target);
+    
+    characterController->confuseCharacter(targetUserName);
 
     Response userResponse = Response("Successfully confused!", username);
-    Response targetResponse = Response("A confuse spell was cast on you!", target);
+    Response targetResponse = Response("A confuse spell was cast on you!", targetUserName);
 
     auto res = formulateResponse(userResponse, targetResponse);
     return std::make_pair(res, true);
 }
+
 std::pair<std::vector<Response>, bool> Confuse::callback(){
 
-    characterController->confuseCharacter(target);
+    Name targetUserName = characterController->getUsernameOfCharacter(target);
+
+    characterController->confuseCharacter(targetUserName);
 
     Response userResponse = Response("Your target is no longer confused", username);
-    Response targetResponse = Response("You are no longer confused", target);
+    Response targetResponse = Response("You are no longer confused", targetUserName);
 
     auto res = formulateResponse(userResponse, targetResponse);
     return std::make_pair(res, true);
 
 }
+
 std::unique_ptr<Command> Confuse::clone() const {
     auto confuse = std::make_unique<Confuse>(this->characterController, this->roomController, this->username, this->target);
     return std::move(confuse);
 }
+
 std::unique_ptr<Command> Confuse::clone(Name username, Input target, Connection connection) const {
     auto confuse = std::make_unique<Confuse>(this->characterController, this->roomController, username, target);
     return std::move(confuse);
 }
+
 std::string Confuse::help(){
     return "/confuse [target] - confuses a target and they see weird things";
 }

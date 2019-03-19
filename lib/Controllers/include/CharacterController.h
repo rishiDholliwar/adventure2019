@@ -45,6 +45,11 @@ public:
 
     bool findCharacter(Name username);
 
+    Name getUsernameOfCharacter(Name &charName);
+
+
+    Character &getCharacterByCharName(Name &charName);
+
     /*
      * Returns a character object of the specified username
      *
