@@ -124,10 +124,10 @@ private:
     ObjectController* objectController;
     std::vector<Object> interactions;
 
-    int interactItemChoice;
+    // int interactItemChoice;
     Name interactTarget;
 
-    void setInteractions(std::vector<Object> i);
+    void setInteractions(std::vector<Object> i, Name interactT);
 public:
     explicit
     Give(CharacterController* characterController, ObjectController* objectController, Name username = "", Input input = "", Connection connection = Connection{})

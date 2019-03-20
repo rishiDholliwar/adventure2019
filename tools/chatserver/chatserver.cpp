@@ -26,7 +26,7 @@ void Game::registerCommands() {
     _commandHandler->registerCommand("/say", Say(&_characterController, &_roomController).clone());
     _commandHandler->registerCommand("/tell", Tell(&_characterController).clone());
     _commandHandler->registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
-    _commandHandler->registerCommand("/display-inventory", DisplayInventory(&_characterController).clone());
+    _commandHandler->registerCommand("/inventory", DisplayInventory(&_characterController).clone());
     _commandHandler->registerCommand("/give", Give(&_characterController, &_objectController).clone());
     _commandHandler->registerCommand("/swap", Swap(&_characterController).clone());
     _commandHandler->registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
