@@ -55,7 +55,7 @@ std::vector<Response> Command::formulateResponse(Response &userResponse, std::ve
         }
     }
 
-    if(characterController->isCharacterConfused(userResponse.username)){
+    if(!userResponse.username.empty() && characterController->isCharacterConfused(userResponse.username)){
         userResponse.message = translate(userResponse.message);
         response.push_back(userResponse);
     } else {

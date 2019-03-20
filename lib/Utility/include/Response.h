@@ -13,6 +13,7 @@ struct Response {
     Name username;
 
     Response(std::string message, Name username) : message(std::move(message)), username(std::move(username)) {}
+    Response() : message(""), username(""){}
 };
 
 #endif
