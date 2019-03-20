@@ -3,7 +3,7 @@
 #include <iostream>
 #include <GameController.h>
 #include <Utility.h>
-#include <pigLatin.h>
+#include <stringModifier.h>
 
 GameController::GameController()
 {

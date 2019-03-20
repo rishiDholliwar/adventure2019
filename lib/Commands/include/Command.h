@@ -4,7 +4,7 @@
 #include <AlterSpace.h>
 #include <Response.h>
 #include <Server.h>
-#include <pigLatin.h>
+#include <stringModifier.h>
 
 #include <CharacterController.h>
 

@@ -14,8 +14,8 @@ add_library(returnCode
 add_library(uniqueID
           src/UniqueID.cpp)
 
-add_library(pigLatin
-          src/pigLatin.cpp)
+add_library(stringModifier
+        src/stringModifier.cpp)
 
 add_library(jsonUser
         include/JSONUser.h )
@@ -76,7 +76,7 @@ target_include_directories(uniqueID
     ${Boost_INCLUDE_DIR}
 )
 
-target_include_directories(pigLatin
+target_include_directories(stringModifier
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -114,7 +114,7 @@ set_target_properties(uniqueID
                       CXX_STANDARD 17
 )
 
-set_target_properties(pigLatin
+set_target_properties(stringModifier
                       PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
@@ -132,7 +132,7 @@ install(TARGETS uniqueID
   ARCHIVE DESTINATION lib
 )
 
-install(TARGETS pigLatin
+install(TARGETS stringModifier
   ARCHIVE DESTINATION lib
 )
 
