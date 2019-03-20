@@ -21,6 +21,11 @@ std::pair<std::vector<Response>, bool> Command::callback() {
     return std::make_pair(noResponse(), false);
 }
 
+std::pair<std::vector<Response>, bool> Command::runCallback() {
+    registerCallback = false;
+    return this->callback();
+}
+
 bool Command::callbackable() const {
     return registerCallback;
 }
