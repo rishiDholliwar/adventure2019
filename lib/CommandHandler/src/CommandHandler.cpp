@@ -39,6 +39,16 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
 	return _defCommandMap[invokeWord]->clone(userName, input, connection);
 }
 
+std::vector<std::unique_ptr<Command>> CommandHandler::getAllCommands() {
+    std::vector<std::unique_ptr<Command>> commands;
+    commands.reserve(_defCommandMap.size());
+    for(auto& itr : _defCommandMap) {
+        commands.push_back(std::move(itr.second->clone()));
+    }
+    return commands;
+}
+
+
 std::string CommandHandler::setAlias(const Name& userName, const Input& input)
 {
     std::vector<std::string> v = utility::tokenizeString(input);

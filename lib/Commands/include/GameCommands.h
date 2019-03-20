@@ -3,6 +3,7 @@
 
 #include <AlterSpace.h>
 #include <Command.h>
+#include <CommandHandler.h>
 
 #include <RoomController.h>
 
@@ -60,6 +61,26 @@ public:
     // std::pair<std::vector<Response>, bool> interact();
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+};
+
+class Help : public Command
+{
+private:
+    CommandHandler* commandHandler;
+    Name username;
+    Input input;
+public:
+    explicit
+    Help(CharacterController* characterController, CommandHandler* commandHandler, Name username = "", Input input = "", Connection connection = Connection{})
+        : commandHandler(commandHandler), username(std::move(username)), input(std::move(input)) {
+            this->characterController = characterController;
+           };
+
+    ~Help() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
     std::string help() override;
 };
 
