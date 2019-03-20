@@ -86,7 +86,7 @@ public:
 
     void registerCommand(const Invocation& invokeWord, std::unique_ptr<Command> command);
 
-    std::vector<std::unique_ptr<Command>> getAllCommands();
+    const std::vector<std::unique_ptr<Command>> getAllCommands() const;
 
 private:
     /*

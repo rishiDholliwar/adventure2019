@@ -110,10 +110,10 @@ std::string Swap::help() {
 }
 
 std::pair<std::vector<Response>, bool> Help::execute() {
-    auto commands = commandHandler->getAllCommands();
+    const auto commands = commandHandler->getAllCommands();
     std::ostringstream os;
     os << "Commands: \n";
-    for(auto& command : commands) {
+    for(const auto& command : commands) {
         os << command->help() << "\n";
     }
 

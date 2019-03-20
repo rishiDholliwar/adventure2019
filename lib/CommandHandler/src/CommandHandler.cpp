@@ -39,7 +39,7 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
 	return _defCommandMap[invokeWord]->clone(userName, input, connection);
 }
 
-std::vector<std::unique_ptr<Command>> CommandHandler::getAllCommands() {
+const std::vector<std::unique_ptr<Command>> CommandHandler::getAllCommands() const{
     std::vector<std::unique_ptr<Command>> commands;
     commands.reserve(_defCommandMap.size());
     for(auto& itr : _defCommandMap) {
