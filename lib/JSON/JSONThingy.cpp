@@ -30,26 +30,18 @@ void to_json(json &j, const Character &aCharacter) {
     j = json{
             { "name", aCharacter.getName() },
             { "roomID", aCharacter.getRoomID() },
-            { "confused", aCharacter.isConfused() },
             { "wearing", aCharacter.getWearing() },
             { "inventory", aCharacter.getInventory() },
     };
-
-//    j["name"] = aCharacter.getName();
-//    j["roomID"] = aCharacter.getRoomID();
-//    j["confused"] = aCharacter.isConfused();
-//    j[""]
 }
-
-
 
 void from_json(const json &j, Character &aCharacter) {
     aCharacter = Character(
             j.at("name").get<std::string>(),
             j.at("roomID").get<ID>(),
             j.at("inventory").get<Inventory>(),
-            j.at("wearing").get<std::vector<Object>>(),
-            j.at("confused").get<bool>());
+            j.at("wearing").get<std::vector<Object>>());
+
 }
 
 void JSONThingy::save(Character &aCharacter) {

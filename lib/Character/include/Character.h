@@ -27,8 +27,7 @@ public:
     Character() = default;
     Character(const Name &name, ID roomID);
 
-    Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing,
-              bool confused);
+    Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing);
 
     Name getName() const;
     ID getRoomID() const;
