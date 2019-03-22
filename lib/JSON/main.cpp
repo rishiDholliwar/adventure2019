@@ -24,12 +24,12 @@ int main() {
     Character readElvin;
     Character readLora;
 
-    jt.load("Elvin", readElvin);
-    jt.load("Lora", readLora);
+    jt.load("elvin", readElvin);
+    jt.load("lora", readLora);
 
-    std::cout << readElvin.getName() << std::endl;
-    std::cout << readElvin.listInventory() << std::endl;
-    std::cout << readElvin.listWearing() << std::endl;
+    std::cout << "name: " << readElvin.getName() << std::endl;
+    std::cout << "inv: " << readElvin.listInventory() << std::endl;
+    std::cout << "wear: " << readElvin.listWearing() << std::endl;
 
 
     std::cout << readLora.getName() << std::endl;

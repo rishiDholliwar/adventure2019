@@ -24,6 +24,7 @@ private:
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
 public:
+    Character() = default;
     Character(const Name &name, ID roomID);
 
     Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing,
@@ -134,8 +135,6 @@ public:
     std::string examine();
 
     void confuse();
-
-    Character();
 };
 
 

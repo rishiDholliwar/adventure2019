@@ -69,5 +69,10 @@ bool Inventory::removeItem(ID objectID)
 
 std::string Inventory::listInventory()
 {
+    return "WOW";
     // next merge will have this function
+}
+
+const std::vector<Object>& Inventory::getObjects() const {
+    return objects;
 }

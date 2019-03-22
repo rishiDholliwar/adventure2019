@@ -9,7 +9,8 @@
 #include <Object.h>
 #include <json.hpp>
 #include <boost/filesystem.hpp>
-
+#include <iomanip>
+#include <fstream>
 
 using AlterSpace::Name;
 using AlterSpace::ID;
@@ -18,16 +19,6 @@ using json = nlohmann::json;
 
 
 class JSONThingy {
-private:
-
-    void to_json(json &j, const Character &aCharacter);
-
-    void from_json(const json &j, Character &aCharacter);
-
-    void to_json(json &j, const Object &anObject);
-
-    void from_json(const json &j, Object &anObject);
-
 public:
 
     void save(Character &aCharacter);

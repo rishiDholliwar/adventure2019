@@ -167,7 +167,3 @@ void Character::setInventory(const Inventory &inventory) {
 Character::Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing,
                      bool confused) : name(name), roomID(roomID), inventory(inventory), wearing(wearing),
                                       confused(confused) {}
-
-Character::Character() {
-
-}
