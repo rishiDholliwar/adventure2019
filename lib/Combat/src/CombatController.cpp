@@ -2,22 +2,7 @@
 #include "Combat.h"
 
 bool CombatController::isNewBattle(const Name &instigator, const Name &target) {
-    for (auto &battle : battleList) {
-        if (battle.getOwner() == instigator) {
-            if (battle.nameIsPendingWithOwner(target, instigator)) {
-                return false;
-            }
-        }
-
-        if (battle.getOwner() == target) {
-            if (battle.nameIsPendingWithOwner(instigator, target)) {
-                return false;
-            }
-        }
-
-    }
-
-    return true;
+    return (! isBattleAssociation(instigator,target));
 }
 
 void CombatController::createNewBattle(Character &instigator, Character &target) {
@@ -148,6 +133,7 @@ bool CombatController::isBattleOwner(const Name fighter1, const Name fighter2) {
     return false;
 }
 
+//todo tru to refactor the || into combat?
 bool CombatController::isBattleAssociation(const Name fighter1, const Name fighter2) {
     for (auto &battle : battleList) {
         if (battle.nameIsPendingWithOwner(fighter2, fighter1) || battle.nameIsPendingWithOwner(fighter1, fighter2)) {
