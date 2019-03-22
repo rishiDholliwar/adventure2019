@@ -99,7 +99,7 @@ bool CombatController::isGameOver(const Name &fighter1, const Name &fighter2) {
 
 std::vector<Character> &CombatController::getFighters(Name &fighter1, Name &fighter2) {
     if (isBattleAssociation(fighter1, fighter2)) {
-        auto battle = getBattle(fighter1, fighter2);
+        auto &battle = getBattle(fighter1, fighter2);
         return battle.getFighters();
     }
 }
