@@ -4,15 +4,6 @@
 #include <sstream>
 #include <ios>
 
-Character::Character(const Name &name, ID roomID)
-{
-  this->name = name;
-  this->roomID = roomID;
-  this->inventory = Inventory{};
-  this->confused = false;
-  this->wearing = std::vector<Object>();
-}
-
 Name Character::getName() const {
     return this->name;
 }
@@ -162,9 +153,4 @@ const Inventory &Character::getInventory() const {
 
 void Character::setInventory(const Inventory &inventory) {
     Character::inventory = inventory;
-}
-
-Character::Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing) :
-        name(name), roomID(roomID), inventory(inventory), wearing(wearing) {
-    this->confused = false;
 }

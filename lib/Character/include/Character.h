@@ -1,3 +1,11 @@
+#include <utility>
+
+#include <utility>
+
+#include <utility>
+
+#include <utility>
+
 #ifndef ALTERSPACE_CHARACTER_H
 #define ALTERSPACE_CHARACTER_H
 
@@ -25,9 +33,17 @@ private:
 
 public:
     Character() = default;
-    Character(const Name &name, ID roomID);
+    Character(Name name, ID roomID) : name(std::move(name)), roomID(roomID)
+    {
+        this->inventory = Inventory{};
+        this->confused = false;
+        this->wearing = std::vector<Object>();
+    }
 
-    Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing);
+    Character(Name name, ID roomID, Inventory inventory, std::vector<Object> wearing) :
+            name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
+        this->confused = false;
+    }
 
     Name getName() const;
     ID getRoomID() const;

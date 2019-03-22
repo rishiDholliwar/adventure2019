@@ -23,7 +23,7 @@ public:
 
     Inventory() = default;
 
-    Inventory(std::vector<Object> objects) : objects(objects) {};
+    explicit Inventory(std::vector<Object> &objects) : objects(objects) {};
     /* Add Item:
      *
      * Function: adds item to inventory
