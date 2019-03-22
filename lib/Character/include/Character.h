@@ -21,7 +21,7 @@ private:
     bool confused;
 
     std::vector<Object>::iterator getWearingIterator(ID objectId);
-    std::vector<Object>::iterator getWearingIterator(Name objectName);
+    std::vector<Object>::iterator getWearingIterator(Name &objectName);
 
 public:
     Character(const Name &name, ID roomID);
@@ -78,6 +78,8 @@ public:
     */
     bool wear(ID objectId);
 
+    void wear(Name &objectName);
+
     /*
      * unwears the specified item
      *
@@ -86,6 +88,8 @@ public:
      * Post-Condition: Returns true if the item is taken off
     */
     bool remove(Object obj);
+
+    void remove(Name &objectName);
 
     ID getWearingID(Name objectName);
 
@@ -106,6 +110,8 @@ public:
      * Post-Condition: Item will be dropped if it exists, returns true if dropped
     */
     bool dropItem(ID objectId);
+
+    void dropItem(Name &objectName);
 
 
     std::string listWearing() const;

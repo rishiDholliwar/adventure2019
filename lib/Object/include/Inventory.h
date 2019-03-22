@@ -75,6 +75,8 @@ public:
      * */
     bool removeItem(ID objectID);
 
+    void removeItem(Name &objectName);
+
     /* List Inventory:
      *
      * Function: Lists Inventory to user

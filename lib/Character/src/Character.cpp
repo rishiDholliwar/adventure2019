@@ -66,7 +66,7 @@ std::vector<Object>::iterator Character::getWearingIterator(ID objectId) {
     return it;
 }
 
-std::vector<Object>::iterator Character::getWearingIterator(Name objectName) {
+std::vector<Object>::iterator Character::getWearingIterator(Name &objectName) {
     auto it = find_if(wearing.begin(), wearing.end(),
                       [ objectName ] ( Object const& obj )->bool {
                           return obj.getName() == objectName;
@@ -95,6 +95,12 @@ bool Character::wear(ID objectId) {
     return isWearing(objectId);
 }
 
+void Character::wear(Name &objectName) {
+    wearing.push_back(getItemFromInventory(objectName));
+    dropItem(objectName);
+}
+
+
 ID Character::getWearingID(Name objectName) {
     auto it = getWearingIterator(objectName);
     return (*it).getID();
@@ -111,6 +117,16 @@ bool Character::remove(Object obj) {
     it = wearing.erase(it);
     addItemToInventory(obj);
     return true;
+}
+
+void Character::remove(Name &objectName) {
+
+    auto it = getWearingIterator(objectName);
+
+    if(it != wearing.end()) {
+        wearing.erase(it);
+        addItemToInventory(*it);
+    }
 }
 
 
@@ -147,3 +163,31 @@ void Character::confuse() {
 bool Character::isConfused() {
   return confused;
 }
+<<<<<<< Updated upstream
+=======
+
+const std::vector<Object> &Character::getWearing() const {
+    return wearing;
+}
+
+void Character::setWearing(const std::vector<Object> &wearing) {
+    this->wearing = wearing;
+}
+
+const Inventory &Character::getInventory() const {
+    return inventory;
+}
+
+void Character::setInventory(const Inventory &inventory) {
+    Character::inventory = inventory;
+}
+
+void Character::dropItem(Name &objectName) {
+    inventory.removeItem(objectName);
+}
+
+
+
+
+
+>>>>>>> Stashed changes

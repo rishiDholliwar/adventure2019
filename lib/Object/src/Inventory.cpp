@@ -71,3 +71,18 @@ std::string Inventory::listInventory()
 {
     // next merge will have this function
 }
+<<<<<<< Updated upstream
+=======
+
+const std::vector<Object>& Inventory::getObjects() const {
+    return objects;
+}
+
+void Inventory::removeItem(Name &objectName) {
+    auto it = getItemIterator(objectName);
+
+    if(it != objects.end()) {
+        objects.erase(it);
+    }
+}
+>>>>>>> Stashed changes
