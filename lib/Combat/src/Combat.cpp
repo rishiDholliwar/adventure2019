@@ -35,10 +35,18 @@ std::string Combat::getPendingNames() {
     return output;
 }
 
-bool Combat::nameIsPendingWithOwner(const Name &joiner, const Name &owner) {
-    if (Combat::getOwner() == owner) {
+bool Combat::nameIsPendingWithOwner(const Name &fighter1, const Name &fighter2) {
+    if (Combat::getOwner() == fighter1) {
         for (auto &character : fighters) {
-            if (character.getName() == joiner) {
+            if (character.getName() == fighter2) {
+                return true;
+            }
+        }
+    }
+
+    if (Combat::getOwner() == fighter2) {
+        for (auto &character : fighters) {
+            if (character.getName() == fighter1) {
                 return true;
             }
         }

@@ -52,7 +52,7 @@ public:
 
     const Name &getNonOwner(const Name &fighter1, const Name &fighter2);
 
-    bool nameIsPendingWithOwner(const Name &joiner, const Name &owner);
+    bool nameIsPendingWithOwner(const Name &fighter1, const Name &fighter2);
 
     std::string getPendingNames();
 

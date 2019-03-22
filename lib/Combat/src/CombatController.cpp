@@ -2,7 +2,7 @@
 #include "Combat.h"
 
 bool CombatController::isNewBattle(const Name &instigator, const Name &target) {
-    return (! isBattleAssociation(instigator,target));
+    return (!isBattleAssociation(instigator, target));
 }
 
 void CombatController::createNewBattle(Character &instigator, Character &target) {
@@ -113,13 +113,10 @@ void CombatController::deleteGame(const Name fighter1, const Name fighter2) {
 //Private:
 Combat &CombatController::getBattle(const Name fighter1, const Name fighter2) {
     for (auto &battle : battleList) {
-        if (battle.getOwner() == fighter1 && battle.nameIsPendingWithOwner(fighter2, fighter1)) {
+        if (battle.nameIsPendingWithOwner(fighter1, fighter2)) {
             return battle;
         }
 
-        if (battle.getOwner() == fighter2 && battle.nameIsPendingWithOwner(fighter1, fighter2)) {
-            return battle;
-        }
     }
 }
 
@@ -136,7 +133,7 @@ bool CombatController::isBattleOwner(const Name fighter1, const Name fighter2) {
 //todo tru to refactor the || into combat?
 bool CombatController::isBattleAssociation(const Name fighter1, const Name fighter2) {
     for (auto &battle : battleList) {
-        if (battle.nameIsPendingWithOwner(fighter2, fighter1) || battle.nameIsPendingWithOwner(fighter1, fighter2)) {
+        if (battle.nameIsPendingWithOwner(fighter2, fighter1)) {
             return true;
         }
     }
@@ -165,7 +162,7 @@ std::string CombatController::printAllBattles() {
 std::string CombatController::sendInvitationMsg(const Name &inviterName) {
     std::string output = "\n\t" + inviterName + " wants to attack you \n" +
                          "\tEnter '/attack " + inviterName + "' to battle\n";
-                          //"\tEnter '/flee " + inviterName + "' to surrender.\n";
+    //"\tEnter '/flee " + inviterName + "' to surrender.\n";
     return output;
 }
 
