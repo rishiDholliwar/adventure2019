@@ -15,6 +15,7 @@ target_include_directories(gameController
 
 target_link_libraries(gameController
   PUBLIC
+    networking
     world
     Character
     controllers
