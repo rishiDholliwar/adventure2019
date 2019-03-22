@@ -144,6 +144,30 @@ void Character::confuse() {
 }
 
 
-bool Character::isConfused() {
+bool Character::isConfused() const {
   return confused;
+}
+
+const std::vector<Object> &Character::getWearing() const {
+    return wearing;
+}
+
+void Character::setWearing(const std::vector<Object> &wearing) {
+    this->wearing = wearing;
+}
+
+const Inventory &Character::getInventory() const {
+    return inventory;
+}
+
+void Character::setInventory(const Inventory &inventory) {
+    Character::inventory = inventory;
+}
+
+Character::Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing,
+                     bool confused) : name(name), roomID(roomID), inventory(inventory), wearing(wearing),
+                                      confused(confused) {}
+
+Character::Character() {
+
 }

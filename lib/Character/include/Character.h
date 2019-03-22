@@ -25,11 +25,23 @@ private:
 
 public:
     Character(const Name &name, ID roomID);
+
+    Character(const Name &name, ID roomID, const Inventory &inventory, const std::vector<Object> &wearing,
+              bool confused);
+
     Name getName() const;
     ID getRoomID() const;
     ID getID() const;
     std::string getInfo() const;
-    bool isConfused();
+    bool isConfused() const;
+
+    const Inventory &getInventory() const;
+
+    void setInventory(const Inventory &inventory);
+
+    const std::vector<Object> &getWearing() const;
+
+    void setWearing(const std::vector<Object> &wearing);
 
     void setRoomID(ID roomID);
 
@@ -122,6 +134,8 @@ public:
     std::string examine();
 
     void confuse();
+
+    Character();
 };
 
 
