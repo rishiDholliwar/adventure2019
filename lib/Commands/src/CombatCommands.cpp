@@ -42,7 +42,7 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
 
     //print characters the user has entered
     for (auto &targetName: inputs) {
-        if (isTargetInRoom(roomController, character, targetName)) {
+        if (roomController->isTargetInRoom(username,character.getRoomID(), targetName)) {
             Character targetCharacter = characterController->getCharacter(targetName);
             output += targetCharacter.examineCombat();
             output += "\n";
@@ -92,7 +92,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
-    if (isTargetInRoom(roomController, character, targetName)) {
+    if (roomController->isTargetInRoom(username,character.getRoomID(), targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
@@ -210,15 +210,6 @@ void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *c
     for (auto name: roomCtrl->getUsernameList(characterCtrl->getCharacterRoomID(name))) {
         charactersInRoom.push_back(characterCtrl->getCharacter(name));
     }
-}
-
-bool isTargetInRoom(RoomController *rc, Character &instigator, Name target) {
-    for (auto &ch : rc->getUsernameList(instigator.getRoomID())) {
-        if (ch == target) {
-            return true;
-        }
-    }
-    return false;
 }
 
 std::string toMSG(const Name &name) {

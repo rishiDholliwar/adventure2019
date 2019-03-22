@@ -222,3 +222,13 @@ Door* RoomController::searchDoor(ID roomId, ID doorId) {
     }
     return room->searchDoor(doorId);
 }
+
+//todo refactor to use find_if
+bool RoomController::isTargetInRoom( Name &instigator,ID instigatorRoomID ,Name &target) {
+    for (auto &ch : getUsernameList(instigatorRoomID)) {
+        if (ch == target) {
+            return true;
+        }
+    }
+    return false;
+}

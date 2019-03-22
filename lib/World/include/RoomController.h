@@ -114,6 +114,7 @@ class RoomController {
             // std::string lookNPC(ID roomId);
             // std::string examineNPC(ID roomId);
 
+            bool isTargetInRoom(Name &instigator, ID instigatorRoomID, Name &target);
 private:
          std::vector<Room> roomList;
 
