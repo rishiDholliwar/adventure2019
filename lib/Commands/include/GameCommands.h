@@ -250,5 +250,35 @@ public:
     std::string help() override;
 };
 
+//examine
+class Examine : public Command
+{
+private:
+    RoomController* roomController;
+    ObjectController* objectController;
+    NPCController* npcController;
+    Name username;
+    Input target;
+    std::vector<std::string> interactions;
+    void setInteractions(std::vector<std::string> i);
+public:
+    explicit
+    Examine(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
+         NPCController* npcController, Name username = "", Input target = "", Connection connection = Connection{})
+            : username(std::move(username)), target(std::move(target)) {
+        this->characterController = characterController;
+        this->roomController = roomController;;
+        this->objectController = objectController;
+        this->npcController = npcController;
+        registerInteraction = true;
+    };
+
+    ~Examine() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+};
+
 
 #endif //ALTERSPACE_GAMECOMMANDS_H

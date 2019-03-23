@@ -533,6 +533,9 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     auto usernameList = roomController->getUsernameList(roomId);
     auto npcList = roomController->getCharacterList(roomId);
     auto objectList = roomController->getObjectList(roomId);
+    std::string line = "---------------------------\n";
+
+    ss << line;
 
     // with no argument
     if (target.empty()){
@@ -558,6 +561,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
         ss << roomController->getAllDoorInformationInRoom(roomId);
 
+        ss << line;
         Response userResponse = Response(ss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
@@ -597,6 +601,8 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         return std::make_pair(res, true);
     }
 
+    ss << line;
+
     Response userResponse = Response(ss.str(), username);
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
@@ -616,4 +622,75 @@ std::unique_ptr<Command> Look::clone(Name username, Input target, Connection con
 
 std::string Look::help() {
     return "/look [target] - get short description of the target, or use /look to get short description about the room.";
+}
+
+std::pair<std::vector<Response>, bool> Examine::execute() {
+
+    std::string line = "---------------------------\n";
+
+    if (target.empty()){
+        Response userResponse = Response("Please input a target.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+    std::stringstream ss;
+    ss << line;
+
+    AlterSpace::ID roomId = characterController->getCharacterRoomID(username);
+
+    auto usernameList = roomController->getUsernameList(roomId);
+    auto npcList = roomController->getCharacterList(roomId);
+    auto objectList = roomController->getObjectList(roomId);
+    int index = 1;
+
+    // search user
+    for (Name usernameInList : usernameList){
+        if (usernameInList == target) {
+            ss << index << ". "  << usernameInList << "\n" <<characterController->examineCharacter(usernameInList) << "\n";
+            index += 1;
+        }
+    }
+
+    // search npc
+    for (const ID npcId : npcList){
+        Name npcName = npcController->getNPCName(npcId);
+        if (npcName == target) {
+            ss << index << ". " << npcName << "\n" << npcController->examineNPC(npcId) << "\n";
+            index += 1;
+        }
+    }
+
+    // search object
+    for (const ID objectId : objectList){
+        Name objectName = objectController->getObjectName(objectId);
+        if (objectName == target)
+            ss << index <<". " << objectName << "\n" <<objectController->examineItem(objectId)<< "\n";
+    }
+
+    if (index == 1){
+        Response userResponse = Response("Target not found.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    ss << line;
+    Response userResponse = Response(ss.str(), username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Examine::clone() const {
+    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+                                       this->npcController, this->username, this->target);
+    return std::move(examine);
+}
+
+std::unique_ptr<Command> Examine::clone(Name username, Input target, Connection connection) const {
+    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+                                             this->npcController, username, target);
+    return std::move(examine);
+}
+
+std::string Examine::help() {
+    return "/look [target] - get detailed description of the target.";
 }
