@@ -180,8 +180,11 @@ std::string DisplayInventory::help() {
 std::pair<std::vector<Response>, bool> Give::execute() {
 	std::vector<std::string> inputStrings = utility::popFront(input);
 
+    Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
+    Name giftName = inputStrings.at(GIFT_NAME);
+
 	//check if user input format is incorrect
-	if (inputStrings.at(TARGET_CHARACTER_NAME).empty() || inputStrings.at(GIFT_NAME).empty()) {
+	if (targetCharName.empty() || giftName.empty()) {
 		Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
 		auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
@@ -191,10 +194,8 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 		return this->interact();
 	}
 
-    Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name targetUserName = characterController->getCharacter(targetCharName).getName();
     Name charName = characterController->getCharacter(username).getName();
-    Name giftName = inputStrings.at(GIFT_NAME);
 
 	//if gift target character doesn't exist
 	if (!characterController->doesCharacterExist(targetUserName)) {
