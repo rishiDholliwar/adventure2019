@@ -26,9 +26,12 @@ void Game::registerCommands() {
     _commandHandler.registerCommand("/say", Say(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand("/tell", Tell(&_characterController).clone());
     _commandHandler.registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand("/inventory", DisplayInventory(&_characterController).clone());
+    _commandHandler.registerCommand("/give", Give(&_characterController, &_objectController).clone());
     _commandHandler.registerCommand("/swap", Swap(&_characterController).clone());
     _commandHandler.registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
     _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
 }
@@ -39,16 +42,16 @@ Game::addConnection(Connection c) {
     _clients.push_back(c);
 }
 
-
 void
 Game::removeConnection(Connection c) {
     std::cout << "Connection lost: " << c.id << "\n";
     if (_userController.isConnectionLoggedIn(c)) {
         std::string username = _userController.getUsernameWithConnection(c);
-        _userController.logoutUser(username);
+        auto forcedLogout = std::make_shared<_ForcedLogout>(&_userController, &_characterController, &_roomController, username, "", c);
+        _scheduler->schedule(forcedLogout, 0);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
-        _gameController.removeCharacter(username);
+
     }
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
     _clients.erase(eraseBegin, std::end(_clients));
@@ -103,6 +106,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         auto command = _commandHandler.getCommand(username, invocationWord, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
+            std::cout << "command is nullptr" << std::endl;
             Message msg{message.connection, output};
             result.push_back(msg);
             continue;
@@ -115,7 +119,10 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
     auto responses = _scheduler->update();
     for ( auto& res : responses )
     {
-        Connection conn = _userController.getConnectionWithUsername(res.username);
+        Connection conn = res.connection;
+        if(! conn.id){
+            conn = _userController.getConnectionWithUsername(res.username);
+        }
         std::cout << conn.id << std::endl;
         result.push_back(Message{conn.id, res.message});
     }

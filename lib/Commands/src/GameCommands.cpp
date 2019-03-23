@@ -141,6 +141,200 @@ void Whisper::removeTargets(std::vector<std::string> &characterList, Name userna
             characterList.end());
 }
 
+//DisplayInventory
+std::pair<std::vector<Response>, bool> DisplayInventory::execute() {
+	std::cout << "Inventory " << std::endl;
+
+	//get the string containing inventory listed numerically
+    std::string inventoryList = characterController->characterListInventory(username);
+
+    //check if inventory is empty or not
+    if(inventoryList.empty()) {
+        Response userResponse = Response("Your inventory is empty!", username);
+        auto res = formulateResponse(userResponse);
+
+    	return std::make_pair(res, true);
+    }
+
+    Response userResponse = Response("Your inventory has: \n" + inventoryList, username);
+    auto res = formulateResponse(userResponse);
+
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> DisplayInventory::clone(Name username, Input input, Connection connection = Connection{}) const {
+    auto inventory = std::make_unique<DisplayInventory>(this->characterController, username, input);
+    return std::move(inventory);
+}
+
+std::unique_ptr<Command> DisplayInventory::clone() const {
+    auto inventory = std::make_unique<DisplayInventory>(this->characterController, this->username, this->input);
+    return std::move(inventory);
+}
+
+std::string DisplayInventory::help() {
+    return "/inventory - displays your inventory";
+}
+
+//Give
+std::pair<std::vector<Response>, bool> Give::execute() {
+	std::vector<std::string> inputStrings = utility::popFront(input);
+
+    Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
+    Name giftName = inputStrings.at(GIFT_NAME);
+
+	//check if user input format is incorrect
+	if (targetCharName.empty() || giftName.empty()) {
+		Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
+		auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+	}
+
+	if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+		return this->interact();
+	}
+
+    Name targetUserName = characterController->getCharacter(targetCharName).getName();
+    Name charName = characterController->getCharacter(username).getName();
+
+	//if gift target character doesn't exist
+	if (!characterController->doesCharacterExist(targetUserName)) {
+		Response userResponse = Response("Character name " + targetCharName + " does not exist for you to gift to.", username);
+		auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+	}
+
+	//check if gift item exists in user inventory
+	if (!characterController->characterHasItem(username, giftName)) {
+		Response userResponse = Response("Item name " + giftName + " does not exist for you to give.", username);
+		auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+	}
+
+	std::vector<Object> giftItems = characterController->getItemsFromCharacterInventory(username, giftName);
+
+	if (giftItems.size() > MULTIPLE_ITEMS) {
+		interactions = giftItems;
+		interactTarget = targetCharName;
+
+		std::stringstream ss;
+
+		ss << "You have more than 1 item named " << giftName << ". Which item would you like to give?\n";
+
+		int counter = 0;
+		for (auto &obj : interactions) {
+			ss << "\t" << ++counter << ". " << obj.getName() << ", ID: " << obj.getID() << "\n";
+		}
+
+		Response userResponse = Response(ss.str(), username);
+		auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+	}
+
+	ID giftID = characterController->getItemIDFromCharacterInventory(username, giftName);
+
+	//drop item from user inventory
+	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+        Response userResponse = Response("Gifting item has failed.", username);
+        auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+    }
+
+	//add item to target user inventory
+	characterController->addItemToCharacterInventory(targetUserName, objectController->getObjectFromList(giftID));
+
+	if (!characterController->characterHasItem(targetUserName, giftID)) {
+        characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));
+		Response userResponse = Response("Giving " + giftName + " to character " + targetCharName + " has failed.", username);
+		auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+	}
+
+	//generate response
+	Response userResponse = Response("You have given " + giftName + " to character " + targetCharName + "!", username);
+    Response targetResponse = Response(username + " has given " + giftName + " to you!", targetUserName);
+	auto res = formulateResponse(userResponse, targetResponse);
+
+	return std::make_pair(res, true);
+}
+
+std::pair<std::vector<Response>, bool> Give::interact() {
+    std::cout << "give interacting" << std::endl;
+
+    std::vector<std::string> v = utility::tokenizeString(input);
+
+    if ( v.size() != 2 ) {
+    	std::cout << "Too many arguments..." << std::endl;
+    	Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
+    	auto res = formulateResponse(userResponse);
+
+    	return std::make_pair(res, false);
+    }
+
+    std::stringstream ss{v.at(INTERACT_CHOICE)};
+    int index = -1;
+    ss >> index;
+    index--;
+    if ( index >= interactions.size() || index < 0 ) {
+        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
+    	auto res = formulateResponse(userResponse);
+
+    	return std::make_pair(res, false);
+    }
+
+    ID giftID = interactions.at(index).getID();
+    Name giftName = interactions.at(index).getName();
+
+    Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
+    Name charName = characterController->getCharacter(username).getName();
+
+	//drop item from user inventory
+	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+        Response userResponse = Response("Gifting item has failed.", username);
+        auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+    }
+
+	//add item to target user inventory
+	characterController->addItemToCharacterInventory(interactTargetUsername, objectController->getObjectFromList(giftID));
+
+	if (!characterController->characterHasItem(interactTargetUsername, giftID)) {
+        characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));
+		Response userResponse = Response("Giving " + giftName + " to character " + interactTarget + " has failed.", username);
+		auto res = formulateResponse(userResponse);
+		return std::make_pair(res, false);
+	}
+
+	//generate response
+	Response userResponse = Response("You have given " + giftName + " to character " + interactTarget + "!", username);
+    Response targetResponse = Response(charName + " has given " + giftName + " to you!", interactTargetUsername);
+	auto res = formulateResponse(userResponse, targetResponse);
+
+	return std::make_pair(res, true);
+}
+
+
+std::unique_ptr<Command> Give::clone(Name username, Input input, Connection connection = Connection{}) const {
+    auto give = std::make_unique<Give>(this->characterController, this->objectController, username, input);
+    give->setInteractions(this->interactions, this->interactTarget);
+    return std::move(give);
+}
+
+std::unique_ptr<Command> Give::clone() const {
+    auto give = std::make_unique<Give>(this->characterController, this->objectController, this->username, this->input);
+    give->setInteractions(this->interactions, this->interactTarget);
+    return std::move(give);
+}
+
+std::string Give::help() {
+    return "/give [target's character name] [item name] - give item to a player";
+}
+
+void Give::setInteractions(std::vector<Object> i, Name interactT) {
+    interactions = i;
+    interactTarget = interactT;
+}
+
 // Confuse
 std::pair<std::vector<Response>, bool> Confuse::execute(){
 
