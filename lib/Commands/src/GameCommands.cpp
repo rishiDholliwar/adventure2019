@@ -173,7 +173,7 @@ std::unique_ptr<Command> DisplayInventory::clone() const {
 }
 
 std::string DisplayInventory::help() {
-    return "/inventory [message] - sends message to other players in the room";
+    return "/inventory - displays your inventory";
 }
 
 //Give
@@ -181,14 +181,13 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 	std::vector<std::string> inputStrings = utility::popFront(input);
 
 	//check if user input format is incorrect
-	if (inputStrings.size() != 2) {
+	if (inputStrings.at(TARGET_CHARACTER_NAME).empty() || inputStrings.at(GIFT_NAME).empty()) {
 		Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
 		auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
 	}
 
 	if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
-		std::cout << "interact if loop " << std::endl;
 		return this->interact();
 	}
 
@@ -216,8 +215,6 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 	if (giftItems.size() > MULTIPLE_ITEMS) {
 		interactions = giftItems;
 		interactTarget = targetCharName;
-
-		std::cout << "targetCharName: " << interactTarget << std::endl;
 
 		std::stringstream ss;
 
@@ -265,8 +262,6 @@ std::pair<std::vector<Response>, bool> Give::interact() {
 
     std::vector<std::string> v = utility::tokenizeString(input);
 
-    std::cout << "after tokenizeString" << std::endl;
-
     if ( v.size() != 2 ) {
     	std::cout << "Too many arguments..." << std::endl;
     	Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
@@ -286,17 +281,11 @@ std::pair<std::vector<Response>, bool> Give::interact() {
     	return std::make_pair(res, false);
     }
 
-    std::cout << "index is : " << index << std::endl;
-
     ID giftID = interactions.at(index).getID();
     Name giftName = interactions.at(index).getName();
 
-    std::cout << "gift id is : " << giftID << std::endl;
-    std::cout << "interactTarget: " << interactTarget << std::endl;
-
     Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
-
-    std::cout << "interact target name" << interactTargetUsername << std::endl;
+    Name charName = characterController->getCharacter(username).getName();
 
 	//drop item from user inventory
 	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
@@ -317,7 +306,7 @@ std::pair<std::vector<Response>, bool> Give::interact() {
 
 	//generate response
 	Response userResponse = Response("You have given " + giftName + " to character " + interactTarget + "!", username);
-    Response targetResponse = Response(username + " has given " + giftName + " to you!", interactTargetUsername);
+    Response targetResponse = Response(charName + " has given " + giftName + " to you!", interactTargetUsername);
 	auto res = formulateResponse(userResponse, targetResponse);
 
 	return std::make_pair(res, true);
@@ -337,7 +326,7 @@ std::unique_ptr<Command> Give::clone() const {
 }
 
 std::string Give::help() {
-    return "/give [message] - sends message to other players in the room";
+    return "/give [target's character name] [item name] - give item to a player";
 }
 
 void Give::setInteractions(std::vector<Object> i, Name interactT) {
