@@ -16,9 +16,9 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
 
-    // std::string output = "combat examine: \n";
     std::stringstream output;
     output << "combat examine: \n";
+
     bool whiteSpacesOnly = std::all_of(input.begin(), input.end(), isspace);
     if (input == "" || whiteSpacesOnly) {
 
@@ -81,8 +81,8 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     removeExtraWhiteSpaces(input);
     Name targetName = input;
-    std::string commandName = "attack: \n";
 
+    std::string commandName = "attack: \n";
 
     //character is attacking himself
     if (character.getName() == targetName) {
