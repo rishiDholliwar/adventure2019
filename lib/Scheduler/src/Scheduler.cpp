@@ -37,7 +37,10 @@ std::vector<Response> Scheduler::update() {
         auto job = jobs.top().second;
         std::vector<Response> responses;
         if( job->callbackable() && job->isCallback() ) {
-            auto ret = job->callback();
+            auto ret = job->runCallback();
+            if( !ret.second && job->callbackable()) {
+                this->schedule(job, job->getCallbackTime());
+            }
             responses = ret.first;
         } else {
             auto ret = job->execute();

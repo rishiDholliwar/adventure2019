@@ -39,6 +39,25 @@ Character &CharacterController::getCharacter(Name &username) {
     return _characters.find(username)->second;
 }
 
+Character &CharacterController::getCharacterByCharName(Name &charName) {
+    auto it = find_if(_characters.begin(), _characters.end(),
+                        [&charName] (auto const& character) {
+                            return charName == character.second.getName();
+                        });
+
+    return it->second;
+}
+
+Name CharacterController::getUsernameOfCharacter(Name &charName){
+    auto it = find_if(_characters.begin(), _characters.end(),
+                        [&charName] (auto const& character) {
+                            return charName == character.second.getName();
+                        });
+
+    return it->first;
+}
+
+
 bool CharacterController::doesCharacterExist(Name &username) {
     return _characters.find(username) != _characters.end();
 }
@@ -77,6 +96,10 @@ void CharacterController::addItemToCharacterInventory(Name &username, Object ite
 
 bool CharacterController::dropItemFromCharacterInventory(Name &username, ID objectID) {
     return getCharacter(username).dropItem(objectID);
+}
+
+std::vector<Object> CharacterController::getItemsFromCharacterInventory(Name &username, Name itemName) {
+    return getCharacter(username).getItemsFromInventory(itemName);
 }
 
 Object CharacterController::getItemFromCharacterInventory(Name &username, Name itemName) {

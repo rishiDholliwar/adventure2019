@@ -24,15 +24,22 @@
 #include <CombatCommands.h>
 
 void Game::registerCommands() {
-    _commandHandler->registerCommand("/say", Say(&_characterController, &_roomController).clone());
-    _commandHandler->registerCommand("/swap", Swap(&_characterController).clone());
-    _commandHandler->registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
-    _commandHandler->registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
-    _commandHandler->registerCommand("/commands", CommandLister(&_characterController).clone());
+    _commandHandler.registerCommand("/say", Say(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/tell", Tell(&_characterController).clone());
+    _commandHandler.registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand("/inventory", DisplayInventory(&_characterController).clone());
+    _commandHandler.registerCommand("/give", Give(&_characterController, &_objectController).clone());
+    _commandHandler.registerCommand("/swap", Swap(&_characterController).clone());
+    _commandHandler.registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
+
     //For combat
-    _commandHandler->registerCommand("/combat", CombatExamine(&_characterController, &_roomController, &_combatController).clone());
-    _commandHandler->registerCommand("/attack", CombatAttack(&_characterController, &_roomController, &_combatController).clone());
-    _commandHandler->registerCommand("/battles", CombatBattles(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand("/combat", CombatExamine(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand("/attack", CombatAttack(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand("/battles", CombatBattles(&_characterController, &_roomController, &_combatController).clone());
 
 }
 
@@ -42,16 +49,16 @@ Game::addConnection(Connection c) {
     _clients.push_back(c);
 }
 
-
 void
 Game::removeConnection(Connection c) {
     std::cout << "Connection lost: " << c.id << "\n";
     if (_userController.isConnectionLoggedIn(c)) {
         std::string username = _userController.getUsernameWithConnection(c);
-        _userController.logoutUser(username);
+        auto forcedLogout = std::make_shared<_ForcedLogout>(&_userController, &_characterController, &_roomController, username, "", c);
+        _scheduler->schedule(forcedLogout, 0);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
-        _gameController.removeCharacter(username);
+
     }
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
     _clients.erase(eraseBegin, std::end(_clients));
@@ -103,9 +110,10 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             text = tempInputParser.at(1);
         }
 
-        auto command = _commandHandler->getCommand(username, invocationWord, text, message.connection);
+        auto command = _commandHandler.getCommand(username, invocationWord, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
+            std::cout << "command is nullptr" << std::endl;
             Message msg{message.connection, output};
             result.push_back(msg);
             continue;
@@ -118,7 +126,10 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
     auto responses = _scheduler->update();
     for ( auto& res : responses )
     {
-        Connection conn = _userController.getConnectionWithUsername(res.username);
+        Connection conn = res.connection;
+        if(! conn.id){
+            conn = _userController.getConnectionWithUsername(res.username);
+        }
         std::cout << conn.id << std::endl;
         result.push_back(Message{conn.id, res.message});
     }
@@ -152,7 +163,7 @@ Game::Game(Config config)
                                         [this](Connection c){this->removeConnection(c);});
     _gameController = GameController();
     _userController = UserController();
-    _commandHandler = std::make_unique<CommandHandler>();
+    _commandHandler = CommandHandler();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
     this->registerCommands();
 }
@@ -179,7 +190,58 @@ main(int argc, char *argv[]) {
                   << "    e.g. " << argv[0] << " 4002 ./webchat.html\n";
         return 1;
     }
+    using namespace std;
+////////////////////////////
 
+    std::string fileName = "mirkwood";
+
+    if (JSONObjects::fileExists(fileName)) {
+        cout << "file exists\n";
+    } else {
+        cout << "error, no such file\n";
+    }
+
+    std::vector<Object> objects = JSONObjects::getObjects(fileName);
+
+    // for (auto &obj : objects) {
+    //     std::cout << "ID: " << obj.getID() << std::endl;
+
+    //     std::cout << "Type: " << obj.getName() << std::endl;
+
+    //     std::cout << "Abilities: " << std::endl;
+    //     for (auto &a : obj.getAbilities()) {
+    //       std::cout << "\t" << a.first << ", " << a.second << std::endl;
+    //     }
+
+    //     std::cout << " Keywords: " << std::endl;
+    //     for (auto &kw : obj.getKeywords()) {
+    //         std::cout << "\t" << kw << std::endl;
+    //     }
+
+    //     std::cout << " Shortdesc: " << obj.getShortDesc() << std::endl;
+
+    //     std::cout << " Longdesc: " << std::endl;
+    //     for (auto &ld : obj.getLongDesc()) {
+    //         std::cout << "\t" << ld << std::endl;
+    //     }
+
+    //     std::cout << " Extra: " << std::endl;
+    //     std::cout << "\tKeywords: " << std::endl;
+    //     for (auto &ekw : obj.getExtraKeywords()) {
+    //         std::cout << " \t" << ekw << std::endl;
+    //     }
+
+    //     std::cout << std::endl;
+
+    //     std::cout << "\tDesc: " << std::endl;
+    //     for (auto &ed : obj.getExtraDesc()) {
+    //         std::cout << " \t" << ed << std::endl;
+    //     }
+
+    //     std::cout << std::endl;
+    // }
+
+/////////////////////////////
     unsigned short port = std::stoi(argv[1]);
     auto webpage = getHTTPMessage(argv[2]);
 

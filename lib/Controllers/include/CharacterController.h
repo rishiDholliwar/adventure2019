@@ -45,6 +45,11 @@ public:
 
     bool findCharacter(Name username);
 
+    Name getUsernameOfCharacter(Name &charName);
+
+
+    Character &getCharacterByCharName(Name &charName);
+
     /*
      * Returns a character object of the specified username
      *
@@ -134,6 +139,8 @@ public:
      * Post-Condition: Returns true if the item has been dropped
     */
     bool dropItemFromCharacterInventory(Name &username, ID objectID);
+
+    std::vector<Object> getItemsFromCharacterInventory(Name &username, Name itemName);
 
     /*
      * obtain item from users inventory

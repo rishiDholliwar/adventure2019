@@ -42,6 +42,8 @@ public:
 
     void setRoomID(ID roomID);
 
+    std::vector<Object> getItemsFromInventory(Name objectName);
+
     Object getItemFromInventory(Name objectName);
 
     Object getItemFromInventory(ID objectId);
