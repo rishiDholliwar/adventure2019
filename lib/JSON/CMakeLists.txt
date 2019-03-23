@@ -7,9 +7,9 @@ target_include_directories(jsonThingy
         PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        ${Boost_INCLUDE_DIR}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${Boost_INCLUDE_DIR}
         )
 
 
@@ -19,11 +19,11 @@ target_link_libraries(jsonThingy
         Object
         Inventory
         json
+        ${Boost_LIBRARIES}
         PRIVATE
         utility
         uniqueID
         stringModifier
-        ${Boost_LIBRARIES}
         )
 
 
