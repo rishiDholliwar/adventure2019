@@ -1,5 +1,6 @@
 #include "Combat.h"
 #include <cmath>
+#include <sstream>
 
 void Combat::addFighter(Character &character) {
     fighters.push_back(character);
@@ -24,14 +25,14 @@ const Name &Combat::getNonOwner(const Name &fighter1, const Name &fighter2) {
 }
 
 std::string Combat::getPendingNames() {
-    std::string output = "";
+    std::stringstream output;
     for (auto &character : fighters) {
         if (character.getName() != owner) {
-            output += character.getName();
+            output << character.getName();
         }
     }
 
-    return output;
+    return output.str();
 }
 
 bool Combat::nameIsPendingWithOwner(const Name &fighter1, const Name &fighter2) {
@@ -77,22 +78,22 @@ std::string Combat::runCombat() {
     setCombatState();
     int roundCounter = 0;
     bool isWinner = false;
-    std::string output;
+    std::stringstream output;
 
     while (!isWinner) {
         roundCounter++;
-        output += printRoundNumber(roundCounter);
+        output << printRoundNumber(roundCounter);
 
         for (unsigned int i = 0; i < getFighters().size(); i++) {
             Character &attacker = getFighter(i);
             Character &defender = getFighter(getDefender(i));
 
-            output += attack(attacker, defender);
-            output += "\n";
+            output << attack(attacker, defender);
+            output << "\n";
 
             if (defender.getCurrentHP() == 0) {
-                output += printWinner(attacker);
-                output += "\n";
+                output << printWinner(attacker);
+                output << "\n";
                 isWinner = true;
                 setEndState();
                 break;
@@ -100,7 +101,7 @@ std::string Combat::runCombat() {
         } //end for
     }// end while
 
-    return output;
+    return output.str();
 }
 
 double Combat::attackMultiplier() {
@@ -116,24 +117,24 @@ int Combat::getDefender(int index) {
 }
 
 std::string Combat::attack(Character &attacker, Character &defender) {
-    std::string attackString = "";
+    std::stringstream attackString;
 
-    attackString += printAttackInfo(attacker, defender);
+    attackString << printAttackInfo(attacker, defender);
 
     unsigned int damage = std::round(attacker.getAttack() * attackMultiplier());
-    attackString += printAttackerDamage(attacker, damage);
+    attackString << printAttackerDamage(attacker, damage);
 
     unsigned int defence = std::round(defender.getDefense() * attackMultiplier());
-    attackString += printDefenderDefence(defender, defence);
+    attackString << printDefenderDefence(defender, defence);
 
     int netDamage = getNetDamage(damage, defence);
-    attackString += printNetDamage(netDamage);
+    attackString << printNetDamage(netDamage);
 
     int defenderHP = getDefenderHP(defender, netDamage);
     defender.setCurrentHP(defenderHP);
-    attackString += printDefenderHP(defender);
+    attackString << printDefenderHP(defender);
 
-    return attackString;
+    return attackString.str();
 }
 
 int Combat::getNetDamage(unsigned int damage, unsigned int defence) {

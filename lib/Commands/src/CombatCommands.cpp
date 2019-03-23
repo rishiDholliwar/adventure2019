@@ -16,22 +16,22 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
 
-    std::string output = "combat examine: \n";
-
+    // std::string output = "combat examine: \n";
+    std::stringstream output;
+    output << "combat examine: \n";
     bool whiteSpacesOnly = std::all_of(input.begin(), input.end(), isspace);
     if (input == "" || whiteSpacesOnly) {
 
         std::vector<Character> charactersInRoom;
         getCharactersInCurrentRoom(roomController, characterController, characterController->getCharacter(username),
                                    charactersInRoom);
-        std::string examineString = "";
 
         for (auto &character: charactersInRoom) {
-            output += character.examineCombat();
-            output += "\n";
+            output << character.examineCombat();
+            output << "\n";
         }
 
-        res.emplace_back(output + examineString, username);
+        res.emplace_back(output.str(), username);
         return std::make_pair(res, true);
     }
 
@@ -44,15 +44,15 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
     for (auto &targetName: inputs) {
         if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
             Character targetCharacter = characterController->getCharacter(targetName);
-            output += targetCharacter.examineCombat();
-            output += "\n";
+            output << targetCharacter.examineCombat();
+            output << "\n";
         } else {
             std::string error = "\tCharacter " + targetName + " not found\n\n";
-            output += error;
+            output << error;
         }
     }
 
-    res.emplace_back(output, username);
+    res.emplace_back(output.str(), username);
     return std::make_pair(res, true);
 
 }

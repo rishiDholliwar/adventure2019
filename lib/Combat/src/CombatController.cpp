@@ -143,19 +143,19 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
 
 //for debug
 std::string CombatController::printAllBattles() {
-    std::string output;
-    output += "Battles:\n";
+    std::stringstream output;
+    output << "Battles:\n";
 
     if (!battleList.empty()) {
         for (auto &game: battleList) {
-            output += "\t Owner: " + game.getOwner() + "\n";
-            output += "\t Pending requests to: " + game.getPendingNames() + "\n\n";
+            output << "\t Owner: " + game.getOwner() + "\n";
+            output << "\t Pending requests to: " + game.getPendingNames() + "\n\n";
         }
     } else {
-        output += "\tNo battles\n";
+        output << "\tNo battles\n";
     }
 
-    return output;
+    return output.str();
 }
 
 std::string CombatController::sendInvitationMsg(const Name &inviterName) {
