@@ -165,7 +165,7 @@ std::unique_ptr<Command> CombatAttack::clone() const {
 }
 
 std::string CombatAttack::help() {
-    return "/combatAttack [name] - Send battle request to [name] or accept if sent a request.";
+    return "/attack [name] - Send battle request to [name] or accept if sent a request.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
