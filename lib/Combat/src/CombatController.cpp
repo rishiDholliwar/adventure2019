@@ -130,7 +130,6 @@ bool CombatController::isBattleOwner(const Name fighter1, const Name fighter2) {
     return false;
 }
 
-//todo tru to refactor the || into combat?
 bool CombatController::isBattleAssociation(const Name fighter1, const Name fighter2) {
     for (auto &battle : battleList) {
         if (battle.nameIsPendingWithOwner(fighter2, fighter1)) {
