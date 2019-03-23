@@ -8,6 +8,7 @@
 #include <UniqueID.h>
 #include <Object.h>
 #include <utility>
+#include <vector>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
@@ -20,6 +21,9 @@ private:
     std::vector<Object> wearing;
     bool confused;
 
+    std::vector<std::string> descriptions;
+    std::vector<std::string> extendedDescriptions;
+
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
@@ -28,6 +32,8 @@ public:
     Name getName() const;
     ID getRoomID() const;
     ID getID() const;
+    std::vector<std::string> const& getDescriptions() const{return descriptions;};
+    std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
     std::string getInfo() const;
     bool isConfused();
 

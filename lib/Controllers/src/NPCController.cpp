@@ -3,18 +3,35 @@
 #include <NPCController.h>
 #include <sstream>
 #include <ios>
+#include <Utility.h>
 
 bool NPCController::addNPCToList(const NPC &npc) {
 	//
 }
 
-// look and examine
-std::string NPCController::lookNPC(ID roomId, ID npcID) {
-	//
+std::string NPCController::getNPCName(ID npcId) {
+    auto targetNPCItr = _npcs.find(npcId);
+
+    if (targetNPCItr == _npcs.end()) {
+        return "NPC not found";
+    }
+
+    return (*targetNPCItr).second.getName();;
 }
 
-std::string NPCController::examineNPC(ID roomId, ID npcID) {
-	//
+// look and examine
+std::string NPCController::lookNPC(ID npcID) {
+	auto npc = (*_npcs.find(npcID)).second;
+	return utility::extractStringVector(npc.getDescriptions());
+}
+
+std::string NPCController::examineNPC(ID npcID) {
+    auto npc = (*_npcs.find(npcID)).second;
+    auto extDescriptions = npc.getExtendedDescriptions();
+    if (extDescriptions.empty()){
+        return lookNPC(npcID);
+    }
+    return utility::extractStringVector(extDescriptions);
 }
 
 bool NPCController::swapNPC(ID swappingID, ID targetNPCID) {

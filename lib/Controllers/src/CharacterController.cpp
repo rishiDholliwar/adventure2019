@@ -2,6 +2,8 @@
 #include <string>
 #include <CharacterController.h>
 #include <RoomController.h>
+#include <Utility.h>
+
 
 CharacterController::CharacterController() = default;
 
@@ -67,6 +69,20 @@ std::vector<Name> CharacterController::getAllCharacterNames() {
         usernameList.push_back(characters.first);
     }
     return usernameList;
+}
+
+std::string CharacterController::lookCharacter(Name &userName) {
+    auto character = getCharacter(userName);
+    return utility::extractStringVector(character.getDescriptions());
+}
+
+std::string CharacterController::examineCharacter(Name &userName) {
+    auto character = getCharacter(userName);
+    auto extDescriptions = character.getExtendedDescriptions();
+    if (extDescriptions.empty()){
+        return lookCharacter(userName);
+    }
+    return utility::extractStringVector(extDescriptions);
 }
 
 std::string CharacterController::getCharacterInfo(Name &username) {

@@ -21,9 +21,11 @@ public:
 
     bool addNPCToList(const NPC &npc);
 
+    std::string getNPCName(ID npcId);
+
     // look and examine
-    std::string lookNPC(ID roomId, ID npcID);
-    std::string examineNPC(ID roomId, ID npcID);
+    std::string lookNPC(ID npcID);
+    std::string examineNPC(ID npcID);
 
     bool swapNPC(ID swappingID, ID targetNPCID);
 

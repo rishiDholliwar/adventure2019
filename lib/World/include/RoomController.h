@@ -25,11 +25,18 @@ class RoomController {
         const std::string& getDoorDirection(ID roomId, ID doorId);
 
         /*
-         * The function gives information of the room including room details and doors details
+         * The function gives information of the room
          * Post-condition:
          *          return string of information of room
          */
-        std::string getTextOfRoomDetails(ID roomId);
+        std::string getRoomDescription(ID roomId);
+
+    /*
+     * The function gives information of doors in the room
+     * Post-condition:
+     *          return string of information of doors in the room
+     */
+        std::string getAllDoorInformationInRoom(ID roomId);
 
         /*
          * create a room according to the roomID and roomName inside RoomController

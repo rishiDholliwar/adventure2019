@@ -1,5 +1,6 @@
 #include <ObjectController.h>
 #include <algorithm>
+#include <Utility.h>
 
 ObjectController::ObjectController(){
 	//
@@ -23,4 +24,18 @@ bool ObjectController::doesObjectOfThisNameExist(const Name objectName) {
 
 const Object &ObjectController::getObjectFromList(const ID objectID) const {
     return objects.find(objectID)->second;
+}
+
+std::string ObjectController::lookItem(ID objectID) {
+    auto object = getObjectFromList(objectID);
+    return object.getShortDesc()+"\n";
+}
+
+std::string ObjectController::examineItem(ID objectID) {
+    auto object = getObjectFromList(objectID);
+    auto extDescriptions = object.getLongDesc();
+    if (extDescriptions.empty()){
+        return lookItem(objectID);
+    }
+    return utility::extractStringVector(extDescriptions);
 }

@@ -7,23 +7,24 @@ RoomController::RoomController(){
     generateRoom(1001, "Room2");
     generateRoom(1002, "Room3");
     generateRoom(1003, "Room4");
-    generateRoom(1004, "Room5");
-    generateRoom(1005, "Room6");
-    generateRoom(1006, "Room7");
 
-    addDoorToRoom(1000, 1, 1001, "Up");
-    addDoorToRoom(1000, 2, 1002, "East");
-    addDoorToRoom(1000, 3, 1003, "West");
-    addDoorToRoom(1000, 4, 1004, "South");
-    addDoorToRoom(1000, 5, 1005, "North");
-    addDoorToRoom(1000, 6, 1006, "Down");
+    addDoorToRoom(1000, 1, 1001, "up");
+    addDoorToRoom(1000, 2, 1002, "north");
+    addDoorToRoom(1000, 3, 1003, "south");
 
-    addDoorToRoom(1001, 1, 1000, "Down");
-    addDoorToRoom(1002, 1, 1000, "West");
-    addDoorToRoom(1003, 1, 1000, "East");
-    addDoorToRoom(1004, 1, 1000, "North");
-    addDoorToRoom(1005, 1, 1000, "South");
-    addDoorToRoom(1006, 1, 1000, "Up");
+    addDoorToRoom(1001, 1, 1000, "down");
+    addDoorToRoom(1002, 1, 1000, "south");
+    addDoorToRoom(1003, 1, 1000, "north");
+
+    auto room = searchRoom(1000);
+    room->addDescription("Test description 1.");
+    room->addDescription("Test description 2.");
+
+    room->addExtendedDescription("Test extended description 1");
+    room->addExtendedDescription("Test extended description 2");
+
+    room->addKeywords("Test");
+
 
 }
 
@@ -151,13 +152,48 @@ bool RoomController::removeDoorFromRoom(ID roomId, ID doorId) {
     return (room!=nullptr) && room->removeDoor(doorId);
 }
 
-std::string RoomController::getTextOfRoomDetails(ID roomId) {
+std::string RoomController::getRoomDescription(ID roomId) {
     auto room = searchRoom(roomId);
     if (room == nullptr){
         static std::string roomNotFoundMessage = "Room does not exist.";
         return roomNotFoundMessage;
     }
-    return room->getTextOfRoomDetails();
+
+    std::stringstream outputString;
+    std::string indentation = "    ";
+    outputString << "Room Name: " << room->getName() << "\n";
+
+    auto descriptions = room->getDescriptions();
+    for (auto &description : descriptions){
+        outputString << indentation << description << "\n";
+    }
+
+    return outputString.str();
+}
+
+std::string RoomController::getAllDoorInformationInRoom(ID roomId) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        static std::string roomNotFoundMessage = "Room does not exist.";
+        return roomNotFoundMessage;
+    }
+
+    std::stringstream outputString;
+    std::string indentation = "    ";
+    outputString << "Direction Information:\n";
+    auto doorList = room->getDoorList();
+    for (const auto &door: doorList){
+        ID doorId = door.getId();
+        outputString << indentation <<door.getDirection() << " ";
+        if (door.getStatus()){
+            outputString << "(Unlocked)";
+        }else{
+            outputString << "(Locked)";
+        }
+        outputString << "\n";
+    }
+
+    return outputString.str();
 }
 
 ID RoomController::getDoorIdByDirection(ID roomId, const std::string &direction) {

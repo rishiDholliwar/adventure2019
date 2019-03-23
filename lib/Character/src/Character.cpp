@@ -11,6 +11,11 @@ Character::Character(const Name &name, ID roomID)
   this->inventory = Inventory{};
   this->confused = false;
   this->wearing = std::vector<Object>();
+
+  //testing purpose
+  descriptions.emplace_back("testing description1");
+  descriptions.emplace_back("testing description2");
+  extendedDescriptions.emplace_back("testing extended description");
 }
 
 Name Character::getName() const {

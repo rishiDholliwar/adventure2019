@@ -11,11 +11,15 @@ Room::Room(ID id, const Name& name){
 */
 
 void Room::addDescription(const std::string& description) {
-    this->descriptions.push_back(description);
+    descriptions.push_back(description);
 }
 
 void Room::addExtendedDescription(const std::string& extDescription) {
-    this->extendedDescriptions.push_back(extDescription);
+    extendedDescriptions.push_back(extDescription);
+}
+
+void Room::addKeywords(const std::string &keyword) {
+    keywords.push_back(keyword);
 }
 
 bool Room::addCharacter(ID characterId) {
@@ -75,40 +79,6 @@ bool Room::removeDoor(ID doorId) {
         list.erase(it);
 
     return size != list.size();
-}
-
-std::string Room::getTextOfRoomDetails() {
-    std::stringstream outputString;
-    outputString << "Room ID: " << this->getId() << "\n" <<
-                    "Room Name: " << this->getName() << "\n";
-
-    for (auto &description : this->descriptions){
-        outputString << description << "\n";
-    }
-
-    for (auto &description : this->extendedDescriptions){
-        outputString << description << "\n";
-    }
-
-    outputString << getTextOfDoorDetails();
-    return outputString.str();
-}
-
-std::string Room::getTextOfDoorDetails() {
-    std::stringstream outputString;
-    outputString << "Doors ID, Direction, Destination, Status\n";
-    for (const auto &door: this->doorList){
-        ID doorId = door.getId();
-        outputString << doorId << ", " << door.getDirection() <<
-                        ", " << door.getDesignatedRoomId() << ", ";
-        if (door.getStatus()){
-            outputString << "Unlocked";
-        }else{
-            outputString << "Locked";
-        }
-        outputString << "\n";
-    }
-    return outputString.str();
 }
 
 Door* Room::searchDoor(ID doorId) {

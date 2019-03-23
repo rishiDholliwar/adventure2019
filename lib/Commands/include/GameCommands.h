@@ -196,6 +196,28 @@ public:
     std::string help() override;
 };
 
+class Move : public Command
+{
+private:
+    Name username;
+    Input target;
+    std::vector<std::string> interactions;
+    RoomController* roomController;
+public:
+    explicit
+    Move(CharacterController* characterController,RoomController* roomController, Name username = "", Input target = "", Connection connection = Connection{})
+            : username(std::move(username)), target(std::move(target)) {
+        this->characterController = characterController;
+        this->roomController = roomController;;
+        registerCallback = false;
+    };
+
+    ~Move() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+};
 
 
 
