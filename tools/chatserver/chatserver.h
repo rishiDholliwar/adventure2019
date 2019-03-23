@@ -31,7 +31,7 @@ private:
   ObjectController _objectController;
   NPCController _npcController;
   std::unique_ptr<Server> _server;
-  std::unique_ptr<CommandHandler> _commandHandler;
+  CommandHandler _commandHandler;
   std::unique_ptr<Scheduler> _scheduler;
 
   std::vector<Connection> _clients;

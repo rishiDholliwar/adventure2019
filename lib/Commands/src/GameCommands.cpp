@@ -352,7 +352,7 @@ std::pair<std::vector<Response>, bool> Confuse::execute(){
     }
 
     Name targetUserName = characterController->getUsernameOfCharacter(target);
-    
+
     characterController->confuseCharacter(targetUserName);
 
     Response userResponse = Response("Successfully confused!", username);
@@ -462,10 +462,6 @@ std::unique_ptr<Command> Swap::clone(Name username, Input target, Connection con
 std::unique_ptr<Command> Swap::clone() const {
     auto swap = std::make_unique<Swap>(this->characterController, this->username, this->target);
     return std::move(swap);
-}
-
-std::string Swap::help() {
-    return "/swap [target username] - swap with the target character with this username";
 }
 
 std::pair<std::vector<Response>, bool> Move::execute() {
@@ -610,7 +606,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
 std::unique_ptr<Command> Look::clone() const {
     auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
-            this->npcController, this->username, this->target);
+                                       this->npcController, this->username, this->target);
     return std::move(look);
 }
 
@@ -681,7 +677,7 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
 
 std::unique_ptr<Command> Examine::clone() const {
     auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
-                                       this->npcController, this->username, this->target);
+                                             this->npcController, this->username, this->target);
     return std::move(examine);
 }
 
@@ -693,4 +689,36 @@ std::unique_ptr<Command> Examine::clone(Name username, Input target, Connection 
 
 std::string Examine::help() {
     return "/look [target] - get detailed description of the target.";
+}
+
+std::string Swap::help() {
+    return "/swap [target username] - swap with the target character with this username";
+}
+
+std::pair<std::vector<Response>, bool> Help::execute() {
+    const auto commands = commandHandler->getAllCommands();
+    std::ostringstream os;
+    os << "Commands: \n";
+    for(const auto& command : commands) {
+        os << command->help() << "\n";
+    }
+
+    Response userResponse = Response(os.str(), username);
+
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Help::clone(Name username, Input input, Connection connection = Connection{}) const {
+    auto help = std::make_unique<Help>(this->characterController, this->commandHandler, username, input);
+    return std::move(help);
+}
+
+std::unique_ptr<Command> Help::clone() const {
+    auto help = std::make_unique<Help>(this->characterController, this->commandHandler, this->username, this->input);
+    return std::move(help);
+}
+
+std::string Help::help() {
+    return "/help - 911 what is your emergency?";
 }
