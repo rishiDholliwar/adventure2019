@@ -46,7 +46,7 @@ public:
 
     std::string sendDuplicateRequestMsg(const Name &joiner);
 
-    std::string selfAttack();
+    std::string selfAttackMsg();
 
     std::string sendThreatMsg();
 

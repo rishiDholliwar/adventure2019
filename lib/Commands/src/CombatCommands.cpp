@@ -86,7 +86,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     //character is attacking himself
     if (character.getName() == targetName) {
-        std::string userOutput = combatController->selfAttack();
+        std::string userOutput = combatController->selfAttackMsg();
         Response userResponse = Response(commandName + userOutput, username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);

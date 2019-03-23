@@ -28,7 +28,6 @@ std::string Combat::getPendingNames() {
     for (auto &character : fighters) {
         if (character.getName() != owner) {
             output += character.getName();
-            //output += ", ";
         }
     }
 

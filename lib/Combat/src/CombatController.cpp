@@ -181,6 +181,6 @@ std::string CombatController::sendTargetFightingMsg(const Name &target) {
     return target + " accepts the fight\n";
 }
 
-std::string CombatController::selfAttack() {
+std::string CombatController::selfAttackMsg() {
     return "\tYou committed suicide";
 }
