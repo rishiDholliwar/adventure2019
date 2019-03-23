@@ -42,7 +42,7 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
 
     //print characters the user has entered
     for (auto &targetName: inputs) {
-        if (roomController->isTargetInRoom(username,character.getRoomID(), targetName)) {
+        if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
             Character targetCharacter = characterController->getCharacter(targetName);
             output += targetCharacter.examineCombat();
             output += "\n";
@@ -58,13 +58,13 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
 }
 
 std::unique_ptr<Command> CombatExamine::clone(Name username, Input input, Connection connection = Connection{}) const {
-    return std::make_unique<CombatExamine>(this->userController, this->characterController, this->roomController,
-                                           this->objectController, this->combatController, username, input, connection);
+    return std::make_unique<CombatExamine>(this->characterController, this->roomController,
+                                           this->combatController, username, input, connection);
 }
 
 std::unique_ptr<Command> CombatExamine::clone() const {
-    return std::make_unique<CombatExamine>(this->userController, this->characterController, this->roomController,
-                                           this->objectController, this->combatController, this->username, this->input,
+    return std::make_unique<CombatExamine>(this->characterController, this->roomController,
+                                           this->combatController, this->username, this->input,
                                            this->connection);
 }
 
@@ -92,7 +92,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
-    if (roomController->isTargetInRoom(username,character.getRoomID(), targetName)) {
+    if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
@@ -154,13 +154,13 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 }
 
 std::unique_ptr<Command> CombatAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
-    return std::make_unique<CombatAttack>(this->userController, this->characterController, this->roomController,
-                                          this->objectController, this->combatController, username, input, connection);
+    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
+                                          this->combatController, username, input, connection);
 }
 
 std::unique_ptr<Command> CombatAttack::clone() const {
-    return std::make_unique<CombatAttack>(this->userController, this->characterController, this->roomController,
-                                          this->objectController, this->combatController, this->username, this->input,
+    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
+                                          this->combatController, this->username, this->input,
                                           this->connection);
 }
 
@@ -182,13 +182,13 @@ std::pair<std::vector<Response>, bool> CombatBattles::execute() {
 }
 
 std::unique_ptr<Command> CombatBattles::clone(Name username, Input input, Connection connection = Connection{}) const {
-    return std::make_unique<CombatBattles>(this->userController, this->characterController, this->roomController,
-                                           this->objectController, this->combatController, username, input, connection);
+    return std::make_unique<CombatBattles>(this->characterController, this->roomController,
+                                           this->combatController, username, input, connection);
 }
 
 std::unique_ptr<Command> CombatBattles::clone() const {
-    return std::make_unique<CombatBattles>(this->userController, this->characterController, this->roomController,
-                                           this->objectController, this->combatController, this->username, this->input,
+    return std::make_unique<CombatBattles>(this->characterController, this->roomController,
+                                           this->combatController, this->username, this->input,
                                            this->connection);
 }
 

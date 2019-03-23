@@ -30,9 +30,9 @@ void Game::registerCommands() {
     _commandHandler->registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler->registerCommand("/commands", CommandLister(&_characterController).clone());
     //For combat
-    _commandHandler->registerCommand("/combat", CombatExamine(&_userController, &_characterController, &_roomController, &_objectController, &_combatController).clone());
-    _commandHandler->registerCommand("/attack", CombatAttack(&_userController, &_characterController, &_roomController, &_objectController, &_combatController).clone());
-    _commandHandler->registerCommand("/battles", CombatBattles(&_userController, &_characterController, &_roomController, &_objectController, &_combatController).clone());
+    _commandHandler->registerCommand("/combat", CombatExamine(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler->registerCommand("/attack", CombatAttack(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler->registerCommand("/battles", CombatBattles(&_characterController, &_roomController, &_combatController).clone());
 
 }
 
@@ -179,58 +179,7 @@ main(int argc, char *argv[]) {
                   << "    e.g. " << argv[0] << " 4002 ./webchat.html\n";
         return 1;
     }
-    using namespace std;
-////////////////////////////
 
-    std::string fileName = "mirkwood";
-
-    if (JSONObjects::fileExists(fileName)) {
-        cout << "file exists\n";
-    } else {
-        cout << "error, no such file\n";
-    }
-
-    std::vector<Object> objects = JSONObjects::getObjects(fileName);
-
-    // for (auto &obj : objects) {
-    //     std::cout << "ID: " << obj.getID() << std::endl;
-
-    //     std::cout << "Type: " << obj.getName() << std::endl;
-
-    //     std::cout << "Abilities: " << std::endl;
-    //     for (auto &a : obj.getAbilities()) {
-    //       std::cout << "\t" << a.first << ", " << a.second << std::endl;
-    //     }
-
-    //     std::cout << " Keywords: " << std::endl;
-    //     for (auto &kw : obj.getKeywords()) {
-    //         std::cout << "\t" << kw << std::endl;
-    //     }
-
-    //     std::cout << " Shortdesc: " << obj.getShortDesc() << std::endl;
-
-    //     std::cout << " Longdesc: " << std::endl;
-    //     for (auto &ld : obj.getLongDesc()) {
-    //         std::cout << "\t" << ld << std::endl;
-    //     }
-
-    //     std::cout << " Extra: " << std::endl;
-    //     std::cout << "\tKeywords: " << std::endl;
-    //     for (auto &ekw : obj.getExtraKeywords()) {
-    //         std::cout << " \t" << ekw << std::endl;
-    //     }
-
-    //     std::cout << std::endl;
-
-    //     std::cout << "\tDesc: " << std::endl;
-    //     for (auto &ed : obj.getExtraDesc()) {
-    //         std::cout << " \t" << ed << std::endl;
-    //     }
-
-    //     std::cout << std::endl;
-    // }
-
-/////////////////////////////
     unsigned short port = std::stoi(argv[1]);
     auto webpage = getHTTPMessage(argv[2]);
 
