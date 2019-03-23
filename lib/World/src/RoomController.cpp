@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include <RoomController.h>
 
@@ -7,14 +6,24 @@ RoomController::RoomController(){
     generateRoom(1001, "Room2");
     generateRoom(1002, "Room3");
     generateRoom(1003, "Room4");
+    generateRoom(1004, "Room5");
+    generateRoom(1005, "Room6");
+    generateRoom(1006, "Room7");
 
-    addDoorToRoom(1000, 1, 1001, "up");
-    addDoorToRoom(1000, 2, 1002, "north");
-    addDoorToRoom(1000, 3, 1003, "south");
+    addDoorToRoom(1000, 1, 1001, "Up");
+    addDoorToRoom(1000, 2, 1002, "East");
+    addDoorToRoom(1000, 3, 1003, "West");
+    addDoorToRoom(1000, 4, 1004, "South");
+    addDoorToRoom(1000, 5, 1005, "North");
+    addDoorToRoom(1000, 6, 1006, "Down");
 
-    addDoorToRoom(1001, 1, 1000, "down");
-    addDoorToRoom(1002, 1, 1000, "south");
-    addDoorToRoom(1003, 1, 1000, "north");
+    addDoorToRoom(1001, 1, 1000, "Down");
+    addDoorToRoom(1002, 1, 1000, "West");
+    addDoorToRoom(1003, 1, 1000, "East");
+    addDoorToRoom(1004, 1, 1000, "North");
+    addDoorToRoom(1005, 1, 1000, "South");
+    addDoorToRoom(1006, 1, 1000, "Up");
+
 
     auto room = searchRoom(1000);
     room->addDescription("Test description 1.");
