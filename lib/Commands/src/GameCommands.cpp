@@ -469,7 +469,7 @@ std::string Swap::help() {
 }
 
 std::pair<std::vector<Response>, bool> Move::execute() {
-    auto direction = target;
+
     std::cout << "Move: " << direction << std::endl;
 
     AlterSpace::ID roomId = characterController->getCharacterRoomID(username);
@@ -513,15 +513,107 @@ std::pair<std::vector<Response>, bool> Move::execute() {
 }
 
 std::unique_ptr<Command> Move::clone() const {
-    auto move = std::make_unique<Move>(this->characterController, this->roomController, this->username, this->target);
+    auto move = std::make_unique<Move>(this->characterController, this->roomController, this->username, this->direction);
     return std::move(move);
 }
 
-std::unique_ptr<Command> Move::clone(Name username, Input target, Connection connection) const {
-    auto move = std::make_unique<Move>(this->characterController, this->roomController, username, target);
+std::unique_ptr<Command> Move::clone(Name username, Input direction, Connection connection) const {
+    auto move = std::make_unique<Move>(this->characterController, this->roomController, username, direction);
     return std::move(move);
 }
 
 std::string Move::help() {
-    return "/move [target direction] - move to the target direction";
+    return "/move [direction] - move to the target direction";
+}
+
+std::pair<std::vector<Response>, bool> Look::execute() {
+    std::stringstream ss;
+    AlterSpace::ID roomId = characterController->getCharacterRoomID(username);
+
+    auto usernameList = roomController->getUsernameList(roomId);
+    auto npcList = roomController->getCharacterList(roomId);
+    auto objectList = roomController->getObjectList(roomId);
+
+    // with no argument
+    if (target.empty()){
+        ss << roomController->getRoomDescription(roomId);
+
+        // format username into string stream
+        ss << "Users in room: \n";
+        for (const auto& usernameInList : usernameList){
+            ss << "\t" << usernameInList << "\n";
+        }
+
+        // format character name into string stream
+        ss << "NPCs in room: \n";
+        for (const ID npcId : npcList){
+            ss <<  "\t" <<npcController->getNPCName(npcId)<< "\n";
+        }
+
+        // format object name into string stream
+        ss << "Items in room: \n";
+        for (const ID objectId : objectList){
+            ss << "\t" <<objectController->getObjectName(objectId) << "\n";
+        }
+
+        ss << roomController->getAllDoorInformationInRoom(roomId);
+
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    // with argument
+
+    int index = 1;
+
+    // search user
+    for (auto &usernameInList : usernameList){
+        if (usernameInList == target) {
+            ss << index << ". " << usernameInList << "\n" <<characterController->lookCharacter(usernameInList) << "\n";
+            index += 1;
+        }
+    }
+
+    // search npc
+    for (const ID npcId : npcList){
+        Name npcName = npcController->getNPCName(npcId);
+        if (npcName == target) {
+            ss << index << ". " << npcName << "\n" << npcController->lookNPC(npcId) << "\n";
+            index += 1;
+        }
+    }
+
+    // search object
+    for (const ID objectId : objectList){
+        Name objectName = objectController->getObjectName(objectId);
+        if (objectName == target)
+            ss << index <<". " << objectName << "\n" << objectController->lookItem(objectId)<< "\n";
+    }
+
+    if (index == 1){
+        Response userResponse = Response("Target not found.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    Response userResponse = Response(ss.str(), username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Look::clone() const {
+    auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
+            this->npcController, this->username, this->target);
+    return std::move(look);
+}
+
+std::unique_ptr<Command> Look::clone(Name username, Input target, Connection connection) const {
+    auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
+                                       this->npcController, username, target);
+    return std::move(look);
+}
+
+std::string Look::help() {
+    return "/look [target] - get short description of the target, or use /look to get short description about the room.";
 }

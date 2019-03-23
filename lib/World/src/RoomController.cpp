@@ -160,7 +160,7 @@ std::string RoomController::getRoomDescription(ID roomId) {
     }
 
     std::stringstream outputString;
-    std::string indentation = "    ";
+    std::string indentation = "\t";
     outputString << "Room Name: " << room->getName() << "\n";
 
     auto descriptions = room->getDescriptions();
@@ -179,7 +179,7 @@ std::string RoomController::getAllDoorInformationInRoom(ID roomId) {
     }
 
     std::stringstream outputString;
-    std::string indentation = "    ";
+    std::string indentation = "\t";
     outputString << "Direction Information:\n";
     auto doorList = room->getDoorList();
     for (const auto &door: doorList){

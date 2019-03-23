@@ -29,6 +29,7 @@ private:
   CharacterController _characterController;
   RoomController _roomController;
   ObjectController _objectController;
+  NPCController _npcController;
   std::unique_ptr<Server> _server;
   std::unique_ptr<CommandHandler> _commandHandler;
   std::unique_ptr<Scheduler> _scheduler;

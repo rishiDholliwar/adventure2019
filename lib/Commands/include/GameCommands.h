@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <Server.h>
+#include <NPCController.h>
 
 using AlterSpace::Name;
 using AlterSpace::Input;
@@ -196,20 +197,20 @@ public:
     std::string help() override;
 };
 
+//move
 class Move : public Command
 {
 private:
     Name username;
-    Input target;
+    Input direction;
     std::vector<std::string> interactions;
     RoomController* roomController;
 public:
     explicit
-    Move(CharacterController* characterController,RoomController* roomController, Name username = "", Input target = "", Connection connection = Connection{})
-            : username(std::move(username)), target(std::move(target)) {
+    Move(CharacterController* characterController,RoomController* roomController, Name username = "", Input direction = "", Connection connection = Connection{})
+            : username(std::move(username)), direction(std::move(direction)) {
         this->characterController = characterController;
         this->roomController = roomController;;
-        registerCallback = false;
     };
 
     ~Move() = default;
@@ -219,6 +220,35 @@ public:
     std::string help() override;
 };
 
+//look
+class Look : public Command
+{
+private:
+    RoomController* roomController;
+    ObjectController* objectController;
+    NPCController* npcController;
+    Name username;
+    Input target;
+    std::vector<std::string> interactions;
+    void setInteractions(std::vector<std::string> i);
+public:
+    explicit
+    Look(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
+            NPCController* npcController, Name username = "", Input target = "", Connection connection = Connection{})
+            : username(std::move(username)), target(std::move(target)) {
+        this->characterController = characterController;
+        this->roomController = roomController;;
+        this->objectController = objectController;
+        this->npcController = npcController;
+        registerInteraction = true;
+    };
+
+    ~Look() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+};
 
 
 #endif //ALTERSPACE_GAMECOMMANDS_H

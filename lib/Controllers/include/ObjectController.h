@@ -43,6 +43,8 @@ public:
      * */
     const Object &getObjectFromList(const ID objectID) const;
 
+    Name getObjectName(const ID objectID){ return getObjectFromList(objectID).getName();};
+
     // look and examine
     std::string lookItem(ID objectID);
     std::string examineItem(ID objectID);
