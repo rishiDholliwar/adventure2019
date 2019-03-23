@@ -352,7 +352,7 @@ std::pair<std::vector<Response>, bool> Confuse::execute(){
     }
 
     Name targetUserName = characterController->getUsernameOfCharacter(target);
-    
+
     characterController->confuseCharacter(targetUserName);
 
     Response userResponse = Response("Successfully confused!", username);
@@ -468,3 +468,30 @@ std::string Swap::help() {
     return "/swap [target username] - swap with the target character with this username";
 }
 
+std::pair<std::vector<Response>, bool> Help::execute() {
+    const auto commands = commandHandler->getAllCommands();
+    std::ostringstream os;
+    os << "Commands: \n";
+    for(const auto& command : commands) {
+        os << command->help() << "\n";
+    }
+
+    Response userResponse = Response(os.str(), username);
+
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Help::clone(Name username, Input input, Connection connection = Connection{}) const {
+    auto help = std::make_unique<Help>(this->characterController, this->commandHandler, username, input);
+    return std::move(help);
+}
+
+std::unique_ptr<Command> Help::clone() const {
+    auto help = std::make_unique<Help>(this->characterController, this->commandHandler, this->username, this->input);
+    return std::move(help);
+}
+
+std::string Help::help() {
+    return "/help - 911 what is your emergency?";
+}
