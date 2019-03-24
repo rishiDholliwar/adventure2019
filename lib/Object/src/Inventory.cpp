@@ -94,3 +94,7 @@ std::string Inventory::listInventory()
     return inventoryList.str();
 
 }
+
+const std::vector<Object>& Inventory::getObjects() const {
+    return objects;
+}

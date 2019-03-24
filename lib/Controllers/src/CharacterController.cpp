@@ -25,6 +25,12 @@ bool CharacterController::addCharacter(Name &username, RoomController &roomContr
     return _characters.emplace(username,dummyCharacter).second;
 }
 
+bool CharacterController::addCharacter(Character &aCharacter) {
+    Name username = aCharacter.getName();
+
+    return _characters.emplace(username, aCharacter).second;
+}
+
 bool CharacterController::removeCharacter(Name &username){
     return _characters.erase(username) > 0;
 }

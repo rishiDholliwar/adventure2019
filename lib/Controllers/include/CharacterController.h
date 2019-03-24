@@ -34,6 +34,8 @@ public:
     */
     bool addCharacter(Name &username, RoomController &roomController, ObjectController &objectController);
 
+    bool addCharacter(Character &aCharacter);
+
     /*
      * Remove user from the list of characters
      *

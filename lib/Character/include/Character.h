@@ -24,12 +24,32 @@ private:
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
 public:
-    Character(const Name &name, ID roomID);
+    Character() = default;
+    Character(Name name, ID roomID) : name(std::move(name)), roomID(roomID)
+    {
+        this->inventory = Inventory{};
+        this->confused = false;
+        this->wearing = std::vector<Object>();
+    }
+
+    Character(Name name, ID roomID, Inventory inventory, std::vector<Object> wearing) :
+            name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
+        this->confused = false;
+    }
+
     Name getName() const;
     ID getRoomID() const;
     ID getID() const;
     std::string getInfo() const;
-    bool isConfused();
+    bool isConfused() const;
+
+    const Inventory &getInventory() const;
+
+    void setInventory(const Inventory &inventory);
+
+    const std::vector<Object> &getWearing() const;
+
+    void setWearing(const std::vector<Object> &wearing);
 
     void setRoomID(ID roomID);
 

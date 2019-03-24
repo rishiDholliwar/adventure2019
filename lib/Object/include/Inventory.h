@@ -23,6 +23,7 @@ public:
 
     Inventory() = default;
 
+    Inventory(std::vector<Object> objects) : objects(objects) {};
     /* Add Item:
      *
      * Function: adds item to inventory
@@ -86,6 +87,8 @@ public:
      *
      * */
     std::string listInventory();
+
+    const std::vector<Object>& getObjects() const;
 };
 
 
