@@ -93,6 +93,14 @@ class RoomController {
          * return the Door object, return nullptr if doorId not found
          */
         Door* searchDoor(ID roomId, ID doorId);
+        
+        /*
+         * Function: Return IDs of all adjacent rooms
+         * 
+         * Pre-Condition: Input a room ID
+         * Post-Condition: Return id of adjacent rooms
+         */
+        std::vector<ID> adjacentRoomIDs(ID roomID);
 
         // Validity checkers
 //        bool roomExists(ID roomId);
