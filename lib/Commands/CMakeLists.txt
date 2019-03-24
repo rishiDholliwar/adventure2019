@@ -17,6 +17,7 @@ target_include_directories(commands
 target_link_libraries(commands
   PRIVATE
     jsonThingy
+    commandHandler
     networking
     gameController
     userController

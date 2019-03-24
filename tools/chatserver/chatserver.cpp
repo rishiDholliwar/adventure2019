@@ -23,16 +23,17 @@
 #include <UserCommands.h>
 
 void Game::registerCommands() {
-    _commandHandler->registerCommand("/say", Say(&_characterController, &_roomController).clone());
-    _commandHandler->registerCommand("/tell", Tell(&_characterController).clone());
-    _commandHandler->registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
-    _commandHandler->registerCommand("/inventory", DisplayInventory(&_characterController).clone());
-    _commandHandler->registerCommand("/give", Give(&_characterController, &_objectController).clone());
-    _commandHandler->registerCommand("/swap", Swap(&_characterController).clone());
-    _commandHandler->registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
-    _commandHandler->registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
-    _commandHandler->registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
-    _commandHandler->registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/say", Say(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/tell", Tell(&_characterController).clone());
+    _commandHandler.registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand("/inventory", DisplayInventory(&_characterController).clone());
+    _commandHandler.registerCommand("/give", Give(&_characterController, &_objectController).clone());
+    _commandHandler.registerCommand("/swap", Swap(&_characterController).clone());
+    _commandHandler.registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
 }
 
 void
@@ -102,7 +103,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             text = tempInputParser.at(1);
         }
 
-        auto command = _commandHandler->getCommand(username, invocationWord, text, message.connection);
+        auto command = _commandHandler.getCommand(username, invocationWord, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
             std::cout << "command is nullptr" << std::endl;
@@ -155,7 +156,7 @@ Game::Game(Config config)
                                         [this](Connection c){this->removeConnection(c);});
     _gameController = GameController();
     _userController = UserController();
-    _commandHandler = std::make_unique<CommandHandler>();
+    _commandHandler = CommandHandler();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
     this->registerCommands();
 }
