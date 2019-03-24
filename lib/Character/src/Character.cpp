@@ -159,12 +159,11 @@ unsigned int Character::getCurrentHP() const {
 }
 
 void Character::setCurrentHP(unsigned int currentHP) {
-    if(currentHP <=0){
-
-    }  else {
-        Character::currentHP = 0;
+    if(currentHP <0){
+        currentHP = 0;
     }
-    Character::currentHP = currentHP;
+
+    this->currentHP = currentHP;
 }
 
 unsigned int Character::getAttack() const {
@@ -180,7 +179,7 @@ unsigned int Character::getDefense() const {
 }
 
 void Character::setDefense(unsigned int defense) {
-    Character::defense = defense;
+    this->defense = defense;
 }
 
 unsigned int Character::getMaxHP() const {
@@ -188,7 +187,7 @@ unsigned int Character::getMaxHP() const {
 }
 
 void Character::setMaxHP(unsigned int maxHP) {
-    Character::maxHP = maxHP;
+    this->maxHP = maxHP;
 }
 
 std::string Character::examineCombat() {
