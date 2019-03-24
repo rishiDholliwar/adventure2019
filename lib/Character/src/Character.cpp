@@ -25,6 +25,10 @@ std::string Character::getInfo() const {
 	return retString.str();
 }
 
+std::vector<Object> Character::getItemsFromInventory(Name objectName) {
+    return inventory.getItems(objectName);
+}
+
 Object Character::getItemFromInventory(Name objectName) {
     return inventory.getItem(objectName);
 }

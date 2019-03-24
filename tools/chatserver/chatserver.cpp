@@ -26,6 +26,8 @@ void Game::registerCommands() {
     _commandHandler->registerCommand("/say", Say(&_characterController, &_roomController).clone());
     _commandHandler->registerCommand("/tell", Tell(&_characterController).clone());
     _commandHandler->registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
+    _commandHandler->registerCommand("/inventory", DisplayInventory(&_characterController).clone());
+    _commandHandler->registerCommand("/give", Give(&_characterController, &_objectController).clone());
     _commandHandler->registerCommand("/swap", Swap(&_characterController).clone());
     _commandHandler->registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
     _commandHandler->registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
@@ -103,6 +105,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         auto command = _commandHandler->getCommand(username, invocationWord, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
+            std::cout << "command is nullptr" << std::endl;
             Message msg{message.connection, output};
             result.push_back(msg);
             continue;

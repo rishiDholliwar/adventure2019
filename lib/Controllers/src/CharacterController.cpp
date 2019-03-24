@@ -103,6 +103,10 @@ bool CharacterController::dropItemFromCharacterInventory(Name &username, ID obje
     return getCharacter(username).dropItem(objectID);
 }
 
+std::vector<Object> CharacterController::getItemsFromCharacterInventory(Name &username, Name itemName) {
+    return getCharacter(username).getItemsFromInventory(itemName);
+}
+
 Object CharacterController::getItemFromCharacterInventory(Name &username, Name itemName) {
     return getCharacter(username).getItemFromInventory(itemName);
 }

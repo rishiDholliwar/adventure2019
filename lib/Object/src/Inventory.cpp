@@ -39,6 +39,19 @@ bool Inventory::doesItemExist(Name objectName)
     return getItemIterator(objectName) != objects.end();
 }
 
+std::vector<Object> Inventory::getItems(Name& objectName)
+{
+    std::vector<Object> items;
+
+    for (auto &obj : objects) {
+        if (obj.getName() == objectName) {
+            items.push_back(obj);
+        }
+    }
+
+    return items;
+}
+
 Object Inventory::getItem(Name& objectName)
 {
 
@@ -69,8 +82,17 @@ bool Inventory::removeItem(ID objectID)
 
 std::string Inventory::listInventory()
 {
-    return "WOW";
-    // next merge will have this function
+    int objectCount = 1;
+
+    std::stringstream inventoryList;
+
+    for (auto &obj : objects) {
+
+        inventoryList << objectCount++ << ". " << obj.getName() << "\n";
+    }
+
+    return inventoryList.str();
+
 }
 
 const std::vector<Object>& Inventory::getObjects() const {

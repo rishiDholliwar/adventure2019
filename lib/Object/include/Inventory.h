@@ -54,6 +54,8 @@ public:
      * */
     bool doesItemExist(Name objectName);
 
+    std::vector<Object> getItems(Name& objectName);
+
     /* Get Item By Name:
      *
      * Function: Checks to see if user has such the item and returns the item if true
