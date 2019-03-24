@@ -21,6 +21,7 @@ public:
     std::vector<ID> const& getCharacterList() const{return characterList;};
     std::vector<ID> const& getObjectList() const{return objectList;};
     std::vector<Name> const& getUsernameList() const{return usernameList;};
+    std::vector<Door> const& getDoorList() const {return doorList;};
 
     // Adders
     void addDescription(const std::string& description);
@@ -68,6 +69,7 @@ public:
      */
     Door* searchDoor(ID doorId);
     Door* searchDoorByDirection(const std::string& direction);
+
 
 private:
     ID  id;

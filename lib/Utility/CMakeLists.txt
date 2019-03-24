@@ -67,6 +67,11 @@ target_link_libraries(jsonObjects
         Object
         )
 
+target_link_libraries(returnCode
+    PUBLIC
+        networking
+        )
+
 target_include_directories(uniqueID
   PUBLIC
     $<INSTALL_INTERFACE:include>

@@ -140,6 +140,8 @@ public:
     */
     bool dropItemFromCharacterInventory(Name &username, ID objectID);
 
+    std::vector<Object> getItemsFromCharacterInventory(Name &username, Name itemName);
+
     /*
      * obtain item from users inventory
      *

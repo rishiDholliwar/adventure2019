@@ -16,6 +16,7 @@ target_include_directories(commands
 
 target_link_libraries(commands
   PRIVATE
+    commandHandler
     networking
     gameController
     userController

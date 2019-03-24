@@ -73,6 +73,9 @@ std::vector<ID> RoomController::getRoomIdList() const {
     return integerRoomList;
 }
 
+
+
+
 /*
  * Adders
  */
@@ -221,4 +224,18 @@ Door* RoomController::searchDoor(ID roomId, ID doorId) {
         return nullptr;
     }
     return room->searchDoor(doorId);
+}
+
+std::vector<ID> RoomController::adjacentRoomIDs(ID roomID) {
+    auto room = RoomController::searchRoom(roomID);
+    if (room == nullptr){
+        static std::vector<ID> emptyIDVector;
+        return emptyIDVector;
+    }
+    std::vector<ID> adjacentRoomID;
+    for(auto& door: room->getDoorList()){
+        adjacentRoomID.push_back(door.getDesignatedRoomId());
+    }
+
+    return adjacentRoomID;
 }
