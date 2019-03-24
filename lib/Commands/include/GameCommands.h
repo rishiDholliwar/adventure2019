@@ -139,6 +139,30 @@ public:
 };
 
 
+//yell
+class Yell : public Command
+{
+private:
+    Name username;
+    Input input;
+    Connection connection;
+public:
+    explicit
+    Yell(CharacterController* characterController,
+    Name username = "", Input input = "", Connection connection = Connection{})
+    :
+    username(std::move(username)), input(std::move(input)), connection(connection) {
+        this->characterController = characterController;
+    };
+
+    ~Yell() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
+    std::string help() override;
+
+
+};
 
 
 #endif //ALTERSPACE_GAMECOMMANDS_H

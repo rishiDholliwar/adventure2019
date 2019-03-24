@@ -77,6 +77,44 @@ std::string Tell::help() {
     return "/tell [target] [message] - Send a message to a specific player in the world";
 };
 
+//Yell
+std::pair<std::vector<Response>, bool> Yell::execute() {
+    RoomController *roomController;
+    ID characterRoomID = characterController->getCharacterRoomID(username);
+
+    std::vector<std::string> recipients;
+
+    //Get list of usernames in current room
+    for(auto const& value : roomController->getUsernameList(characterRoomID)){
+
+        Name recepientUsername = characterController->getUsernameOfCharacter(const_cast<Name &>(value));
+        if(recepientUsername!=username){
+            recipients.push_back(recepientUsername);
+        }
+    }
+
+    //TODO::For each adjacent room, add character names to recipients
+
+    Response userResponse = Response("Me: " + input, username);
+    std::string genericMessage = username + ": " + input;
+    auto res = formulateResponse(userResponse, recipients, genericMessage);
+
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Yell::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<Yell>( this->characterController,
+                                        username, input, connection);
+}
+
+std::unique_ptr<Command> Yell::clone() const {
+    return std::make_unique<Yell>( this->characterController,
+                                        this->username, this->input, this->connection);
+}
+
+std::string Yell::help() {
+    return "/yell- sends a message to everyone in the current room as well as adjacent rooms.";
+}
 
 
 // whisper
