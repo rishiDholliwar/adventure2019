@@ -39,7 +39,7 @@ public:
 
     Combat(Character &owner) {
         srand(static_cast<unsigned int>(time(0)));
-        setPendingState();
+        setState(STATE::PENDING);
         this->owner = owner.getName();
         addFighter(owner);
     };
@@ -83,11 +83,7 @@ private :
 
     Character &getFighter(int i);
 
-    void setPendingState();
-
-    void setCombatState();
-
-    void setEndState();
+    void setState(STATE state);
 
     double attackMultiplier();
 

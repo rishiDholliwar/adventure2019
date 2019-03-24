@@ -171,7 +171,7 @@ unsigned int Character::getAttack() const {
 }
 
 void Character::setAttack(unsigned int attack) {
-    Character::attack = attack;
+    this->attack = attack;
 }
 
 unsigned int Character::getDefense() const {
@@ -194,7 +194,7 @@ std::string Character::examineCombat() {
     std::stringstream output;
 
     output << "\tName: " << name << "\n"
-           << "\tcurrentHP: " << currentHP + "\n"
+           << "\tcurrentHP: " << std::to_string(currentHP) + "\n"
            //<< "\t\tcurrentMP: " << currentMP << + "\n"
            << "\tmaxHP: " << maxHP << "\n"
            //<< "\t\tmaxMP: " << maxMP << std::endl

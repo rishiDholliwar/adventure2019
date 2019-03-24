@@ -75,7 +75,7 @@ void Combat::updateFighters(Character &f1, Character &f2) {
 }
 
 std::string Combat::runCombat() {
-    setCombatState();
+    setState(STATE::COMBAT);
     int roundCounter = 0;
     bool isWinner = false;
     std::stringstream output;
@@ -95,7 +95,7 @@ std::string Combat::runCombat() {
                 output << printWinner(attacker);
                 output << "\n";
                 isWinner = true;
-                setEndState();
+                setState(STATE::END);
                 break;
             }
         } //end for
@@ -188,16 +188,8 @@ Character &Combat::getFighter(int i) {
     return fighters[i];
 }
 
-void Combat::setPendingState() {
-    currentState = STATE::PENDING;
-}
-
-void Combat::setCombatState() {
-    currentState = STATE::COMBAT;
-}
-
-void Combat::setEndState() {
-    currentState = STATE::END;
+void Combat::setState(Combat::STATE state) {
+    currentState = state;
 }
 
 bool Combat::isPendingState() {
