@@ -4,13 +4,12 @@
 #include <sstream>
 #include <ios>
 
-Character::Character(const Name &name, ID roomID)
-{
-  this->name = name;
-  this->roomID = roomID;
-  this->inventory = Inventory{};
-  this->confused = false;
-  this->wearing = std::vector<Object>();
+Character::Character(const Name &name, ID roomID) {
+    this->name = name;
+    this->roomID = roomID;
+    this->inventory = Inventory{};
+    this->confused = false;
+    this->wearing = std::vector<Object>();
 }
 
 Name Character::getName() const {
@@ -27,11 +26,12 @@ ID Character::getID() const {
 
 std::string Character::getInfo() const {
 
-  std::stringstream retString;
-  retString << "ID: " << getID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n" << listWearing() << "Room ID: " << getRoomID() << "\n";
+    std::stringstream retString;
+    retString << "ID: " << getID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n" << listWearing()
+              << "Room ID: " << getRoomID() << "\n";
 
 
-	return retString.str();
+    return retString.str();
 }
 
 std::vector<Object> Character::getItemsFromInventory(Name objectName) {
@@ -64,17 +64,17 @@ bool Character::hasItem(Name &objectName) {
 
 std::vector<Object>::iterator Character::getWearingIterator(ID objectId) {
     auto it = find_if(wearing.begin(), wearing.end(),
-                      [ objectId] ( Object const& obj )->bool {
+                      [objectId](Object const &obj) -> bool {
                           return obj.getID() == objectId;
-                        });
+                      });
     return it;
 }
 
 std::vector<Object>::iterator Character::getWearingIterator(Name objectName) {
     auto it = find_if(wearing.begin(), wearing.end(),
-                      [ objectName ] ( Object const& obj )->bool {
+                      [objectName](Object const &obj) -> bool {
                           return obj.getName() == objectName;
-                        });
+                      });
     return it;
 }
 
@@ -86,9 +86,9 @@ bool Character::isWearing(ID objectId) {
 bool Character::isWearing(Name objectName) {
 
     auto it = find_if(wearing.begin(), wearing.end(),
-                      [ objectName ] ( Object const& obj )->bool {
+                      [objectName](Object const &obj) -> bool {
                           return obj.getName() == objectName;
-                        });
+                      });
 
     return it != wearing.end();
 }
@@ -107,7 +107,7 @@ ID Character::getWearingID(Name objectName) {
 bool Character::remove(Object obj) {
 
     if (!(isWearing(obj.getID()))) {
-      return false;
+        return false;
     }
 
     auto it = getWearingIterator(obj.getID());
@@ -123,15 +123,15 @@ bool Character::dropItem(ID objectId) {
 }
 
 std::string Character::listWearing() const {
-	std::stringstream wearList;
-	int wearCount = 1;
+    std::stringstream wearList;
+    int wearCount = 1;
 
-	for (auto &obj : wearing) {
-		wearList << "\t" << wearCount << ". " << obj.getName() << "\n";
-		wearCount++;
-	}
+    for (auto &obj : wearing) {
+        wearList << "\t" << wearCount << ". " << obj.getName() << "\n";
+        wearCount++;
+    }
 
-	return wearList.str();
+    return wearList.str();
 }
 
 std::string Character::listInventory() {
@@ -140,16 +140,16 @@ std::string Character::listInventory() {
 
 
 void Character::confuse() {
-    if(confused){
+    if (confused) {
         confused = false;
-    }else {
+    } else {
         confused = true;
     }
 }
 
 
 bool Character::isConfused() {
-  return confused;
+    return confused;
 }
 
 
@@ -159,7 +159,7 @@ unsigned int Character::getCurrentHP() const {
 }
 
 void Character::setCurrentHP(unsigned int currentHP) {
-    if(currentHP <0){
+    if (currentHP < 0) {
         currentHP = 0;
     }
 
@@ -191,11 +191,15 @@ void Character::setMaxHP(unsigned int maxHP) {
 }
 
 std::string Character::examineCombat() {
-    return "\tName: " + name + "\n"
-           + "\tcurrentHP: " + std::to_string(currentHP) + "\n"
+    std::stringstream output;
+
+    output << "\tName: " << name << "\n"
+           << "\tcurrentHP: " << currentHP + "\n"
            //<< "\t\tcurrentMP: " << currentMP << + "\n"
-           + "\tmaxHP: " + std::to_string(maxHP) + "\n"
+           << "\tmaxHP: " << maxHP << "\n"
            //<< "\t\tmaxMP: " << maxMP << std::endl
-           + "\tattack: " + std::to_string(attack) + "\n"
-           + "\tdefence: " + std::to_string(defense) + "\n";
+           << "\tattack: " << attack << "\n"
+           << "\tdefence: " << defense << "\n";
+
+    return output.str();
 }
