@@ -85,15 +85,22 @@ std::pair<std::vector<Response>, bool> Yell::execute() {
     std::vector<std::string> recipients;
 
     //Get list of usernames in current room
-    for(auto const& value : roomController->getUsernameList(characterRoomID)){
-
-        Name recepientUsername = characterController->getUsernameOfCharacter(const_cast<Name &>(value));
+    for(auto& value : roomController->getUsernameList(characterRoomID)){
+        Name characterName = value;
+        auto recepientUsername = characterController->getUsernameOfCharacter(characterName);
         if(recepientUsername!=username){
             recipients.push_back(recepientUsername);
         }
     }
 
     //TODO::For each adjacent room, add character names to recipients
+    for(auto &roomID: roomController->adjacentRoomIDs(characterRoomID)){
+        for(auto& value : roomController->getUsernameList(roomID)){
+            Name characterName = value;
+            Name recepientUsername = characterController->getUsernameOfCharacter(characterName);
+            recipients.push_back(recepientUsername);
+            }
+    }
 
     Response userResponse = Response("Me: " + input, username);
     std::string genericMessage = username + ": " + input;
