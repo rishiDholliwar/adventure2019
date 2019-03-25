@@ -98,7 +98,7 @@ public:
      *
      * Post-Condition: Returns true if the item is worn
     */
-    bool wear(ID objectId);
+    void wear(ID objectId);
 
     /*
      * unwears the specified item
@@ -107,7 +107,7 @@ public:
      *
      * Post-Condition: Returns true if the item is taken off
     */
-    bool remove(Object obj);
+    void remove(Object obj);
 
     ID getWearingID(Name objectName);
 
@@ -127,7 +127,7 @@ public:
      *
      * Post-Condition: Item will be dropped if it exists, returns true if dropped
     */
-    bool dropItem(ID objectId);
+    void dropItem(ID objectId);
 
 
     std::string listWearing() const;

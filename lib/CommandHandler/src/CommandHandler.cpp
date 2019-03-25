@@ -1,5 +1,4 @@
 #include <CommandHandler.h>
-#include <GameController.h>
 #include <Utility.h>
 
 #include <iostream>
