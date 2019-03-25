@@ -154,7 +154,6 @@ Game::Game(Config config)
     _server = std::make_unique<Server>(config.port, config.webpage,
                                         [this](Connection c){this->addConnection(c);},
                                         [this](Connection c){this->removeConnection(c);});
-    _gameController = GameController();
     _userController = UserController();
     _commandHandler = CommandHandler();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);

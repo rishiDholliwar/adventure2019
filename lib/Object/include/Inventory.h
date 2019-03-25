@@ -76,7 +76,7 @@ public:
      * Post: Removes the item from the inventory, returns true if removed successfully
      *
      * */
-    bool removeItem(ID objectID);
+    void removeItem(ID objectID);
 
     /* List Inventory:
      *

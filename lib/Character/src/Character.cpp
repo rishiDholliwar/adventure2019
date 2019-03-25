@@ -84,10 +84,9 @@ bool Character::isWearing(Name objectName) {
     return it != wearing.end();
 }
 
-bool Character::wear(ID objectId) {
+void Character::wear(ID objectId) {
     wearing.push_back(getItemFromInventory(objectId));
     dropItem(objectId);
-    return isWearing(objectId);
 }
 
 ID Character::getWearingID(Name objectName) {
@@ -95,22 +94,19 @@ ID Character::getWearingID(Name objectName) {
     return (*it).getID();
 }
 
-bool Character::remove(Object obj) {
+void Character::remove(Object obj) {
 
-    if (!(isWearing(obj.getID()))) {
-      return false;
+    if (isWearing(obj.getID())) {
+      auto it = getWearingIterator(obj.getID());
+
+      it = wearing.erase(it);
+      addItemToInventory(obj);
     }
-
-    auto it = getWearingIterator(obj.getID());
-
-    it = wearing.erase(it);
-    addItemToInventory(obj);
-    return true;
 }
 
 
-bool Character::dropItem(ID objectId) {
-    return inventory.removeItem(objectId);
+void Character::dropItem(ID objectId) {
+    inventory.removeItem(objectId);
 }
 
 std::string Character::listWearing() const {

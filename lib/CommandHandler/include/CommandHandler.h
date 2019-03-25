@@ -8,7 +8,6 @@
 
 #include <AlterSpace.h>
 #include <Command.h>
-#include <GameController.h>
 #include <UserController.h>
 #include <Server.h>
 #include <Response.h>

@@ -54,7 +54,7 @@ std::pair<std::vector<Response>, bool> Logout::execute() {
     if(result.returnCode == ReturnCode::LOGOUT_SUCCESS) {
         JSONThingy jt;
         jt.save(characterController->getCharacter(username));
-        auto roomID = characterController->getCharacter(username).getRoomID();
+        auto roomID = characterController->getCharacterRoomID(username);
         characterController->removeCharacter(username);
         roomController->removeUserNameFromRoom(username, roomID);
     }

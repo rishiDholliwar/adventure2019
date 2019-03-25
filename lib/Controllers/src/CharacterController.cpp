@@ -5,53 +5,47 @@
 
 CharacterController::CharacterController() = default;
 
-bool CharacterController::addCharacter(Name &username, RoomController &roomController, ObjectController &objectController) {
+void CharacterController::addCharacter(Name &username, RoomController &roomController, ObjectController &objectController) {
 
-    //find and load character based on username
-    /* json work
-     * if character not found one will be made and then loaded*/
+    // Default Data for all first time users
+    Character defaultCharacter(username, ROOM_ID);
+    roomController.addUserNameToRoom(defaultCharacter.getName(),defaultCharacter.getRoomID());
 
-    // Dummy Data for all logged in users
-    Character dummyCharacter(username, ROOM_ID);
-    roomController.addUserNameToRoom(dummyCharacter.getName(),dummyCharacter.getRoomID());
+    defaultCharacter.addItemToInventory(Object("Basic Sword"));
+    objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));
 
-    dummyCharacter.addItemToInventory(Object("Basic Sword"));
-    objectController.addObjectToList(dummyCharacter.getItemFromInventory("Basic Sword"));
+    defaultCharacter.addItemToInventory(Object("Basic Armor"));
+    objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Armor"));
 
-    dummyCharacter.addItemToInventory(Object("Basic Armor"));
-    objectController.addObjectToList(dummyCharacter.getItemFromInventory("Basic Armor"));
-
-
-    return _characters.emplace(username,dummyCharacter).second;
+    _characters.emplace(username,defaultCharacter).second;
 }
 
-bool CharacterController::addCharacter(Character &aCharacter) {
+void CharacterController::addCharacter(Character &aCharacter) {
     Name username = aCharacter.getName();
 
-    return _characters.emplace(username, aCharacter).second;
+    _characters.emplace(username, aCharacter).second;
 }
 
-bool CharacterController::removeCharacter(Name &username){
-    return _characters.erase(username) > 0;
+void CharacterController::removeCharacter(Name &username){
+    _characters.erase(username);
 }
 
-bool CharacterController::findCharacter(Name username) {
-    //
-    return _characters.find(username) != _characters.end();
+Name CharacterController::getCharName(Name &username) {
+    return getCharacter(username).getName();
 }
 
 Character &CharacterController::getCharacter(Name &username) {
     return _characters.find(username)->second;
 }
 
-Character &CharacterController::getCharacterByCharName(Name &charName) {
-    auto it = find_if(_characters.begin(), _characters.end(),
-                        [&charName] (auto const& character) {
-                            return charName == character.second.getName();
-                        });
+// Character &CharacterController::getCharacterByCharName(Name &charName) {
+//     auto it = find_if(_characters.begin(), _characters.end(),
+//                         [&charName] (auto const& character) {
+//                             return charName == character.second.getName();
+//                         });
 
-    return it->second;
-}
+//     return it->second;
+// }
 
 Name CharacterController::getUsernameOfCharacter(Name &charName){
     auto it = find_if(_characters.begin(), _characters.end(),
@@ -61,7 +55,6 @@ Name CharacterController::getUsernameOfCharacter(Name &charName){
 
     return it->first;
 }
-
 
 bool CharacterController::doesCharacterExist(Name &username) {
     return _characters.find(username) != _characters.end();
@@ -99,8 +92,8 @@ void CharacterController::addItemToCharacterInventory(Name &username, Object ite
     getCharacter(username).addItemToInventory(item);
 }
 
-bool CharacterController::dropItemFromCharacterInventory(Name &username, ID objectID) {
-    return getCharacter(username).dropItem(objectID);
+void CharacterController::dropItemFromCharacterInventory(Name &username, ID objectID) {
+    getCharacter(username).dropItem(objectID);
 }
 
 std::vector<Object> CharacterController::getItemsFromCharacterInventory(Name &username, Name itemName) {
@@ -127,17 +120,17 @@ bool CharacterController::characterIsWearingItem(Name &username, Name itemName) 
     return getCharacter(username).isWearing(itemName);
 }
 
-bool CharacterController::characterWearItem(Name &username, Name itemName) {
+void CharacterController::characterWearItem(Name &username, Name itemName) {
     ID itemID = getItemIDFromCharacterInventory(username, itemName);
-    return getCharacter(username).wear(itemID);
+    getCharacter(username).wear(itemID);
 }
 
 ID CharacterController::getItemIDFromCharacterWearing(Name &username, Name itemName) {
     return getCharacter(username).getWearingID(itemName);
 }
 
-bool CharacterController::characterRemoveItem(Name &username, Object item) {
-    return getCharacter(username).remove(item);
+void CharacterController::characterRemoveItem(Name &username, Object item) {
+    getCharacter(username).remove(item);
 }
 
 std::string CharacterController::characterListInventory(Name &username) {

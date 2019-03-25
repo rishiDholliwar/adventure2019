@@ -15,8 +15,11 @@ target_include_directories(commandHandler
 target_link_libraries(commandHandler
   PRIVATE
     commands
-    gameController
+    Character
+    controllers
     userController
+    world
+    Object
     utility
     ${Boost_LIBRARIES}
 )
