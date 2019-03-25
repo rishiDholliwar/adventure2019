@@ -20,7 +20,6 @@ target_link_libraries(chatserver
     scheduler
     commands
     commandHandler
-    gameController
     userController
     json
     utility

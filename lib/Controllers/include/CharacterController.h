@@ -15,13 +15,10 @@ using AlterSpace::Name;
 #define ROOM_ID 1000
 
 class CharacterController {
-
 private:
-
     std::unordered_map<Name, Character> _characters;
 
 public:
-
     /* Constructor */
     CharacterController();
 
@@ -32,7 +29,9 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    bool addCharacter(Name &username, RoomController &roomController, ObjectController &objectController);
+    void addCharacter(Name &username, RoomController &roomController, ObjectController &objectController);
+
+    void addCharacter(Character &aCharacter);
 
     /*
      * Remove user from the list of characters
@@ -41,14 +40,7 @@ public:
      *
      * Post-Condition: Returns true if removal is successful
     */
-    bool removeCharacter(Name &username);
-
-    bool findCharacter(Name username);
-
-    Name getUsernameOfCharacter(Name &charName);
-
-
-    Character &getCharacterByCharName(Name &charName);
+    void removeCharacter(Name &username);
 
     /*
      * Returns a character object of the specified username
@@ -58,6 +50,12 @@ public:
      * Post-Condition: Returns true if removal is successful
     */
     Character &getCharacter(Name &username);
+
+    Name getUsernameOfCharacter(Name &charName);
+
+    // Character &getCharacterByCharName(Name &charName);
+
+    Name getCharName(Name &username);
 
     /*
      * Checks to see if character exists in online users
@@ -138,7 +136,7 @@ public:
      *
      * Post-Condition: Returns true if the item has been dropped
     */
-    bool dropItemFromCharacterInventory(Name &username, ID objectID);
+    void dropItemFromCharacterInventory(Name &username, ID objectID);
 
     std::vector<Object> getItemsFromCharacterInventory(Name &username, Name itemName);
 
@@ -176,7 +174,7 @@ public:
      *
      * Post-Condition: Returns true if the item is equipped
     */
-    bool characterWearItem(Name &username, Name itemName);
+    void characterWearItem(Name &username, Name itemName);
 
     /*
      * unequips the specified item
@@ -185,7 +183,7 @@ public:
      *
      * Post-Condition: Returns true if the item is unequipped
     */
-    bool characterRemoveItem(Name &username, Object item);
+    void characterRemoveItem(Name &username, Object item);
 
     ID getItemIDFromCharacterWearing(Name &username, Name itemName);
 

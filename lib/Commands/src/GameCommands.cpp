@@ -6,7 +6,7 @@
 //Say
 std::pair<std::vector<Response>, bool> Say::execute() {
     std::cout << "Say " << input << std::endl;
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
 
     Response userResponse = Response("Me: " + input, username);
 
@@ -43,7 +43,7 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
         return std::make_pair(res, true);
     }
 
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
@@ -89,7 +89,7 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
         return std::make_pair(res, true);
     }
 
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
@@ -194,8 +194,8 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 		return this->interact();
 	}
 
-    Name targetUserName = characterController->getCharacter(targetCharName).getName();
-    Name charName = characterController->getCharacter(username).getName();
+    Name targetUserName = characterController->getCharName(targetCharName);
+    Name charName = characterController->getCharName(username);
 
 	//if gift target character doesn't exist
 	if (!characterController->doesCharacterExist(targetUserName)) {
@@ -233,8 +233,10 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 
 	ID giftID = characterController->getItemIDFromCharacterInventory(username, giftName);
 
+	characterController->dropItemFromCharacterInventory(username, giftID);
+
 	//drop item from user inventory
-	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+	if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
@@ -286,10 +288,12 @@ std::pair<std::vector<Response>, bool> Give::interact() {
     Name giftName = interactions.at(index).getName();
 
     Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
 
 	//drop item from user inventory
-	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+	characterController->dropItemFromCharacterInventory(username, giftID);
+
+	if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
@@ -400,7 +404,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         return std::make_pair(res, false);
     }
 
-    if (!(characterController->findCharacter(target))) {
+    if (!(characterController->doesCharacterExist(target))) {
 
         Response userResponse = Response("Target doesn't exist, sorry!", username);
 
@@ -409,9 +413,9 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
     }
 
     Name userKey = username;
-    Name targetKey = characterController->getCharacter(username).getName();
+    Name targetKey = characterController->getCharName(username);
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
         Response userResponse = Response("You are already under a swap spell!", userKey);
         Response targetResponse = Response("You are already under a swap spell!", targetKey);
@@ -431,11 +435,11 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
 
 std::pair<std::vector<Response>, bool> Swap::callback() {
     Name userKey = username;
-    Name targetKey = characterController->getCharacter(username).getName();
+    Name targetKey = characterController->getCharName(username);
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
-        Name targetCharName = characterController->getCharacter(username).getName();
+        Name targetCharName = characterController->getCharName(username);
 
         characterController->swapCharacter(userKey, targetKey);
 
