@@ -155,13 +155,13 @@ std::pair<std::vector<Response>, bool> CombatQAttack::execute() {
 
 std::unique_ptr<Command> CombatQAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
     return std::make_unique<CombatQAttack>(this->characterController, this->roomController,
-                                          this->combatController, username, input, connection);
+                                           this->combatController, username, input, connection);
 }
 
 std::unique_ptr<Command> CombatQAttack::clone() const {
     return std::make_unique<CombatQAttack>(this->characterController, this->roomController,
-                                          this->combatController, this->username, this->input,
-                                          this->connection);
+                                           this->combatController, this->username, this->input,
+                                           this->connection);
 }
 
 std::string CombatQAttack::help() {
