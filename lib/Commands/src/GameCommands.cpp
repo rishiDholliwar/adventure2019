@@ -108,3 +108,25 @@ std::unique_ptr<Command> Swap::clone() const {
 std::string Swap::help() {
     return "/swap [target username] - swap with the target character with this username";
 }
+
+//Info
+std::pair<std::vector<Response>, bool> Info::execute() {
+    Name charName = characterController.getCharacter(username).getName();
+    Response userResponse = Response(characterController.getCharacterInfo(username), username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Info::clone() const {
+    auto info = std::make_unique<Info>(this->characterController, this->username, this->input);
+    return std::move(info);
+}
+
+std::unique_ptr<Command> Info::clone(Name username, Input input, Connection connection) const {
+    auto info = std::make_unique<Info>(this->characterController, username, input);
+    return std::move(info);
+}
+
+std::string Info::help() {
+    return "/info - Get character details";
+}
