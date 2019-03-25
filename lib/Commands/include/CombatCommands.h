@@ -49,7 +49,7 @@ public:
     std::string help() override;
 };
 
-class CombatAttack : public Command {
+class CombatQAttack : public Command {
 private:
     RoomController *roomController;
     CombatController *combatController;
@@ -59,7 +59,7 @@ private:
 
 public:
     explicit
-    CombatAttack(CharacterController *characterController, RoomController *roomController,
+    CombatQAttack(CharacterController *characterController, RoomController *roomController,
                  CombatController *combatController,
                  Name username = "", Input input = "", Connection connection = Connection{})
             : roomController(roomController), combatController(combatController),
@@ -67,7 +67,7 @@ public:
         this->characterController = characterController;
     };
 
-    ~CombatAttack() = default;
+    ~CombatQAttack() = default;
 
     std::pair<std::vector<Response>, bool> execute() override;
 

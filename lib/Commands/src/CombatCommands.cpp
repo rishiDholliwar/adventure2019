@@ -75,14 +75,14 @@ std::string CombatExamine::help() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::pair<std::vector<Response>, bool> CombatAttack::execute() {
+std::pair<std::vector<Response>, bool> CombatQAttack::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
 
     removeExtraWhiteSpaces(input);
     Name targetName = input;
 
-    std::string commandName = "attack: \n";
+    std::string commandName = "quick attack: \n";
 
     //character is attacking himself
     if (character.getName() == targetName) {
@@ -153,19 +153,19 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
 }
 
-std::unique_ptr<Command> CombatAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
-    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
+std::unique_ptr<Command> CombatQAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<CombatQAttack>(this->characterController, this->roomController,
                                           this->combatController, username, input, connection);
 }
 
-std::unique_ptr<Command> CombatAttack::clone() const {
-    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
+std::unique_ptr<Command> CombatQAttack::clone() const {
+    return std::make_unique<CombatQAttack>(this->characterController, this->roomController,
                                           this->combatController, this->username, this->input,
                                           this->connection);
 }
 
-std::string CombatAttack::help() {
-    return "/attack [name] - Send battle request to [name] or accept if sent a request.";
+std::string CombatQAttack::help() {
+    return "/qAttack [name] - Send battle request without rounds to [name] or accept if sent a request.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

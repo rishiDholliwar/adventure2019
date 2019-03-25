@@ -38,7 +38,7 @@ void Game::registerCommands() {
 
     //For combat
     _commandHandler.registerCommand("/combat", CombatExamine(&_characterController, &_roomController, &_combatController).clone());
-    _commandHandler.registerCommand("/attack", CombatAttack(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand("/qAttack", CombatQAttack(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand("/battles", CombatBattles(&_characterController, &_roomController, &_combatController).clone());
 
 }

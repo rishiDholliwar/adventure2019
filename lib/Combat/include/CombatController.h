@@ -42,7 +42,7 @@ public:
 
     void deleteGame(const Name fighter1, const Name fighter2);
 
-    std::string sendInvitationMsg(const Name &inviterName);
+    std::string sendQInvitationMsg(const Name &inviterName);
 
     std::string sendDuplicateRequestMsg(const Name &joiner);
 

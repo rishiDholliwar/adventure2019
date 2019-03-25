@@ -155,9 +155,7 @@ public:
     void confuse();
 
     //For combat:
-    void giveFullHP() {
-        currentHP = maxHP;
-    }
+    void giveFullHP();
 
     unsigned int getCurrentHP() const;
 

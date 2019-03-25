@@ -16,9 +16,9 @@ std::string CombatController::sendBattleRequest(const Character &fighter1, const
         auto owner = battle.getOwner();
 
         if (owner == fighter1.getName()) {
-            return sendInvitationMsg(fighter1.getName());
+            return sendQInvitationMsg(fighter1.getName());
         } else {
-            return sendInvitationMsg(fighter2.getName());
+            return sendQInvitationMsg(fighter2.getName());
         }
     }
 
@@ -158,9 +158,9 @@ std::string CombatController::printAllBattles() {
     return output.str();
 }
 
-std::string CombatController::sendInvitationMsg(const Name &inviterName) {
-    std::string output = "\n\t" + inviterName + " wants to attack you \n" +
-                         "\tEnter '/attack " + inviterName + "' to battle\n";
+std::string CombatController::sendQInvitationMsg(const Name &inviterName) {
+    std::string output = "\n\t" + inviterName + " wants to quick attack you \n" +
+                         "\tEnter '/qAttack " + inviterName + "' to battle\n";
     //"\tEnter '/flee " + inviterName + "' to surrender.\n";
     return output;
 }

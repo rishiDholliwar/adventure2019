@@ -156,6 +156,11 @@ void Character::setInventory(const Inventory &inventory) {
 }
 
 //For combat:
+
+void Character::giveFullHP() {
+    currentHP = maxHP;
+}
+
 unsigned int Character::getCurrentHP() const {
     return currentHP;
 }
