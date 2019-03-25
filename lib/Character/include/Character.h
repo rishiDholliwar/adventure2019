@@ -21,7 +21,7 @@ private:
     bool confused;
 
     //For combat
-    unsigned int currentHP;
+    unsigned int currentHP = maxHP; //todo need to set this to correct value with json
     unsigned int currentMP;
     unsigned int attack = 5;
     unsigned int defense = 1;

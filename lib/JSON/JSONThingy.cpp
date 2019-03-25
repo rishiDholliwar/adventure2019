@@ -70,6 +70,7 @@ void JSONThingy::load(Name characterToLoad, Character &aCharacter) {
         fs >> j;
         fs.close();
         Character tmpChar = j.get<Character>();
+        tmpChar.giveFullHP(); //todo change later
         aCharacter = tmpChar;
 
     }
