@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <CharacterController.h>
 #include <RoomController.h>
 
@@ -20,14 +21,61 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
     _characters.emplace(username,defaultCharacter).second;
 }
 
+void CharacterController::addNPC(Name &npcname, RoomController &roomController, ObjectController &objectController) {
+
+    Character defaultNPC(npcname, ROOM_ID, CharacterType::NON_PLAYABLE);
+    roomController.addCharacterToRoom(defaultNPC.getID(),defaultNPC.getRoomID());
+
+    std::stringstream ss;
+    ss << npcname << "-" << defaultNPC.getID();
+    Name npcKey = ss.str();
+
+    _characters.emplace(npcKey, defaultNPC).second;
+}
+
 void CharacterController::addCharacter(Character &aCharacter) {
     Name username = aCharacter.getName();
 
     _characters.emplace(username, aCharacter).second;
 }
 
+void CharacterController::addNPC(Character &aNPC) {
+
+    if (!aNPC.isNPC()) {
+        return;
+    }
+
+    std::stringstream ss;
+    ss << aNPC.getName() << "-" << aNPC.getID();
+    Name npcKey = ss.str();
+
+    _characters.emplace(npcKey, aNPC);
+}
+
 void CharacterController::removeCharacter(Name &username){
     _characters.erase(username);
+}
+
+ID CharacterController::getNPCID(Name &npcKey) {
+    return _characters.find(npcKey)->second.getID();
+}
+
+std::vector<Name> CharacterController::getNPCKeys(Name npcName) {
+    int npcNameLength = npcName.length();
+    std::vector<Name> npcKeys{};
+
+    for (auto&character : _characters) {
+
+        if (!character.second.isNPC()) {
+            continue;
+        }
+
+        if (character.second.getName() == npcName) {
+            npcKeys.push_back(character.first);
+        }
+    }
+
+    return npcKeys;
 }
 
 Name CharacterController::getCharName(Name &username) {
@@ -58,6 +106,10 @@ Name CharacterController::getUsernameOfCharacter(Name &charName){
 
 bool CharacterController::doesCharacterExist(Name &username) {
     return _characters.find(username) != _characters.end();
+}
+
+bool CharacterController::isCharacterNPC(Name &npcKey) {
+    return _characters.find(npcKey)->second.isNPC();
 }
 
 std::vector<Name> CharacterController::getAllCharacterNames() {

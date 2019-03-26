@@ -12,10 +12,16 @@
 using AlterSpace::ID;
 using AlterSpace::Name;
 
+enum class CharacterType {
+    PLAYABLE,
+    NON_PLAYABLE,
+};
+
 class Character : public UniqueID {
 private:
     Name name;
     ID roomID;
+    CharacterType characterType;
     Inventory inventory;
     std::vector<Object> wearing;
     bool confused;
@@ -25,20 +31,40 @@ private:
 
 public:
     Character() = default;
+
+    //intialize new playable character
     Character(Name name, ID roomID) : name(std::move(name)), roomID(roomID)
+    {
+        this->characterType = CharacterType::PLAYABLE;
+        this->inventory = Inventory{};
+        this->confused = false;
+        this->wearing = std::vector<Object>();
+    }
+
+    //initialize new npc
+    Character(Name name, ID roomID, CharacterType characterType) : name(std::move(name)), roomID(roomID), characterType(std::move(characterType))
     {
         this->inventory = Inventory{};
         this->confused = false;
         this->wearing = std::vector<Object>();
     }
 
+    //constructor for playable character
     Character(Name name, ID roomID, Inventory inventory, std::vector<Object> wearing) :
             name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
+        this->characterType = CharacterType::PLAYABLE;
+        this->confused = false;
+    }
+
+    //constructor for npc
+    Character(Name name, ID roomID, CharacterType characterType, Inventory inventory, std::vector<Object> wearing) :
+            name(std::move(name)), roomID(roomID), characterType(std::move(characterType)), inventory(std::move(inventory)), wearing(std::move(wearing)) {
         this->confused = false;
     }
 
     Name getName() const;
     ID getRoomID() const;
+    bool isNPC() const;
     ID getID() const;
     std::string getInfo() const;
     bool isConfused() const;

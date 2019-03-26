@@ -12,6 +12,10 @@ ID Character::getRoomID() const {
     return this->roomID;
 }
 
+bool Character::isNPC() const {
+	return this->characterType == CharacterType::NON_PLAYABLE;
+}
+
 ID Character::getID() const {
     return id;
 }
@@ -19,6 +23,11 @@ ID Character::getID() const {
 std::string Character::getInfo() const {
 
   std::stringstream retString;
+
+  if (isNPC()) {
+  	retString << "Type: NPC\n";
+  }
+  
   retString << "ID: " << getID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n" << listWearing() << "Room ID: " << getRoomID() << "\n";
 
 
