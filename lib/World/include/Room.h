@@ -1,3 +1,9 @@
+#include <utility>
+
+#include <utility>
+
+#include <utility>
+
 
 #ifndef OOP_ROOM_H
 #define OOP_ROOM_H
@@ -5,22 +11,29 @@
 
 #include <Door.h>
 #include <sstream>
+#include "ExtendedDescription.h"
 
 
 class Room
 {
 public:
 
-    Room(ID id, const Name& name);
+    Room() = default;
+
+    Room(ID id, const Name &name, const std::vector<std::string> &descriptions, const std::vector<Door> &doorList,
+         const std::vector<ExtendedDescription> &extendedDescriptions);
 
     // Getters
-    ID const& getId() const{return id;};
-    Name const& getName() const{return name;};
-    std::vector<std::string> const& getDescriptions() const{return descriptions;};
-    std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
-    std::vector<ID> const& getCharacterList() const{return characterList;};
-    std::vector<ID> const& getObjectList() const{return objectList;};
-    std::vector<Name> const& getUsernameList() const{return usernameList;};
+    ID const& getId() const{return id;}
+    Name const& getName() const{return name;}
+    std::vector<std::string> const& getDescriptions() const{return descriptions;}
+    std::vector<ExtendedDescription> const& getExtendedDescriptions() const{return extendedDescriptions;}
+    const std::vector<Door> &getDoorList() const {return doorList;}
+
+
+    std::vector<ID> const& getCharacterList() const{return characterList;}
+    std::vector<ID> const& getObjectList() const{return objectList;}
+    std::vector<Name> const& getUsernameList() const{return usernameList;}
 
     // Adders
     void addDescription(const std::string& description);
@@ -71,13 +84,19 @@ public:
 
 private:
     ID  id;
-    std::string name;
+    Name name;
     std::vector<std::string> descriptions;
-    std::vector<std::string> extendedDescriptions;
+    std::vector<Door> doorList;
+    std::vector<ExtendedDescription> extendedDescriptions;
+
+
+
+
+
     std::vector<ID> characterList;
     std::vector<ID> objectList;
     std::vector<Name> usernameList;
-    std::vector<Door> doorList;
+
 
     template <typename T>
     bool addUniqueItemToList(T id, std::vector<T> &list);

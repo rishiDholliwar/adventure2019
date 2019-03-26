@@ -1,10 +1,6 @@
 #include <algorithm>
 #include <Room.h>
 
-Room::Room(ID id, const Name& name){
-    this->id = id;
-    this->name = name;
-}
 
 /*
  *  Adders
@@ -12,10 +8,6 @@ Room::Room(ID id, const Name& name){
 
 void Room::addDescription(const std::string& description) {
     this->descriptions.push_back(description);
-}
-
-void Room::addExtendedDescription(const std::string& extDescription) {
-    this->extendedDescriptions.push_back(extDescription);
 }
 
 bool Room::addCharacter(ID characterId) {
@@ -87,7 +79,7 @@ std::string Room::getTextOfRoomDetails() {
     }
 
     for (auto &description : this->extendedDescriptions){
-        outputString << description << "\n";
+        //outputString << description << "\n";
     }
 
     outputString << getTextOfDoorDetails();
@@ -163,3 +155,9 @@ bool Room::removeUniqueItemFromList(T id, std::vector<T> &list) {
 
     return size != list.size();
 }
+
+Room::Room(ID id, const Name &name, const std::vector<std::string> &descriptions, const std::vector<Door> &doorList,
+           const std::vector<ExtendedDescription> &extendedDescriptions) : id(id), name(name),
+                                                                           descriptions(descriptions),
+                                                                           doorList(doorList),
+                                                                           extendedDescriptions(extendedDescriptions) {}

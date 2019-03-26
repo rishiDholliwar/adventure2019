@@ -9,20 +9,26 @@ using AlterSpace::Name;
 using AlterSpace::ID;
 
 class RoomController {
-    public:
+public:
 
         RoomController();
 
-        //Getters
+    explicit RoomController(const std::vector<Room> roomList);
+
+    const std::vector<Room> &getRoomList() const;
+
+    //Getters
         const std::vector<ID> & getCharacterList (ID roomId);
         const std::vector<ID> & getObjectList (ID roomId);
         const std::vector<Name> & getUsernameList (ID roomId);
         std::vector<ID> getRoomIdList() const;
 
-        ID getDoorIdByDirection(ID roomId, const std::string& direction);
-        Door::DoorStatus getDoorStatus(ID roomId, ID doorId);
-        ID getDoorDesignatedRoomId(ID roomId, ID doorId);
-        const std::string& getDoorDirection(ID roomId, ID doorId);
+
+
+    ID getDoorIdByDirection(ID roomId, const std::string& direction);
+        Door::DoorStatus getDoorStatus(ID roomId, const std::string& direction);
+        ID getDoorDesignatedRoomId(ID roomId, const std::string& direction);
+        bool doesDirectionExist(ID roomId, const std::string& direction);
 
         /*
          * The function gives information of the room including room details and doors details
@@ -92,7 +98,7 @@ class RoomController {
         /*
          * return the Door object, return nullptr if doorId not found
          */
-        Door* searchDoor(ID roomId, ID doorId);
+        Door* searchDoor(ID roomId, const std::string& direction);
 
         // Validity checkers
 //        bool roomExists(ID roomId);
