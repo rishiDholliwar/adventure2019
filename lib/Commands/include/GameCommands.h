@@ -206,6 +206,7 @@ private:
     Input direction;
     std::vector<std::string> interactions;
     RoomController* roomController;
+    void removeTargets(std::vector<std::string> &characterList, Name username);
 public:
     explicit
     Move(CharacterController* characterController,RoomController* roomController, Name username = "", Input direction = "", Connection connection = Connection{})

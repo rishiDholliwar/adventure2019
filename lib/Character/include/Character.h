@@ -21,8 +21,9 @@ private:
     std::vector<Object> wearing;
     bool confused;
 
+    std::string shortdesc;
     std::vector<std::string> descriptions;
-    std::vector<std::string> extendedDescriptions;
+    std::vector<std::string> longdesc;
 
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
@@ -45,7 +46,7 @@ public:
     ID getRoomID() const;
     ID getID() const;
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
-    std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
+    std::vector<std::string> const& getExtendedDescriptions() const{return longdesc;};
     std::string getInfo() const;
     bool isConfused() const;
 

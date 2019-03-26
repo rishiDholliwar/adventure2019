@@ -511,9 +511,27 @@ std::pair<std::vector<Response>, bool> Move::execute() {
     Response userResponse = Response("Headed " + direction, username);
     std::string genericMessage = username + " headed " + direction;
 
+    std::string enteringMessage = username + " entered the room";
+
+    Response empty = Response();
+    std::vector<std::string> characterList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
+    removeTargets(characterList, username);
+
     auto res = formulateResponse(userResponse, userList, genericMessage);
+    auto resModified = formulateResponse(empty, characterList, enteringMessage);
+
+    res.insert(res.end(), resModified.begin(), resModified.end());
+
     return std::make_pair(res, true);
 }
+
+void Move::removeTargets(std::vector<std::string> &characterList, Name username) {
+    characterList.erase(
+            std::remove_if(characterList.begin(), characterList.end(),
+                           [username](const std::string &character) { return (character == username); }),
+            characterList.end());
+}
+
 
 std::unique_ptr<Command> Move::clone() const {
     auto move = std::make_unique<Move>(this->characterController, this->roomController, this->username, this->direction);
