@@ -10,9 +10,9 @@ void CombatController::createNewBattle(Character &instigator, Character &target)
     battleList.back().addFighter(target);
 }
 
-std::string CombatController::sendBattleRequest(const Character &fighter1, const Character &fighter2) {
+std::string CombatController::sendQuickBattleRequest(const Character &fighter1, const Character &fighter2) {
     if (isBattleOwner(fighter1.getName(), fighter2.getName())) {
-        auto battle = getBattle(fighter1.getName(), fighter2.getName());
+        auto &battle = getBattle(fighter1.getName(), fighter2.getName());
         auto owner = battle.getOwner();
 
         if (owner == fighter1.getName()) {
@@ -25,9 +25,24 @@ std::string CombatController::sendBattleRequest(const Character &fighter1, const
     return "error sending invite";
 }
 
+std::string CombatController::sendRoundBattleRequest(const Character &fighter1, const Character &fighter2) {
+    if (isBattleOwner(fighter1.getName(), fighter2.getName())) {
+        auto &battle = getBattle(fighter1.getName(), fighter2.getName());
+        auto owner = battle.getOwner();
+
+        if (owner == fighter1.getName()) {
+            return sendRoundInvitationMsg(fighter1.getName());
+        } else {
+            return sendRoundInvitationMsg(fighter2.getName());
+        }
+    }
+
+    return "error sending invite";
+}
+
 bool CombatController::battleReady(const Name &fighter1, const Name &fighter2) {
     if (isBattleAssociation(fighter1, fighter2)) {
-        auto battle = getBattle(fighter1, fighter2);
+        auto &battle = getBattle(fighter1, fighter2);
         return battle.battleReady();
     }
 
@@ -36,10 +51,11 @@ bool CombatController::battleReady(const Name &fighter1, const Name &fighter2) {
 
 bool CombatController::checkDuplicateSendRequest(const Name &instigator, const Name &target) {
     if (isBattleAssociation(instigator, target)) {
-        auto battle = getBattle(instigator, target);
+        auto &battle = getBattle(instigator, target);
         auto owner = battle.getOwner();
 
-        if (owner == instigator) {
+        //todo maybe only need pending part
+        if (owner == instigator && battle.isPendingState()) {
             return true;
         }
     }
@@ -49,7 +65,7 @@ bool CombatController::checkDuplicateSendRequest(const Name &instigator, const N
 
 bool CombatController::replyPendingRequest(const Name &instigator, const Name &target) {
     if (isBattleAssociation(instigator, target)) {
-        auto battle = getBattle(instigator, target);
+        auto &battle = getBattle(instigator, target);
         auto owner = battle.getOwner();
         auto nonOwner = battle.getNonOwner(instigator, target);
 
@@ -61,19 +77,59 @@ bool CombatController::replyPendingRequest(const Name &instigator, const Name &t
     return false;
 }
 
+void CombatController::setCombatState(const Name &instigator, const Name &target) {
+    if (isBattleAssociation(instigator, target)) {
+        auto &battle = getBattle(instigator, target);
+        battle.setCombatState();
+    }
+}
+
+bool CombatController::isBattleStarted(const Name &fighter1, const Name &fighter2) {
+    if (isBattleAssociation(fighter1, fighter2)) {
+        auto &battle = getBattle(fighter1, fighter2);
+        if (battle.isCombatState()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CombatController::isInBattleState(const Name &fighter){
+    for(auto& battle: battleList){
+        if(battle.isCombatState()){
+            if(battle.getOwner() == fighter || battle.nameIsPendingWithOwner(battle.getOwner(),fighter)){
+                return true;
+            }
+        }
+
+    }
+
+    return false;
+}
+
 const std::string
-CombatController::executeBattle(Character &fighter1, Character &fighter2, const Input &input) {
-    //return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
+CombatController::executeQuickBattle(Character &fighter1, Character &fighter2, const Input &input) {
     auto &battle = getBattle(fighter1.getName(), fighter2.getName());
     battle.updateFighters(fighter1, fighter2);
-    std::string results = battle.runCombat();
+    std::string results = battle.runBattleRound();
 
     return results;
 }
 
+const std::string
+CombatController::executeBattleRound(Character &fighter1, Character &fighter2, const Input &input) {
+//return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
+    auto &battle = getBattle(fighter1.getName(), fighter2.getName());
+    battle.updateFighters(fighter1, fighter2);
+    std::string results = battle.runBattleRound();
+
+    return results;
+}
+
+
 bool CombatController::isGameOver(const Name &fighter1, const Name &fighter2) {
     if (isBattleAssociation(fighter1, fighter2)) {
-        auto battle = getBattle(fighter1, fighter2);
+        auto &battle = getBattle(fighter1, fighter2);
         if (battle.isGameOverState()) {
             return true;
         }
@@ -110,6 +166,35 @@ void CombatController::deleteGame(const Name fighter1, const Name fighter2) {
                      battleList.end());
 }
 
+//todo need to add state for pending or in battle
+std::string CombatController::printAllBattles() {
+    std::stringstream output;
+    output << "Battles:\n";
+
+    if (!battleList.empty()) {
+        for (auto &battle: battleList) {
+            if (battle.isPendingState()) {
+                output << "\t Owner: " << battle.getOwner() << "\n";
+                output << "\t Pending requests to: " << battle.getPendingNames() << "\n\n";
+                continue;
+            }
+
+            if (battle.isCombatState()) {
+                output << "\t " << battle.getOwner() << " is fighting " << battle.getPendingNames() << "\n\n";
+                continue;
+
+            }
+
+            output << "battle print error for " << battle.getOwner() << "\n\n";
+
+        }
+    } else {
+        output << "\tNo battles\n";
+    }
+
+    return output.str();
+}
+
 //Private:
 Combat &CombatController::getBattle(const Name fighter1, const Name fighter2) {
     for (auto &battle : battleList) {
@@ -141,26 +226,15 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
 }
 
 
-//for debug
-std::string CombatController::printAllBattles() {
-    std::stringstream output;
-    output << "Battles:\n";
-
-    if (!battleList.empty()) {
-        for (auto &game: battleList) {
-            output << "\t Owner: " + game.getOwner() + "\n";
-            output << "\t Pending requests to: " + game.getPendingNames() + "\n\n";
-        }
-    } else {
-        output << "\tNo battles\n";
-    }
-
-    return output.str();
-}
-
 std::string CombatController::sendQInvitationMsg(const Name &inviterName) {
     std::string output = "\n\t" + inviterName + " wants to quick attack you \n" +
-                         "\tEnter '/qAttack " + inviterName + "' to battle\n";
+                         "\tEnter '/qattack " + inviterName + "' to battle\n";
+    return output;
+}
+
+std::string CombatController::sendRoundInvitationMsg(const Name &inviterName) {
+    std::string output = "\n\t" + inviterName + " wants to attack you \n" +
+                         "\tEnter '/attack " + inviterName + "' to battle\n";
     //"\tEnter '/flee " + inviterName + "' to surrender.\n";
     return output;
 }

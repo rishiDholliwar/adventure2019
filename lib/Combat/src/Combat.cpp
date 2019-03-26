@@ -60,6 +60,10 @@ std::string Combat::processInput(const Input &input) {
     return "";
 }
 
+void Combat::setCombatState(){
+    setState(STATE::COMBAT);
+}
+
 bool Combat::battleReady() {
     if (fighters.size() == MAX_NUM_PLAYERS) {
         return true;
@@ -74,8 +78,8 @@ void Combat::updateFighters(Character &f1, Character &f2) {
     fighters.push_back(f2);
 }
 
-std::string Combat::runCombat() {
-    setState(STATE::COMBAT);
+//todo remove this function and put the loop somewhere else?
+std::string Combat::runQuickBattle() {
     int roundCounter = 0;
     bool isWinner = false;
     std::stringstream output;
@@ -103,6 +107,32 @@ std::string Combat::runCombat() {
 
     return output.str();
 }
+
+std::string Combat::runBattleRound() {
+    std::stringstream output;
+
+    this->roundCounter++;
+    output << printRoundNumber(this->roundCounter);
+
+    for (unsigned int i = 0; i < getFighters().size(); i++) {
+        Character &attacker = getFighter(i);
+        Character &defender = getFighter(getDefender(i));
+
+        output << attack(attacker, defender);
+        output << "\n";
+
+        if (defender.getCurrentHP() == 0) {
+            output << printWinner(attacker);
+            output << "\n";
+            setState(STATE::END);
+            break;
+        }
+    } //end for
+
+
+    return output.str();
+}
+
 
 double Combat::attackMultiplier() {
     return rand() / (RAND_MAX + 1.);

@@ -5,7 +5,7 @@
 #include <Server.h>
 #include <boost/algorithm/string.hpp>
 #include <regex>
-
+//todo if user is in combat state can they be sent a request or send request??
 using networking::Connection;
 
 static const std::string CHARACTER_SEPARATOR = " ";
@@ -100,7 +100,7 @@ std::pair<std::vector<Response>, bool> CombatQAttack::execute() {
 
             Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
 
-            std::string targetOutput = combatController->sendBattleRequest(character, targetCharacter);
+            std::string targetOutput = combatController->sendQuickBattleRequest(character, targetCharacter);
             Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
 
             auto res = formulateResponse(userResponse, targetResponse);
@@ -117,9 +117,10 @@ std::pair<std::vector<Response>, bool> CombatQAttack::execute() {
         //see if character is replying to attack request
         if (combatController->replyPendingRequest(username, targetName)) {
 
+            combatController->setCombatState(targetName,username);
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
-                std::string combatResults = combatController->executeBattle(character, targetCharacter, input);
+                std::string combatResults = combatController->executeQuickBattle(character, targetCharacter, input);
 
                 for (auto &fighter: combatController->getFighters(username, targetName)) {
                     Name name = fighter.getName();
@@ -169,7 +170,133 @@ std::string CombatQAttack::help() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
+    Character character = characterController->getCharacter(username);
+    std::vector<Response> res;
 
+    removeExtraWhiteSpaces(input);
+    Name targetName = input;
+
+    std::string commandName = "attack: \n";
+
+    //character is attacking himself
+    if (character.getName() == targetName) {
+        std::string userOutput = combatController->selfAttackMsg();
+        Response userResponse = Response(commandName + userOutput, username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
+        Character targetCharacter = characterController->getCharacter(targetName);
+
+
+
+
+
+        //battle has already been accepted by both people
+        if(combatController->isBattleStarted(username,targetName)){
+            std::cout << "doing next round" << std::endl;
+            std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
+
+            for (auto &fighter: combatController->getFighters(username, targetName)) {
+                Name name = fighter.getName();
+                characterController->setCharacterHP(name, fighter.getCurrentHP());
+            }
+
+            if (combatController->isGameOver(username, targetName)) {
+                combatController->deleteGame(username, targetName);
+            }
+
+            std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
+            Response userResponse = Response(toMSG(targetName) + combatOutput, username);
+
+            std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
+            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
+
+            auto res = formulateResponse(userResponse, targetResponse);
+            return std::make_pair(res, true);
+        }
+
+
+        //this is a new request
+        if (combatController->isNewBattle(username, targetName)) {
+            std::cout << "new battle " << std::endl;
+            combatController->createNewBattle(character, targetCharacter);
+
+            Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
+
+            std::string targetOutput = combatController->sendRoundBattleRequest(character, targetCharacter);
+            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
+
+            auto res = formulateResponse(userResponse, targetResponse);
+            return std::make_pair(res, true);
+        }
+
+
+
+        //see if character is sending duplicate attack requests
+        if (combatController->checkDuplicateSendRequest(username, targetName)) {
+            Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, true);
+        }
+
+        //see if character is replying to attack request
+        if (combatController->replyPendingRequest(username, targetName)) {
+            combatController->setCombatState(targetName,username);
+            //check if battle is ready, and if true start battle
+            if (combatController->battleReady(username, targetName)) {
+                std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
+
+                for (auto &fighter: combatController->getFighters(username, targetName)) {
+                    Name name = fighter.getName();
+                    characterController->setCharacterHP(name, fighter.getCurrentHP());
+                }
+
+                if (combatController->isGameOver(username, targetName)) {
+                    combatController->deleteGame(username, targetName);
+                }
+
+                std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
+                Response userResponse = Response(toMSG(targetName) + combatOutput, username);
+
+                std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
+                Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
+
+                auto res = formulateResponse(userResponse, targetResponse);
+                return std::make_pair(res, true);
+            }
+        }
+    } else {
+        //character is not in the room
+        std::string error = "\tCharacter " + targetName + " not found\n";
+        commandName += error;
+        res.emplace_back(commandName, username);
+        return std::make_pair(res, true);
+    }
+
+    res.emplace_back(commandName + "attack error\n", username);
+    return std::make_pair(res, true);
+
+}
+
+std::unique_ptr<Command> CombatRoundAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<CombatRoundAttack>(this->characterController, this->roomController,
+                                           this->combatController, username, input, connection);
+}
+
+std::unique_ptr<Command> CombatRoundAttack::clone() const {
+    return std::make_unique<CombatRoundAttack>(this->characterController, this->roomController,
+                                           this->combatController, this->username, this->input,
+                                           this->connection);
+}
+
+std::string CombatRoundAttack::help() {
+    return "/attack [name] - Send battle request with rounds to [name] or accept if sent a request.";
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatBattles::execute() {
     Character character = characterController->getCharacter(username);
 

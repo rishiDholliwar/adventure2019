@@ -32,6 +32,7 @@ private:
 
     std::vector<Character> fighters;
     Name owner;
+    int roundCounter = 0;
 
 public:
 
@@ -63,13 +64,17 @@ public:
 
     void updateFighters(Character &f1, Character &f2);
 
-    std::string runCombat();
+    std::string runQuickBattle();
+
+    std::string runBattleRound();
 
     std::string attack(Character &attacker, Character &defender);
 
     std::string printWinner(const Character &character);
 
     std::string printRoundNumber(int number);
+
+    void setCombatState();
 
     bool isPendingState();
 
