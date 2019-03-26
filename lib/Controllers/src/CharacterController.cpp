@@ -11,7 +11,7 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
 
     // Default Data for all first time users
     Character defaultCharacter(username, ROOM_ID);
-    roomController.addUserNameToRoom(defaultCharacter.getName(),defaultCharacter.getRoomID());
+    roomController.addCharacterToRoom(defaultCharacter.getName(), defaultCharacter.getRoomID());
 
     defaultCharacter.addItemToInventory(Object("Basic Sword"));
     objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));

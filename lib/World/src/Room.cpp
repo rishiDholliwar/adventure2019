@@ -22,31 +22,23 @@ void Room::addKeywords(const std::string &keyword) {
     keywords.push_back(keyword);
 }
 
-bool Room::addCharacter(ID characterId) {
-    return addUniqueItemToList(characterId, this->characterList);
-}
-
 bool Room::addObject(ID objectId) {
     return addUniqueItemToList(objectId, this->objectList);
 }
 
-bool Room::addUserName(const Name &userName) {
-    return addUniqueItemToList(userName, this->usernameList);
+bool Room::addCharacter(const Name &userName) {
+    return addUniqueItemToList(userName, this->characterList);
 }
 /*
  *  Removers
  */
 
-bool Room::removeCharacter(ID characterId) {
-    return removeUniqueItemFromList(characterId, this->characterList);
-}
-
 bool Room::removeObject(ID objectId) {
     return removeUniqueItemFromList(objectId, this->objectList);
 }
 
-bool Room::removeUserName(const Name &userName) {
-    return removeUniqueItemFromList(userName, this->usernameList);
+bool Room::removeCharacter(const Name &userName) {
+    return removeUniqueItemFromList(userName, this->characterList);
 }
 /*
  *  Link Rooms

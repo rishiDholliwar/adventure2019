@@ -13,7 +13,8 @@ std::pair<std::vector<Response>, bool> Say::execute() {
     std::string genericMessage = charName + ": "+ input;
     std::cout << genericMessage << std::endl;
 
-    auto res = formulateResponse(userResponse, roomController->getUsernameList(characterController->getCharacterRoomID(username)), genericMessage);
+    auto res = formulateResponse(userResponse,
+                                 roomController->getCharacterList(characterController->getCharacterRoomID(username)), genericMessage);
     return std::make_pair(res, true);
 }
 
@@ -109,7 +110,8 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
     std::string modifiedMessage = "From [" + charName + "] to [ " + targetCharName + " ]: " + whisperModifier(message);
 
     Response empty = Response();
-    std::vector<std::string> characterList = roomController->getUsernameList(characterController->getCharacterRoomID(charName));
+    std::vector<std::string> characterList = roomController->getCharacterList(
+            characterController->getCharacterRoomID(charName));
     removeTargets(characterList, username, targetUserName);
 
     auto res = formulateResponse(userResponse, targetResponse);
@@ -472,17 +474,18 @@ std::pair<std::vector<Response>, bool> Move::execute() {
 
     std::cout << "Move: " << direction << std::endl;
 
-    AlterSpace::ID roomId = characterController->getCharacterRoomID(username);
-    AlterSpace::ID doorId = roomController->getDoorIdByDirection(roomId, direction);
+    ID roomId = characterController->getCharacterRoomID(username);
+    ID doorId = roomController->getDoorIdByDirection(roomId, direction);
 
 
-    AlterSpace::ID designatedRoomId = roomController->getDoorDesignatedRoomId(roomId, doorId);
+    ID destination = roomController->getDoorDesignatedRoomId(roomId, doorId);
 
-    std::cout << "designated Room: "<<designatedRoomId << std::endl;
+    std::cout << "door id" << doorId << std::endl;
+    std::cout << "destination Room: "<<destination << std::endl;
 
 
     // check if door exists
-    if (designatedRoomId == Door::unfoundDoorId){
+    if (!roomController->isDoorExist(roomId, doorId)){
         Response userResponse = Response("Door not exist!", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res ,true);
@@ -490,19 +493,19 @@ std::pair<std::vector<Response>, bool> Move::execute() {
 
 
     // Verify if door is locked
-    if( roomController->getDoorStatus(roomId, doorId) == Door::LOCKED){
+    if( roomController->isDoorLocked(roomId, doorId)){
         Response userResponse = Response("Door is locked!", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res ,true);
     }
 
     // list of users to notify that character moved north
-    std::vector<std::string> userList = roomController->getUsernameList(characterController->getCharacterRoomID(username));
+    std::vector<std::string> userList = roomController->getCharacterList(
+            characterController->getCharacterRoomID(username));
 
     // Update roomList to account for character moving
-    roomController->removeUserNameFromRoom(username, roomId);
-    roomController->addUserNameToRoom(username, designatedRoomId);
-    characterController->setCharacterRoomID(username, designatedRoomId);
+    roomController->moveCharacter(username, roomId, destination);
+    characterController->setCharacterRoomID(username, destination);
 
     // send message to the moving user and another message to users in the room
     Response userResponse = Response("Headed " + direction, username);
@@ -528,10 +531,9 @@ std::string Move::help() {
 
 std::pair<std::vector<Response>, bool> Look::execute() {
     std::stringstream ss;
-    AlterSpace::ID roomId = characterController->getCharacterRoomID(username);
+    ID roomId = characterController->getCharacterRoomID(username);
 
-    auto usernameList = roomController->getUsernameList(roomId);
-    auto npcList = roomController->getCharacterList(roomId);
+    auto characterList = roomController->getCharacterList(roomId);
     auto objectList = roomController->getObjectList(roomId);
     std::string line = "---------------------------\n";
 
@@ -542,16 +544,10 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         ss << roomController->getRoomDescription(roomId);
 
         // format username into string stream
-        ss << "Users in room: \n";
-        for (const auto& usernameInList : usernameList){
-            ss << "\t" << usernameInList << "\n";
+        ss << "Characters in room: \n";
+        for (const auto& characterName : characterList){
+            ss << "\t" << characterName << "\n";
         }
-
-//        // format character name into string stream
-//        ss << "NPCs in room: \n";
-//        for (const ID npcId : npcList){
-//            ss <<  "\t" <<npcController->getNPCName(npcId)<< "\n";
-//        }
 
         // format object name into string stream
         ss << "Items in room: \n";
@@ -571,22 +567,13 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
     int index = 1;
 
-    // search user
-    for (auto &usernameInList : usernameList){
-        if (usernameInList == target) {
-            ss << index << ". " << usernameInList << "\n" <<characterController->lookCharacter(usernameInList) << "\n";
+    // search character
+    for (auto &characterName : characterList){
+        if (characterName == target) {
+            ss << index << ". " << characterName << "\n" <<characterController->lookCharacter(characterName) << "\n";
             index += 1;
         }
     }
-
-//    // search npc
-//    for (const ID npcId : npcList){
-//        Name npcName = npcController->getNPCName(npcId);
-//        if (npcName == target) {
-//            ss << index << ". " << npcName << "\n" << npcController->lookNPC(npcId) << "\n";
-//            index += 1;
-//        }
-//    }
 
     // search object
     for (const ID objectId : objectList){
@@ -620,6 +607,63 @@ std::unique_ptr<Command> Look::clone(Name username, Input target, Connection con
     return std::move(look);
 }
 
+//std::pair<std::vector<Response>, bool> Look::interact() {
+//    std::cout << "give interacting" << std::endl;
+//
+//    std::vector<std::string> v = utility::tokenizeString(target);
+//
+//    if ( v.size() != 2 ) {
+//        std::cout << "Too many arguments..." << std::endl;
+//        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
+//        auto res = formulateResponse(userResponse);
+//
+//        return std::make_pair(res, false);
+//    }
+//
+//    std::stringstream ss{v.at(INTERACT_CHOICE)};
+//    int index = -1;
+//    ss >> index;
+//    index--;
+//    if ( index >= interactions.size() || index < 0 ) {
+//        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
+//        auto res = formulateResponse(userResponse);
+//
+//        return std::make_pair(res, false);
+//    }
+//
+//    ID giftID = interactions.at(index).getID();
+//    Name giftName = interactions.at(index).getName();
+//
+//    Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
+//    Name charName = characterController->getCharName(username);
+//
+//    //drop item from user inventory
+//    characterController->dropItemFromCharacterInventory(username, giftID);
+//
+//    if (characterController->characterHasItem(username, giftID)) {
+//        Response userResponse = Response("Gifting item has failed.", username);
+//        auto res = formulateResponse(userResponse);
+//        return std::make_pair(res, false);
+//    }
+//
+//    //add item to target user inventory
+//    characterController->addItemToCharacterInventory(interactTargetUsername, objectController->getObjectFromList(giftID));
+//
+//    if (!characterController->characterHasItem(interactTargetUsername, giftID)) {
+//        characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));
+//        Response userResponse = Response("Giving " + giftName + " to character " + interactTarget + " has failed.", username);
+//        auto res = formulateResponse(userResponse);
+//        return std::make_pair(res, false);
+//    }
+//
+//    //generate response
+//    Response userResponse = Response("You have given " + giftName + " to character " + interactTarget + "!", username);
+//    Response targetResponse = Response(charName + " has given " + giftName + " to you!", interactTargetUsername);
+//    auto res = formulateResponse(userResponse, targetResponse);
+//
+//    return std::make_pair(res, true);
+//}
+
 std::string Look::help() {
     return "/look [target] - get short description of the target, or use /look to get short description about the room.";
 }
@@ -636,35 +680,28 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
     std::stringstream ss;
     ss << line;
 
-    AlterSpace::ID roomId = characterController->getCharacterRoomID(username);
+    ID roomId = characterController->getCharacterRoomID(username);
 
-    auto usernameList = roomController->getUsernameList(roomId);
-    auto npcList = roomController->getCharacterList(roomId);
+    auto characterList = roomController->getCharacterList(roomId);
     auto objectList = roomController->getObjectList(roomId);
     int index = 1;
 
-    // search user
-    for (Name usernameInList : usernameList){
-        if (usernameInList == target) {
-            ss << index << ". "  << usernameInList << "\n" <<characterController->examineCharacter(usernameInList) << "\n";
+    // search character
+    for (Name characterName : characterList){
+        if (characterName == target) {
+            ss << index << ". "  << characterName << "\n" <<characterController->examineCharacter(characterName) << "\n";
             index += 1;
         }
     }
 
-//    // search npc
-//    for (const ID npcId : npcList){
-//        Name npcName = npcController->getNPCName(npcId);
-//        if (npcName == target) {
-//            ss << index << ". " << npcName << "\n" << npcController->examineNPC(npcId) << "\n";
-//            index += 1;
-//        }
-//    }
-
     // search object
     for (const ID objectId : objectList){
         Name objectName = objectController->getObjectName(objectId);
-        if (objectName == target)
+        if (objectName == target){
             ss << index <<". " << objectName << "\n" <<objectController->examineItem(objectId)<< "\n";
+            index += 1;
+        }
+
     }
 
     if (index == 1){

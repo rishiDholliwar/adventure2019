@@ -209,9 +209,8 @@ private:
 public:
     explicit
     Move(CharacterController* characterController,RoomController* roomController, Name username = "", Input direction = "", Connection connection = Connection{})
-            : username(std::move(username)), direction(std::move(direction)) {
+            : roomController(roomController), username(std::move(username)), direction(std::move(direction)) {
         this->characterController = characterController;
-        this->roomController = roomController;;
     };
 
     ~Move() = default;
@@ -230,20 +229,19 @@ private:
     Name username;
     Input target;
     std::vector<std::string> interactions;
-    void setInteractions(std::vector<std::string> i);
 public:
     explicit
     Look(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
          Name username = "", Input target = "", Connection connection = Connection{})
-            : username(std::move(username)), target(std::move(target)) {
+            : roomController(roomController), username(std::move(username)), target(std::move(target)) {
         this->characterController = characterController;
-        this->roomController = roomController;;
         this->objectController = objectController;
         registerInteraction = true;
     };
 
     ~Look() = default;
     std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> interact();
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
     std::string help() override;
@@ -263,15 +261,15 @@ public:
     explicit
     Examine(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
             Name username = "", Input target = "", Connection connection = Connection{})
-            : username(std::move(username)), target(std::move(target)) {
+            : roomController(roomController), username(std::move(username)), target(std::move(target)) {
         this->characterController = characterController;
-        this->roomController = roomController;;
         this->objectController = objectController;
         registerInteraction = true;
     };
 
     ~Examine() = default;
     std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> interact();
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
     std::string help() override;
