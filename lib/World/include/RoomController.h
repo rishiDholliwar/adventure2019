@@ -1,4 +1,3 @@
-
 #include <Room.h>
 #include <AlterSpace.h>
 
@@ -114,7 +113,7 @@ class RoomController {
             // std::string lookNPC(ID roomId);
             // std::string examineNPC(ID roomId);
 
-            bool isTargetInRoom(Name &instigator, ID instigatorRoomID, Name &target);
+            bool isTargetInRoom(Name &userName, ID roomId, Name &target);
 private:
          std::vector<Room> roomList;
 
