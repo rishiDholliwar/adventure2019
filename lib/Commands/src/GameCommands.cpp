@@ -504,8 +504,8 @@ std::pair<std::vector<Response>, bool> Move::execute() {
 
     std::cout << "Move: " << direction << std::endl;
 
-    AlterSpace::ID roomId = characterController->getCharacterRoomID(username);
-    AlterSpace::ID toID = roomController->getDoorDesignatedRoomId(roomId, direction);
+    ID roomId = characterController->getCharacterRoomID(username);
+    ID toID = roomController->getDoorDesignatedRoomId(roomId, direction);
 
     std::cout << "designated Room: "<<toID << std::endl;
 
