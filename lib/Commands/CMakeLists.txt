@@ -15,12 +15,15 @@ target_include_directories(commands
 )
 
 target_link_libraries(commands
-  PRIVATE
+PRIVATE
+    controllers
+    Object
+    Character
+    world
+    jsonThingy
     commandHandler
     networking
-    gameController
     userController
-    controllers
     utility
     ${Boost_LIBRARIES}
 )

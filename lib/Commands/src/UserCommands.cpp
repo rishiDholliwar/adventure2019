@@ -4,6 +4,7 @@
 #include <sstream>
 #include <ReturnCodes.h>
 #include <Server.h>
+#include <JSONThingy.h>
 
 using networking::Connection;
 
@@ -12,8 +13,15 @@ std::pair<std::vector<Response>, bool> Login::execute() {
     auto result = userController->login(username, input, connection);
 
     if(result.returnCode == ReturnCode::LOGIN_SUCCESS) {
-        characterController->addCharacter(username, *(roomController), *(objectController));
+        Character tmpChar;
+        JSONThingy jt;
+        jt.load(username, tmpChar);
+        characterController->addCharacter(tmpChar);
+
+        roomController->addUserNameToRoom(tmpChar.getName(), tmpChar.getRoomID());
     }
+
+
 
     std::string returnMessage = Return::ReturnCodeToString(result.returnCode);
     std::vector<Response> res;
@@ -44,7 +52,9 @@ std::pair<std::vector<Response>, bool> Logout::execute() {
     }
     auto result = userController->logoutUser(username);
     if(result.returnCode == ReturnCode::LOGOUT_SUCCESS) {
-        auto roomID = characterController->getCharacter(username).getRoomID();
+        JSONThingy jt;
+        jt.save(characterController->getCharacter(username));
+        auto roomID = characterController->getCharacterRoomID(username);
         characterController->removeCharacter(username);
         roomController->removeUserNameFromRoom(username, roomID);
     }
@@ -99,7 +109,10 @@ std::pair<std::vector<Response>, bool> Signup::execute() {
     auto result = userController->createUser(username, input, connection);
 
     if(result.returnCode == ReturnCode::CREATE_SUCCESS) {
+
         characterController->addCharacter(username, *(roomController), *(objectController));
+        JSONThingy jt;
+        jt.save(characterController->getCharacter(username));
     }
 
     std::string returnMessage = Return::ReturnCodeToString(result.returnCode);

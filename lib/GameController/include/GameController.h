@@ -108,14 +108,14 @@ public:
      * */
     std::vector<Response> pickUp(Name username, Input itemName);
 
-    /* Drop:
+     Drop:
      *
      * Function: Drops the item specified from the user's inventory into the room
      *
      * Pre-Condition: requires the userName of the person issuing the command and the name of the item dropped
      * Post: drops the item into the room unless the person doesn't have the item
      *
-     * */
+     * 
     std::vector<Response> drop(Name username, Input itemName);
 
      /* Give:

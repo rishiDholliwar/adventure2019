@@ -6,7 +6,6 @@
 #include <CommandHandler.h>
 
 #include <RoomController.h>
-#include <NPCController.h>
 
 #include <memory>
 #include <string>
@@ -228,7 +227,6 @@ class Look : public Command
 private:
     RoomController* roomController;
     ObjectController* objectController;
-    NPCController* npcController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
@@ -236,12 +234,11 @@ private:
 public:
     explicit
     Look(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
-         NPCController* npcController, Name username = "", Input target = "", Connection connection = Connection{})
+         Name username = "", Input target = "", Connection connection = Connection{})
             : username(std::move(username)), target(std::move(target)) {
         this->characterController = characterController;
         this->roomController = roomController;;
         this->objectController = objectController;
-        this->npcController = npcController;
         registerInteraction = true;
     };
 
@@ -258,7 +255,6 @@ class Examine : public Command
 private:
     RoomController* roomController;
     ObjectController* objectController;
-    NPCController* npcController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
@@ -266,12 +262,11 @@ private:
 public:
     explicit
     Examine(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
-            NPCController* npcController, Name username = "", Input target = "", Connection connection = Connection{})
+            Name username = "", Input target = "", Connection connection = Connection{})
             : username(std::move(username)), target(std::move(target)) {
         this->characterController = characterController;
         this->roomController = roomController;;
         this->objectController = objectController;
-        this->npcController = npcController;
         registerInteraction = true;
     };
 

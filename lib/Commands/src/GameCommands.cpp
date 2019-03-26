@@ -6,7 +6,7 @@
 //Say
 std::pair<std::vector<Response>, bool> Say::execute() {
     std::cout << "Say " << input << std::endl;
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
 
     Response userResponse = Response("Me: " + input, username);
 
@@ -43,7 +43,7 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
         return std::make_pair(res, true);
     }
 
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
@@ -89,7 +89,7 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
         return std::make_pair(res, true);
     }
 
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
@@ -194,8 +194,8 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 		return this->interact();
 	}
 
-    Name targetUserName = characterController->getCharacter(targetCharName).getName();
-    Name charName = characterController->getCharacter(username).getName();
+    Name targetUserName = characterController->getCharName(targetCharName);
+    Name charName = characterController->getCharName(username);
 
 	//if gift target character doesn't exist
 	if (!characterController->doesCharacterExist(targetUserName)) {
@@ -233,8 +233,10 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 
 	ID giftID = characterController->getItemIDFromCharacterInventory(username, giftName);
 
+	characterController->dropItemFromCharacterInventory(username, giftID);
+
 	//drop item from user inventory
-	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+	if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
@@ -286,10 +288,12 @@ std::pair<std::vector<Response>, bool> Give::interact() {
     Name giftName = interactions.at(index).getName();
 
     Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
 
 	//drop item from user inventory
-	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+	characterController->dropItemFromCharacterInventory(username, giftID);
+
+	if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
@@ -400,7 +404,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         return std::make_pair(res, false);
     }
 
-    if (!(characterController->findCharacter(target))) {
+    if (!(characterController->doesCharacterExist(target))) {
 
         Response userResponse = Response("Target doesn't exist, sorry!", username);
 
@@ -409,9 +413,9 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
     }
 
     Name userKey = username;
-    Name targetKey = characterController->getCharacter(username).getName();
+    Name targetKey = characterController->getCharName(username);
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
         Response userResponse = Response("You are already under a swap spell!", userKey);
         Response targetResponse = Response("You are already under a swap spell!", targetKey);
@@ -431,11 +435,11 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
 
 std::pair<std::vector<Response>, bool> Swap::callback() {
     Name userKey = username;
-    Name targetKey = characterController->getCharacter(username).getName();
+    Name targetKey = characterController->getCharName(username);
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
-        Name targetCharName = characterController->getCharacter(username).getName();
+        Name targetCharName = characterController->getCharName(username);
 
         characterController->swapCharacter(userKey, targetKey);
 
@@ -543,11 +547,11 @@ std::pair<std::vector<Response>, bool> Look::execute() {
             ss << "\t" << usernameInList << "\n";
         }
 
-        // format character name into string stream
-        ss << "NPCs in room: \n";
-        for (const ID npcId : npcList){
-            ss <<  "\t" <<npcController->getNPCName(npcId)<< "\n";
-        }
+//        // format character name into string stream
+//        ss << "NPCs in room: \n";
+//        for (const ID npcId : npcList){
+//            ss <<  "\t" <<npcController->getNPCName(npcId)<< "\n";
+//        }
 
         // format object name into string stream
         ss << "Items in room: \n";
@@ -575,14 +579,14 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         }
     }
 
-    // search npc
-    for (const ID npcId : npcList){
-        Name npcName = npcController->getNPCName(npcId);
-        if (npcName == target) {
-            ss << index << ". " << npcName << "\n" << npcController->lookNPC(npcId) << "\n";
-            index += 1;
-        }
-    }
+//    // search npc
+//    for (const ID npcId : npcList){
+//        Name npcName = npcController->getNPCName(npcId);
+//        if (npcName == target) {
+//            ss << index << ". " << npcName << "\n" << npcController->lookNPC(npcId) << "\n";
+//            index += 1;
+//        }
+//    }
 
     // search object
     for (const ID objectId : objectList){
@@ -606,13 +610,13 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
 std::unique_ptr<Command> Look::clone() const {
     auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
-                                       this->npcController, this->username, this->target);
+                                       this->username, this->target);
     return std::move(look);
 }
 
 std::unique_ptr<Command> Look::clone(Name username, Input target, Connection connection) const {
     auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
-                                       this->npcController, username, target);
+                                       username, target);
     return std::move(look);
 }
 
@@ -647,14 +651,14 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
         }
     }
 
-    // search npc
-    for (const ID npcId : npcList){
-        Name npcName = npcController->getNPCName(npcId);
-        if (npcName == target) {
-            ss << index << ". " << npcName << "\n" << npcController->examineNPC(npcId) << "\n";
-            index += 1;
-        }
-    }
+//    // search npc
+//    for (const ID npcId : npcList){
+//        Name npcName = npcController->getNPCName(npcId);
+//        if (npcName == target) {
+//            ss << index << ". " << npcName << "\n" << npcController->examineNPC(npcId) << "\n";
+//            index += 1;
+//        }
+//    }
 
     // search object
     for (const ID objectId : objectList){
@@ -677,13 +681,13 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
 
 std::unique_ptr<Command> Examine::clone() const {
     auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
-                                             this->npcController, this->username, this->target);
+                                             this->username, this->target);
     return std::move(examine);
 }
 
 std::unique_ptr<Command> Examine::clone(Name username, Input target, Connection connection) const {
     auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
-                                             this->npcController, username, target);
+                                             username, target);
     return std::move(examine);
 }
 
