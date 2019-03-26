@@ -1,7 +1,6 @@
 
 #include <ExtendedDescription.h>
 
-#include "ExtendedDescription.h"
 
 ExtendedDescription::ExtendedDescription() {
 
