@@ -548,6 +548,12 @@ std::string Move::help() {
 }
 
 std::pair<std::vector<Response>, bool> Look::execute() {
+
+    //TODO::DELETE THIS
+    objectController->addObjectToList(Object(8801,"sword"));
+
+    std::cout << "PLEASE WORK WTF: " << objectController->getObjectFromList(8801).getName();
+
     std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
 
@@ -559,7 +565,6 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
     // with no argument
     if (target.empty()){
-        objectController->addObjectToList(Object(8801,"sword"));
         ss << roomController->getRoomDescription(roomId);
 
         // format username into string stream
@@ -689,6 +694,7 @@ std::string Look::help() {
 }
 
 std::pair<std::vector<Response>, bool> Examine::execute() {
+
     std::string line = "---------------------------\n";
     if (target.empty()){
         Response userResponse = Response("Please input a target.\n", username);
@@ -752,6 +758,10 @@ std::string Swap::help() {
 
 //Pickup
 std::pair<std::vector<Response>, bool> Pickup::execute(){
+    //TODO:: DELETE THIS
+    objectController->addObjectToList(Object(8801,"sword"));
+
+
     if(target.empty()){
         Response userResponse = Response("Please input a target.\n", username);
         auto res = formulateResponse(userResponse);

@@ -3,7 +3,7 @@
 #include <Utility.h>
 
 ObjectController::ObjectController(){
-	//
+
 };
 
 bool ObjectController::addObjectToList(const Object &object) {
