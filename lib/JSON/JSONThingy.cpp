@@ -173,12 +173,12 @@ void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
 
 void JSONThingy::load(std::string language, CommandTranslator &aTranslator) {
 
-    if(!boost::filesystem::exists("./DataFiles/internalization.json")) {
+    if(!boost::filesystem::exists("./DataFiles/internationalization.json")) {
         return;
     }
 
     std::fstream fs;
-    fs.open("./DataFiles/internalization.json", std::fstream::in);
+    fs.open("./DataFiles/internationalization.json", std::fstream::in);
     if(!fs.fail()) {
         json j;
         fs >> j;
