@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-void CommandHandler::registerCommand(const Invocation& invokeWord, std::unique_ptr<Command> command) {
-    CommandHandler::_defCommandMap[invokeWord] = std::move(command);
+void CommandHandler::registerCommand(CommandType invocation, std::unique_ptr<Command> command) {
+    CommandHandler::_defCommandMap[invocation] = std::move(command);
 }
 
-std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const Invocation& invokeWord, const Input& input, const Connection connection)
+std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, CommandType invocation, const Input& input, const Connection connection)
 {
 	// For user configurable spellings
 	// We need to look for the user's custom command map first
@@ -18,7 +18,7 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
 	{
 		// find command inside of user's map
 		auto userMap = &(mapItr->second);
-		auto itr = userMap->find(invokeWord);
+		auto itr = userMap->find(invocation);
 		if(itr != userMap->end())
 		{
             // Update with new input
@@ -26,16 +26,16 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
             return itr->second;
 		}
 	}
-	if(_defCommandMap.find(invokeWord) == _defCommandMap.end())
+	if(_defCommandMap.find(invocation) == _defCommandMap.end())
 	{
 		return nullptr;
 	}
-    if( _defCommandMap[invokeWord]->isInteractable() ) {
+    if( _defCommandMap[invocation]->isInteractable() ) {
         auto ret = _userCommandMap.insert(std::pair(userName, CommandHandler::UserMap{}));
-        ret.first->second[invokeWord] = _defCommandMap[invokeWord]->clone(userName, input, connection);
-        return ret.first->second[invokeWord];
+        ret.first->second[invocation] = _defCommandMap[invocation]->clone(userName, input, connection);
+        return ret.first->second[invocation];
     }
-	return _defCommandMap[invokeWord]->clone(userName, input, connection);
+	return _defCommandMap[invocation]->clone(userName, input, connection);
 }
 
 const std::vector<std::unique_ptr<Command>> CommandHandler::getAllCommands() const{
@@ -45,99 +45,4 @@ const std::vector<std::unique_ptr<Command>> CommandHandler::getAllCommands() con
         commands.push_back(std::move(itr.second->clone()));
     }
     return commands;
-}
-
-
-std::string CommandHandler::setAlias(const Name& userName, const Input& input)
-{
-    std::vector<std::string> v = utility::tokenizeString(input);
-    if(v.size() != 2)
-    {
-        return "Usage: /alias [command] [alias]";
-    }
-    std::string command = v[0];
-    std::string alias = v[1];
-
-    return _setAlias(userName, command, alias);
-}
-
-std::string CommandHandler::removeAlias(const Name& userName, const Input& input)
-{
-    std::vector<std::string> v = utility::tokenizeString(input);
-    if(v.size() != 1)
-    {
-        return "Usage: /unalias [alias]";
-    }
-    std::string alias = v[0];
-
-    return _removeAlias(userName, alias);
-}
-
-std::string CommandHandler::_setAlias(const Name& userName, const Invocation& invokeWord, const Alias& newAlias)
-{
-	std::string error   = "Error: could not set alias for \"";
-	std::string success = "Successfully set alias for \"";
-
-	std::string response  = invokeWord;
-				response += "\" to \"";
-				response += newAlias;
-				response += "\"";
-
-	success += response;
-	error += response;
-
-	// Initialize the user map with an empty one
-	// If it fails, it will return us the current map
-	// auto ret = _userFuncMap.insert(std::pair(userName, CommandHandler::UserFunctionMap{}));
-
-	// // Take the reference of the map... You don't want a copy
-	// auto userMap = &(ret.first)->second;
-
-	// // Check both the user and default map to see if the command
-	// // exists already or not
-	// auto itr = userMap->find(command);
-	// if (itr == userMap->end())
-	// {
-	// 	itr = _defUserMap.find(command);
-	// 	if (itr == _defUserMap.end())
-	// 	{
-	// 		return error;
-	// 	}
-	// }
-
-	// // Do not allow an alias of the same name in our default map
-	// if ( _defUserMap.find(newAlias) != _defUserMap.end() ||
-	// 	 _defCommMap.find(newAlias) != _defCommMap.end() ||
-	// 	 _defLognMap.find(newAlias) != _defLognMap.end() )
-	// {
-	// 	return error;
-	// }
-
-	// auto mapItr = userMap->insert(std::pair(newAlias, itr->second));
-	// // Fails if there is already an alias with this name
-	// if( ! mapItr.second )
-	// {
-	// 	return error;
-	// }
-	return success;
-}
-
-std::string CommandHandler::_removeAlias(const Name& userName, const Alias& alias)
-{
-	// Try and insert an empty function map for the user
-	// If it fails, it will return us the current map
-	// auto userFuncMap = _userFuncMap.insert(std::pair(userName, CommandHandler::UserFunctionMap{}));
-	// if(userFuncMap.second)
-	// {
-	// 	return "Alias does not exist";
-	// }
-
-	// auto map = userFuncMap.first;
-	// auto numErased = map->second.erase(alias);
-
-	// if ( numErased == 0 )
-	// {
-	// 	return "Failed to unalias: " + alias;
-	// }
-	return "Successfully removed alias: " + alias;
 }

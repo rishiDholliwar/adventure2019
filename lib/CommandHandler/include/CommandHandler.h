@@ -8,6 +8,7 @@
 
 #include <AlterSpace.h>
 #include <Command.h>
+#include <CommandTranslator.h>
 #include <UserController.h>
 #include <Server.h>
 #include <Response.h>
@@ -30,8 +31,8 @@ using networking::Connection;
 class CommandHandler {
 public:
 
-    using CommandMap = std::unordered_map<Invocation, std::unique_ptr<Command>>;
-    using UserMap = std::unordered_map<Invocation, std::shared_ptr<Command>>;
+    using CommandMap = std::unordered_map<CommandType, std::unique_ptr<Command>>;
+    using UserMap = std::unordered_map<CommandType, std::shared_ptr<Command>>;
 
     CommandHandler() = default;
 
@@ -43,47 +44,9 @@ public:
      * Post-Condition: Returns a member function pointer
      *                  or nullptr if fails to find command
     */
-    std::shared_ptr<Command> getCommand(const Name& userName, const Invocation& invokeWord, const Input& input, const Connection connection);
+    std::shared_ptr<Command> getCommand(const Name& userName, CommandType invocation, const Input& input, const Connection connection);
 
-    /*
-     * Parses the arguments for _setAlias
-     * Calls _setAlias is args are valid
-     *
-     * Pre-Condition: Takes in a Name(std::string) and input
-     *
-     * Post-Condition: Returns an output string
-    */
-    std::string setAlias(const Name& userName, const Input& input);
-
-    /*
-     * Parses the arguments for _removeAlias
-     * Calls _removeAlias is args are valid
-     *
-     * Pre-Condition: Takes in a Name(std::string) and input
-     *
-     * Post-Condition: Returns an output string
-    */
-    std::string removeAlias(const Name& userName, const Input& input);
-
-    /*
-     * Sets user alias for a command (Only works for game controller commands)
-     *
-     * Pre-Condition: Takes in a Name(std::string) and input
-     *
-     * Post-Condition: Returns an output string
-    */
-    std::string _setAlias(const Name& userName, const Invocation& invokeWord, const Alias& alias);
-
-    /*
-     * removes user alias for a command (Only works for game controller commands)
-     *
-     * Pre-Condition: Takes in a Name(std::string) and input
-     *
-     * Post-Condition: Returns an output string
-    */
-    std::string _removeAlias(const Name& userName, const Alias& alias);
-
-    void registerCommand(const Invocation& invokeWord, std::unique_ptr<Command> command);
+    void registerCommand(CommandType invocation, std::unique_ptr<Command> command);
 
     const std::vector<std::unique_ptr<Command>> getAllCommands() const;
 

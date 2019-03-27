@@ -15,6 +15,7 @@ target_include_directories(jsonThingy
 
 target_link_libraries(jsonThingy
         PUBLIC
+        commandHandler
         Character
         Object
         Inventory

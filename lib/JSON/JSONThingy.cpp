@@ -4,6 +4,50 @@
 #include <Room.h>
 #include <iostream>
 
+// map TaskState values to JSON as strings
+NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
+    //USE
+    {LOGIN, "LOGIN"},
+    {LOGOUT, "LOGOUT"},
+    {SIGNUP, "SIGNUP"},
+
+    //COMMUNICATION
+    {SAY, "SAY"},
+    {YELL, "YELL"},
+    {BROADCAST, "BROADCAST"},
+    {TELL, "TELL"},
+    {WHISPER, "WHISPER"},
+
+    //MOVEMENT
+    {MOVE, "MOVE"},
+    {NORTH, "NORTH"},
+    {SOUTH, "SOUTH"},
+    {WEST, "WEST"},
+    {EAST, "EAST"},
+    {NORTHWEST, "NORTHWEST"},
+    {NORTHEAST, "NORTHEAST"},
+    {SOUTHWEST, "SOUTHWEST"},
+    {SOUTHEAST, "SOUTHEAST"},
+
+    //INFORMATION
+    {HELP, "HELP"},
+    {INFO, "INFO"},
+    {EXAMINE, "EXAMINE"},
+    {INVENTORY, "INVENTORY"},
+
+    //ITEMS
+    {PICKUP, "PICKUP"},
+    {DROP, "DROP"},
+    {GIVE, "GIVE"},
+    {WEAR, "WEAR"},
+    {TAKEOFF, "TAKEOFF"},
+
+    //SPELLS
+    {SWAP, "SWAP"},
+    {CONFUSE, "CONFUSE"},
+    {DECOY, "DECOY"}
+})
+
 // Doors
 void from_json(const json &j, Door &aDoor) {
     aDoor = Door(j.at("dir").get<std::string>(),
@@ -32,7 +76,6 @@ void from_json(const json &j, Room &aRoom) {
 void from_json(const json &j, RoomController &roomController) {
     roomController = RoomController(j.at("ROOMS").get<std::vector<Room>>());
 }
-
 
 // Objects
 void to_json(json &j, const Object &anObject) {
@@ -125,4 +168,25 @@ void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
         fs.close();
         roomController = j.get<RoomController>();
     }
+}
+
+void JSONThingy::load(std::string language, CommandTranslator &aTranslator) {
+
+    if(!boost::filesystem::exists("./DataFiles/internalization.json")) {
+        return;
+    }
+
+    std::fstream fs;
+    fs.open("./DataFiles/internalization.json", std::fstream::in);
+    if(!fs.fail()) {
+        json j;
+        fs >> j;
+        fs.close();
+        std::map<std::string, CommandType> tmp = j.at(language).get<std::map<std::string, CommandType>>();
+        for(auto& t : tmp) {
+            aTranslator.registerTranslation(t.first, t.second);
+        }
+
+    }
+
 }

@@ -1,5 +1,6 @@
 add_library(commandHandler
-  src/CommandHandler.cpp)
+  src/CommandHandler.cpp
+  src/CommandTranslator.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
@@ -14,6 +15,7 @@ target_include_directories(commandHandler
 
 target_link_libraries(commandHandler
   PRIVATE
+    jsonThingy
     commands
     Character
     controllers
