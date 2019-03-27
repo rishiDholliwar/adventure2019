@@ -20,6 +20,7 @@ target_link_libraries(jsonThingy
         Inventory
         controllers
         json
+        world
         ${Boost_LIBRARIES}
         PRIVATE
         utility

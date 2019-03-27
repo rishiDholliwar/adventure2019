@@ -13,6 +13,7 @@
 #include <boost/filesystem.hpp>
 #include <iomanip>
 #include <fstream>
+#include <RoomController.h>
 
 using AlterSpace::Name;
 using AlterSpace::ID;
@@ -29,7 +30,7 @@ public:
 
     void load(std::string areaToLoad, ObjectController &objects);
 
-
+    void load(std::string areaToLoad, RoomController &roomController);
 };
 
 

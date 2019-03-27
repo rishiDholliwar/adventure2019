@@ -18,6 +18,7 @@
 #include <Utility.h>
 #include <Scheduler.h>
 #include <ReturnCodes.h>
+#include <JSONThingy.h>
 
 #include <GameCommands.h>
 #include <UserCommands.h>
@@ -31,10 +32,14 @@ void Game::registerCommands() {
     _commandHandler.registerCommand("/give", Give(&_characterController, &_objectController).clone());
     _commandHandler.registerCommand("/swap", Swap(&_characterController).clone());
     _commandHandler.registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/move", Move(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand("/look", Look(&_characterController,&_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/examine", Examine(&_characterController,&_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
     _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
+    _commandHandler.registerCommand("/move", Move(&_characterController, &_roomController).clone());
 }
 
 void
@@ -161,6 +166,7 @@ Game::Game(Config config)
 
     JSONThingy jt;
     jt.load("mirkwood", _objectController);
+    jt.load("mirkwood", _roomController);
 
     this->registerCommands();
 }

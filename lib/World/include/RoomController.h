@@ -9,27 +9,47 @@ using AlterSpace::Name;
 using AlterSpace::ID;
 
 class RoomController {
-    public:
+public:
 
         RoomController();
 
+
+    explicit RoomController(const std::vector<Room> roomList);
+
+    const std::vector<Room> &getRoomList() const;
+
+
         //Getters
-        const std::vector<ID> & getCharacterList (ID roomId);
+
         const std::vector<ID> & getObjectList (ID roomId);
-        const std::vector<Name> & getUsernameList (ID roomId);
+        const std::vector<Name> & getCharacterList(ID roomId);
         std::vector<ID> getRoomIdList() const;
 
-        ID getDoorIdByDirection(ID roomId, const std::string& direction);
-        Door::DoorStatus getDoorStatus(ID roomId, ID doorId);
-        ID getDoorDesignatedRoomId(ID roomId, ID doorId);
-        const std::string& getDoorDirection(ID roomId, ID doorId);
+
+
+
+    ID getDoorIdByDirection(ID roomId, const std::string& direction);
+        Door::DoorStatus getDoorStatus(ID roomId, const std::string& direction);
+        ID getDoorDesignatedRoomId(ID roomId, const std::string& direction);
+        bool doesDirectionExist(ID roomId, const std::string& direction);
+
+
+
+        bool isDoorLocked(ID roomId, ID doorId);
 
         /*
-         * The function gives information of the room including room details and doors details
+         * The function gives information of the room
          * Post-condition:
          *          return string of information of room
          */
-        std::string getTextOfRoomDetails(ID roomId);
+        std::string getRoomDescription(ID roomId);
+
+    /*
+     * The function gives information of doors in the room
+     * Post-condition:
+     *          return string of information of doors in the room
+     */
+        std::string getAllDoorInformationInRoom(ID roomId);
 
         /*
          * create a room according to the roomID and roomName inside RoomController
@@ -53,9 +73,8 @@ class RoomController {
          *          return true if the element is successfully added
          *          return false otherwise
          */
-        bool addCharacterToRoom(ID characterId, ID roomId);
         bool addObjectToRoom(ID objectId, ID roomId);
-        bool addUserNameToRoom(const Name& userName, ID roomId);
+        bool addCharacterToRoom(const Name &userName, ID roomId);
 
         /*
          * The 3 functions can remove unique id or unique userName from the room
@@ -63,9 +82,8 @@ class RoomController {
          *          return true if the element is successfully removed
          *          return false otherwise
          */
-        bool removeCharacterFromRoom(ID characterId, ID roomId);
         bool removeObjectFromRoom(ID objectId, ID roomId);
-        bool removeUserNameFromRoom(const std::string &userName, ID roomId);
+        bool removeCharacterFromRoom(const std::string &userName, ID roomId);
 
         /*
          * The function creates a door in the room according to the IDs
@@ -83,6 +101,12 @@ class RoomController {
          */
         bool removeDoorFromRoom(ID roomId, ID doorId);
 
+        bool moveCharacter(Name username, ID originRoomId, ID destinationRoomId);
+
+        bool isDoorExist(ID roomId, std::string &direction);
+
+        bool isDoorLocked(ID roomId, std::string &direction);
+
 
         /*
         * return the Room object, return nullptr if roomId not found
@@ -92,7 +116,7 @@ class RoomController {
         /*
          * return the Door object, return nullptr if doorId not found
          */
-        Door* searchDoor(ID roomId, ID doorId);
+        Door* searchDoor(ID roomId, const std::string& direction);
 
         // Validity checkers
 //        bool roomExists(ID roomId);

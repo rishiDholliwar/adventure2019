@@ -13,7 +13,7 @@ using AlterSpace::ID;
 using AlterSpace::Name;
 
 //dummy values
-#define ROOM_ID 1000
+#define ROOM_ID 8800
 
 class CharacterController {
 private:

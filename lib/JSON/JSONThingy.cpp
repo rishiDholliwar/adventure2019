@@ -1,8 +1,32 @@
-//
-// Created by bryan shitty on 21/03/19.
-//
-
 #include "JSONThingy.h"
+#include <Door.h>
+#include <ExtendedDescription.h>
+#include <Room.h>
+#include <iostream>
+
+// Doors
+void from_json(const json &j, Door &aDoor) {
+    aDoor = Door(j.at("dir").get<std::string>(),
+                 j.at("desc").get<std::vector<std::string>>(),
+                 j.at("keywords").get<std::vector<std::string>>(),
+                 j.at("to").get<int>());
+}
+
+// Extended Descriptions
+void from_json(const json &j, ExtendedDescription &extendedDescription) {
+    extendedDescription = ExtendedDescription(
+            j.at("keywords").get<std::vector<std::string>>(),
+            j.at("desc").get<std::vector<std::string>>());
+}
+
+// Rooms
+void from_json(const json &j, Room &aRoom) {
+    aRoom = Room(j.at("id").get<int>(),
+                 j.at("name").get<std::string>(),
+                 j.at("desc").get<std::vector<std::string>>(),
+                 j.at("doors").get<std::vector<Door>>(),
+                 j.at("extended_descriptions").get<std::vector<ExtendedDescription>>());
+}
 
 void to_json(json &j, const Extra &anExtra) {
     j = json{
@@ -11,6 +35,13 @@ void to_json(json &j, const Extra &anExtra) {
     };
 }
 
+// RoomController
+void from_json(const json &j, RoomController &roomController) {
+    roomController = RoomController(j.at("ROOMS").get<std::vector<Room>>());
+}
+
+
+// Objects
 void to_json(json &j, const Object &anObject) {
     j = json{
             {"id", anObject.getObjectID() },
@@ -36,6 +67,7 @@ void from_json(const json &j, Object &anObject) {
         j.at("extra").get<std::vector<Extra>>());
 }
 
+// Inventory
 void to_json(json &j, const Inventory &anInventory) {
     j = json{
             {"objects", anInventory.getObjects() }
@@ -46,6 +78,7 @@ void from_json(const json &j, Inventory &anInventory) {
     anInventory = Inventory( j.at("objects").get<std::vector<Object>>());
 }
 
+// Characters
 void to_json(json &j, const Character &aCharacter) {
 
     j = json{
@@ -112,7 +145,27 @@ void JSONThingy::load(std::string areaToLoad, ObjectController &objects) {
         json j;
         fs >> j;
         fs.close();
-        objects = j.get<ObjectController>();
 
+        objects = j.get<ObjectController>();
+    }
+
+}
+
+void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
+
+    if(!boost::filesystem::exists("./DataFiles/" + areaToLoad + ".json")) {
+        std::cout << "room file not found" << std::endl;
+        return;
+    }
+
+    std::cout << "file found" << std::endl;
+    std::fstream fs;
+    fs.open("./DataFiles/" + areaToLoad + ".json", std::fstream::in);
+    if(!fs.fail()) {
+        json j;
+        fs >> j;
+        fs.close();
+        
+        roomController = j.get<RoomController>();
     }
 }
