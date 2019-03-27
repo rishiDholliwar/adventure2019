@@ -10,8 +10,8 @@ void Room::addDescription(const std::string& description) {
     this->descriptions.push_back(description);
 }
 
-bool Room::addCharacter(ID characterId) {
-    return addUniqueItemToList(characterId, this->characterList);
+bool Room::addCharacter(const Name &userName){
+    return addUniqueItemToList(userName, this->characterList);
 }
 
 bool Room::addObject(ID objectId) {
@@ -19,23 +19,22 @@ bool Room::addObject(ID objectId) {
 }
 
 bool Room::addUserName(const Name &userName) {
-    return addUniqueItemToList(userName, this->usernameList);
+    return addUniqueItemToList(userName, this->characterList);
 }
 /*
  *  Removers
  */
 
-bool Room::removeCharacter(ID characterId) {
-    return removeUniqueItemFromList(characterId, this->characterList);
-}
+
 
 bool Room::removeObject(ID objectId) {
     return removeUniqueItemFromList(objectId, this->objectList);
 }
 
-bool Room::removeUserName(const Name &userName) {
-    return removeUniqueItemFromList(userName, this->usernameList);
+bool Room::removeCharacter(const Name &userName) {
+    return removeUniqueItemFromList(userName, this->characterList);
 }
+
 /*
  *  Link Rooms
  */
