@@ -3,7 +3,7 @@
 
 #include <deque>
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <memory>
 
 #include <AlterSpace.h>
@@ -31,8 +31,8 @@ using networking::Connection;
 class CommandHandler {
 public:
 
-    using CommandMap = std::unordered_map<CommandType, std::unique_ptr<Command>>;
-    using UserMap = std::unordered_map<CommandType, std::shared_ptr<Command>>;
+    using CommandMap = std::map<CommandType, std::unique_ptr<Command>>;
+    using UserMap = std::map<CommandType, std::shared_ptr<Command>>;
 
     CommandHandler() = default;
 
@@ -56,7 +56,7 @@ private:
     */
     CommandMap _defCommandMap;
 
-    std::unordered_map<Name, UserMap> _userCommandMap;
+    std::map<Name, UserMap> _userCommandMap;
 };
 
 #endif //WEBSOCKETNETWORKING_COMMANDHANDLER_H

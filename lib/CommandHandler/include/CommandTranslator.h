@@ -11,7 +11,7 @@ using AlterSpace::Invocation;
 enum CommandType
 {
     //USE
-    LOGIN,
+    LOGIN = 0,
     LOGOUT,
     SIGNUP,
 
