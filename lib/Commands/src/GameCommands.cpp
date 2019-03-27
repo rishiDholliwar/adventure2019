@@ -111,8 +111,8 @@ std::string Swap::help() {
 
 //Info
 std::pair<std::vector<Response>, bool> Info::execute() {
-    Name charName = characterController.getCharacter(username).getName();
-    Response userResponse = Response(characterController.getCharacterInfo(username), username);
+    Name charName = characterController->getCharacter(username).getName();
+    Response userResponse = Response(characterController->getCharacterInfo(username), username);
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
 }
