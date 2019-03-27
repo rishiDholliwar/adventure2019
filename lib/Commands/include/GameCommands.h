@@ -205,11 +205,14 @@ private:
     Name username;
     Input input;
     Connection connection;
+    RoomController* roomController;
 public:
     explicit
     Yell(CharacterController* characterController,
+    RoomController* roomController,
     Name username = "", Input input = "", Connection connection = Connection{})
     :
+    roomController(roomController),
     username(std::move(username)), input(std::move(input)), connection(connection) {
         this->characterController = characterController;
     };
@@ -222,7 +225,6 @@ public:
 
 
 };
-
 
 //move
 class Move : public Command

@@ -80,30 +80,33 @@ std::string Tell::help() {
 
 //Yell
 std::pair<std::vector<Response>, bool> Yell::execute() {
-    RoomController *roomController;
     ID characterRoomID = characterController->getCharacterRoomID(username);
 
     std::vector<std::string> recipients;
 
     //Get list of usernames in current room
-    for(auto& value : roomController->getUsernameList(characterRoomID)){
+    for(auto& value : roomController->getCharacterList(characterRoomID)){
         Name characterName = value;
         auto recepientUsername = characterController->getUsernameOfCharacter(characterName);
-        if(recepientUsername!=username){
+        std::cout << characterName;
+        if(recepientUsername!=username)
             recipients.push_back(recepientUsername);
-        }
     }
 
     //TODO::For each adjacent room, add character names to recipients
     for(auto &roomID: roomController->adjacentRoomIDs(characterRoomID)){
-        for(auto& value : roomController->getUsernameList(roomID)){
+        for(auto& value : roomController->getCharacterList(roomID)){
             Name characterName = value;
             Name recepientUsername = characterController->getUsernameOfCharacter(characterName);
             recipients.push_back(recepientUsername);
             }
     }
 
+    for(int i = 0; input[i]; i++){
+        input[i] = toupper(input[i]);
+    }
     Response userResponse = Response("Me: " + input, username);
+
     std::string genericMessage = username + ": " + input;
     auto res = formulateResponse(userResponse, recipients, genericMessage);
 
@@ -112,11 +115,13 @@ std::pair<std::vector<Response>, bool> Yell::execute() {
 
 std::unique_ptr<Command> Yell::clone(Name username, Input input, Connection connection = Connection{}) const {
     return std::make_unique<Yell>( this->characterController,
+                                        this->roomController,
                                         username, input, connection);
 }
 
 std::unique_ptr<Command> Yell::clone() const {
     return std::make_unique<Yell>( this->characterController,
+                                        this->roomController,
                                         this->username, this->input, this->connection);
 }
 

@@ -20,7 +20,6 @@ public:
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
     std::vector<std::string> const& getKeywords() const{return keywords;};
     std::vector<ID> const& getObjectList() const{return objectList;};
-    std::vector<Name> const& getUsernameList() const{return usernameList;};
     std::vector<Door> const& getDoorList() const {return doorList;};
     std::vector<Name> const& getCharacterList() const{return characterList;};
 

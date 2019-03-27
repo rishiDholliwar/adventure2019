@@ -9,6 +9,7 @@ RoomController::RoomController(){
     generateRoom(1004, "Room5");
     generateRoom(1005, "Room6");
     generateRoom(1006, "Room7");
+    generateRoom(1007, "Room6.1");
 
     addDoorToRoom(1000, 1, 1001, "Up");
     addDoorToRoom(1000, 2, 1002, "East");
@@ -16,6 +17,7 @@ RoomController::RoomController(){
     addDoorToRoom(1000, 4, 1004, "South");
     addDoorToRoom(1000, 5, 1005, "North");
     addDoorToRoom(1000, 6, 1006, "Down");
+    addDoorToRoom(1005, 7, 1007,"North");
 
     addDoorToRoom(1001, 1, 1000, "Down");
     addDoorToRoom(1002, 1, 1000, "West");
@@ -23,6 +25,7 @@ RoomController::RoomController(){
     addDoorToRoom(1004, 1, 1000, "North");
     addDoorToRoom(1005, 1, 1000, "South");
     addDoorToRoom(1006, 1, 1000, "Up");
+    addDoorToRoom(1007, 7, 1005, "South");
 
 
     auto room = searchRoom(1000);
