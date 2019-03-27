@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <numeric>
 #include <AlterSpace.h>
 #include <Inventory.h>
 #include <UniqueID.h>
@@ -13,18 +14,27 @@
 using AlterSpace::ID;
 using AlterSpace::Name;
 
+enum class CharacterType {
+    PLAYABLE,
+    NON_PLAYABLE,
+};
+
 class Character : public UniqueID {
 private:
     Name name;
+    ID characterID;
     ID roomID;
+    CharacterType characterType;
     Inventory inventory;
     std::vector<Object> wearing;
     bool confused;
 
-    std::string shortdesc;
-    std::vector<std::string> descriptions;
-    std::vector<std::string> longdesc;
+    std::vector<std::string> keywords;
 
+    std::string shortdesc;
+    std::vector<std::string> longdesc;
+    std::vector<std::string> description;
+    
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
@@ -32,21 +42,44 @@ public:
     Character() = default;
     Character(Name name, ID roomID) : name(std::move(name)), roomID(roomID)
     {
+        this->characterID = id;
         this->inventory = Inventory{};
         this->confused = false;
         this->wearing = std::vector<Object>();
     }
 
+    // //initialize new npc
+    // Character(Name name, ID roomID, CharacterType characterType) : name(std::move(name)), roomID(roomID), characterType(std::move(characterType))
+    // {
+    //     this->inventory = Inventory{};
+    //     this->confused = false;
+    //     this->wearing = std::vector<Object>();
+    // }
+
     Character(Name name, ID roomID, Inventory inventory, std::vector<Object> wearing) :
             name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
+        this->characterType = CharacterType::PLAYABLE;
+        this->confused = false;
+    }
+
+    //constructor for npc
+    Character(ID characterID, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc, std::vector<std::string> description) :
+            characterID(characterID), keywords(keywords), shortdesc(shortdesc), longdesc(longdesc), description(description) {
+        this->name = std::accumulate(keywords.begin(), keywords.end(), std::string(" "));
         this->confused = false;
     }
 
     Name getName() const;
+    ID getCharacterID() const;
     ID getRoomID() const;
+    bool isNPC() const;
     ID getID() const;
-    std::vector<std::string> const& getDescriptions() const{return descriptions;};
-    std::vector<std::string> const& getExtendedDescriptions() const{return longdesc;};
+    void setNPC();
+
+    std::vector<std::string> const& getKeywords() const;
+    std::string const& getShortDesc() const;
+    std::vector<std::string> const& getLongDesc() const;
+    std::vector<std::string> const& getDescription() const;
     std::string getInfo() const;
     bool isConfused() const;
 

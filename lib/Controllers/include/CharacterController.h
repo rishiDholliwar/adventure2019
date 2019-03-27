@@ -20,7 +20,9 @@ private:
 
 public:
     /* Constructor */
-    CharacterController();
+    CharacterController() = default;
+
+    CharacterController(std::vector<Character> npcs);
 
     /*
      * Adds new users to the list of characters

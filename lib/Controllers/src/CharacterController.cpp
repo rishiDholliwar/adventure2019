@@ -5,7 +5,12 @@
 #include <Utility.h>
 
 
-CharacterController::CharacterController() = default;
+CharacterController::CharacterController(std::vector<Character> npcs) {
+    for (auto &npc : npcs) {
+        npc.setNPC();
+        addCharacter(npc);
+    }
+}
 
 void CharacterController::addCharacter(Name &username, RoomController &roomController, ObjectController &objectController) {
 
@@ -72,12 +77,12 @@ std::vector<Name> CharacterController::getAllCharacterNames() {
 
 std::string CharacterController::lookCharacter(Name &userName) {
     auto character = getCharacter(userName);
-    return utility::extractStringVector(character.getDescriptions());
+    return utility::extractStringVector(character.getDescription());
 }
 
 std::string CharacterController::examineCharacter(Name &userName) {
     auto character = getCharacter(userName);
-    auto extDescriptions = character.getExtendedDescriptions();
+    auto extDescriptions = character.getLongDesc();
     if (extDescriptions.empty()){
         return lookCharacter(userName);
     }
