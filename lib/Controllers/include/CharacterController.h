@@ -29,9 +29,9 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    void addCharacter(Name &username, RoomController &roomController, ObjectController &objectController);
+    void addCharacter(Name &username, ObjectController &objectController);
 
-    void addNPC(Name &npcname, RoomController &roomController, ObjectController &objectController);
+    void addNPC(Name &npcname, ObjectController &objectController);
 
     void addCharacter(Character &aCharacter);
 

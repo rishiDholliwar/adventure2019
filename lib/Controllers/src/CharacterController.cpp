@@ -6,11 +6,10 @@
 
 CharacterController::CharacterController() = default;
 
-void CharacterController::addCharacter(Name &username, RoomController &roomController, ObjectController &objectController) {
+void CharacterController::addCharacter(Name &username, ObjectController &objectController) {
 
     // Default Data for all first time users
     Character defaultCharacter(username, ROOM_ID);
-    roomController.addUserNameToRoom(defaultCharacter.getName(),defaultCharacter.getRoomID());
 
     defaultCharacter.addItemToInventory(Object("Basic Sword"));
     objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));
@@ -21,11 +20,10 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
     _characters.emplace(username,defaultCharacter).second;
 }
 
-void CharacterController::addNPC(Name &npcname, RoomController &roomController, ObjectController &objectController) {
+void CharacterController::addNPC(Name &npcname, ObjectController &objectController) {
 
     Character defaultNPC(npcname, ROOM_ID, CharacterType::NON_PLAYABLE);
-    roomController.addCharacterToRoom(defaultNPC.getID(),defaultNPC.getRoomID());
-
+    
     std::stringstream ss;
     ss << npcname << "-" << defaultNPC.getID();
     Name npcKey = ss.str();
