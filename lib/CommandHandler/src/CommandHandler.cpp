@@ -1,5 +1,4 @@
 #include <CommandHandler.h>
-#include <GameController.h>
 #include <Utility.h>
 
 #include <iostream>
@@ -38,6 +37,16 @@ std::shared_ptr<Command> CommandHandler::getCommand(const Name& userName, const 
     }
 	return _defCommandMap[invokeWord]->clone(userName, input, connection);
 }
+
+const std::vector<std::unique_ptr<Command>> CommandHandler::getAllCommands() const{
+    std::vector<std::unique_ptr<Command>> commands;
+    commands.reserve(_defCommandMap.size());
+    for(auto& itr : _defCommandMap) {
+        commands.push_back(std::move(itr.second->clone()));
+    }
+    return commands;
+}
+
 
 std::string CommandHandler::setAlias(const Name& userName, const Input& input)
 {

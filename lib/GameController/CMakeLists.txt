@@ -15,6 +15,7 @@ target_include_directories(gameController
 
 target_link_libraries(gameController
   PUBLIC
+    networking
     world
     Character
     controllers
@@ -22,7 +23,7 @@ target_link_libraries(gameController
   PRIVATE
     utility
     uniqueID
-    pigLatin
+    stringModifier
     ${Boost_LIBRARIES}
 )
 
@@ -51,7 +52,7 @@ target_link_libraries(gameControllerTest
   gameController
   utility
   uniqueID
-  pigLatin
+  stringModifier
   ${Boost_LIBRARIES})
 
 

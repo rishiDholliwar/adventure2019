@@ -4,15 +4,6 @@
 #include <sstream>
 #include <ios>
 
-Character::Character(const Name &name, ID roomID)
-{
-  this->name = name;
-  this->roomID = roomID;
-  this->inventory = Inventory{};
-  this->confused = false;
-  this->wearing = std::vector<Object>();
-}
-
 Name Character::getName() const {
     return this->name;
 }
@@ -32,6 +23,10 @@ std::string Character::getInfo() const {
 
 
 	return retString.str();
+}
+
+std::vector<Object> Character::getItemsFromInventory(Name objectName) {
+    return inventory.getItems(objectName);
 }
 
 Object Character::getItemFromInventory(Name objectName) {
@@ -89,10 +84,9 @@ bool Character::isWearing(Name objectName) {
     return it != wearing.end();
 }
 
-bool Character::wear(ID objectId) {
+void Character::wear(ID objectId) {
     wearing.push_back(getItemFromInventory(objectId));
     dropItem(objectId);
-    return isWearing(objectId);
 }
 
 ID Character::getWearingID(Name objectName) {
@@ -100,22 +94,19 @@ ID Character::getWearingID(Name objectName) {
     return (*it).getID();
 }
 
-bool Character::remove(Object obj) {
+void Character::remove(Object obj) {
 
-    if (!(isWearing(obj.getID()))) {
-      return false;
+    if (isWearing(obj.getID())) {
+      auto it = getWearingIterator(obj.getID());
+
+      it = wearing.erase(it);
+      addItemToInventory(obj);
     }
-
-    auto it = getWearingIterator(obj.getID());
-
-    it = wearing.erase(it);
-    addItemToInventory(obj);
-    return true;
 }
 
 
-bool Character::dropItem(ID objectId) {
-    return inventory.removeItem(objectId);
+void Character::dropItem(ID objectId) {
+    inventory.removeItem(objectId);
 }
 
 std::string Character::listWearing() const {
@@ -144,6 +135,22 @@ void Character::confuse() {
 }
 
 
-bool Character::isConfused() {
+bool Character::isConfused() const {
   return confused;
+}
+
+const std::vector<Object> &Character::getWearing() const {
+    return wearing;
+}
+
+void Character::setWearing(const std::vector<Object> &wearing) {
+    this->wearing = wearing;
+}
+
+const Inventory &Character::getInventory() const {
+    return inventory;
+}
+
+void Character::setInventory(const Inventory &inventory) {
+    Character::inventory = inventory;
 }

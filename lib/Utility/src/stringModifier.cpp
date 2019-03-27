@@ -1,7 +1,7 @@
 // Used the pig latin converter from Geeks-for-Geeks:
 // https://www.geeksforgeeks.org/encoding-word-pig-latin/
 
-#include <pigLatin.h>
+#include <stringModifier.h>
 #include <Utility.h>
 #include <sstream>
 
@@ -45,4 +45,20 @@ std::string pigLatin(std::string word) {
     // index). Append all characters which are before 
     // index. Finally append "ay" 
     return word.substr(index) + word.substr(0, index) + "ay"; 
-} 
+}
+
+std::string whisperModifier(std::string message) {
+    std::stringstream s(message);
+    std::stringstream retString;
+    std::string word;
+
+    while(s >> word){
+        std::replace_if( word.begin( ), word.end( ), [] ( const char c ) {
+            return std::string( "etanidufkqETANIDUFKQ" ).find( c ) != std::string::npos;
+        }, '.');
+
+        retString << word << " ";
+    }
+
+    return retString.str();
+}

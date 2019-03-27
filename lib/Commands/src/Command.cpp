@@ -21,6 +21,11 @@ std::pair<std::vector<Response>, bool> Command::callback() {
     return std::make_pair(noResponse(), false);
 }
 
+std::pair<std::vector<Response>, bool> Command::runCallback() {
+    registerCallback = false;
+    return this->callback();
+}
+
 bool Command::callbackable() const {
     return registerCallback;
 }
@@ -55,7 +60,7 @@ std::vector<Response> Command::formulateResponse(Response &userResponse, std::ve
         }
     }
 
-    if(characterController->isCharacterConfused(userResponse.username)){
+    if(!userResponse.username.empty() && characterController->isCharacterConfused(userResponse.username)){
         userResponse.message = translate(userResponse.message);
         response.push_back(userResponse);
     } else {

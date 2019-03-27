@@ -23,6 +23,7 @@ public:
 
     Inventory() = default;
 
+    Inventory(std::vector<Object> objects) : objects(objects) {};
     /* Add Item:
      *
      * Function: adds item to inventory
@@ -53,6 +54,8 @@ public:
      * */
     bool doesItemExist(Name objectName);
 
+    std::vector<Object> getItems(Name& objectName);
+
     /* Get Item By Name:
      *
      * Function: Checks to see if user has such the item and returns the item if true
@@ -73,7 +76,7 @@ public:
      * Post: Removes the item from the inventory, returns true if removed successfully
      *
      * */
-    bool removeItem(ID objectID);
+    void removeItem(ID objectID);
 
     /* List Inventory:
      *
@@ -84,6 +87,8 @@ public:
      *
      * */
     std::string listInventory();
+
+    const std::vector<Object>& getObjects() const;
 };
 
 

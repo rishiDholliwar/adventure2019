@@ -76,8 +76,26 @@ public:
      * */
     std::vector<Response> move(Name username, Input direction);
 
-    // dummy function for now
-    // TODO: complete the examine command
+    /* Look:
+     *
+     * Function: Show the brief description of the target.
+     *
+     * Pre-Condition: message is the target, if the message is empty, then the target is room.
+     *
+     * Post-Condition: show the brief description of the target. If the target is the room, show the brief description
+     * of the room as well as a short description of the characters, objects, and cardinal/ordinal/vertical exits within the room
+     */
+    std::vector<Response> look(Name username, Input target);
+
+    /* Look:
+     *
+     * Function: Show the detailed description of the room.
+     *
+     * Pre-Condition: message is the target, if the message is empty, then the target is room.
+     *
+     * Post-Condition: show the brief description of the target. If the target is the room, show the brief description
+     * of the room as well as a short description of the characters, objects, and cardinal/ordinal/vertical exits within the room
+     */
     std::vector<Response> examine(Name username, Input message);
 
     /* PickUp:
@@ -90,14 +108,14 @@ public:
      * */
     std::vector<Response> pickUp(Name username, Input itemName);
 
-    /* Drop:
+     Drop:
      *
      * Function: Drops the item specified from the user's inventory into the room
      *
      * Pre-Condition: requires the userName of the person issuing the command and the name of the item dropped
      * Post: drops the item into the room unless the person doesn't have the item
      *
-     * */
+     * 
     std::vector<Response> drop(Name username, Input itemName);
 
      /* Give:

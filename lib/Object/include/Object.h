@@ -52,30 +52,17 @@ public:
 
     ID getID() const;
 
-    std::unordered_map<Property, Value> getAbilities() {
-      return abilities;
-    }
+    std::unordered_map<Property, Value> getAbilities();
 
-    std::vector<std::string> getKeywords() {
-        return keywords;
-    }
+    std::vector<std::string> getKeywords();
 
-    std::string getShortDesc() {
-        return shortdesc;
-    }
+    std::string getShortDesc();
 
-    std::vector<std::string> getLongDesc() {
-        return longdesc;
-    }
+    std::vector<std::string> getLongDesc();
 
-    std::vector<std::string> getExtraKeywords() {
-        return extra.keywords;
-    }
+    std::vector<std::string> getExtraKeywords();
 
-    std::vector<std::string> getExtraDesc() {
-        return extra.desc;
-    }
-
+    std::vector<std::string> getExtraDesc();
 };
 
 

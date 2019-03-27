@@ -39,6 +39,19 @@ bool Inventory::doesItemExist(Name objectName)
     return getItemIterator(objectName) != objects.end();
 }
 
+std::vector<Object> Inventory::getItems(Name& objectName)
+{
+    std::vector<Object> items;
+
+    for (auto &obj : objects) {
+        if (obj.getName() == objectName) {
+            items.push_back(obj);
+        }
+    }
+
+    return items;
+}
+
 Object Inventory::getItem(Name& objectName)
 {
 
@@ -54,20 +67,31 @@ Object Inventory::getItem(ID objectID)
     return *it;
 }
 
-bool Inventory::removeItem(ID objectID)
+void Inventory::removeItem(ID objectID)
 {
     auto it = getItemIterator(objectID);
 
-    if (it == objects.end())
+    if (it != objects.end())
     {
-        return false;
-    }
-
-    it = objects.erase(it);
-    return true; //TODO: fix this for multiple items later!!!
+        it = objects.erase(it);
+    }   
 }
 
 std::string Inventory::listInventory()
 {
-    // next merge will have this function
+    int objectCount = 1;
+
+    std::stringstream inventoryList;
+
+    for (auto &obj : objects) {
+
+        inventoryList << objectCount++ << ". " << obj.getName() << "\n";
+    }
+
+    return inventoryList.str();
+
+}
+
+const std::vector<Object>& Inventory::getObjects() const {
+    return objects;
 }

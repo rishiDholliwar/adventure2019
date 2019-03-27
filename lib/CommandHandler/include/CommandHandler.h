@@ -8,7 +8,6 @@
 
 #include <AlterSpace.h>
 #include <Command.h>
-#include <GameController.h>
 #include <UserController.h>
 #include <Server.h>
 #include <Response.h>
@@ -85,6 +84,8 @@ public:
     std::string _removeAlias(const Name& userName, const Alias& alias);
 
     void registerCommand(const Invocation& invokeWord, std::unique_ptr<Command> command);
+
+    const std::vector<std::unique_ptr<Command>> getAllCommands() const;
 
 private:
     /*
