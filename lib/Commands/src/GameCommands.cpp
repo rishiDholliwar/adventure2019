@@ -93,15 +93,17 @@ std::pair<std::vector<Response>, bool> Yell::execute() {
             recipients.push_back(recepientUsername);
     }
 
-    //TODO::For each adjacent room, add character names to recipients
+    //For each adjacent room connected by a door
+    //Add characternames to list of recepients to yell at
     for(auto &roomID: roomController->adjacentRoomIDs(characterRoomID)){
         for(auto& value : roomController->getCharacterList(roomID)){
             Name characterName = value;
             Name recepientUsername = characterController->getUsernameOfCharacter(characterName);
             recipients.push_back(recepientUsername);
-            }
+        }
     }
 
+    //Yell command makes all input to uppercase
     for(int i = 0; input[i]; i++){
         input[i] = toupper(input[i]);
     }
