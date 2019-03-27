@@ -1,41 +1,10 @@
 #include <algorithm>
 #include <RoomController.h>
+#include <iostream>
 
-RoomController::RoomController(){
-    generateRoom(1000, "Room1");
-    generateRoom(1001, "Room2");
-    generateRoom(1002, "Room3");
-    generateRoom(1003, "Room4");
-    generateRoom(1004, "Room5");
-    generateRoom(1005, "Room6");
-    generateRoom(1006, "Room7");
+RoomController::RoomController(){}
 
-    addDoorToRoom(1000, 1, 1001, "Up");
-    addDoorToRoom(1000, 2, 1002, "East");
-    addDoorToRoom(1000, 3, 1003, "West");
-    addDoorToRoom(1000, 4, 1004, "South");
-    addDoorToRoom(1000, 5, 1005, "North");
-    addDoorToRoom(1000, 6, 1006, "Down");
-
-    addDoorToRoom(1001, 1, 1000, "Down");
-    addDoorToRoom(1002, 1, 1000, "West");
-    addDoorToRoom(1003, 1, 1000, "East");
-    addDoorToRoom(1004, 1, 1000, "North");
-    addDoorToRoom(1005, 1, 1000, "South");
-    addDoorToRoom(1006, 1, 1000, "Up");
-
-
-    auto room = searchRoom(1000);
-    room->addDescription("Test description 1.");
-    room->addDescription("Test description 2.");
-
-    room->addExtendedDescription("Test extended description 1");
-    room->addExtendedDescription("Test extended description 2");
-
-    room->addKeywords("Test");
-
-
-}
+RoomController::RoomController(const std::vector<Room> roomList) : roomList(roomList) {}
 
 /*
  * Getters
@@ -81,7 +50,7 @@ bool RoomController::generateRoom(ID roomId, const Name& roomName) {
     auto tempRoom = RoomController::searchRoom(roomId);
 
     if (tempRoom == nullptr) {
-        this->roomList.emplace_back(roomId, roomName);
+//        this->roomList.emplace_back(roomId, roomName);
     }
 
     return !tempRoom;
@@ -199,21 +168,26 @@ ID RoomController::getDoorIdByDirection(ID roomId, const std::string &direction)
     return door->getId();
 }
 
-ID RoomController::getDoorDesignatedRoomId(ID roomId, ID doorId) {
-    auto door = searchDoor(roomId, doorId);
+Door::DoorStatus RoomController::getDoorStatus(ID roomId, const std::string& direction) {
+    auto door = searchDoor(roomId, direction);
+    return door->getStatus();
+}
+
+ID RoomController::getDoorDesignatedRoomId(ID roomId, const std::string& direction) {
+    auto door = searchDoor(roomId, direction);
     if (door == nullptr){
         return Door::unfoundDoorId;
     }
     return door->getDesignatedRoomId();
 }
 
-const std::string& RoomController::getDoorDirection(ID roomId, ID doorId) {
-    auto door = searchDoor(roomId, doorId);
+bool RoomController::doesDirectionExist(ID roomId, const std::string& direction) {
+    auto door = searchDoor(roomId, direction);
     if (door == nullptr){
         const static std::string doorNotFoundMessage = "Door does not exist.\n";
-        return doorNotFoundMessage;
+        return false;
     }
-    return door->getDirection();
+    return true;
 }
 
 bool RoomController::moveCharacter(Name username, ID originRoomId, ID destinationRoomId) {{
@@ -221,13 +195,13 @@ bool RoomController::moveCharacter(Name username, ID originRoomId, ID destinatio
         addCharacterToRoom(username, destinationRoomId);
 }}
 
-bool RoomController::isDoorExist(ID roomId, ID doorId) {
-    auto door = searchDoor(roomId, doorId);
+bool RoomController::isDoorExist(ID roomId, std::string &direction) {
+    auto door = searchDoor(roomId, direction);
     return door != nullptr;
 }
 
-bool RoomController::isDoorLocked(ID roomId, ID doorId) {
-    auto door = searchDoor(roomId, doorId);
+bool RoomController::isDoorLocked(ID roomId, std::string &direction) {
+    auto door = searchDoor(roomId, direction);
     if (door == nullptr){
         return true;
     }
@@ -239,7 +213,6 @@ bool RoomController::isDoorLocked(ID roomId, ID doorId) {
  */
 
 Room* RoomController::searchRoom(ID roomId) {
-
     auto tempRoom = std::find_if(roomList.begin(), roomList.end(),
                                  [&roomId](const Room& room)
                                  {return room.getId() == roomId;}
@@ -252,10 +225,19 @@ Room* RoomController::searchRoom(ID roomId) {
     return tempRoom.base();
 }
 
-Door* RoomController::searchDoor(ID roomId, ID doorId) {
+Door* RoomController::searchDoor(ID roomId, const std::string &direction) {
     auto room = searchRoom(roomId);
     if (room == nullptr){
         return nullptr;
     }
-    return room->searchDoor(doorId);
+
+    return room->searchDoorByDirection(direction);
 }
+
+const std::vector<Room> &RoomController::getRoomList() const {
+    return roomList;
+}
+
+
+
+

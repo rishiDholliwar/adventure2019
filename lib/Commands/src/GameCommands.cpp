@@ -274,7 +274,6 @@ std::pair<std::vector<Response>, bool> Give::interact() {
     std::vector<std::string> v = utility::tokenizeString(input);
 
     if ( v.size() != 2 ) {
-    	std::cout << "Too many arguments..." << std::endl;
     	Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
     	auto res = formulateResponse(userResponse);
 
@@ -480,83 +479,6 @@ std::unique_ptr<Command> Swap::clone(Name username, Input target, Connection con
 std::unique_ptr<Command> Swap::clone() const {
     auto swap = std::make_unique<Swap>(this->characterController, this->username, this->target);
     return std::move(swap);
-}
-
-std::pair<std::vector<Response>, bool> Move::execute() {
-
-    std::cout << "Move: " << direction << std::endl;
-
-    ID roomId = characterController->getCharacterRoomID(username);
-    ID doorId = roomController->getDoorIdByDirection(roomId, direction);
-
-
-    ID destination = roomController->getDoorDesignatedRoomId(roomId, doorId);
-
-    std::cout << "door id" << doorId << std::endl;
-    std::cout << "destination Room: "<<destination << std::endl;
-
-
-    // check if door exists
-    if (!roomController->isDoorExist(roomId, doorId)){
-        Response userResponse = Response("Door not exist!", username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res ,true);
-    }
-
-
-    // Verify if door is locked
-    if( roomController->isDoorLocked(roomId, doorId)){
-        Response userResponse = Response("Door is locked!", username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res ,true);
-    }
-
-    // list of users to notify that character moved north
-    std::vector<std::string> userList = roomController->getCharacterList(
-            characterController->getCharacterRoomID(username));
-
-    // Update roomList to account for character moving
-    roomController->moveCharacter(username, roomId, destination);
-    characterController->setCharacterRoomID(username, destination);
-
-    // send message to the moving user and another message to users in the room
-    Response userResponse = Response("Headed " + direction, username);
-    std::string genericMessage = username + " headed " + direction;
-
-    std::string enteringMessage = username + " entered the room";
-
-    Response empty = Response();
-    std::vector<std::string> characterList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
-    removeTargets(characterList, username);
-
-    auto res = formulateResponse(userResponse, userList, genericMessage);
-    auto resModified = formulateResponse(empty, characterList, enteringMessage);
-
-    res.insert(res.end(), resModified.begin(), resModified.end());
-
-    return std::make_pair(res, true);
-}
-
-void Move::removeTargets(std::vector<std::string> &characterList, Name username) {
-    characterList.erase(
-            std::remove_if(characterList.begin(), characterList.end(),
-                           [username](const std::string &character) { return (character == username); }),
-            characterList.end());
-}
-
-
-std::unique_ptr<Command> Move::clone() const {
-    auto move = std::make_unique<Move>(this->characterController, this->roomController, this->username, this->direction);
-    return std::move(move);
-}
-
-std::unique_ptr<Command> Move::clone(Name username, Input direction, Connection connection) const {
-    auto move = std::make_unique<Move>(this->characterController, this->roomController, username, direction);
-    return std::move(move);
-}
-
-std::string Move::help() {
-    return "/move [direction] - move to the target direction";
 }
 
 std::pair<std::vector<Response>, bool> Look::execute() {
@@ -793,3 +715,78 @@ std::unique_ptr<Command> Help::clone() const {
 std::string Help::help() {
     return "/help - 911 what is your emergency?";
 }
+
+// move
+std::pair<std::vector<Response>, bool> Move::execute() {
+
+    std::cout << "Move: " << direction << std::endl;
+
+    ID roomId = characterController->getCharacterRoomID(username);
+    ID toID = roomController->getDoorDesignatedRoomId(roomId, direction);
+
+    std::cout << "designated Room: "<<toID << std::endl;
+
+
+    // check if door exists
+    if (toID == Door::unfoundDoorId){
+        Response userResponse = Response("Door does not exist!", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res ,true);
+    }
+
+
+    // Verify if door is locked
+    if( roomController->getDoorStatus(roomId, direction) == Door::LOCKED){
+        Response userResponse = Response("Door is locked!", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res ,true);
+    }
+
+    // list of users to notify that character moved north
+    std::vector<std::string> userList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
+
+    // Update roomList to account for character moving
+    roomController->removeCharacterFromRoom(username, roomId);
+    roomController->removeCharacterFromRoom(username, toID);
+    characterController->setCharacterRoomID(username, toID);
+
+
+    // send message to the moving user and another message to users in the room
+    Response userResponse = Response("Headed " + direction, username);
+    std::string genericMessage = username + " headed " + direction;
+
+    std::string enteringMessage = username + " entered the room";
+
+    Response empty = Response();
+    std::vector<std::string> characterList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
+    removeTargets(characterList, username);
+
+    auto res = formulateResponse(userResponse, userList, genericMessage);
+    auto resModified = formulateResponse(empty, characterList, enteringMessage);
+
+    res.insert(res.end(), resModified.begin(), resModified.end());
+
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Move::clone() const {
+    auto move = std::make_unique<Move>(this->characterController, this->roomController, this->username, this->direction);
+    return std::move(move);
+}
+
+std::unique_ptr<Command> Move::clone(Name username, Input direction, Connection connection) const {
+    auto move = std::make_unique<Move>(this->characterController, this->roomController, username, direction);
+    return std::move(move);
+}
+
+std::string Move::help() {
+    return "/move [direction] - move to the target direction";
+}
+
+void Move::removeTargets(std::vector<std::string> &characterList, Name username) {
+    characterList.erase(
+            std::remove_if(characterList.begin(), characterList.end(),
+                           [username](const std::string &character) { return (character == username); }),
+            characterList.end());
+}
+

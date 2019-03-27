@@ -11,6 +11,7 @@
 #include <boost/filesystem.hpp>
 #include <iomanip>
 #include <fstream>
+#include <RoomController.h>
 
 using AlterSpace::Name;
 using AlterSpace::ID;
@@ -24,6 +25,8 @@ public:
     void save(Character &aCharacter);
 
     void load(Name characterToLoad, Character &aCharacter);
+
+    void load(std::string areaToLoad, RoomController &roomController);
 };
 
 

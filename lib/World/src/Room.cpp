@@ -1,37 +1,31 @@
 #include <algorithm>
 #include <Room.h>
 
-Room::Room(ID id, const Name& name){
-    this->id = id;
-    this->name = name;
-}
 
 /*
  *  Adders
 */
 
 void Room::addDescription(const std::string& description) {
-    descriptions.push_back(description);
+    this->descriptions.push_back(description);
 }
 
-void Room::addExtendedDescription(const std::string& extDescription) {
-    extendedDescriptions.push_back(extDescription);
-}
-
-void Room::addKeywords(const std::string &keyword) {
-    keywords.push_back(keyword);
+bool Room::addCharacter(const Name &userName){
+    return addUniqueItemToList(userName, this->characterList);
 }
 
 bool Room::addObject(ID objectId) {
     return addUniqueItemToList(objectId, this->objectList);
 }
 
-bool Room::addCharacter(const Name &userName) {
+bool Room::addUserName(const Name &userName) {
     return addUniqueItemToList(userName, this->characterList);
 }
 /*
  *  Removers
  */
+
+
 
 bool Room::removeObject(ID objectId) {
     return removeUniqueItemFromList(objectId, this->objectList);
@@ -40,6 +34,7 @@ bool Room::removeObject(ID objectId) {
 bool Room::removeCharacter(const Name &userName) {
     return removeUniqueItemFromList(userName, this->characterList);
 }
+
 /*
  *  Link Rooms
  */
@@ -71,6 +66,40 @@ bool Room::removeDoor(ID doorId) {
         list.erase(it);
 
     return size != list.size();
+}
+
+std::string Room::getTextOfRoomDetails() {
+    std::stringstream outputString;
+    outputString << "Room ID: " << this->getId() << "\n" <<
+                    "Room Name: " << this->getName() << "\n";
+
+    for (auto &description : this->descriptions){
+        outputString << description << "\n";
+    }
+
+    for (auto &description : this->extendedDescriptions){
+        //outputString << description << "\n";
+    }
+
+    outputString << getTextOfDoorDetails();
+    return outputString.str();
+}
+
+std::string Room::getTextOfDoorDetails() {
+    std::stringstream outputString;
+    outputString << "Doors ID, Direction, Destination, Status\n";
+    for (const auto &door: this->doorList){
+        ID doorId = door.getId();
+        outputString << doorId << ", " << door.getDirection() <<
+                        ", " << door.getDesignatedRoomId() << ", ";
+        if (door.getStatus()){
+            outputString << "Unlocked";
+        }else{
+            outputString << "Locked";
+        }
+        outputString << "\n";
+    }
+    return outputString.str();
 }
 
 Door* Room::searchDoor(ID doorId) {
@@ -125,3 +154,9 @@ bool Room::removeUniqueItemFromList(T id, std::vector<T> &list) {
 
     return size != list.size();
 }
+
+Room::Room(ID id, const Name &name, const std::vector<std::string> &descriptions, const std::vector<Door> &doorList,
+           const std::vector<ExtendedDescription> &extendedDescriptions) : id(id), name(name),
+                                                                           descriptions(descriptions),
+                                                                           doorList(doorList),
+                                                                           extendedDescriptions(extendedDescriptions) {}
