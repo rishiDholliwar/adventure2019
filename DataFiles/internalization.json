@@ -38,5 +38,42 @@
     },
     "FR": {
         "/dire": "SAY"
+    },
+    "EMOJI": {
+        "/😀": "LOGIN",
+        "/🙃": "LOGOUT",
+        "/😃": "SIGNUP",
+
+        "/💬": "SAY",
+        "/💥": "YELL",
+        "/👻": "BROADCAST",
+        "/💭": "TELL",
+        "/😉": "WHISPER",
+
+        "/🚶": "MOVE",
+        "/⬆": "NORTH",
+        "/⬇": "SOUTH",
+        "/⬅": "WEST",
+        "/➡": "EAST",
+        "/↖": "NORTHWEST",
+        "/↗": "NORTHEAST",
+        "/↙": "SOUTHWEST",
+        "/↘": "SOUTHEAST",
+
+        "/🚑": "HELP",
+        "/ℹ️": "INFO",
+        "/👁️": "LOOK",
+        "/👀": "EXAMINE",
+        "/🛍️": "INVENTORY",
+
+        "/👆": "PICKUP",
+        "/👇": "DROP",
+        "/🤝": "GIVE",
+        "/😒": "WEAR",
+        "/😏": "TAKEOFF",
+
+        "/😈": "SWAP",
+        "/🥴": "CONFUSE",
+        "/😶": "DECOY"
     }
 }
