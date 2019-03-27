@@ -14,7 +14,21 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
     defaultCharacter.addItemToInventory(Object("Basic Sword"));
     objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));
 
-    defaultCharacter.addItemToInventory(Object("Basic Armor"));
+    std::vector<std::string> keywords;
+    keywords.push_back("Basic ");
+    keywords.push_back("Armor");
+
+    std::vector<std::string> longdesc;
+    longdesc.push_back("armor long desc1");
+    longdesc.push_back("armor long desc2");
+
+    std::vector<Extra> extra;
+
+    Extra e1{keywords, longdesc};
+
+    extra.push_back(e1);
+
+    defaultCharacter.addItemToInventory(Object(12, keywords, "armor short desc", longdesc, extra));
     objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Armor"));
 
     _characters.emplace(username,defaultCharacter).second;

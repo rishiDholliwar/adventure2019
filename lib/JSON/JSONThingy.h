@@ -7,6 +7,8 @@
 
 #include <Character.h>
 #include <Object.h>
+#include <ObjectController.h>
+#include <Extra.h>
 #include <json.hpp>
 #include <boost/filesystem.hpp>
 #include <iomanip>
@@ -24,6 +26,10 @@ public:
     void save(Character &aCharacter);
 
     void load(Name characterToLoad, Character &aCharacter);
+
+    void load(std::string areaToLoad, ObjectController &objects);
+
+
 };
 
 

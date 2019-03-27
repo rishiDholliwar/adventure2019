@@ -244,6 +244,7 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 
 	//add item to target user inventory
 	characterController->addItemToCharacterInventory(targetUserName, objectController->getObjectFromList(giftID));
+    std::cout << objectController->getObjectFromList(giftID).getName() << std::endl;
 
 	if (!characterController->characterHasItem(targetUserName, giftID)) {
         characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));

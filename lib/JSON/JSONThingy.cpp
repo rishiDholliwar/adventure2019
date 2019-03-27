@@ -1,18 +1,39 @@
 //
-// Created by bryan on 21/03/19.
+// Created by bryan shitty on 21/03/19.
 //
 
 #include "JSONThingy.h"
 
-void to_json(json &j, const Object &anObject) {
+void to_json(json &j, const Extra &anExtra) {
     j = json{
-            {"objectID", anObject.getID() },
-            {"objectName", anObject.getName() }
+            {"keywords", anExtra.getKeywords() },
+            {"desc", anExtra.getDesc() }
     };
 }
 
+void to_json(json &j, const Object &anObject) {
+    j = json{
+            {"id", anObject.getObjectID() },
+            {"keywords", anObject.getKeywords() },
+            {"shortdesc", anObject.getShortDesc() },
+            {"longdesc", anObject.getLongDesc() },
+            {"extra", anObject.getExtra() }
+    };
+}
+
+void from_json(const json &j, Extra &extraDesc) {
+    extraDesc = Extra(        
+        j.at("keywords").get<std::vector<std::string>>(),
+        j.at("desc").get<std::vector<std::string>>());
+}
+
 void from_json(const json &j, Object &anObject) {
-    anObject = Object( j.at("objectID").get<ID>(), j.at("objectName").get<Name>());
+    anObject = Object( 
+        j.at("id").get<ID>(), 
+        j.at("keywords").get<std::vector<std::string>>(), 
+        j.at("shortdesc").get<std::string>(), 
+        j.at("longdesc").get<std::vector<std::string>>(), 
+        j.at("extra").get<std::vector<Extra>>());
 }
 
 void to_json(json &j, const Inventory &anInventory) {
@@ -42,6 +63,10 @@ void from_json(const json &j, Character &aCharacter) {
             j.at("inventory").get<Inventory>(),
             j.at("wearing").get<std::vector<Object>>());
 
+}
+
+void from_json(const json &j, ObjectController &objects) {
+    objects = ObjectController( j.at("OBJECTS").get<std::vector<Object>>());
 }
 
 void JSONThingy::save(Character &aCharacter) {
@@ -74,4 +99,20 @@ void JSONThingy::load(Name characterToLoad, Character &aCharacter) {
 
     }
 
+}
+
+void JSONThingy::load(std::string areaToLoad, ObjectController &objects) {
+    if(!boost::filesystem::exists("./DataFiles/" + areaToLoad + ".json")) {
+        return;
+    }
+
+    std::fstream fs;
+    fs.open("./DataFiles/" + areaToLoad + ".json", std::fstream::in);
+    if(!fs.fail()) {
+        json j;
+        fs >> j;
+        fs.close();
+        objects = j.get<ObjectController>();
+
+    }
 }

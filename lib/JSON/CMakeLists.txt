@@ -18,6 +18,7 @@ target_link_libraries(jsonThingy
         Character
         Object
         Inventory
+        controllers
         json
         ${Boost_LIBRARIES}
         PRIVATE

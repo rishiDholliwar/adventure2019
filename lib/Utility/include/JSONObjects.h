@@ -126,35 +126,35 @@ namespace JSONObjects {
         return values;
     }
 
-    /*
-     * Read in a list of objects from a specified JSON file
-     *
-     * Pre-Condition: Name of file to parse
-     *
-     * Post-Condition: Returns a list of objects
-    */
-    static std::vector<Object> getObjects(const std::string &name) {
-        json j = setupRead(name);
-        std::vector<Object> objects{};
+    // /*
+    //  * Read in a list of objects from a specified JSON file
+    //  *
+    //  * Pre-Condition: Name of file to parse
+    //  *
+    //  * Post-Condition: Returns a list of objects
+    // */
+    // static std::vector<Object> getObjects(const std::string &name) {
+    //     json j = setupRead(name);
+    //     std::vector<Object> objects{};
 
-        int numObjects = j["OBJECTS"].size();
-        j = j["OBJECTS"];
+    //     int numObjects = j["OBJECTS"].size();
+    //     j = j["OBJECTS"];
 
-        for (unsigned int i = 0; i < numObjects; i++) {
-            Object obj(j[i]["id"].get<unsigned int>(),
-                       getStrFromArray(i, j, "keywords"),
-                       getPairs(i, j, "abilities"),
-                       getArray(i, j, "keywords"),
-                       getValue(i, j, "shortdesc"),
-                       getArray(i, j, "longdesc"),
-                       getNestedArray(i, 0, j, "extra", "keywords"),
-                       getNestedArray(i, 0, j, "extra", "desc"));
+    //     for (unsigned int i = 0; i < numObjects; i++) {
+    //         Object obj(j[i]["id"].get<unsigned int>(),
+    //                    getStrFromArray(i, j, "keywords"),
+    //                    getPairs(i, j, "abilities"),
+    //                    getArray(i, j, "keywords"),
+    //                    getValue(i, j, "shortdesc"),
+    //                    getArray(i, j, "longdesc"),
+    //                    getNestedArray(i, 0, j, "extra", "keywords"),
+    //                    getNestedArray(i, 0, j, "extra", "desc"));
 
-            objects.push_back(obj);
-        }
+    //         objects.push_back(obj);
+    //     }
 
-        return objects;
-    }
+    //     return objects;
+    // }
 
 }
 #endif //ALTERSPACE_JSONOBJECTS_H
