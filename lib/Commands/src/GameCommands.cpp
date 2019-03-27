@@ -196,6 +196,12 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 		return this->interact();
 	}
 
+    if (!characterController->doesCharacterExist(targetCharName)) {
+        Response userResponse = Response("Character name " + targetCharName + " does not exist for you to gift to.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
     Name targetUserName = characterController->getCharName(targetCharName);
     Name charName = characterController->getCharName(username);
 
@@ -288,6 +294,12 @@ std::pair<std::vector<Response>, bool> Give::interact() {
 
     ID giftID = interactions.at(index).getID();
     Name giftName = interactions.at(index).getName();
+
+    if (!characterController->doesCharacterExist(interactTarget)) {
+        Response userResponse = Response("Character name " + interactTarget + " does not exist for you to gift to.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
 
     Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
     Name charName = characterController->getCharName(username);
