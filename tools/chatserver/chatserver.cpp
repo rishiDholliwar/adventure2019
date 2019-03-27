@@ -39,6 +39,7 @@ void Game::registerCommands() {
     _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
     _commandHandler.registerCommand("/info", Info(&_characterController).clone());
+    _commandHandler.registerCommand("/wear", Wear(&_characterController).clone());
 }
 
 void
