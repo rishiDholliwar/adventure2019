@@ -36,6 +36,7 @@ enum CommandType
     //INFORMATION
     HELP,
     INFO,
+    LOOK,
     EXAMINE,
     INVENTORY,
 

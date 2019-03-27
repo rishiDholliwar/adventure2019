@@ -32,6 +32,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
     //INFORMATION
     {HELP, "HELP"},
     {INFO, "INFO"},
+    {LOOK, "LOOK"},
     {EXAMINE, "EXAMINE"},
     {INVENTORY, "INVENTORY"},
 
