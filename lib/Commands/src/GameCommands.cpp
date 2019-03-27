@@ -559,6 +559,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
     // with no argument
     if (target.empty()){
+        objectController->addObjectToList(Object(8801,"sword"));
         ss << roomController->getRoomDescription(roomId);
 
         // format username into string stream
@@ -570,7 +571,8 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         // format object name into string stream
         ss << "Items in room: \n";
         for (const ID objectId : objectList){
-            ss << "\t" <<objectController->getObjectName(objectId) << "\n";
+           ss << "\t" <<objectController->getObjectName(objectId) << "\n";
+
         }
 
         ss << roomController->getAllDoorInformationInRoom(roomId);
@@ -687,9 +689,7 @@ std::string Look::help() {
 }
 
 std::pair<std::vector<Response>, bool> Examine::execute() {
-
     std::string line = "---------------------------\n";
-
     if (target.empty()){
         Response userResponse = Response("Please input a target.\n", username);
         auto res = formulateResponse(userResponse);
@@ -711,7 +711,6 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
             index += 1;
         }
     }
-
     // search object
     for (const ID objectId : objectList){
         Name objectName = objectController->getObjectName(objectId);
@@ -719,15 +718,12 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
             ss << index <<". " << objectName << "\n" <<objectController->examineItem(objectId)<< "\n";
             index += 1;
         }
-
     }
-
     if (index == 1){
         Response userResponse = Response("Target not found.\n", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
-
     ss << line;
     Response userResponse = Response(ss.str(), username);
     auto res = formulateResponse(userResponse);
@@ -753,6 +749,50 @@ std::string Examine::help() {
 std::string Swap::help() {
     return "/swap [target username] - swap with the target character with this username";
 }
+
+//Pickup
+std::pair<std::vector<Response>, bool> Pickup::execute(){
+    if(target.empty()){
+        Response userResponse = Response("Please input a target.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+    ID roomID = characterController->getCharacterRoomID(username);
+
+    auto objectList = roomController->getObjectList(roomID);
+    for(const ID objectID : objectList){
+        Name objectName = objectController->getObjectName(objectID);
+        if(objectName == target){
+            //we found the item
+            //lets assume that item is valid and checked
+            Object item = objectController->getObjectFromList(objectName);
+            characterController->addItemToCharacterInventory(username,item);
+            Response userResponse = Response(objectName + " has been added to your inventory.\n", username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, true);
+        }
+    }
+    Response userResponse = Response("You can't find that item.\n", username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Pickup::clone() const {
+    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+                                             this->username, this->target);
+    return std::move(examine);
+}
+
+std::unique_ptr<Command> Pickup::clone(Name username, Input target, Connection connection) const {
+    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+                                             username, target);
+    return std::move(examine);
+}
+
+std::string Pickup::help() {
+    return "/look [target] - get detailed description of the target.";
+}
+
 
 std::pair<std::vector<Response>, bool> Help::execute() {
     const auto commands = commandHandler->getAllCommands();

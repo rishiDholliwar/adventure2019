@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <RoomController.h>
+#include "../../Object/include/Object.h"
 
 RoomController::RoomController(){
     generateRoom(1000, "Room1");
@@ -24,6 +25,8 @@ RoomController::RoomController(){
     addDoorToRoom(1005, 1, 1000, "South");
     addDoorToRoom(1006, 1, 1000, "Up");
 
+    //addObjectToRoom(8801,1000);
+
 
     auto room = searchRoom(1000);
     room->addDescription("Test description 1.");
@@ -33,6 +36,8 @@ RoomController::RoomController(){
     room->addExtendedDescription("Test extended description 2");
 
     room->addKeywords("Test");
+
+    room->addObject(8801);
 
 
 }
@@ -83,7 +88,6 @@ bool RoomController::generateRoom(ID roomId, const Name& roomName) {
     if (tempRoom == nullptr) {
         this->roomList.emplace_back(roomId, roomName);
     }
-
     return !tempRoom;
 }
 

@@ -40,6 +40,7 @@ bool Room::removeObject(ID objectId) {
 bool Room::removeCharacter(const Name &userName) {
     return removeUniqueItemFromList(userName, this->characterList);
 }
+
 /*
  *  Link Rooms
  */
@@ -54,7 +55,6 @@ bool Room::addDoor(ID doorId, ID designatedRoomId, const std::string &direction)
     if(it == this->doorList.end()) {
         this->doorList.emplace_back(doorId, designatedRoomId, direction);
     }
-
     return size != this->doorList.size();
 }
 

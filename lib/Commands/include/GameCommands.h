@@ -277,6 +277,33 @@ public:
 };
 
 
+//pickup
+class Pickup : public Command {
+private:
+    RoomController* roomController;
+    ObjectController* objectController;
+    Name username;
+    Input target;
+    std::vector<std::string> interactions;
+    void setInteractions(std::vector<std::string> i);
+public:
+    explicit
+    Pickup(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
+    Name username = "", Input target = "", Connection connection = Connection{})
+    : roomController(roomController), username(std::move(username)), target(std::move(target)) {
+        this->characterController = characterController;
+        this->objectController = objectController;
+        registerInteraction = true;
+    };
+    ~Pickup() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> interact();
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+};
+
+
 
 class Help : public Command
 {
