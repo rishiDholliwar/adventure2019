@@ -33,10 +33,12 @@ void Game::registerCommands() {
     _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
     _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/yell", Yell(&_characterController).clone());
     _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
 }
 
 void
+
 Game::addConnection(Connection c) {
     std::cout << "New connection found: " << c.id << "\n";
     _clients.push_back(c);
