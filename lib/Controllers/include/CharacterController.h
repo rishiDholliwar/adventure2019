@@ -129,6 +129,8 @@ public:
     */
     void addItemToCharacterInventory(Name &username, Object item);
 
+    void addItemToCharacterInventory(Name &username, ID objectID);
+
     /*
      * deletes item from the character inventory
      *
@@ -185,6 +187,8 @@ public:
     */
     void characterRemoveItem(Name &username, Object item);
 
+    void characterRemoveItem(Name &username, ID objectID);
+
     ID getItemIDFromCharacterWearing(Name &username, Name itemName);
 
     /*
@@ -196,7 +200,7 @@ public:
     */
     std::string characterListInventory(Name &username);
 
-    // look and examine 
+    // look and examine
     std::string lookCharacter(Name& userName);
     std::string examineCharacter(Name& userName);
 

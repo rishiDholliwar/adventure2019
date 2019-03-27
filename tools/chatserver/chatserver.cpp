@@ -40,6 +40,7 @@ void Game::registerCommands() {
     _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
     _commandHandler.registerCommand("/info", Info(&_characterController).clone());
     _commandHandler.registerCommand("/wear", Wear(&_characterController).clone());
+    _commandHandler.registerCommand("/takeoff", Takeoff(&_characterController).clone());
 }
 
 void

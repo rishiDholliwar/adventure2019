@@ -7,6 +7,10 @@ void Inventory::addItem(Object object) {
     objects.push_back(object);
 }
 
+void Inventory::addItem(ID objectID) {
+    objects.push_back(getItem(objectID));
+}
+
 std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
 {
     auto it = find_if(objects.begin(), objects.end(),
@@ -74,7 +78,7 @@ void Inventory::removeItem(ID objectID)
     if (it != objects.end())
     {
         it = objects.erase(it);
-    }   
+    }
 }
 
 std::string Inventory::listInventory()

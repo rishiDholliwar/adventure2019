@@ -41,6 +41,10 @@ void Character::addItemToInventory(Object obj) {
     inventory.addItem(obj);
 }
 
+void Character::addItemToInventory(ID objectID) {
+    inventory.addItem(objectID);
+}
+
 void Character::setRoomID(ID roomID) {
     Character::roomID = roomID;
 }
@@ -104,6 +108,15 @@ void Character::remove(Object obj) {
     }
 }
 
+void Character::remove(ID objectID) {
+
+    if (isWearing(objectID)) {
+      auto it = getWearingIterator(objectID);
+
+      it = wearing.erase(it);
+      addItemToInventory(inventory.getItem(objectID));
+    }
+}
 
 void Character::dropItem(ID objectId) {
     inventory.removeItem(objectId);

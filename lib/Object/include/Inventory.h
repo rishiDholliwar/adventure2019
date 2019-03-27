@@ -34,6 +34,8 @@ public:
      * */
     void addItem(Object object);
 
+    void addItem(ID objectID);
+
     /* Does Item Exist:
      *
      * Function: Checks to see if user has such the item

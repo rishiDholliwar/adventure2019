@@ -345,5 +345,34 @@ public:
     std::string help() override;
 };
 
+// Takeoff
+class Takeoff : public Command
+{
+private:
+    const unsigned int OBJECT_NAME = 0;
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int MULTIPLE_ITEMS = 1;
+    const unsigned int INTERACT_CHOICE = 1;
+
+    Name username;
+    Input input;
+    std::vector<Object> interactions;
+    void setInteractions(std::vector<Object> i);
+
+public:
+    explicit
+    Takeoff(CharacterController* characterController, Name username = "", Input input = "", Connection connection = Connection{})
+        : username(std::move(username)), input(std::move(input)) {
+            this->characterController = characterController;
+           };
+
+    ~Takeoff() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> interact();
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
+    std::string help() override;
+};
+
 
 #endif //ALTERSPACE_GAMECOMMANDS_H
