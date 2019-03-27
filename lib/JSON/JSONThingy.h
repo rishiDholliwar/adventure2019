@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <fstream>
 #include <RoomController.h>
+#include <CommandTranslator.h>
 
 using AlterSpace::Name;
 using AlterSpace::ID;
@@ -27,6 +28,9 @@ public:
     void load(Name characterToLoad, Character &aCharacter);
 
     void load(std::string areaToLoad, RoomController &roomController);
+
+    void load(std::string language, CommandTranslator &aTranslator);
+
 };
 
 
