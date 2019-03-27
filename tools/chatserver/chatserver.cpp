@@ -30,6 +30,9 @@ void Game::registerCommands() {
     _commandHandler.registerCommand("/give", Give(&_characterController, &_objectController).clone());
     _commandHandler.registerCommand("/swap", Swap(&_characterController).clone());
     _commandHandler.registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand("/move", Move(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand("/look", Look(&_characterController,&_roomController, &_objectController).clone());
+    _commandHandler.registerCommand("/examine", Examine(&_characterController,&_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
     _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
@@ -156,7 +159,6 @@ Game::Game(Config config)
     _server = std::make_unique<Server>(config.port, config.webpage,
                                         [this](Connection c){this->addConnection(c);},
                                         [this](Connection c){this->removeConnection(c);});
-    _gameController = GameController();
     _userController = UserController();
     _commandHandler = CommandHandler();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);

@@ -6,14 +6,15 @@
 //Say
 std::pair<std::vector<Response>, bool> Say::execute() {
     std::cout << "Say " << input << std::endl;
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
 
     Response userResponse = Response("Me: " + input, username);
 
     std::string genericMessage = charName + ": "+ input;
     std::cout << genericMessage << std::endl;
 
-    auto res = formulateResponse(userResponse, roomController->getUsernameList(characterController->getCharacterRoomID(username)), genericMessage);
+    auto res = formulateResponse(userResponse,
+                                 roomController->getCharacterList(characterController->getCharacterRoomID(username)), genericMessage);
     return std::make_pair(res, true);
 }
 
@@ -43,7 +44,7 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
         return std::make_pair(res, true);
     }
 
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
@@ -134,7 +135,7 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
         return std::make_pair(res, true);
     }
 
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
@@ -154,7 +155,8 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
     std::string modifiedMessage = "From [" + charName + "] to [ " + targetCharName + " ]: " + whisperModifier(message);
 
     Response empty = Response();
-    std::vector<std::string> characterList = roomController->getUsernameList(characterController->getCharacterRoomID(charName));
+    std::vector<std::string> characterList = roomController->getCharacterList(
+            characterController->getCharacterRoomID(charName));
     removeTargets(characterList, username, targetUserName);
 
     auto res = formulateResponse(userResponse, targetResponse);
@@ -239,8 +241,8 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 		return this->interact();
 	}
 
-    Name targetUserName = characterController->getCharacter(targetCharName).getName();
-    Name charName = characterController->getCharacter(username).getName();
+    Name targetUserName = characterController->getCharName(targetCharName);
+    Name charName = characterController->getCharName(username);
 
 	//if gift target character doesn't exist
 	if (!characterController->doesCharacterExist(targetUserName)) {
@@ -278,8 +280,10 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 
 	ID giftID = characterController->getItemIDFromCharacterInventory(username, giftName);
 
+	characterController->dropItemFromCharacterInventory(username, giftID);
+
 	//drop item from user inventory
-	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+	if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
@@ -331,10 +335,12 @@ std::pair<std::vector<Response>, bool> Give::interact() {
     Name giftName = interactions.at(index).getName();
 
     Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
-    Name charName = characterController->getCharacter(username).getName();
+    Name charName = characterController->getCharName(username);
 
 	//drop item from user inventory
-	if (!characterController->dropItemFromCharacterInventory(username, giftID)) {
+	characterController->dropItemFromCharacterInventory(username, giftID);
+
+	if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
 		return std::make_pair(res, false);
@@ -445,7 +451,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         return std::make_pair(res, false);
     }
 
-    if (!(characterController->findCharacter(target))) {
+    if (!(characterController->doesCharacterExist(target))) {
 
         Response userResponse = Response("Target doesn't exist, sorry!", username);
 
@@ -454,9 +460,9 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
     }
 
     Name userKey = username;
-    Name targetKey = characterController->getCharacter(username).getName();
+    Name targetKey = characterController->getCharName(username);
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
         Response userResponse = Response("You are already under a swap spell!", userKey);
         Response targetResponse = Response("You are already under a swap spell!", targetKey);
@@ -476,11 +482,11 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
 
 std::pair<std::vector<Response>, bool> Swap::callback() {
     Name userKey = username;
-    Name targetKey = characterController->getCharacter(username).getName();
+    Name targetKey = characterController->getCharName(username);
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharacter(targetKey).getName())) {
+    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
-        Name targetCharName = characterController->getCharacter(username).getName();
+        Name targetCharName = characterController->getCharName(username);
 
         characterController->swapCharacter(userKey, targetKey);
 
@@ -507,6 +513,286 @@ std::unique_ptr<Command> Swap::clone(Name username, Input target, Connection con
 std::unique_ptr<Command> Swap::clone() const {
     auto swap = std::make_unique<Swap>(this->characterController, this->username, this->target);
     return std::move(swap);
+}
+
+std::pair<std::vector<Response>, bool> Move::execute() {
+
+    std::cout << "Move: " << direction << std::endl;
+
+    ID roomId = characterController->getCharacterRoomID(username);
+    ID doorId = roomController->getDoorIdByDirection(roomId, direction);
+
+
+    ID destination = roomController->getDoorDesignatedRoomId(roomId, doorId);
+
+    std::cout << "door id" << doorId << std::endl;
+    std::cout << "destination Room: "<<destination << std::endl;
+
+
+    // check if door exists
+    if (!roomController->isDoorExist(roomId, doorId)){
+        Response userResponse = Response("Door not exist!", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res ,true);
+    }
+
+
+    // Verify if door is locked
+    if( roomController->isDoorLocked(roomId, doorId)){
+        Response userResponse = Response("Door is locked!", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res ,true);
+    }
+
+    // list of users to notify that character moved north
+    std::vector<std::string> userList = roomController->getCharacterList(
+            characterController->getCharacterRoomID(username));
+
+    // Update roomList to account for character moving
+    roomController->moveCharacter(username, roomId, destination);
+    characterController->setCharacterRoomID(username, destination);
+
+    // send message to the moving user and another message to users in the room
+    Response userResponse = Response("Headed " + direction, username);
+    std::string genericMessage = username + " headed " + direction;
+
+    std::string enteringMessage = username + " entered the room";
+
+    Response empty = Response();
+    std::vector<std::string> characterList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
+    removeTargets(characterList, username);
+
+    auto res = formulateResponse(userResponse, userList, genericMessage);
+    auto resModified = formulateResponse(empty, characterList, enteringMessage);
+
+    res.insert(res.end(), resModified.begin(), resModified.end());
+
+    return std::make_pair(res, true);
+}
+
+void Move::removeTargets(std::vector<std::string> &characterList, Name username) {
+    characterList.erase(
+            std::remove_if(characterList.begin(), characterList.end(),
+                           [username](const std::string &character) { return (character == username); }),
+            characterList.end());
+}
+
+
+std::unique_ptr<Command> Move::clone() const {
+    auto move = std::make_unique<Move>(this->characterController, this->roomController, this->username, this->direction);
+    return std::move(move);
+}
+
+std::unique_ptr<Command> Move::clone(Name username, Input direction, Connection connection) const {
+    auto move = std::make_unique<Move>(this->characterController, this->roomController, username, direction);
+    return std::move(move);
+}
+
+std::string Move::help() {
+    return "/move [direction] - move to the target direction";
+}
+
+std::pair<std::vector<Response>, bool> Look::execute() {
+    std::stringstream ss;
+    ID roomId = characterController->getCharacterRoomID(username);
+
+    auto characterList = roomController->getCharacterList(roomId);
+    auto objectList = roomController->getObjectList(roomId);
+    std::string line = "---------------------------\n";
+
+    ss << line;
+
+    // with no argument
+    if (target.empty()){
+        ss << roomController->getRoomDescription(roomId);
+
+        // format username into string stream
+        ss << "Characters in room: \n";
+        for (const auto& characterName : characterList){
+            ss << "\t" << characterName << "\n";
+        }
+
+        // format object name into string stream
+        ss << "Items in room: \n";
+        for (const ID objectId : objectList){
+            ss << "\t" <<objectController->getObjectName(objectId) << "\n";
+        }
+
+        ss << roomController->getAllDoorInformationInRoom(roomId);
+
+        ss << line;
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    // with argument
+
+    int index = 1;
+
+    // search character
+    for (auto &characterName : characterList){
+        if (characterName == target) {
+            ss << index << ". " << characterName << "\n" <<characterController->lookCharacter(characterName) << "\n";
+            index += 1;
+        }
+    }
+
+    // search object
+    for (const ID objectId : objectList){
+        Name objectName = objectController->getObjectName(objectId);
+        if (objectName == target)
+            ss << index <<". " << objectName << "\n" << objectController->lookItem(objectId)<< "\n";
+    }
+
+    if (index == 1){
+        Response userResponse = Response("Target not found.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    ss << line;
+
+    Response userResponse = Response(ss.str(), username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Look::clone() const {
+    auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
+                                       this->username, this->target);
+    return std::move(look);
+}
+
+std::unique_ptr<Command> Look::clone(Name username, Input target, Connection connection) const {
+    auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
+                                       username, target);
+    return std::move(look);
+}
+
+//std::pair<std::vector<Response>, bool> Look::interact() {
+//    std::cout << "give interacting" << std::endl;
+//
+//    std::vector<std::string> v = utility::tokenizeString(target);
+//
+//    if ( v.size() != 2 ) {
+//        std::cout << "Too many arguments..." << std::endl;
+//        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
+//        auto res = formulateResponse(userResponse);
+//
+//        return std::make_pair(res, false);
+//    }
+//
+//    std::stringstream ss{v.at(INTERACT_CHOICE)};
+//    int index = -1;
+//    ss >> index;
+//    index--;
+//    if ( index >= interactions.size() || index < 0 ) {
+//        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
+//        auto res = formulateResponse(userResponse);
+//
+//        return std::make_pair(res, false);
+//    }
+//
+//    ID giftID = interactions.at(index).getID();
+//    Name giftName = interactions.at(index).getName();
+//
+//    Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
+//    Name charName = characterController->getCharName(username);
+//
+//    //drop item from user inventory
+//    characterController->dropItemFromCharacterInventory(username, giftID);
+//
+//    if (characterController->characterHasItem(username, giftID)) {
+//        Response userResponse = Response("Gifting item has failed.", username);
+//        auto res = formulateResponse(userResponse);
+//        return std::make_pair(res, false);
+//    }
+//
+//    //add item to target user inventory
+//    characterController->addItemToCharacterInventory(interactTargetUsername, objectController->getObjectFromList(giftID));
+//
+//    if (!characterController->characterHasItem(interactTargetUsername, giftID)) {
+//        characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));
+//        Response userResponse = Response("Giving " + giftName + " to character " + interactTarget + " has failed.", username);
+//        auto res = formulateResponse(userResponse);
+//        return std::make_pair(res, false);
+//    }
+//
+//    //generate response
+//    Response userResponse = Response("You have given " + giftName + " to character " + interactTarget + "!", username);
+//    Response targetResponse = Response(charName + " has given " + giftName + " to you!", interactTargetUsername);
+//    auto res = formulateResponse(userResponse, targetResponse);
+//
+//    return std::make_pair(res, true);
+//}
+
+std::string Look::help() {
+    return "/look [target] - get short description of the target, or use /look to get short description about the room.";
+}
+
+std::pair<std::vector<Response>, bool> Examine::execute() {
+
+    std::string line = "---------------------------\n";
+
+    if (target.empty()){
+        Response userResponse = Response("Please input a target.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+    std::stringstream ss;
+    ss << line;
+
+    ID roomId = characterController->getCharacterRoomID(username);
+
+    auto characterList = roomController->getCharacterList(roomId);
+    auto objectList = roomController->getObjectList(roomId);
+    int index = 1;
+
+    // search character
+    for (Name characterName : characterList){
+        if (characterName == target) {
+            ss << index << ". "  << characterName << "\n" <<characterController->examineCharacter(characterName) << "\n";
+            index += 1;
+        }
+    }
+
+    // search object
+    for (const ID objectId : objectList){
+        Name objectName = objectController->getObjectName(objectId);
+        if (objectName == target){
+            ss << index <<". " << objectName << "\n" <<objectController->examineItem(objectId)<< "\n";
+            index += 1;
+        }
+
+    }
+
+    if (index == 1){
+        Response userResponse = Response("Target not found.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    ss << line;
+    Response userResponse = Response(ss.str(), username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Examine::clone() const {
+    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+                                             this->username, this->target);
+    return std::move(examine);
+}
+
+std::unique_ptr<Command> Examine::clone(Name username, Input target, Connection connection) const {
+    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+                                             username, target);
+    return std::move(examine);
+}
+
+std::string Examine::help() {
+    return "/look [target] - get detailed description of the target.";
 }
 
 std::string Swap::help() {

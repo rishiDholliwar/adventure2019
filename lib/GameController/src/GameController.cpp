@@ -118,9 +118,124 @@ std::vector<Response> GameController::move(Name username, Input direction) {
 
 }
 
-std::vector<Response> GameController::examine(Name username, Input message) {
+std::vector<Response> GameController::look(Name username, Input target) {
+    std::stringstream ss;
     AlterSpace::ID roomId = characterController.getCharacterRoomID(username);
-    Response userResponse = Response(roomController.getTextOfRoomDetails(roomId), username);
+
+    auto usernameList = roomController.getUsernameList(roomId);
+    auto npcList = roomController.getCharacterList(roomId);
+    auto objectList = roomController.getObjectList(roomId);
+
+    // with no argument
+    if (target.empty()){
+        ss << roomController.getRoomDescription(roomId);
+
+        // format username into string stream
+        ss << "Users in room: \n";
+        for (const auto& usernameInList : usernameList){
+            ss << "\t" << usernameInList << "\n";
+        }
+
+        // format character name into string stream
+        ss << "NPCs in room: \n";
+        for (const ID npcId : npcList){
+            ss <<  "\t" <<npcController.getNPCName(npcId)<< "\n";
+        }
+
+        // format object name into string stream
+        ss << "Items in room: \n";
+        for (const ID objectId : objectList){
+            ss << "\t" <<objectController.getObjectFromList(objectId).getName() << "\n";
+        }
+
+        ss << roomController.getAllDoorInformationInRoom(roomId);
+
+        Response userResponse = Response(ss.str(), username);
+        return formulateResponse(userResponse);
+    }
+
+    // with argument
+
+    int index = 1;
+
+    // search user
+    for (auto &usernameInList : usernameList){
+        if (usernameInList == target) {
+            ss << index << ". " << usernameInList << "\n" <<characterController.lookCharacter(usernameInList) << "\n";
+            index += 1;
+        }
+    }
+
+    // search npc
+    for (const ID npcId : npcList){
+        Name npcName = npcController.getNPCName(npcId);
+        if (npcName == target) {
+            ss << index << ". " << npcName << "\n" << npcController.lookNPC(npcId) << "\n";
+            index += 1;
+        }
+    }
+
+    // search object
+    for (const ID objectId : objectList){
+        Name objectName = objectController.getObjectFromList(objectId).getName();
+        if (objectName == target)
+        ss << index <<". " << objectName << "\n" << objectController.lookItem(objectId)<< "\n";
+    }
+
+    if (index == 1){
+        Response userResponse = Response("Target not found.\n", username);
+        return formulateResponse(userResponse);
+    }
+
+    Response userResponse = Response(ss.str(), username);
+    return formulateResponse(userResponse);
+
+}
+
+std::vector<Response> GameController::examine(Name username, Input target) {
+    if (target.empty()){
+        Response userResponse = Response("Please input a target.\n", username);
+        return formulateResponse(userResponse);
+    }
+    std::stringstream ss;
+    AlterSpace::ID roomId = characterController.getCharacterRoomID(username);
+
+
+    auto usernameList = roomController.getUsernameList(roomId);
+    auto npcList = roomController.getCharacterList(roomId);
+    auto objectList = roomController.getObjectList(roomId);
+    int index = 1;
+
+    // search user
+    for (Name usernameInList : usernameList){
+        if (usernameInList == target) {
+            ss << index << ". "  << usernameInList << "\n" <<characterController.examineCharacter(usernameInList) << "\n";
+            index += 1;
+        }
+    }
+
+    // search npc
+    for (const ID npcId : npcList){
+        Name npcName = npcController.getNPCName(npcId);
+        if (npcName == target) {
+            ss << index << ". " << npcName << "\n" << npcController.examineNPC(npcId) << "\n";
+            index += 1;
+        }
+    }
+
+    // search object
+    for (const ID objectId : objectList){
+        Name objectName = objectController.getObjectFromList(objectId).getName();
+        if (objectName == target)
+            ss << index <<". " << objectName << "\n" <<objectController.examineItem(objectId)<< "\n";
+    }
+
+    if (index == 1){
+        Response userResponse = Response("Target not found.\n", username);
+        return formulateResponse(userResponse);
+    }
+
+    Response userResponse = Response(ss.str(), username);
     return formulateResponse(userResponse);
 
 }

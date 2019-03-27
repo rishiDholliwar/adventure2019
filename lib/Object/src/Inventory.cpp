@@ -67,17 +67,14 @@ Object Inventory::getItem(ID objectID)
     return *it;
 }
 
-bool Inventory::removeItem(ID objectID)
+void Inventory::removeItem(ID objectID)
 {
     auto it = getItemIterator(objectID);
 
-    if (it == objects.end())
+    if (it != objects.end())
     {
-        return false;
-    }
-
-    it = objects.erase(it);
-    return true; //TODO: fix this for multiple items later!!!
+        it = objects.erase(it);
+    }   
 }
 
 std::string Inventory::listInventory()
@@ -93,4 +90,8 @@ std::string Inventory::listInventory()
 
     return inventoryList.str();
 
+}
+
+const std::vector<Object>& Inventory::getObjects() const {
+    return objects;
 }

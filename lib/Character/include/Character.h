@@ -8,6 +8,7 @@
 #include <UniqueID.h>
 #include <Object.h>
 #include <utility>
+#include <vector>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
@@ -20,16 +21,42 @@ private:
     std::vector<Object> wearing;
     bool confused;
 
+    std::string shortdesc;
+    std::vector<std::string> descriptions;
+    std::vector<std::string> longdesc;
+
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
 public:
-    Character(const Name &name, ID roomID);
+    Character() = default;
+    Character(Name name, ID roomID) : name(std::move(name)), roomID(roomID)
+    {
+        this->inventory = Inventory{};
+        this->confused = false;
+        this->wearing = std::vector<Object>();
+    }
+
+    Character(Name name, ID roomID, Inventory inventory, std::vector<Object> wearing) :
+            name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
+        this->confused = false;
+    }
+
     Name getName() const;
     ID getRoomID() const;
     ID getID() const;
+    std::vector<std::string> const& getDescriptions() const{return descriptions;};
+    std::vector<std::string> const& getExtendedDescriptions() const{return longdesc;};
     std::string getInfo() const;
-    bool isConfused();
+    bool isConfused() const;
+
+    const Inventory &getInventory() const;
+
+    void setInventory(const Inventory &inventory);
+
+    const std::vector<Object> &getWearing() const;
+
+    void setWearing(const std::vector<Object> &wearing);
 
     void setRoomID(ID roomID);
 
@@ -78,7 +105,7 @@ public:
      *
      * Post-Condition: Returns true if the item is worn
     */
-    bool wear(ID objectId);
+    void wear(ID objectId);
 
     /*
      * unwears the specified item
@@ -87,7 +114,7 @@ public:
      *
      * Post-Condition: Returns true if the item is taken off
     */
-    bool remove(Object obj);
+    void remove(Object obj);
 
     ID getWearingID(Name objectName);
 
@@ -107,7 +134,7 @@ public:
      *
      * Post-Condition: Item will be dropped if it exists, returns true if dropped
     */
-    bool dropItem(ID objectId);
+    void dropItem(ID objectId);
 
 
     std::string listWearing() const;
