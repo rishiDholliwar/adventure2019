@@ -681,7 +681,7 @@ std::unique_ptr<Command> Examine::clone(Name username, Input target, Connection 
 }
 
 std::string Examine::help() {
-    return "/look [target] - get detailed description of the target.";
+    return "/examine [target] - get detailed description of the target.";
 }
 
 std::string Swap::help() {
