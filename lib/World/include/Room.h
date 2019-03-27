@@ -18,15 +18,13 @@ public:
     Name const& getName() const{return name;};
     std::vector<std::string> const& getDescriptions() const{return descriptions;};
     std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
-    std::vector<std::string> const& getKeywords() const{return keywords;};
+    std::vector<ID> const& getCharacterList() const{return characterList;};
     std::vector<ID> const& getObjectList() const{return objectList;};
-    std::vector<Name> const& getCharacterList() const{return characterList;};
-    std::vector<Door> const& getDoorList() const{return doorList;};
+    std::vector<Name> const& getUsernameList() const{return usernameList;};
 
     // Adders
     void addDescription(const std::string& description);
     void addExtendedDescription(const std::string& extDescription);
-    void addKeywords(const std::string& keyword);
 
     /*
      * Adder functions
@@ -34,8 +32,9 @@ public:
          *          return true if the element is successfully added
          *          return false otherwise
      */
+    bool addCharacter(ID characterId);
     bool addObject(ID objectId);
-    bool addCharacter(const Name &userName);
+    bool addUserName(const Name& userName);
     bool addDoor(ID doorId, ID designatedRoomId, const std::string& direction);
 
     /*
@@ -44,8 +43,9 @@ public:
          *          return true if the element is successfully removed
          *          return false otherwise
      */
+    bool removeCharacter(ID characterId);
     bool removeObject(ID objectId);
-    bool removeCharacter(const Name &userName);
+    bool removeUserName(const Name& userName);
     bool removeDoor(ID doorId);
 
 
@@ -74,9 +74,9 @@ private:
     std::string name;
     std::vector<std::string> descriptions;
     std::vector<std::string> extendedDescriptions;
-    std::vector<std::string> keywords;
+    std::vector<ID> characterList;
     std::vector<ID> objectList;
-    std::vector<Name> characterList;
+    std::vector<Name> usernameList;
     std::vector<Door> doorList;
 
     template <typename T>

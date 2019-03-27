@@ -18,7 +18,7 @@ std::pair<std::vector<Response>, bool> Login::execute() {
         jt.load(username, tmpChar);
         characterController->addCharacter(tmpChar);
 
-        roomController->addCharacterToRoom(tmpChar.getName(), tmpChar.getRoomID());
+        roomController->addUserNameToRoom(tmpChar.getName(), tmpChar.getRoomID());
     }
 
 
@@ -56,7 +56,7 @@ std::pair<std::vector<Response>, bool> Logout::execute() {
         jt.save(characterController->getCharacter(username));
         auto roomID = characterController->getCharacterRoomID(username);
         characterController->removeCharacter(username);
-        roomController->removeCharacterFromRoom(username, roomID);
+        roomController->removeUserNameFromRoom(username, roomID);
     }
     std::string returnMessage = Return::ReturnCodeToString(result.returnCode);
 

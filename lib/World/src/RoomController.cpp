@@ -1,3 +1,4 @@
+
 #include <algorithm>
 #include <RoomController.h>
 
@@ -24,22 +25,21 @@ RoomController::RoomController(){
     addDoorToRoom(1005, 1, 1000, "South");
     addDoorToRoom(1006, 1, 1000, "Up");
 
-
-    auto room = searchRoom(1000);
-    room->addDescription("Test description 1.");
-    room->addDescription("Test description 2.");
-
-    room->addExtendedDescription("Test extended description 1");
-    room->addExtendedDescription("Test extended description 2");
-
-    room->addKeywords("Test");
-
-
 }
 
 /*
  * Getters
  */
+const std::vector<ID> & RoomController::getCharacterList(ID roomId) {
+    auto room = RoomController::searchRoom(roomId);
+
+    if (room == nullptr){
+        static std::vector<ID> emptyIdVector;
+        return emptyIdVector;
+    }
+
+    return room->getCharacterList();
+}
 
 const std::vector<ID> & RoomController::getObjectList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
@@ -52,7 +52,7 @@ const std::vector<ID> & RoomController::getObjectList(ID roomId) {
     return room->getObjectList();
 }
 
-const std::vector<Name>& RoomController::getCharacterList(ID roomId) {
+const std::vector<Name>& RoomController::getUsernameList(ID roomId) {
     auto room = RoomController::searchRoom(roomId);
 
     if (room == nullptr){
@@ -60,7 +60,7 @@ const std::vector<Name>& RoomController::getCharacterList(ID roomId) {
         return emptyStringVector;
     }
 
-    return room->getCharacterList();
+    return room->getUsernameList();
 }
 
 std::vector<ID> RoomController::getRoomIdList() const {
@@ -87,14 +87,19 @@ bool RoomController::generateRoom(ID roomId, const Name& roomName) {
     return !tempRoom;
 }
 
+bool RoomController::addCharacterToRoom(ID characterId, ID roomId) {
+    auto tempRoom = this->searchRoom(roomId);
+    return (tempRoom != nullptr) && (tempRoom->addCharacter(characterId));
+}
+
 bool RoomController::addObjectToRoom(ID objectId, ID roomId) {
     auto tempRoom = this->searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->addObject(objectId));
 }
 
-bool RoomController::addCharacterToRoom(const Name &userName, ID roomId) {
+bool RoomController::addUserNameToRoom(const Name &userName, ID roomId) {
     auto tempRoom = this->searchRoom(roomId);
-    return (tempRoom != nullptr) && (tempRoom->addCharacter(userName));
+    return (tempRoom != nullptr) && (tempRoom->addUserName(userName));
 }
 
 /*
@@ -116,14 +121,19 @@ bool RoomController::removeRoom(ID roomId) {
     return size != this->roomList.size();
 }
 
+bool RoomController::removeCharacterFromRoom(ID characterId, ID roomId) {
+    auto tempRoom = RoomController::searchRoom(roomId);
+    return (tempRoom != nullptr) && (tempRoom->removeCharacter(characterId));
+}
+
 bool RoomController::removeObjectFromRoom(ID objectId, ID roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->removeObject(objectId));
 }
 
-bool RoomController::removeCharacterFromRoom(const Name &userName, ID roomId) {
+bool RoomController::removeUserNameFromRoom(const Name &userName, ID roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
-    return (tempRoom != nullptr) && (tempRoom->removeCharacter(userName));
+    return (tempRoom != nullptr) && (tempRoom->removeUserName(userName));
 }
 
 /*
@@ -141,48 +151,13 @@ bool RoomController::removeDoorFromRoom(ID roomId, ID doorId) {
     return (room!=nullptr) && room->removeDoor(doorId);
 }
 
-std::string RoomController::getRoomDescription(ID roomId) {
+std::string RoomController::getTextOfRoomDetails(ID roomId) {
     auto room = searchRoom(roomId);
     if (room == nullptr){
         static std::string roomNotFoundMessage = "Room does not exist.";
         return roomNotFoundMessage;
     }
-
-    std::stringstream outputString;
-    std::string indentation = "\t";
-    outputString << "Room Name: " << room->getName() << "\n";
-
-    auto descriptions = room->getDescriptions();
-    for (auto &description : descriptions){
-        outputString << indentation << description << "\n";
-    }
-
-    return outputString.str();
-}
-
-std::string RoomController::getAllDoorInformationInRoom(ID roomId) {
-    auto room = searchRoom(roomId);
-    if (room == nullptr){
-        static std::string roomNotFoundMessage = "Room does not exist.";
-        return roomNotFoundMessage;
-    }
-
-    std::stringstream outputString;
-    std::string indentation = "\t";
-    outputString << "Direction Information:\n";
-    auto doorList = room->getDoorList();
-    for (const auto &door: doorList){
-        ID doorId = door.getId();
-        outputString << indentation <<door.getDirection() << " ";
-        if (door.getStatus()){
-            outputString << "(Unlocked)";
-        }else{
-            outputString << "(Locked)";
-        }
-        outputString << "\n";
-    }
-
-    return outputString.str();
+    return room->getTextOfRoomDetails();
 }
 
 ID RoomController::getDoorIdByDirection(ID roomId, const std::string &direction) {
@@ -197,6 +172,11 @@ ID RoomController::getDoorIdByDirection(ID roomId, const std::string &direction)
     }
 
     return door->getId();
+}
+
+Door::DoorStatus RoomController::getDoorStatus(ID roomId, ID doorId) {
+    auto door = searchDoor(roomId, doorId);
+    return door->getStatus();
 }
 
 ID RoomController::getDoorDesignatedRoomId(ID roomId, ID doorId) {
@@ -216,24 +196,7 @@ const std::string& RoomController::getDoorDirection(ID roomId, ID doorId) {
     return door->getDirection();
 }
 
-bool RoomController::moveCharacter(Name username, ID originRoomId, ID destinationRoomId) {{
-        removeCharacterFromRoom(username, originRoomId);
-        addCharacterToRoom(username, destinationRoomId);
-}}
 
-bool RoomController::isDoorExist(ID roomId, ID doorId) {
-    auto door = searchDoor(roomId, doorId);
-    return door != nullptr;
-}
-
-bool RoomController::isDoorLocked(ID roomId, ID doorId) {
-    auto door = searchDoor(roomId, doorId);
-    if (door == nullptr){
-        return true;
-    }
-    Door::DoorStatus status = door->getStatus();
-    return status == Door::DoorStatus::LOCKED;
-}
 /*
  * search functions
  */

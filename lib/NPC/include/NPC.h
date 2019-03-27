@@ -15,9 +15,6 @@ private:
     Name name;
     ID roomID;
 
-    std::vector<std::string> descriptions;
-    std::vector<std::string> extendedDescriptions;
-
 public:
     NPC(const Name &name, ID roomID);
     Name getName() const;
@@ -27,8 +24,6 @@ public:
 
     void setRoomID(ID roomID);
 
-    std::vector<std::string> const& getDescriptions() const{return descriptions;};
-    std::vector<std::string> const& getExtendedDescriptions() const{return extendedDescriptions;};
 
     // look and examine
     std::string look();

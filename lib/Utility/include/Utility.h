@@ -54,22 +54,6 @@ namespace utility {
         return result;
     }
 
-    /*
-     *  Extract string in string vector into certain format and return the new string
-     *  Example:
-     *      string element 1
-     *      string element 2
-     *
-     */
-    static std::string extractStringVector(const std::vector<std::string>& stringVector){
-        std::stringstream ss;
-        for (const auto &str : stringVector ){
-            ss << "\t" << str << "\n";
-        }
-        return ss.str();
-    }
-
-
 }
 
 

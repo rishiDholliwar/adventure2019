@@ -76,26 +76,8 @@ public:
      * */
     std::vector<Response> move(Name username, Input direction);
 
-    /* Look:
-     *
-     * Function: Show the brief description of the target.
-     *
-     * Pre-Condition: message is the target, if the message is empty, then the target is room.
-     *
-     * Post-Condition: show the brief description of the target. If the target is the room, show the brief description
-     * of the room as well as a short description of the characters, objects, and cardinal/ordinal/vertical exits within the room
-     */
-    std::vector<Response> look(Name username, Input target);
-
-    /* Look:
-     *
-     * Function: Show the detailed description of the room.
-     *
-     * Pre-Condition: message is the target, if the message is empty, then the target is room.
-     *
-     * Post-Condition: show the brief description of the target. If the target is the room, show the brief description
-     * of the room as well as a short description of the characters, objects, and cardinal/ordinal/vertical exits within the room
-     */
+    // dummy function for now
+    // TODO: complete the examine command
     std::vector<Response> examine(Name username, Input message);
 
     /* PickUp:

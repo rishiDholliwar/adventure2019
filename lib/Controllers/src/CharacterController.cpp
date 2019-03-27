@@ -2,8 +2,6 @@
 #include <string>
 #include <CharacterController.h>
 #include <RoomController.h>
-#include <Utility.h>
-
 
 CharacterController::CharacterController() = default;
 
@@ -11,7 +9,7 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
 
     // Default Data for all first time users
     Character defaultCharacter(username, ROOM_ID);
-    roomController.addCharacterToRoom(defaultCharacter.getName(), defaultCharacter.getRoomID());
+    roomController.addUserNameToRoom(defaultCharacter.getName(),defaultCharacter.getRoomID());
 
     defaultCharacter.addItemToInventory(Object("Basic Sword"));
     objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));
@@ -68,20 +66,6 @@ std::vector<Name> CharacterController::getAllCharacterNames() {
         usernameList.push_back(characters.first);
     }
     return usernameList;
-}
-
-std::string CharacterController::lookCharacter(Name &userName) {
-    auto character = getCharacter(userName);
-    return utility::extractStringVector(character.getDescriptions());
-}
-
-std::string CharacterController::examineCharacter(Name &userName) {
-    auto character = getCharacter(userName);
-    auto extDescriptions = character.getExtendedDescriptions();
-    if (extDescriptions.empty()){
-        return lookCharacter(userName);
-    }
-    return utility::extractStringVector(extDescriptions);
 }
 
 std::string CharacterController::getCharacterInfo(Name &username) {
