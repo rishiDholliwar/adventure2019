@@ -2,6 +2,7 @@
 // Created by bryan on 21/03/19.
 //
 
+#include <iostream>
 #include "JSONThingy.h"
 
 

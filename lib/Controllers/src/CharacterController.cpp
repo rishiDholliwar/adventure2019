@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include <CharacterController.h>
 #include <RoomController.h>
 #include <Utility.h>
@@ -81,7 +82,7 @@ Character &CharacterController::getCharacter(Name &username) {
 // }
 
 Name CharacterController::getUsernameOfCharacter(Name &charName){
-    auto it = find_if(_characters.begin(), _characters.end(),
+    auto it = std::find_if(_characters.begin(), _characters.end(),
                         [&charName] (auto const& character) {
                             return charName == character.second.getName();
                         });
