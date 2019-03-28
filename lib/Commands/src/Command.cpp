@@ -50,7 +50,7 @@ std::vector<Response> Command::formulateResponse(Response &userResponse, std::ve
     std::vector<Response> response;
 
     for(auto &character : characterList){
-        if(character == userResponse.username){
+        if(character == userResponse.username || ! characterController->doesCharacterExist(character)){
             continue;
         }
         if(characterController->isCharacterConfused(character)) {

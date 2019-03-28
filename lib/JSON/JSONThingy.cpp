@@ -121,17 +121,17 @@ void to_json(json &j, const Object &anObject) {
 }
 
 void from_json(const json &j, Extra &extraDesc) {
-    extraDesc = Extra(        
+    extraDesc = Extra(
         j.at("keywords").get<std::vector<std::string>>(),
         j.at("desc").get<std::vector<std::string>>());
 }
 
 void from_json(const json &j, Object &anObject) {
-    anObject = Object( 
-        j.at("id").get<ID>(), 
-        j.at("keywords").get<std::vector<std::string>>(), 
-        j.at("shortdesc").get<std::string>(), 
-        j.at("longdesc").get<std::vector<std::string>>(), 
+    anObject = Object(
+        j.at("id").get<ID>(),
+        j.at("keywords").get<std::vector<std::string>>(),
+        j.at("shortdesc").get<std::string>(),
+        j.at("longdesc").get<std::vector<std::string>>(),
         j.at("extra").get<std::vector<Extra>>());
 }
 
@@ -150,14 +150,14 @@ void from_json(const json &j, Inventory &anInventory) {
 void to_json(json &j, const Character &aCharacter) {
 
     if ( !(aCharacter.isNPC()) ) {
-
+        std::cout << "xD" << std::endl;
         j = json{
             { "name", aCharacter.getName() },
             { "roomID", aCharacter.getRoomID() },
             { "wearing", aCharacter.getWearing() },
             { "inventory", aCharacter.getInventory() },
         };
-
+        std::cout << j.dump() << std::endl;
     }
 }
 
@@ -250,7 +250,7 @@ void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
         json j;
         fs >> j;
         fs.close();
-        
+
         roomController = j.get<RoomController>();
     }
 }
@@ -288,7 +288,7 @@ void JSONThingy::load(std::string areaToLoad, ResetController &resetController) 
         json j;
         fs >> j;
         fs.close();
-        
+
         resetController.addResets(j.at("RESETS").get<std::vector<Reset>>());
         resetController.addNPCs(j.at("NPCS").get<std::vector<Character>>());
     }

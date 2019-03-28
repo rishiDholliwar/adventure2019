@@ -463,9 +463,9 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
 
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
-    
+
     } else {
-    
+
         if (!(characterController->doesCharacterExist(target))) {
 
             Response userResponse = Response("Target doesn't exist, sorry!", username);
@@ -493,7 +493,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         auto res = formulateResponse(userResponse, targetResponse);
         return std::make_pair(res, true);
     }
-   
+
 }
 
 std::pair<std::vector<Response>, bool> Swap::interact() {
@@ -859,15 +859,12 @@ std::pair<std::vector<Response>, bool> Move::execute() {
         auto res = formulateResponse(userResponse);
         return std::make_pair(res ,true);
     }
-
     // list of users to notify that character moved north
     std::vector<std::string> userList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
-
     // Update roomList to account for character moving
     roomController->removeCharacterFromRoom(username, roomId);
-    roomController->removeCharacterFromRoom(username, toID);
+    roomController->addCharacterToRoom(username, toID);
     characterController->setCharacterRoomID(username, toID);
-
 
     // send message to the moving user and another message to users in the room
     Response userResponse = Response("Headed " + direction, username);
@@ -881,9 +878,7 @@ std::pair<std::vector<Response>, bool> Move::execute() {
 
     auto res = formulateResponse(userResponse, userList, genericMessage);
     auto resModified = formulateResponse(empty, characterList, enteringMessage);
-
     res.insert(res.end(), resModified.begin(), resModified.end());
-
     return std::make_pair(res, true);
 }
 
