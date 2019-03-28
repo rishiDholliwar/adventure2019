@@ -9,11 +9,13 @@
 #include <Object.h>
 #include <ObjectController.h>
 #include <Extra.h>
+#include <CharacterController.h>
 #include <json.hpp>
 #include <boost/filesystem.hpp>
 #include <iomanip>
 #include <fstream>
 #include <RoomController.h>
+#include <CommandTranslator.h>
 
 using AlterSpace::Name;
 using AlterSpace::ID;
@@ -31,6 +33,8 @@ public:
     void load(std::string areaToLoad, ObjectController &objects);
 
     void load(std::string areaToLoad, RoomController &roomController);
+
+    void load(std::string language, CommandTranslator &aTranslator);
 };
 
 

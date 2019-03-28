@@ -69,6 +69,12 @@ namespace utility {
         return ss.str();
     }
 
+    static std::string toLower(std::string data) {
+        std::for_each(data.begin(), data.end(), [](char & c) {
+            c = ::tolower(c);
+        });
+        return data;
+    }
 
 }
 

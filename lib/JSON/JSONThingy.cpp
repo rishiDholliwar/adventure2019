@@ -4,6 +4,51 @@
 #include <Room.h>
 #include <iostream>
 
+// map TaskState values to JSON as strings
+NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
+    //USE
+    {LOGIN, "LOGIN"},
+    {LOGOUT, "LOGOUT"},
+    {SIGNUP, "SIGNUP"},
+
+    //COMMUNICATION
+    {SAY, "SAY"},
+    {YELL, "YELL"},
+    {BROADCAST, "BROADCAST"},
+    {TELL, "TELL"},
+    {WHISPER, "WHISPER"},
+
+    //MOVEMENT
+    {MOVE, "MOVE"},
+    {NORTH, "NORTH"},
+    {SOUTH, "SOUTH"},
+    {WEST, "WEST"},
+    {EAST, "EAST"},
+    {NORTHWEST, "NORTHWEST"},
+    {NORTHEAST, "NORTHEAST"},
+    {SOUTHWEST, "SOUTHWEST"},
+    {SOUTHEAST, "SOUTHEAST"},
+
+    //INFORMATION
+    {HELP, "HELP"},
+    {INFO, "INFO"},
+    {LOOK, "LOOK"},
+    {EXAMINE, "EXAMINE"},
+    {INVENTORY, "INVENTORY"},
+
+    //ITEMS
+    {PICKUP, "PICKUP"},
+    {DROP, "DROP"},
+    {GIVE, "GIVE"},
+    {WEAR, "WEAR"},
+    {TAKEOFF, "TAKEOFF"},
+
+    //SPELLS
+    {SWAP, "SWAP"},
+    {CONFUSE, "CONFUSE"},
+    {DECOY, "DECOY"}
+})
+
 // Doors
 void from_json(const json &j, Door &aDoor) {
     aDoor = Door(j.at("dir").get<std::string>(),
@@ -39,7 +84,6 @@ void to_json(json &j, const Extra &anExtra) {
 void from_json(const json &j, RoomController &roomController) {
     roomController = RoomController(j.at("ROOMS").get<std::vector<Room>>());
 }
-
 
 // Objects
 void to_json(json &j, const Object &anObject) {
@@ -81,20 +125,37 @@ void from_json(const json &j, Inventory &anInventory) {
 // Characters
 void to_json(json &j, const Character &aCharacter) {
 
-    j = json{
+    if ( !(aCharacter.isNPC()) ) {
+
+        j = json{
             { "name", aCharacter.getName() },
             { "roomID", aCharacter.getRoomID() },
             { "wearing", aCharacter.getWearing() },
             { "inventory", aCharacter.getInventory() },
-    };
+        };
+
+    }
 }
 
 void from_json(const json &j, Character &aCharacter) {
-    aCharacter = Character(
+
+    auto isNPC = j.find("shortdesc");
+
+    if (isNPC == j.end()) {
+        aCharacter = Character(
             j.at("name").get<std::string>(),
             j.at("roomID").get<ID>(),
             j.at("inventory").get<Inventory>(),
             j.at("wearing").get<std::vector<Object>>());
+    } else {
+        aCharacter = Character(
+            j.at("id").get<ID>(),
+            j.at("keywords").get<std::vector<std::string>>(),
+            j.at("shortdesc").get<std::string>(),
+            j.at("longdesc").get<std::vector<std::string>>(),
+            j.at("description").get<std::vector<std::string>>());
+        aCharacter.setNPC();
+    }
 
 }
 
@@ -168,4 +229,25 @@ void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
         
         roomController = j.get<RoomController>();
     }
+}
+
+void JSONThingy::load(std::string language, CommandTranslator &aTranslator) {
+
+    if(!boost::filesystem::exists("./DataFiles/internationalization.json")) {
+        return;
+    }
+
+    std::fstream fs;
+    fs.open("./DataFiles/internationalization.json", std::fstream::in);
+    if(!fs.fail()) {
+        json j;
+        fs >> j;
+        fs.close();
+        std::map<std::string, CommandType> tmp = j.at(language).get<std::map<std::string, CommandType>>();
+        for(auto& t : tmp) {
+            aTranslator.registerTranslation(t.first, t.second);
+        }
+
+    }
+
 }

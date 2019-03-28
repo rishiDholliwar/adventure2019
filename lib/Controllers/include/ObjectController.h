@@ -22,6 +22,8 @@ public:
 
     explicit ObjectController(std::vector<Object> objVect); 
 
+    void addObjectsToList(const std::vector<Object> objs);
+
     bool addObjectToList(const Object &object);
 
     /* Does Object Exist:

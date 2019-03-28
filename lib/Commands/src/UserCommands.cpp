@@ -17,6 +17,7 @@ std::pair<std::vector<Response>, bool> Login::execute() {
         JSONThingy jt;
         jt.load(username, tmpChar);
         characterController->addCharacter(tmpChar);
+        objectController->addObjectsToList(tmpChar.getInventory().getObjects());
 
         roomController->addCharacterToRoom(tmpChar.getName(), tmpChar.getRoomID());
     }

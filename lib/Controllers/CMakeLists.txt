@@ -14,7 +14,6 @@ target_include_directories(controllers
 
 target_link_libraries(controllers
 PRIVATE
-	NPC
         world
         Character
         Object

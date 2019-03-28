@@ -25,21 +25,20 @@
 #include <JSONThingy.h>
 
 void Game::registerCommands() {
-    _commandHandler.registerCommand("/say", Say(&_characterController, &_roomController).clone());
-    _commandHandler.registerCommand("/tell", Tell(&_characterController).clone());
-    _commandHandler.registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
-    _commandHandler.registerCommand("/inventory", DisplayInventory(&_characterController).clone());
-    _commandHandler.registerCommand("/give", Give(&_characterController, &_objectController).clone());
-    _commandHandler.registerCommand("/swap", Swap(&_characterController).clone());
-    _commandHandler.registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
-    _commandHandler.registerCommand("/move", Move(&_characterController,&_roomController).clone());
-    _commandHandler.registerCommand("/look", Look(&_characterController,&_roomController, &_objectController).clone());
-    _commandHandler.registerCommand("/examine", Examine(&_characterController,&_roomController, &_objectController).clone());
-    _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
-    _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
-    _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
-    _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
-    _commandHandler.registerCommand("/move", Move(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand(CommandType::SAY, Say(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand(CommandType::TELL, Tell(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::WHISPER, Whisper(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand(CommandType::INVENTORY, DisplayInventory(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::GIVE, Give(&_characterController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::CONFUSE, Confuse(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand(CommandType::LOGIN, Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::LOGOUT, Logout(&_userController, &_characterController, &_roomController).clone());
+    _commandHandler.registerCommand(CommandType::SIGNUP, Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::HELP, Help(&_characterController, &_commandHandler).clone());
+    _commandHandler.registerCommand(CommandType::LOOK, Look(&_characterController,&_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::EXAMINE, Examine(&_characterController,&_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::MOVE, Move(&_characterController,&_roomController).clone());
 }
 
 void
@@ -83,11 +82,13 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         std::string invocationWord = input.at(0);
         std::string text = input.at(1);
 
+        auto invocation = _commandTranslator.translateMe(invocationWord);
+
         // TODO: Add a command parser around here in the future
         // Should return an enum on the type of the command
         // CommandHandler should map enums to Commands
         // This "/login" will be changed to the login enum
-        if ( (! _userController.isConnectionLoggedIn(message.connection)) && ((invocationWord != "/login") && (invocationWord != "/signup")) )
+        if ( (! _userController.isConnectionLoggedIn(message.connection)) && ((invocation != CommandType::LOGIN) && (invocation != CommandType::SIGNUP)) )
         {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
@@ -109,10 +110,9 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             text = tempInputParser.at(1);
         }
 
-        auto command = _commandHandler.getCommand(username, invocationWord, text, message.connection);
+        auto command = _commandHandler.getCommand(username, invocation, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
-            std::cout << "command is nullptr" << std::endl;
             Message msg{message.connection, output};
             result.push_back(msg);
             continue;
@@ -162,6 +162,7 @@ Game::Game(Config config)
                                         [this](Connection c){this->removeConnection(c);});
     _userController = UserController();
     _commandHandler = CommandHandler();
+    _commandTranslator = CommandTranslator();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
 
     JSONThingy jt;
