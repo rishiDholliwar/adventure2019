@@ -38,7 +38,7 @@ public:
 
     bool doesObjectOfThisNameExist(const Name objectName);
 
-    const Object& getObjectFromListByJSONObjectID(const ID jsonObjectID) const;
+    Object getObjectFromListByJSONObjectID(const ID jsonObjectID) const;
 
     /* Get Object By Name:
      *

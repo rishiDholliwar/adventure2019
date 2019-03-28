@@ -42,6 +42,7 @@ public:
     }
 
     Object(const Object &tempObject) {
+        this->id = tempObject.id;
         this->objectName = tempObject.getName();
         this->objectID = tempObject.getObjectID();
         this->keywords = tempObject.getKeywords();
