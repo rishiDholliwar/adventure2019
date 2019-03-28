@@ -218,7 +218,7 @@ private:
     const std::string line = "---------------------------\n";
 
     std::vector<std::string> interactions;
-
+    void setInteractions(std::vector<std::string> interaction);
     // int interactItemChoice;
     Name interactTarget;
 public:

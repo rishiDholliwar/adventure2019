@@ -735,19 +735,23 @@ std::pair<std::vector<Response>, bool> Look::interact() {
     Response userResponse = Response(ss.str(), username);
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
+}
 
-
+void Look::setInteractions(std::vector<std::string> interaction) {
+    this->interactions = interaction;
 }
 
 std::unique_ptr<Command> Look::clone() const {
     auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
                                        this->username, this->target);
+    look->setInteractions(this->interactions);
     return std::move(look);
 }
 
 std::unique_ptr<Command> Look::clone(Name username, Input target, Connection connection) const {
     auto look = std::make_unique<Look>(this->characterController, this->roomController, this->objectController,
                                        username, target);
+    look->setInteractions(this->interactions);
     return std::move(look);
 }
 
