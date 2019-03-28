@@ -705,28 +705,25 @@ std::pair<std::vector<Response>, bool> Look::interact() {
         return std::make_pair(res, true);
     }
     std::stringstream ss;
-    std::string interactTarget = inputStrings.at(INTERACT_TARGET);
+    std::string selection = inputStrings.at(INTERACT_TARGET);
+
+    std::stringstream tmpSs{selection};
+    int index = -1;
+    tmpSs >> index;
+    index--;
+
+    std::string interactTarget = interactions.at(index);
     ID roomId = characterController->getCharacterRoomID(username);
 
     bool has_only_digits = (interactTarget.find_first_not_of( "0123456789" ) == std::string::npos);
 
     if (has_only_digits){
         ID objectId = std::stoul(interactTarget);
-        if (!roomController->doesObjectExistInRoom(roomId, objectId)){
-            Response userResponse = Response("Object ID does not exist.", username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
         Name objectName = objectController->getObjectName(objectId);
         ss << line;
         ss << "\t" <<objectName << "\n" <<objectController->lookItem(objectId)<< "\n";
         ss << line;
     }else{
-        if (!roomController->doesCharacterExistInRoom(roomId, interactTarget)){
-            Response userResponse = Response("Character name does not exist.", username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
         ss << line;
         ss << "\t" <<interactTarget << "\n" <<characterController->lookCharacter(interactTarget)<< "\n";
         ss << line;
