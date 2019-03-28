@@ -28,11 +28,22 @@ private:
     };
     STATE currentState;
 
+    bool isGameOver = false;
+
+    struct Fighter {
+        bool readyForNextRound;
+        Character fighter;
+    };
+
     static const int MAX_NUM_PLAYERS = 2; //TODO try to make work for greater than 2 players
 
-    std::vector<Character> fighters;
-    Name owner;
+    int MAX_NUM_ROUNDS = 50; //used for quick attack todo change later
+
+    struct Fighter fighterInstigator;
+    struct Fighter fighterOpponent;
+    // Name owner;
     int roundCounter = 0;
+    //  int numPlayersReadyCounter = 0; //used to start the next round when all players are ready for the next round
 
 public:
 
@@ -41,19 +52,32 @@ public:
     Combat(Character &owner) {
         srand(static_cast<unsigned int>(time(0)));
         setState(STATE::PENDING);
-        this->owner = owner.getName();
-        addFighter(owner);
+        addInstigator(owner); //todo remove this if not needed
     };
 
-    void addFighter(Character &character);
+    void addInstigator(Character &instigator);
 
-    std::vector<Character> &getFighters();
+    void addOpponent(Character &opponent);
 
-    const Name &getOwner();
+    Character &getInstigator();
 
-    const Name &getNonOwner(const Name &fighter1, const Name &fighter2);
+    Character &getOpponent();
 
-    bool nameIsPendingWithOwner(const Name &fighter1, const Name &fighter2);
+    const Name getInstigatorName();
+
+    const Name getOpponentName();
+
+    //  std::vector<Character> &getFighters();
+
+    Character &getFighter(const Name &fighterName);
+
+    //  const Name &getOwner();
+
+    //  const Name &getNonOwner(const Name &fighter1, const Name &fighter2);
+
+    //   const  Name getNonOwner();
+
+    bool nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2);
 
     std::string getPendingNames();
 
@@ -62,7 +86,18 @@ public:
 
     bool battleReady();
 
-    void updateFighters(Character &f1, Character &f2);
+    //todo modify names
+    std::vector<Name> getOpponents();
+
+    bool isInBattle(const Name &fighter);
+
+    bool isNextRoundReady();
+
+    void setPlayerReadyForNextRound(const Name &fighter);
+
+    void resetRoundReady();
+
+    void updateFighters(Character &fighter1, Character &fighter2);
 
     std::string runQuickBattle();
 
@@ -96,7 +131,10 @@ private :
 
     int getDefenderHP(Character &defender, unsigned int netDamage);
 
-    int getDefender(int index);
+    Character &getAttacker(int i);
+
+    Character &getDefender(int i);
+
 
     std::string printAttackInfo(Character &attacker, Character &defender);
 

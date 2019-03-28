@@ -2,80 +2,121 @@
 #include <cmath>
 #include <sstream>
 
-void Combat::addFighter(Character &character) {
-    fighters.push_back(character);
+//todo go to vector to non vector!!!
+void Combat::addInstigator(Character &instigator) {
+    fighterInstigator.readyForNextRound = false;
+    fighterInstigator.fighter = instigator;
 }
 
-std::vector<Character> &Combat::getFighters() {
-    return fighters;
+void Combat::addOpponent(Character &opponent) {
+    fighterOpponent.readyForNextRound = false;
+    fighterOpponent.fighter = opponent;
 }
 
-const Name &Combat::getOwner() {
-    return owner;
+Character &Combat::getInstigator() {
+    return fighterInstigator.fighter;
 }
 
-const Name &Combat::getNonOwner(const Name &fighter1, const Name &fighter2) {
-    if (fighter1 == owner) {
-        return fighter2;
-    }
-
-    if (fighter2 == owner) {
-        return fighter1;
-    }
+Character &Combat::getOpponent() {
+    return fighterOpponent.fighter;
 }
 
-std::string Combat::getPendingNames() {
-    std::stringstream output;
-    for (auto &character : fighters) {
-        if (character.getName() != owner) {
-            output << character.getName();
+const Name Combat::getInstigatorName() {
+    return fighterInstigator.fighter.getName();
+}
+
+const Name Combat::getOpponentName() {
+    return fighterOpponent.fighter.getName();
+}
+
+//std::string Combat::getPendingNames() {
+//    std::stringstream output;
+//
+//    output << fighterOpponent.fighter.getName();
+//
+//
+////    for (auto &fighter : fighters) {
+////        if (fighter.character.getName() != owner) {
+////            output << fighter.character.getName();
+////        }
+////    }
+//
+//    return output.str();
+//}
+//todo refactor
+bool Combat::nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2) {
+
+    if (getInstigatorName() == fighter1) {
+        if (getOpponentName() == fighter2) {
+            return true;
         }
+
     }
 
-    return output.str();
-}
-
-bool Combat::nameIsPendingWithOwner(const Name &fighter1, const Name &fighter2) {
-    if (Combat::getOwner() == fighter1) {
-        for (auto &character : fighters) {
-            if (character.getName() == fighter2) {
-                return true;
-            }
+    if (getInstigatorName() == fighter2) {
+        if (getOpponentName() == fighter1) {
+            return true;
         }
-    }
 
-    if (Combat::getOwner() == fighter2) {
-        for (auto &character : fighters) {
-            if (character.getName() == fighter1) {
-                return true;
-            }
-        }
     }
 
     return false;
 }
+
+bool Combat::isInBattle(const Name &fighter) {
+    if (getInstigatorName() == fighter || getOpponentName() == fighter) {
+        return true;
+    }
+    return false;
+}
+
 
 //TODO will be used when player can enter options for each round
 std::string Combat::processInput(const Input &input) {
     return "";
 }
 
-void Combat::setCombatState(){
+void Combat::setCombatState() {
     setState(STATE::COMBAT);
 }
 
+//todo fix
 bool Combat::battleReady() {
-    if (fighters.size() == MAX_NUM_PLAYERS) {
-        return true;
-    }
+//    if (fighters.size() == MAX_NUM_PLAYERS) {
+//        return true;
+//    }
 
-    return false;
+    return true;
 }
 
-void Combat::updateFighters(Character &f1, Character &f2) {
-    fighters.clear();
-    fighters.push_back(f1);
-    fighters.push_back(f2);
+bool Combat::isNextRoundReady() {
+    return fighterInstigator.readyForNextRound && fighterOpponent.readyForNextRound;
+}
+
+void Combat::setPlayerReadyForNextRound(const Name &fighterName) {
+    if (fighterName == fighterInstigator.fighter.getName()) {
+        fighterInstigator.readyForNextRound = true;
+    }
+
+    if (fighterName == fighterOpponent.fighter.getName()) {
+        fighterOpponent.readyForNextRound = true;
+    }
+}
+
+void Combat::resetRoundReady() {
+    fighterInstigator.readyForNextRound = false;
+    fighterOpponent.readyForNextRound = false;
+}
+
+
+void Combat::updateFighters(Character &fighter1, Character &fighter2) {
+    if (fighter1.getName() == fighterInstigator.fighter.getName()) {
+        addInstigator(fighter1);
+        addOpponent(fighter2);
+    } else {
+        addInstigator(fighter2);
+        addOpponent(fighter1);
+    }
 }
 
 //todo remove this function and put the loop somewhere else?
@@ -84,51 +125,68 @@ std::string Combat::runQuickBattle() {
     bool isWinner = false;
     std::stringstream output;
 
-    while (!isWinner) {
-        roundCounter++;
-        output << printRoundNumber(roundCounter);
-
-        for (unsigned int i = 0; i < getFighters().size(); i++) {
-            Character &attacker = getFighter(i);
-            Character &defender = getFighter(getDefender(i));
-
-            output << attack(attacker, defender);
-            output << "\n";
-
-            if (defender.getCurrentHP() == 0) {
-                output << printWinner(attacker);
-                output << "\n";
-                isWinner = true;
-                setState(STATE::END);
-                break;
-            }
-        } //end for
-    }// end while
+//    while (!isWinner) {
+//        roundCounter++;
+//        output << printRoundNumber(roundCounter);
+//
+//        for (unsigned int i = 0; i < fighters.size(); i++) {
+//            Character &attacker = getFighter(i);
+//            Character &defender = getFighter(getDefender(i));
+//
+//            output << attack(attacker, defender);
+//            output << "\n";
+//
+//            if (defender.getCurrentHP() == 0) {
+//                output << printWinner(attacker);
+//                output << "\n";
+//                isWinner = true;
+//                setState(STATE::END);
+//                break;
+//            }
+//        } //end for
+//    }// end while
 
     return output.str();
 }
 
+Character &Combat::getAttacker(int i) {
+    if (i % 2) {
+        return fighterInstigator.fighter;
+    }
+    return fighterOpponent.fighter;
+}
+
+Character &Combat::getDefender(int i) {
+    if (i % 2) {
+        return fighterOpponent.fighter;
+    }
+    return fighterInstigator.fighter;
+}
+
+
+//todo refactor
 std::string Combat::runBattleRound() {
     std::stringstream output;
 
     this->roundCounter++;
     output << printRoundNumber(this->roundCounter);
 
-    for (unsigned int i = 0; i < getFighters().size(); i++) {
-        Character &attacker = getFighter(i);
-        Character &defender = getFighter(getDefender(i));
+    for (unsigned int i = 0; i < MAX_NUM_PLAYERS; i++) {
+
+        Character &attacker = getAttacker(i);
+        Character &defender = getDefender(i);
 
         output << attack(attacker, defender);
         output << "\n";
 
         if (defender.getCurrentHP() == 0) {
             output << printWinner(attacker);
-            output << "\n";
-            setState(STATE::END);
-            break;
+            //setState(STATE::END); //todo this breaks the code, no idea why??
+            isGameOver = true;
+            return output.str();
         }
-    } //end for
 
+    } //end for
 
     return output.str();
 }
@@ -136,14 +194,6 @@ std::string Combat::runBattleRound() {
 
 double Combat::attackMultiplier() {
     return rand() / (RAND_MAX + 1.);
-}
-
-int Combat::getDefender(int index) {
-    if (index == (getFighters().size() - 1)) {
-        return 0;
-    } else {
-        return index + 1;
-    }
 }
 
 std::string Combat::attack(Character &attacker, Character &defender) {
@@ -214,31 +264,29 @@ std::string Combat::printDefenderHP(Character &defender) {
            + "\n";
 }
 
-Character &Combat::getFighter(int i) {
-    return fighters[i];
-}
-
-void Combat::setState(Combat::STATE state) {
-    currentState = state;
+void Combat::setState(STATE state) {
+    this->currentState = state;
 }
 
 bool Combat::isPendingState() {
-    if (currentState == STATE::PENDING) {
+    if (this->currentState == STATE::PENDING) {
         return true;
     }
     return false;
 }
 
 bool Combat::isCombatState() {
-    if (currentState == STATE::COMBAT) {
+    if (this->currentState == STATE::COMBAT) {
         return true;
     }
     return false;
 }
 
 bool Combat::isGameOverState() {
-    if (currentState == STATE::END) {
-        return true;
-    }
-    return false;
+//    if (this->currentState == STATE::END) {
+//        return true;
+//    }
+
+    return this->isGameOver;
+
 }

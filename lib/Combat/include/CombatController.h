@@ -22,7 +22,10 @@ public:
 
     CombatController() = default;
 
-    bool isInBattleState(const Name &fighter);
+    bool isTargetBattleState(const Name &instigator, const Name &target);
+
+    //todo this should be done thru character class later when states are implemented
+    bool isBattleState(const Name &instigator);
 
     bool isNewBattle(const Name &instigator, const Name &target);
 
@@ -42,15 +45,44 @@ public:
 
     bool isBattleStarted(const Name &fighter1, const Name &fighter2);
 
-    const std::string executeQuickBattle(Character &fighter1, Character &fighter2, const Input &input);
+    //bool isInBattleState(const Name &fighter1, const Name &fighter2);
+
+    bool checkInputForNextRound(const Name &instigator, const Input &input);
+
+    void setFighterReady(const Name &instigator);
+
+    bool isNextRoundReady(const Name &instigator);
+
+    void resetRoundReady(const Name &fighterName);
+
+    const Name getTargetName(const Name &instigator);
+
+
+    Character &getFighter(Name &fighterName);
+
+ //   const std::string executeQuickBattle(Character &fighter1, Character &fighter2, const Input &input);
 
     const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
 
+  //  const std::string executeBattleRound(Character &fighter);
+
+    const std::string executeBattleRound(std::vector<Character> &fighters);
+
+    std::vector<Name> getOpponents(const Name &fighter);
+
+    //todo change name to make sense with the other one
+//    std::vector<Character> &getFighters(Name &fighter);
+
+    //todo remove?
     bool isGameOver(const Name &fighter1, const Name &fighter2);
 
-    std::vector<Character> &getFighters(Name &fighter1, Name &fighter2);
+    bool isGameOver(const Name &fighter);
+
+    std::vector<Character> getFighters(Name &fighter1, Name &fighter2);
 
     void deleteGame(const Name fighter1, const Name fighter2);
+
+    void deleteGame(const Name fighter);
 
     std::string sendQInvitationMsg(const Name &inviterName);
 
@@ -68,9 +100,15 @@ public:
 
     std::string printAllBattles();
 
+    std::string sendTargetInCombatState(const Name &target);
+
+    std::string sendSelfInCombatState();
+
 private:
 
     Combat &getBattle(const Name fighter1, const Name fighter2);
+
+    Combat &getBattleInCombatState(const Name &fighter);
 
     bool isBattleOwner(const Name fighter1, const Name fighter2);
 
