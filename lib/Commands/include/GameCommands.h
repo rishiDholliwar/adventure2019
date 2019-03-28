@@ -213,7 +213,14 @@ private:
     ObjectController* objectController;
     Name username;
     Input target;
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_TARGET = 1;
+    const std::string line = "---------------------------\n";
+
     std::vector<std::string> interactions;
+
+    // int interactItemChoice;
+    Name interactTarget;
 public:
     explicit
     Look(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,

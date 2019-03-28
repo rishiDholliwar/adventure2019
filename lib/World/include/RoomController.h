@@ -118,6 +118,8 @@ public:
          */
         Door* searchDoor(ID roomId, const std::string& direction);
 
+        bool doesObjectExistInRoom(ID roomId, ID objectId);
+        bool doesCharacterExistInRoom(ID roomId, Name characterName);
         // Validity checkers
 //        bool roomExists(ID roomId);
 //        bool roomHasCharacter(ID roomId, Name& userName);

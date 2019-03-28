@@ -604,14 +604,27 @@ std::string Swap::help() {
 
 //look
 std::pair<std::vector<Response>, bool> Look::execute() {
+
+
+    std::vector<std::string> inputStrings = utility::tokenizeString(target);
+
+    if (inputStrings.size() >= 2) {
+        if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+            return this->interact();
+        }
+    }
+
     std::stringstream ss;
+    std::stringstream interactStringstream;
     ID roomId = characterController->getCharacterRoomID(username);
 
     auto characterList = roomController->getCharacterList(roomId);
     auto objectList = roomController->getObjectList(roomId);
-    std::string line = "---------------------------\n";
+
 
     ss << line;
+    interactStringstream << line;
+    interactStringstream << "There is multiple " << target << ". Which one would you like to look at.\n";
 
     // with no argument
     if (target.empty()){
@@ -644,7 +657,10 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     // search character
     for (auto &characterName : characterList){
         if (characterName == target) {
-            ss << index << ". " << characterName << "\n" <<characterController->lookCharacter(characterName) << "\n";
+            ss << index << ". "  << characterName << "\n" <<characterController->lookCharacter(characterName) << "\n";
+            interactStringstream << "\t" <<index << ". " << characterName << ", Type: " <<
+                    "Character" << "\n";
+            interactions.push_back(characterName);
             index += 1;
         }
     }
@@ -652,8 +668,12 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     // search object
     for (const ID objectId : objectList){
         Name objectName = objectController->getObjectName(objectId);
-        if (objectName == target)
-            ss << index <<". " << objectName << "\n" << objectController->lookItem(objectId)<< "\n";
+        if (objectName == target) {
+            ss << index <<". " << objectName << "\n" <<objectController->examineItem(objectId)<< "\n";
+            interactStringstream << "\t" << index << ". " << objectName << "Type: Item," << " ID: " << objectId << "\n";
+            interactions.push_back(std::to_string(objectId));
+            index += 1;
+        }
     }
 
     if (index == 1){
@@ -662,11 +682,61 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         return std::make_pair(res, true);
     }
 
+    if (index > 2){
+        Response userResponse = Response(interactStringstream.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+
     ss << line;
 
     Response userResponse = Response(ss.str(), username);
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
+}
+
+std::pair<std::vector<Response>, bool> Look::interact() {
+    std::vector<std::string> inputStrings = utility::tokenizeString(target);
+
+    if (inputStrings.size() <= 1){
+        Response userResponse = Response("Please input a target. /look interact {character name/object ID}", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+    std::stringstream ss;
+    std::string interactTarget = inputStrings.at(INTERACT_TARGET);
+    ID roomId = characterController->getCharacterRoomID(username);
+
+    bool has_only_digits = (interactTarget.find_first_not_of( "0123456789" ) == std::string::npos);
+
+    if (has_only_digits){
+        ID objectId = std::stoul(interactTarget);
+        if (!roomController->doesObjectExistInRoom(roomId, objectId)){
+            Response userResponse = Response("Object ID does not exist.", username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, true);
+        }
+        Name objectName = objectController->getObjectName(objectId);
+        ss << line;
+        ss << "\t" <<objectName << "\n" <<objectController->lookItem(objectId)<< "\n";
+        ss << line;
+    }else{
+        if (!roomController->doesCharacterExistInRoom(roomId, interactTarget)){
+            Response userResponse = Response("Character name does not exist.", username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, true);
+        }
+        ss << line;
+        ss << "\t" <<interactTarget << "\n" <<characterController->lookCharacter(interactTarget)<< "\n";
+        ss << line;
+    }
+
+    Response userResponse = Response(ss.str(), username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+
+
 }
 
 std::unique_ptr<Command> Look::clone() const {
@@ -680,63 +750,6 @@ std::unique_ptr<Command> Look::clone(Name username, Input target, Connection con
                                        username, target);
     return std::move(look);
 }
-
-//std::pair<std::vector<Response>, bool> Look::interact() {
-//    std::cout << "give interacting" << std::endl;
-//
-//    std::vector<std::string> v = utility::tokenizeString(target);
-//
-//    if ( v.size() != 2 ) {
-//        std::cout << "Too many arguments..." << std::endl;
-//        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
-//        auto res = formulateResponse(userResponse);
-//
-//        return std::make_pair(res, false);
-//    }
-//
-//    std::stringstream ss{v.at(INTERACT_CHOICE)};
-//    int index = -1;
-//    ss >> index;
-//    index--;
-//    if ( index >= interactions.size() || index < 0 ) {
-//        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
-//        auto res = formulateResponse(userResponse);
-//
-//        return std::make_pair(res, false);
-//    }
-//
-//    ID giftID = interactions.at(index).getID();
-//    Name giftName = interactions.at(index).getName();
-//
-//    Name interactTargetUsername = characterController->getUsernameOfCharacter(interactTarget);
-//    Name charName = characterController->getCharName(username);
-//
-//    //drop item from user inventory
-//    characterController->dropItemFromCharacterInventory(username, giftID);
-//
-//    if (characterController->characterHasItem(username, giftID)) {
-//        Response userResponse = Response("Gifting item has failed.", username);
-//        auto res = formulateResponse(userResponse);
-//        return std::make_pair(res, false);
-//    }
-//
-//    //add item to target user inventory
-//    characterController->addItemToCharacterInventory(interactTargetUsername, objectController->getObjectFromList(giftID));
-//
-//    if (!characterController->characterHasItem(interactTargetUsername, giftID)) {
-//        characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));
-//        Response userResponse = Response("Giving " + giftName + " to character " + interactTarget + " has failed.", username);
-//        auto res = formulateResponse(userResponse);
-//        return std::make_pair(res, false);
-//    }
-//
-//    //generate response
-//    Response userResponse = Response("You have given " + giftName + " to character " + interactTarget + "!", username);
-//    Response targetResponse = Response(charName + " has given " + giftName + " to you!", interactTargetUsername);
-//    auto res = formulateResponse(userResponse, targetResponse);
-//
-//    return std::make_pair(res, true);
-//}
 
 std::string Look::help() {
     return "/look [target] - get short description of the target, or use /look to get short description about the room.";
