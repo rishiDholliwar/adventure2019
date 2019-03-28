@@ -3,13 +3,13 @@
 #include <sstream>
 #include <CharacterController.h>
 #include <RoomController.h>
+#include <Utility.h>
 
-CharacterController::CharacterController() = default;
-
-void CharacterController::addCharacter(Name &username, ObjectController &objectController) {
+void CharacterController::addCharacter(Name &username, RoomController &roomController, ObjectController &objectController) {
 
     // Default Data for all first time users
     Character defaultCharacter(username, ROOM_ID);
+    roomController.addCharacterToRoom(defaultCharacter.getName(), defaultCharacter.getRoomID());
 
     defaultCharacter.addItemToInventory(Object("Basic Sword"));
     objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));
@@ -20,28 +20,15 @@ void CharacterController::addCharacter(Name &username, ObjectController &objectC
     _characters.emplace(username,defaultCharacter).second;
 }
 
-void CharacterController::addNPC(Name &npcname, ObjectController &objectController) {
-
-    Character defaultNPC(npcname, ROOM_ID, CharacterType::NON_PLAYABLE);
-    
-    std::stringstream ss;
-    ss << npcname << "-" << defaultNPC.getID();
-    Name npcKey = ss.str();
-
-    _characters.emplace(npcKey, defaultNPC).second;
-}
-
 void CharacterController::addCharacter(Character &aCharacter) {
     Name username = aCharacter.getName();
 
     _characters.emplace(username, aCharacter).second;
 }
 
-void CharacterController::addNPC(Character &aNPC) {
+void CharacterController::addNPC(Character aNPC) {
 
-    if (!aNPC.isNPC()) {
-        return;
-    }
+    aNPC.setNPC();
 
     std::stringstream ss;
     ss << aNPC.getName() << "-" << aNPC.getID();
@@ -116,6 +103,20 @@ std::vector<Name> CharacterController::getAllCharacterNames() {
         usernameList.push_back(characters.first);
     }
     return usernameList;
+}
+
+std::string CharacterController::lookCharacter(Name &userName) {
+    auto character = getCharacter(userName);
+    return utility::extractStringVector(character.getDescription());
+}
+
+std::string CharacterController::examineCharacter(Name &userName) {
+    auto character = getCharacter(userName);
+    auto extDescriptions = character.getLongDesc();
+    if (extDescriptions.empty()){
+        return lookCharacter(userName);
+    }
+    return utility::extractStringVector(extDescriptions);
 }
 
 std::string CharacterController::getCharacterInfo(Name &username) {

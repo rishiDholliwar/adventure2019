@@ -8,6 +8,10 @@ Name Character::getName() const {
     return this->name;
 }
 
+ID Character::getCharacterID() const {
+	return this->characterID;
+}
+
 ID Character::getRoomID() const {
     return this->roomID;
 }
@@ -16,8 +20,28 @@ bool Character::isNPC() const {
 	return this->characterType == CharacterType::NON_PLAYABLE;
 }
 
+void Character::setNPC() {
+	this->characterType = CharacterType::NON_PLAYABLE;
+}
+
 ID Character::getID() const {
     return id;
+}
+
+std::vector<std::string> const& Character::getKeywords() const{ 
+	return keywords;
+}
+
+std::string const& Character::getShortDesc() const{
+	return shortdesc;
+}
+
+std::vector<std::string> const& Character::getLongDesc() const{
+	return longdesc;
+}
+
+std::vector<std::string> const& Character::getDescription() const{
+	return description;
 }
 
 std::string Character::getInfo() const {

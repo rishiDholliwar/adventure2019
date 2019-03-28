@@ -20,7 +20,7 @@ private:
 
 public:
     /* Constructor */
-    CharacterController();
+    CharacterController() = default;
 
     /*
      * Adds new users to the list of characters
@@ -29,13 +29,11 @@ public:
      *
      * Post-Condition: Returns true if addition is successful
     */
-    void addCharacter(Name &username, ObjectController &objectController);
-
-    void addNPC(Name &npcname, ObjectController &objectController);
+    void addCharacter(Name &username, RoomController &roomController, ObjectController &objectController);
 
     void addCharacter(Character &aCharacter);
 
-    void addNPC(Character &aNPC);
+    void addNPC(Character aNPC);
 
     /*
      * Remove user from the list of characters
