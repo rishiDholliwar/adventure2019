@@ -46,6 +46,7 @@ void ResetController::reset() {
 			//if number of that npc is less than reset limit, create one npcs with the same info as the npc in npcs, equip and give whatever items that follow
 			if (count < reset->getLimit()) {
 				Character newNPC = npcs[npcid];
+				newNPC.setRoomID(roomID);
 
 				while( reset != resets.end() ) {
 					std::cout << "entered while loop" << std::endl;
@@ -95,10 +96,19 @@ void ResetController::reset() {
 			std::cout << "entered object" << std::endl;
 			ID objectid = reset->getID();
 
-			Object newObject(objectController->getObjectFromListByJSONObjectID(objectid));
-			objectController->addObjectToList(newObject);
+			std::vector<ID> objectsInRoom = roomController->getObjectList(reset->getRoomID());
 
-			roomController->addObjectToRoom(newObject.getID(), reset->getRoomID());
+			Object newObject(objectController->getObjectFromListByJSONObjectID(objectid));
+			Name newObjectName = newObject.getName();
+
+			auto objInRoom = std::find_if(objectsInRoom.begin(), objectsInRoom.end(), [ &newObjectName, this ]( const ID& objID ){ return newObjectName == objectController->getObjectName(objID); });
+			
+			if (objInRoom == objectsInRoom.end() ) {
+				objectController->addObjectToList(newObject);
+
+				roomController->addObjectToRoom(newObject.getID(), reset->getRoomID());
+			}
+			
 		}
 
 		if (reset->getAction() == "door") {
