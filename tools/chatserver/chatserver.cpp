@@ -173,6 +173,8 @@ Game::Game(Config config)
 
     _resetController.reset();
 
+    std::cout << "after reset" << std::endl;
+
     this->registerCommands();
 }
 
