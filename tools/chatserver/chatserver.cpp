@@ -8,7 +8,7 @@
 
 #include "json.hpp"
 #include "chatserver.h"
-#include <JSONObjects.h>
+// #include <JSONObjects.h>
 
 #include <experimental/filesystem>
 #include <fstream>
@@ -22,6 +22,7 @@
 
 #include <GameCommands.h>
 #include <UserCommands.h>
+#include <JSONThingy.h>
 
 void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::SAY, Say(&_characterController, &_roomController).clone());
@@ -165,6 +166,7 @@ Game::Game(Config config)
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
 
     JSONThingy jt;
+    jt.load("mirkwood", _objectController);
     jt.load("mirkwood", _roomController);
 
     this->registerCommands();
@@ -197,11 +199,11 @@ main(int argc, char *argv[]) {
 
     std::string fileName = "mirkwood";
 
-    if (JSONObjects::fileExists(fileName)) {
-        cout << "file exists\n";
-    } else {
-        cout << "error, no such file\n";
-    }
+    // if (JSONObjects::fileExists(fileName)) {
+    //     cout << "file exists\n";
+    // } else {
+    //     cout << "error, no such file\n";
+    // }
 
     // std::vector<Object> objects = JSONObjects::getObjects(fileName);
 

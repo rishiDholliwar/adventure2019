@@ -73,6 +73,13 @@ void from_json(const json &j, Room &aRoom) {
                  j.at("extended_descriptions").get<std::vector<ExtendedDescription>>());
 }
 
+void to_json(json &j, const Extra &anExtra) {
+    j = json{
+            {"keywords", anExtra.getKeywords() },
+            {"desc", anExtra.getDesc() }
+    };
+}
+
 // RoomController
 void from_json(const json &j, RoomController &roomController) {
     roomController = RoomController(j.at("ROOMS").get<std::vector<Room>>());
@@ -81,13 +88,27 @@ void from_json(const json &j, RoomController &roomController) {
 // Objects
 void to_json(json &j, const Object &anObject) {
     j = json{
-            {"objectID", anObject.getID() },
-            {"objectName", anObject.getName() }
+            {"id", anObject.getObjectID() },
+            {"keywords", anObject.getKeywords() },
+            {"shortdesc", anObject.getShortDesc() },
+            {"longdesc", anObject.getLongDesc() },
+            {"extra", anObject.getExtra() }
     };
 }
 
+void from_json(const json &j, Extra &extraDesc) {
+    extraDesc = Extra(        
+        j.at("keywords").get<std::vector<std::string>>(),
+        j.at("desc").get<std::vector<std::string>>());
+}
+
 void from_json(const json &j, Object &anObject) {
-    anObject = Object( j.at("objectID").get<ID>(), j.at("objectName").get<Name>());
+    anObject = Object( 
+        j.at("id").get<ID>(), 
+        j.at("keywords").get<std::vector<std::string>>(), 
+        j.at("shortdesc").get<std::string>(), 
+        j.at("longdesc").get<std::vector<std::string>>(), 
+        j.at("extra").get<std::vector<Extra>>());
 }
 
 // Inventory
@@ -117,14 +138,15 @@ void to_json(json &j, const Character &aCharacter) {
 }
 
 void from_json(const json &j, Character &aCharacter) {
-    //NPC
-    if (!(j.at("shortdesc").get<std::string>().empty())) {
+
+    auto isNPC = j.find("shortdesc");
+
+    if (isNPC == j.end()) {
         aCharacter = Character(
             j.at("name").get<std::string>(),
             j.at("roomID").get<ID>(),
             j.at("inventory").get<Inventory>(),
             j.at("wearing").get<std::vector<Object>>());
-    //NOT NPC
     } else {
         aCharacter = Character(
             j.at("id").get<ID>(),
@@ -137,9 +159,9 @@ void from_json(const json &j, Character &aCharacter) {
 
 }
 
-// void from_json(const json &j, CharacterController &npcs) {
-//     npcs = CharacterController( j.get<std::vector<Character>>());
-// }
+void from_json(const json &j, ObjectController &objects) {
+    objects = ObjectController( j.at("OBJECTS").get<std::vector<Object>>());
+}
 
 void JSONThingy::save(Character &aCharacter) {
     json j;
@@ -173,6 +195,23 @@ void JSONThingy::load(Name characterToLoad, Character &aCharacter) {
 
 }
 
+void JSONThingy::load(std::string areaToLoad, ObjectController &objects) {
+    if(!boost::filesystem::exists("./DataFiles/" + areaToLoad + ".json")) {
+        return;
+    }
+
+    std::fstream fs;
+    fs.open("./DataFiles/" + areaToLoad + ".json", std::fstream::in);
+    if(!fs.fail()) {
+        json j;
+        fs >> j;
+        fs.close();
+
+        objects = j.get<ObjectController>();
+    }
+
+}
+
 void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
 
     if(!boost::filesystem::exists("./DataFiles/" + areaToLoad + ".json")) {
@@ -187,6 +226,7 @@ void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
         json j;
         fs >> j;
         fs.close();
+        
         roomController = j.get<RoomController>();
     }
 }

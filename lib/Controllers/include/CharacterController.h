@@ -2,6 +2,7 @@
 #define ALTERSPACE_CHARACTERCONTROLLER_H
 
 #include <unordered_map>
+#include <algorithm>
 
 #include <AlterSpace.h>
 #include <Character.h>

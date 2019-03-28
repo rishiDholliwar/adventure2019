@@ -1,7 +1,9 @@
 add_executable(test_object
                 src/test_object.cpp )
 
-add_library(Object src/Object.cpp)
+add_library(Object 
+                src/Object.cpp 
+                src/Extra.cpp)
 add_library(Inventory src/Inventory.cpp)
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
