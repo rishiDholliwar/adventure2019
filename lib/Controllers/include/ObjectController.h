@@ -38,6 +38,8 @@ public:
 
     bool doesObjectOfThisNameExist(const Name objectName);
 
+    const Object& getObjectFromListByJSONObjectID(const ID jsonObjectID) const;
+
     /* Get Object By Name:
      *
      * Function: Retrieve the object from the object list

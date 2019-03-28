@@ -1,5 +1,6 @@
 add_subdirectory(World)
 add_subdirectory(Utility)
+add_subdirectory(Reset)
 add_subdirectory(User)
 add_subdirectory(Controllers)
 add_subdirectory(Object)

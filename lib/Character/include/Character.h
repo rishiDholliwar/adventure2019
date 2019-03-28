@@ -65,6 +65,20 @@ public:
         this->confused = false;
     }
 
+    Character(&Character npc) {
+        this->name = npc.getName();
+        this->characterID = npc.getCharacterID();
+        this->characterType = CharacterType::NON_PLAYABLE;
+        this->inventory = npc.getInventory();
+        this->wearing = npc.getWearing();
+        this->confused = false;
+
+        this->keywords = npc.getKeywords();
+        this->shortdesc = npc.getShortDesc();
+        this->longdesc = npc.getLongDesc();
+        this->description = npc.getDescription();
+    }
+
     Name getName() const;
     ID getCharacterID() const;
     ID getRoomID() const;

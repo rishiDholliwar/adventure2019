@@ -16,6 +16,7 @@
 #include <fstream>
 #include <RoomController.h>
 #include <CommandTranslator.h>
+#include <ResetController.h>
 
 using AlterSpace::Name;
 using AlterSpace::ID;

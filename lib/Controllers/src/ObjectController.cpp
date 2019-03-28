@@ -30,6 +30,13 @@ bool ObjectController::doesObjectOfThisNameExist(const Name objectName) {
 	return itr != objects.end();
 }
 
+const Object& ObjectController::getObjectFromListByJSONObjectID(const ID jsonObjectID) const {
+	auto itr = find_if(objects.begin(), objects.end(), [ jsonObjectID ] (std::pair<ID, Object> const& objPair )->bool {
+        return objPair.second.getObjectID() == jsonObjectID;
+    });
+    return itr->second;
+}
+
 const Object &ObjectController::getObjectFromList(const ID objectID) const {
     return objects.find(objectID)->second;
 }

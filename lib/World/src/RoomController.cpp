@@ -42,6 +42,7 @@ std::vector<ID> RoomController::getRoomIdList() const {
     return integerRoomList;
 }
 
+
 /*
  * Adders
  */
@@ -93,6 +94,11 @@ bool RoomController::removeObjectFromRoom(ID objectId, ID roomId) {
 bool RoomController::removeCharacterFromRoom(const Name &userName, ID roomId) {
     auto tempRoom = RoomController::searchRoom(roomId);
     return (tempRoom != nullptr) && (tempRoom->removeCharacter(userName));
+}
+
+void RoomController::lockDoor(ID roomID, std::string& direction) {
+    auto door = searchDoor(roomID, direction);
+    door->setDoorLocked();
 }
 
 /*

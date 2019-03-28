@@ -6,6 +6,7 @@
 #include <CharacterController.h>
 #include <RoomController.h>
 #include <ObjectController.h>
+#include <ResetController.h>
 #include <CommandHandler.h>
 #include <Scheduler.h>
 #include <CommandTranslator.h>
@@ -28,6 +29,7 @@ private:
   CharacterController _characterController;
   RoomController _roomController;
   ObjectController _objectController;
+  ResetController _resetController;
   CommandTranslator _commandTranslator;
   std::unique_ptr<Server> _server;
   CommandHandler _commandHandler;
