@@ -33,11 +33,11 @@ void ResetController::reset() {
 			ID roomID = reset->getRoomID();
 			//check how many of this npc is in the room (from room controller)
 			std::vector<Name> charactersInRoom = roomController->getCharacterList(reset->getRoomID());
-			int count = std::count_if(charactersInRoom.begin(), charactersInRoom.end(), [ &npcName ]( auto const& npc ){ return (npcName == npc.getName() && npc.isNPC() ); });
+			int count = std::count_if(charactersInRoom.begin(), charactersInRoom.end(), [ &npcName ]( const Name& npc ){ return (npcName == npc ); });
 
 			//if number of that npc is less than reset limit, create one npcs with the same info as the npc in npcs, equip and give whatever items that follow
 			if (count < reset->getLimit()) {
-				Character newNPC(npcs[npcid]);
+				Character newNPC = npcs[npcid];
 
 				while( reset != resets.end() ) {
 					if(reset++; reset->getAction() != "equip" && reset->getAction() != "give") {
@@ -48,7 +48,7 @@ void ResetController::reset() {
 						ID objectid = reset->getID();
 
 						Object newObject = objectController->getObjectFromListByJSONObjectID(objectid);
-						objectController.addObjectToList(newObject);
+						objectController->addObjectToList(newObject);
 						newNPC.addItemToInventory(newObject);
 						newNPC.wear(newObject.getID());
 					}
@@ -56,13 +56,13 @@ void ResetController::reset() {
 						ID objectid = reset->getID();
 
 						Object newObject = objectController->getObjectFromListByJSONObjectID(objectid);
-						objectController.addObjectToList(newObject);
+						objectController->addObjectToList(newObject);
 						newNPC.addItemToInventory(newObject);
 					}
 				}
 
-				characterController.addNPC(newNPC);
-				roomController.addCharacterToRoom(npcName, roomID);
+				characterController->addNPC(newNPC);
+				roomController->addCharacterToRoom(npcName, roomID);
 			}
 		}
 
@@ -70,9 +70,9 @@ void ResetController::reset() {
 			ID objectid = reset->getID();
 
 			Object newObject(objectController->getObjectFromListByJSONObjectID(objectid));
-			objectController.addObjectToList(newObject);
+			objectController->addObjectToList(newObject);
 
-			roomController.addObjectToRoom(newObject.getID(), reset->getRoomID());
+			roomController->addObjectToRoom(newObject.getID(), reset->getRoomID());
 		}
 
 		if (reset->getAction() == "door") {
@@ -91,8 +91,8 @@ void ResetController::reset() {
 				directionString = "west";
 			}
 
-			if (reset->getStatus() == "locked") {
-				roomController.lockDoor(roomid, directionString);
+			if (reset->getState() == "locked") {
+				roomController->lockDoor(roomid, directionString);
 			}
 		}
 	} 

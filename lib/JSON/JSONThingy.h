@@ -36,6 +36,8 @@ public:
     void load(std::string areaToLoad, RoomController &roomController);
 
     void load(std::string language, CommandTranslator &aTranslator);
+
+    void load(std::string areaToLoad, ResetController &resetController);
 };
 
 

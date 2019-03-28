@@ -65,7 +65,7 @@ public:
         this->confused = false;
     }
 
-    Character(&Character npc) {
+    Character(const Character& npc) {
         this->name = npc.getName();
         this->characterID = npc.getCharacterID();
         this->characterType = CharacterType::NON_PLAYABLE;

@@ -164,14 +164,14 @@ Game::Game(Config config)
     _commandHandler = CommandHandler();
     _commandTranslator = CommandTranslator();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
-    _resetController = ResetController(_roomController, _characterController, _objectController);
+    _resetController = ResetController(&_roomController, &_characterController, &_objectController);
 
     JSONThingy jt;
     jt.load("mirkwood", _objectController);
     jt.load("mirkwood", _roomController);
     jt.load("mirkwood", _resetController);
 
-    _resetController->reset();
+    _resetController.reset();
 
     this->registerCommands();
 }
