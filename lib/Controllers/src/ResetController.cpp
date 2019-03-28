@@ -68,8 +68,12 @@ void ResetController::reset() {
 						std::cout << "add object to object controller" << std::endl;
 						newNPC.addItemToInventory(newObject);
 						std::cout << "add item to inventory"<< std::endl;
-						newNPC.wear(newObject.getID());
-						std::cout << "wear item"<< std::endl;
+
+						if (newNPC.hasItem(newObject.getID())) {
+							newNPC.wear(newObject.getID());
+							std::cout << "wear item"<< std::endl;
+						}
+						
 					}
 					else if( reset->getAction() == "give" ) {
 						std::cout << "entered npc give" << std::endl;

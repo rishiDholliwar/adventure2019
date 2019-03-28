@@ -121,6 +121,7 @@ void Character::wear(ID objectId) {
 	std::cout << "wear entered" << std::endl;
 	std::cout << "unique id is " << objectId << std::endl;
     wearing.push_back(getItemFromInventory(objectId));
+    std::cout << "yo" << std::endl;
     dropItem(objectId);
     std::cout << "wear done" << std::endl;
 }
