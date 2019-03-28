@@ -1,6 +1,6 @@
 #include "CombatController.h"
 #include "Combat.h"
-//todo error, not finding specific game
+
 bool CombatController::isNewBattle(const Name &instigator, const Name &target) {
     return (!isBattleAssociation(instigator, target));
 }
@@ -40,7 +40,6 @@ std::string CombatController::sendRoundBattleRequest(const Character &fighter1, 
     return "error sending invite";
 }
 
-//todo fix or see if needed
 bool CombatController::battleReady(const Name &fighter1, const Name &fighter2) {
     if (isBattleAssociation(fighter1, fighter2)) {
         auto &battle = getBattle(fighter1, fighter2);
@@ -64,12 +63,9 @@ bool CombatController::checkDuplicateSendRequest(const Name &instigator, const N
     return false;
 }
 
-//todo error, not finding specific game
 bool CombatController::replyPendingRequest(const Name &instigator, const Name &target) {
     if (isBattleAssociation(instigator, target)) {
         auto &battle = getBattle(instigator, target);
-      //  auto owner = battle.getOwner();
-      //  auto nonOwner = battle.getNonOwner(instigator, target);
 
         if (battle.getInstigator().getName() != instigator) {
             return battle.nameIsPendingWithInstigator(instigator, target);
@@ -108,38 +104,6 @@ bool CombatController::isBattleState(const Name &fighter) {
     return false;
 }
 
-//
-////todo fix
-//bool CombatController::isTargetBattleState(const Name &target) {
-//    for (auto &battle: battleList) {
-//        if (!isBattleAssociation(instigator, target)) {
-//            if (battle.isCombatState()) {
-//                if (battle.getInstigator().getName() ==  instigator || battle.nameIsPendingWithInstigator(instigator,  target)) {
-//                    return true;
-//                }
-//            }
-//
-//        }
-//
-//    }
-//
-//    return false;
-//}
-
-//todo this should be done thru character class later when states are implemented
-//bool CombatController::isCorrectAttackTarget(const Name &instigator) {
-//    for (auto &battle: battleList) {
-//        if (battle.isCombatState()) {
-//            for (auto &fighter: battle.getFighters()) {
-//                if (fighter.getName() == instigator) {
-//                    return true;
-//                }
-//            }
-//        }
-//    }
-//    return false;
-//}
-
 //const std::string
 //CombatController::executeQuickBattle(Character &fighter1, Character &fighter2, const Input &input) {
 //    auto &battle = getBattle(fighter1.getName(), fighter2.getName());
@@ -172,30 +136,10 @@ void CombatController::setFighterReady(const Name &fighter) {
 }
 
 bool CombatController::isNextRoundReady(const Name &fighter) {
-//    for (auto &battle: battleList) {
-//        if(battle.isCombatState()){
-//            if (battle.getOwner() == instigator || battle.nameIsPendingWithOwner(battle.getOwner(), instigator)) {
-//                if(battle.isNextRoundReady()){
-//                    return true;
-//                }
-//            }
-//        }
-//    }
     auto &battle = getBattleInCombatState(fighter);
     return battle.isNextRoundReady();
 }
 
-//const std::string CombatController::executeBattleRound(std::vector<Character> &fighters) {
-//    auto &battle = getBattleInCombatState(fighters[0].getName());
-//    battle.updateFighters(fighters);
-//    return battle.runBattleRound();
-//}
-
-//std::vector<Name> CombatController::getOpponents(const Name &fighter) {
-//    auto &battle = getBattleInCombatState(fighter);
-//    return battle.getOpponents();
-//}
-//
 //bool CombatController::isGameOver(const Name &fighter1, const Name &fighter2) {
 //    if (isBattleAssociation(fighter1, fighter2)) {
 //        auto &battle = getBattle(fighter1, fighter2);
@@ -212,30 +156,17 @@ void CombatController::resetRoundReady(const Name &fighterName) {
     battle.resetRoundReady();
 }
 
-
-//std::vector<Character> CombatController::getFighters(Name &fighter1, Name &fighter2) {
-//    if (isBattleAssociation(fighter1, fighter2)) {
-//        auto &battle = getBattle(fighter1, fighter2);
-//        return battle.getFighters();
-//    }
-//}
-
-//todo change name to make sense with the other one
-//std::vector<Character> &CombatController::getFighters(Name &fighter) {
-//    auto &battle = getBattleInCombatState(fighter);
-//    return battle.getFighters();
-//}
-
 Character &CombatController::getFighter(Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
 
-    if(fighter == battle.getInstigatorName()){
+    if (fighter == battle.getInstigatorName()) {
         return battle.getInstigator();
     }
 
     return battle.getOpponent();
 
 }
+
 bool CombatController::isGameOver(const Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
 
@@ -247,44 +178,23 @@ bool CombatController::isGameOver(const Name &fighter) {
 
 }
 
-//todo rename to getOPoonent()
-const Name CombatController::getTargetName(const Name &fighter){
+const Name CombatController::getTargetName(const Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
-    if(battle.getInstigatorName() == fighter){
+    if (battle.getInstigatorName() == fighter) {
         return battle.getOpponentName();
     }
 
     return battle.getInstigatorName();
 }
 
-//void CombatController::deleteGame(const Name fighter) {
-//    auto &battle = getBattleInCombatState(fighter);
-//    auto &owner = battle.getOwner();
-//    auto &nonOwner = battle.getNonOwner();
-//    battleList.erase(std::remove_if(battleList.begin(), battleList.end(),
-//                                    [&owner, &nonOwner](Combat battle) {
-//
-//                                        if (battle.getOwner() == owner) {
-//                                            if (battle.nameIsPendingWithOwner(owner, nonOwner)) {
-//                                                return true;
-//                                            }
-//                                        }
-//                                    }),
-//
-//                     battleList.end());
-//}
-
 void CombatController::deleteGame(const Name fighter1, const Name fighter2) {
 
     battleList.erase(std::remove_if(battleList.begin(), battleList.end(),
                                     [&fighter1, &fighter2](Combat battle) {
 
-
-                                            if (battle.nameIsPendingWithInstigator(fighter2, fighter1)) {
-                                                return true;
-                                            }
-
-
+                                        if (battle.nameIsPendingWithInstigator(fighter2, fighter1)) {
+                                            return true;
+                                        }
 
                                     }),
 
@@ -359,7 +269,6 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
 
     return false;
 }
-
 
 std::string CombatController::sendQInvitationMsg(const Name &inviterName) {
     std::string output = "\n\t" + inviterName + " wants to quick attack you \n" +

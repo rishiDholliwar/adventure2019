@@ -71,9 +71,6 @@ bool Combat::battleReady() {
     if(getInstigatorName() == "" && getOpponentName() == ""){
         return false;
     }
-//    if (fighters.size() == MAX_NUM_PLAYERS) {
-//        return true;
-//    }
 
     return true;
 }

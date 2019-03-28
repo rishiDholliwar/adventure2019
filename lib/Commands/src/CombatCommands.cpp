@@ -200,6 +200,7 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
 
             if (combatController->isNextRoundReady(username)) {
                 std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
+
                 Character &fighter1 = combatController->getFighter(username);
                 Name fighterName1 = fighter1.getName();
                 characterController->setCharacterHP(fighterName1, fighter1.getCurrentHP());
@@ -252,7 +253,6 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
     if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
 
-
         //battle has already been accepted by both people
         if (combatController->isBattleStarted(username, targetName)) {
             std::string combatOutput = combatController->sendOwnerFightingMsg(targetName);
@@ -264,7 +264,6 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
             auto res = formulateResponse(userResponse, targetResponse);
             return std::make_pair(res, true);
         }
-
 
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
@@ -279,8 +278,6 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
             return std::make_pair(res, true);
         }
 
-
-
         //see if character is sending duplicate attack requests
         if (combatController->checkDuplicateSendRequest(username, targetName)) {
             Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
@@ -291,10 +288,9 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
         //see if character is replying to attack request
         if (combatController->replyPendingRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
-            //check if battle is ready, and if true start battle
-
 
             //todo now fighters must be in combat state
+            //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
                 Response userResponse = Response(
                         toMSG(targetName) + "battle started.\n Enter '/attack' to start next round ", username);

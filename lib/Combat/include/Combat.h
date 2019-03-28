@@ -42,7 +42,6 @@ private:
     struct Fighter fighterInstigator;
     struct Fighter fighterOpponent;
     int roundCounter = 0;
-    int currentNumPlayers;
 
 public:
 
