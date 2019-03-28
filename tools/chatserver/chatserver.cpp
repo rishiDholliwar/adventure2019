@@ -203,7 +203,7 @@ main(int argc, char *argv[]) {
         cout << "error, no such file\n";
     }
 
-    std::vector<Object> objects = JSONObjects::getObjects(fileName);
+    // std::vector<Object> objects = JSONObjects::getObjects(fileName);
 
     // for (auto &obj : objects) {
     //     std::cout << "ID: " << obj.getID() << std::endl;

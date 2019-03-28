@@ -104,22 +104,42 @@ void from_json(const json &j, Inventory &anInventory) {
 // Characters
 void to_json(json &j, const Character &aCharacter) {
 
-    j = json{
+    if ( !(aCharacter.isNPC()) ) {
+
+        j = json{
             { "name", aCharacter.getName() },
             { "roomID", aCharacter.getRoomID() },
             { "wearing", aCharacter.getWearing() },
             { "inventory", aCharacter.getInventory() },
-    };
+        };
+
+    }
 }
 
 void from_json(const json &j, Character &aCharacter) {
-    aCharacter = Character(
+    //NPC
+    if (!(j.at("shortdesc").get<std::string>().empty())) {
+        aCharacter = Character(
             j.at("name").get<std::string>(),
             j.at("roomID").get<ID>(),
             j.at("inventory").get<Inventory>(),
             j.at("wearing").get<std::vector<Object>>());
+    //NOT NPC
+    } else {
+        aCharacter = Character(
+            j.at("id").get<ID>(),
+            j.at("keywords").get<std::vector<std::string>>(),
+            j.at("shortdesc").get<std::string>(),
+            j.at("longdesc").get<std::vector<std::string>>(),
+            j.at("description").get<std::vector<std::string>>());
+        aCharacter.setNPC();
+    }
 
 }
+
+// void from_json(const json &j, CharacterController &npcs) {
+//     npcs = CharacterController( j.get<std::vector<Character>>());
+// }
 
 void JSONThingy::save(Character &aCharacter) {
     json j;

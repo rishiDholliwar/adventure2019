@@ -417,38 +417,147 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         return std::make_pair(res, false);
     }
 
-    if (!(characterController->doesCharacterExist(target))) {
+    std::vector<std::string> inputStrings = utility::popFront(target);
 
-        Response userResponse = Response("Target doesn't exist, sorry!", username);
+    if((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+        return this->interact();
+    }
 
+    std::vector<Name> v = characterController->getNPCKeys(target);
+
+    if (v.size() > 1) {
+        interactions = v;
+
+        std::stringstream ss;
+
+        ss << "There is more than 1 NPC named " << target << ". Which NPC would you like to swap with?\n";
+
+        int counter = 0;
+        for (auto &name : interactions) {
+            ss << "\t" << ++counter << ". " << name << "\n";
+        }
+
+        Response userResponse = Response(ss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
     }
 
     Name userKey = username;
-    Name targetKey = characterController->getCharName(username);
+    Name targetKey = target;
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
+    if (v.size() == 1) {
 
-        Response userResponse = Response("You are already under a swap spell!", userKey);
-        Response targetResponse = Response("You are already under a swap spell!", targetKey);
+        targetKey = v.at(TARGET_CHARACTER_NAME);
+
+        if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
+            Response userResponse = Response("You are already under a swap spell!", username);
+
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, true);
+        }
+
+        characterController->swapCharacter(username, targetKey);
+
+        Response userResponse = Response("Successfully swapped!", username);
+
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    
+    } else {
+    
+        if (!(characterController->doesCharacterExist(target))) {
+
+            Response userResponse = Response("Target doesn't exist, sorry!", username);
+
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, false);
+        }
+
+        targetKey = characterController->getCharName(username);
+
+        if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
+
+            Response userResponse = Response("You are already under a swap spell!", userKey);
+            Response targetResponse = Response("You are already under a swap spell!", targetKey);
+
+            auto res = formulateResponse(userResponse, targetResponse);
+            return std::make_pair(res, true);
+        }
+
+        characterController->swapCharacter(username, target);
+
+        Response userResponse = Response("Successfully swapped!", username);
+        Response targetResponse = Response("A swap spell was cast on you!", target);
 
         auto res = formulateResponse(userResponse, targetResponse);
         return std::make_pair(res, true);
     }
+   
+}
 
-    characterController->swapCharacter(username, target);
+std::pair<std::vector<Response>, bool> Swap::interact() {
+    Name userKey = username;
+
+    std::vector<std::string> v = utility::tokenizeString(target);
+
+    if ( v.size() != 2 ) {
+        std::cout << "Too many arguments..." << std::endl;
+        Response userResponse = Response("Please enter /swap interact {index number of the NPC you wish to swap with}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+    std::stringstream ss{v.at(INTERACT_CHOICE)};
+    int index = -1;
+    ss >> index;
+    index--;
+    if ( index >= interactions.size() || index < 0 ) {
+        Response userResponse = Response("Please enter /swap interact {index number of the NPC you wish to swap with}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+    Name targetKey = interactions.at(index);
+    interactTarget = targetKey;
+
+    if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
+        Response userResponse = Response("You are already under a swap spell!", username);
+
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    characterController->swapCharacter(username, targetKey);
 
     Response userResponse = Response("Successfully swapped!", username);
-    Response targetResponse = Response("A swap spell was cast on you!", target);
 
-    auto res = formulateResponse(userResponse, targetResponse);
+    auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
 }
 
 std::pair<std::vector<Response>, bool> Swap::callback() {
     Name userKey = username;
     Name targetKey = characterController->getCharName(username);
+
+    if (characterController->isCharacterNPC(username)) {
+        targetKey = interactTarget;
+
+        if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
+            characterController->swapCharacter(userKey, targetKey);
+
+            Response userResponse = Response("Successfully unswapped!", userKey);
+            auto res = formulateResponse(userResponse);
+
+            return std::make_pair(res, true);
+        }
+
+        Response userResponse = Response("You are not under a swap spell", userKey);
+
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
 
     if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
@@ -473,14 +582,26 @@ std::pair<std::vector<Response>, bool> Swap::callback() {
 
 std::unique_ptr<Command> Swap::clone(Name username, Input target, Connection connection = Connection{}) const {
     auto swap = std::make_unique<Swap>(this->characterController, username, target);
+    swap->setInteractions(this->interactions, this->interactTarget);
     return std::move(swap);
 }
 
 std::unique_ptr<Command> Swap::clone() const {
     auto swap = std::make_unique<Swap>(this->characterController, this->username, this->target);
+    swap->setInteractions(this->interactions, this->interactTarget);
     return std::move(swap);
 }
 
+void Swap::setInteractions(std::vector<std::string> i, Name interactT) {
+    interactions = i;
+    interactTarget = interactT;
+}
+
+std::string Swap::help() {
+    return "/swap [target username] - swap with the target character with this username";
+}
+
+//look
 std::pair<std::vector<Response>, bool> Look::execute() {
     std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
@@ -682,10 +803,6 @@ std::unique_ptr<Command> Examine::clone(Name username, Input target, Connection 
 
 std::string Examine::help() {
     return "/examine [target] - get detailed description of the target.";
-}
-
-std::string Swap::help() {
-    return "/swap [target username] - swap with the target character with this username";
 }
 
 std::pair<std::vector<Response>, bool> Help::execute() {

@@ -20,7 +20,7 @@ private:
 
 public:
     /* Constructor */
-    CharacterController();
+    CharacterController() = default;
 
     /*
      * Adds new users to the list of characters
@@ -33,6 +33,8 @@ public:
 
     void addCharacter(Character &aCharacter);
 
+    void addNPC(Character aNPC);
+
     /*
      * Remove user from the list of characters
      *
@@ -41,6 +43,10 @@ public:
      * Post-Condition: Returns true if removal is successful
     */
     void removeCharacter(Name &username);
+
+    ID getNPCID(Name &npcKey);
+
+    std::vector<Name> getNPCKeys(Name npcName);
 
     /*
      * Returns a character object of the specified username
@@ -56,6 +62,8 @@ public:
     // Character &getCharacterByCharName(Name &charName);
 
     Name getCharName(Name &username);
+
+    bool isCharacterNPC(Name &npcKey);
 
     /*
      * Checks to see if character exists in online users
