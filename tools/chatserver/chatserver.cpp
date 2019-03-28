@@ -40,7 +40,7 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::MOVE, Move(&_characterController,&_roomController).clone());
     _commandHandler.registerCommand(CommandType::INFO, Info(&_characterController).clone());
     _commandHandler.registerCommand(CommandType::WEAR, Wear(&_characterController).clone());
-    _commandHandler.registerCommand(CommandType::TAKEOFF, Takeoff(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::TAKEOFF, Takeoff(&_characterController, &_objectController).clone());
 }
 
 void

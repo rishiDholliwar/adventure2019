@@ -360,16 +360,17 @@ private:
 
     Name username;
     Input input;
+    ObjectController* objectController;
     std::vector<Object> interactions;
     void setInteractions(std::vector<Object> i);
 
 public:
     explicit
-    Takeoff(CharacterController* characterController, Name username = "", Input input = "", Connection connection = Connection{})
+    Takeoff(CharacterController* characterController, ObjectController* objectController, Name username = "", Input input = "", Connection connection = Connection{})
         : username(std::move(username)), input(std::move(input)) {
             this->characterController = characterController;
+            this->objectController = objectController;
            };
-
     ~Takeoff() = default;
     std::pair<std::vector<Response>, bool> execute() override;
     std::pair<std::vector<Response>, bool> interact();

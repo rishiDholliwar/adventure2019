@@ -109,16 +109,16 @@ void CharacterController::addItemToCharacterInventory(Name &username, Object ite
     getCharacter(username).addItemToInventory(item);
 }
 
-void CharacterController::addItemToCharacterInventory(Name &username, ID objectID) {
-    getCharacter(username).addItemToInventory(objectID);
-}
-
 void CharacterController::dropItemFromCharacterInventory(Name &username, ID objectID) {
     getCharacter(username).dropItem(objectID);
 }
 
 std::vector<Object> CharacterController::getItemsFromCharacterInventory(Name &username, Name itemName) {
     return getCharacter(username).getItemsFromInventory(itemName);
+}
+
+std::vector<Object> CharacterController::getItemsFromCharacterWearing(Name &username, Name itemName) {
+    return getCharacter(username).getItemsFromWearing(itemName);
 }
 
 Object CharacterController::getItemFromCharacterInventory(Name &username, Name itemName) {
@@ -152,10 +152,6 @@ ID CharacterController::getItemIDFromCharacterWearing(Name &username, Name itemN
 
 void CharacterController::characterRemoveItem(Name &username, Object item) {
     getCharacter(username).remove(item);
-}
-
-void CharacterController::characterRemoveItem(Name &username, ID objectID) {
-    getCharacter(username).remove(objectID);
 }
 
 std::string CharacterController::characterListInventory(Name &username) {

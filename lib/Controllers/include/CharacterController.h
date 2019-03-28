@@ -129,8 +129,6 @@ public:
     */
     void addItemToCharacterInventory(Name &username, Object item);
 
-    void addItemToCharacterInventory(Name &username, ID objectID);
-
     /*
      * deletes item from the character inventory
      *
@@ -141,6 +139,8 @@ public:
     void dropItemFromCharacterInventory(Name &username, ID objectID);
 
     std::vector<Object> getItemsFromCharacterInventory(Name &username, Name itemName);
+
+    std::vector<Object> getItemsFromCharacterWearing(Name &username, Name itemName);
 
     /*
      * obtain item from users inventory
@@ -186,8 +186,6 @@ public:
      * Post-Condition: Returns true if the item is unequipped
     */
     void characterRemoveItem(Name &username, Object item);
-
-    void characterRemoveItem(Name &username, ID objectID);
 
     ID getItemIDFromCharacterWearing(Name &username, Name itemName);
 

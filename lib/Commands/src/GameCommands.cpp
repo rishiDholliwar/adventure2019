@@ -859,11 +859,10 @@ std::pair<std::vector<Response>, bool> Wear::execute() {
         return std::make_pair(res, false);
     }
 
-    // Drop item from user inventory
-    ID objectID = characterController->getItemIDFromCharacterInventory(username, objectName);
-    characterController->dropItemFromCharacterInventory(username, objectID);
+    // Wear item (drops item from inventory)
+    characterController->characterWearItem(username, objectName);
 
-    if (characterController->characterHasItem(username, objectID)) {
+    if (characterController->characterHasItem(username, objectName) || !characterController->characterIsWearingItem(username, objectName)) {
         Response userResponse = Response("Wearing item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -896,12 +895,11 @@ std::pair<std::vector<Response>, bool> Wear::interact() {
         return std::make_pair(res, false);
     }
 
-    // Drop item from user inventory
+    // Wear item (drops item from inventory)
     Name objectName = interactions.at(index).getName();
-    ID objectID = interactions.at(index).getID();
-    characterController->dropItemFromCharacterInventory(username, objectID);
+    characterController->characterWearItem(username, objectName);
 
-    if (characterController->characterHasItem(username, objectID)) {
+    if (characterController->characterHasItem(username, objectName) || !characterController->characterIsWearingItem(username, objectName)) {
         Response userResponse = Response("Wearing item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -959,8 +957,8 @@ std::pair<std::vector<Response>, bool> Takeoff::execute() {
         return std::make_pair(res, false);
     }
 
-    // Check for multiple objects of the same name
-    std::vector<Object> objectsOfName = characterController->getItemsFromCharacterInventory(username, objectName);
+    // Check for character wearing multiple objects of the same name
+    std::vector<Object> objectsOfName = characterController->getItemsFromCharacterWearing(username, objectName);
 
     if (objectsOfName.size() > MULTIPLE_ITEMS) {
 
@@ -980,12 +978,11 @@ std::pair<std::vector<Response>, bool> Takeoff::execute() {
         return std::make_pair(res, false);
     }
 
-    // Drop item from user inventory
+    // Drop item from user wear (adds item to inventory)
     ID objectID = characterController->getItemIDFromCharacterWearing(username, objectName);
-    characterController->addItemToCharacterInventory(username, objectID);
-    characterController->characterRemoveItem(username, objectID);
+    characterController->characterRemoveItem(username, objectController->getObject(objectID));
 
-    if (characterController->characterIsWearingItem(username, objectID)) {
+    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectName)) {
         Response userResponse = Response("Taking off item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -1022,11 +1019,10 @@ std::pair<std::vector<Response>, bool> Takeoff::interact() {
     ID objectID = interactions.at(index).getID();
     Name objectName = interactions.at(index).getName();
 
-    // Drop item from user inventory
-    characterController->addItemToCharacterInventory(username, objectID);
-    characterController->characterRemoveItem(username, objectID);
+    // Drop item from user wear (adds item to inventory)
+    characterController->characterRemoveItem(username, objectController->getObject(objectID));
 
-    if (characterController->characterIsWearingItem(username, objectID)) {
+    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectName)) {
         Response userResponse = Response("Taking off item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -1040,14 +1036,14 @@ std::pair<std::vector<Response>, bool> Takeoff::interact() {
 
 std::unique_ptr<Command> Takeoff::clone() const {
 
-    auto takeoff = std::make_unique<Takeoff>(characterController, this->username, this->input);
+    auto takeoff = std::make_unique<Takeoff>(this->characterController, this->objectController, this->username, this->input);
     takeoff->setInteractions(interactions);
     return std::move(takeoff);
 }
 
 std::unique_ptr<Command> Takeoff::clone(Name username, Input input, Connection connection) const {
 
-    auto takeoff = std::make_unique<Takeoff>(characterController, username, input);
+    auto takeoff = std::make_unique<Takeoff>(this->characterController, this->objectController, username, input);
     takeoff->setInteractions(interactions);
     return std::move(takeoff);
 }

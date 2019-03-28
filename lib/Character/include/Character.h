@@ -62,6 +62,8 @@ public:
 
     std::vector<Object> getItemsFromInventory(Name objectName);
 
+    std::vector<Object> getItemsFromWearing(Name objectName);
+
     Object getItemFromInventory(Name objectName);
 
     Object getItemFromInventory(ID objectId);
@@ -116,8 +118,6 @@ public:
     */
     void remove(Object obj);
 
-    void remove(ID objectID);
-
     ID getWearingID(Name objectName);
 
     /*
@@ -128,8 +128,6 @@ public:
      * Post-Condition: Returns true if addition was successful
     */
     void addItemToInventory(Object obj);
-
-    void addItemToInventory(ID objectID);
 
     /*
      * Removes specified object from inventory

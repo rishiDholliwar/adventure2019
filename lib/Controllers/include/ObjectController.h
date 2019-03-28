@@ -33,6 +33,8 @@ public:
 
     bool doesObjectOfThisNameExist(const Name objectName);
 
+    const Object &getObject(const ID objectID) const;
+
     /* Get Object By Name:
      *
      * Function: Retrieve the object from the object list

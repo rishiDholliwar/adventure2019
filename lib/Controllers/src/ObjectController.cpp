@@ -22,6 +22,10 @@ bool ObjectController::doesObjectOfThisNameExist(const Name objectName) {
 	return itr != objects.end();
 }
 
+const Object &ObjectController::getObject(const ID objectID) const {
+		return objects.find(objectID)->second;
+}
+
 const Object &ObjectController::getObjectFromList(const ID objectID) const {
     return objects.find(objectID)->second;
 }
