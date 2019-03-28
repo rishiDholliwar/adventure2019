@@ -54,6 +54,7 @@ public:
     bool removeObject(ID objectId);
     bool removeCharacter(const Name &userName);
     bool removeDoor(ID doorId);
+    void removeDoorByDirection(const std::string& direction);
 
 
     /*
