@@ -29,20 +29,6 @@ const Name Combat::getOpponentName() {
     return fighterOpponent.fighter.getName();
 }
 
-//std::string Combat::getPendingNames() {
-//    std::stringstream output;
-//
-//    output << fighterOpponent.fighter.getName();
-//
-//
-////    for (auto &fighter : fighters) {
-////        if (fighter.character.getName() != owner) {
-////            output << fighter.character.getName();
-////        }
-////    }
-//
-//    return output.str();
-//}
 //todo refactor
 bool Combat::nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2) {
 
@@ -82,6 +68,9 @@ void Combat::setCombatState() {
 
 //todo fix
 bool Combat::battleReady() {
+    if(getInstigatorName() == "" && getOpponentName() == ""){
+        return false;
+    }
 //    if (fighters.size() == MAX_NUM_PLAYERS) {
 //        return true;
 //    }

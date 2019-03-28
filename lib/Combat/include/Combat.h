@@ -41,19 +41,12 @@ private:
 
     struct Fighter fighterInstigator;
     struct Fighter fighterOpponent;
-    // Name owner;
     int roundCounter = 0;
-    //  int numPlayersReadyCounter = 0; //used to start the next round when all players are ready for the next round
+    int currentNumPlayers;
 
 public:
 
     Combat() = default;
-
-    Combat(Character &owner) {
-        srand(static_cast<unsigned int>(time(0)));
-        setState(STATE::PENDING);
-        addInstigator(owner); //todo remove this if not needed
-    };
 
     void addInstigator(Character &instigator);
 
@@ -67,19 +60,7 @@ public:
 
     const Name getOpponentName();
 
-    //  std::vector<Character> &getFighters();
-
-    Character &getFighter(const Name &fighterName);
-
-    //  const Name &getOwner();
-
-    //  const Name &getNonOwner(const Name &fighter1, const Name &fighter2);
-
-    //   const  Name getNonOwner();
-
     bool nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2);
-
-    std::string getPendingNames();
 
     //TODO will be used when player can enter options for each round
     std::string processInput(const Input &input);
@@ -121,8 +102,6 @@ public:
 
 private :
 
-    Character &getFighter(int i);
-
     void setState(STATE state);
 
     double attackMultiplier();
@@ -134,7 +113,6 @@ private :
     Character &getAttacker(int i);
 
     Character &getDefender(int i);
-
 
     std::string printAttackInfo(Character &attacker, Character &defender);
 
