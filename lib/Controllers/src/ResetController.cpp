@@ -26,7 +26,7 @@ void ResetController::reset() {
 	for ( auto reset = resets.begin(); reset != resets.end(); reset++ ) {
 
 		std::cout << "entered reset for loop" << std::endl;
-	
+
 		if (reset->getAction() == "npc") {
 
 			std::cout << "entered npc" << std::endl;
@@ -42,7 +42,7 @@ void ResetController::reset() {
 			//check how many of this npc is in the room (from room controller)
 			std::vector<Name> charactersInRoom = roomController->getCharacterList(reset->getRoomID());
 			int count = std::count_if(charactersInRoom.begin(), charactersInRoom.end(), [ &npcName ]( const Name& npc ){ return (npcName == npc ); });
-
+			std::cout << "COUNT: " << count << " - " << npcName << std::endl;
 			//if number of that npc is less than reset limit, create one npcs with the same info as the npc in npcs, equip and give whatever items that follow
 			if (count < reset->getLimit()) {
 				Character newNPC = npcs[npcid];
@@ -73,7 +73,7 @@ void ResetController::reset() {
 							newNPC.wear(newObject.getID());
 							std::cout << "wear item"<< std::endl;
 						}
-						
+
 					}
 					else if( reset->getAction() == "give" ) {
 						std::cout << "entered npc give" << std::endl;
@@ -123,7 +123,7 @@ void ResetController::reset() {
 				roomController->lockDoor(roomid, directionString);
 			}
 		}
-	} 
+	}
 
 	std::cout << "reset done" << std::endl;
 

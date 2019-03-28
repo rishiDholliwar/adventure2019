@@ -59,12 +59,18 @@ bool RoomController::generateRoom(ID roomId, const Name& roomName) {
 
 bool RoomController::addObjectToRoom(ID objectId, ID roomId) {
     auto tempRoom = this->searchRoom(roomId);
-    return (tempRoom != nullptr) && (tempRoom->addObject(objectId));
+    if(tempRoom != nullptr) {
+        tempRoom->addObject(objectId);
+    }
+    return (tempRoom != nullptr);
 }
 
 bool RoomController::addCharacterToRoom(const Name &userName, ID roomId) {
     auto tempRoom = this->searchRoom(roomId);
-    return (tempRoom != nullptr) && (tempRoom->addCharacter(userName));
+    if(tempRoom != nullptr) {
+        tempRoom->addCharacter(userName);
+    }
+    return (tempRoom != nullptr);
 }
 
 /*

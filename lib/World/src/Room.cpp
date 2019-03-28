@@ -10,12 +10,12 @@ void Room::addDescription(const std::string& description) {
     this->descriptions.push_back(description);
 }
 
-bool Room::addCharacter(const Name &userName){
-    return addUniqueItemToList(userName, this->characterList);
+void Room::addCharacter(const Name &userName){
+    this->characterList.push_back(userName);
 }
 
-bool Room::addObject(ID objectId) {
-    return addUniqueItemToList(objectId, this->objectList);
+void Room::addObject(ID objectId) {
+    this->objectList.push_back(objectId);
 }
 
 bool Room::addUserName(const Name &userName) {

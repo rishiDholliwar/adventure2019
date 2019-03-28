@@ -22,6 +22,7 @@
 
 #include <GameCommands.h>
 #include <UserCommands.h>
+#include <ResetCommand.h>
 #include <JSONThingy.h>
 
 void Game::registerCommands() {
@@ -171,11 +172,8 @@ Game::Game(Config config)
     jt.load("mirkwood", _roomController);
     jt.load("mirkwood", _resetController);
 
-    _resetController.reset();
-
-    std::cout << "after reset" << std::endl;
-
     this->registerCommands();
+    _scheduler->schedule(std::make_shared<ResetCommand>(&_resetController, 300), 0);
 }
 
 std::string
