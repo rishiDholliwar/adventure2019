@@ -447,7 +447,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
 
     if (v.size() == 1) {
 
-        targetKey = v.at(0);
+        targetKey = v.at(TARGET_CHARACTER_NAME);
 
         if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
             Response userResponse = Response("You are already under a swap spell!", username);

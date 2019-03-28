@@ -177,6 +177,8 @@ private:
     const unsigned int CHECK_INTERACT = 0;
     const unsigned int INTERACT_CHOICE = 1;
 
+    const unsigned int TARGET_CHARACTER_NAME = 0;
+
     Name username;
     Input target;
     void setInteractions(std::vector<std::string> i, Name interactT);

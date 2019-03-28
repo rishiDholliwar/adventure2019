@@ -103,17 +103,8 @@ void from_json(const json &j, Inventory &anInventory) {
 
 // Characters
 void to_json(json &j, const Character &aCharacter) {
-    //NPC
-    if (aCharacter.isNPC()) {
-        j = json{
-            { "id", aCharacter.getCharacterID() },
-            { "keywords", aCharacter.getKeywords() },
-            { "shortdesc", aCharacter.getShortDesc() },
-            { "longdesc", aCharacter.getLongDesc() },
-            { "description", aCharacter.getDescription() }
-        };
-    //NOT NPC
-    } else {
+
+    if ( !(aCharacter.isNPC()) ) {
 
         j = json{
             { "name", aCharacter.getName() },
@@ -121,6 +112,7 @@ void to_json(json &j, const Character &aCharacter) {
             { "wearing", aCharacter.getWearing() },
             { "inventory", aCharacter.getInventory() },
         };
+
     }
 }
 
@@ -140,6 +132,7 @@ void from_json(const json &j, Character &aCharacter) {
             j.at("shortdesc").get<std::string>(),
             j.at("longdesc").get<std::vector<std::string>>(),
             j.at("description").get<std::vector<std::string>>());
+        aCharacter.setNPC();
     }
 
 }
