@@ -712,6 +712,13 @@ std::pair<std::vector<Response>, bool> Look::interact() {
     tmpSs >> index;
     index--;
 
+    if ( index >= interactions.size() || index < 0 ) {
+        Response userResponse = Response("Please enter /look interact {index number of character or object}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
     std::string interactTarget = interactions.at(index);
     ID roomId = characterController->getCharacterRoomID(username);
 
@@ -735,7 +742,7 @@ std::pair<std::vector<Response>, bool> Look::interact() {
 }
 
 void Look::setInteractions(std::vector<std::string> interaction) {
-    this->interactions = interaction;
+    this->interactions = std::move(interaction);
 }
 
 std::unique_ptr<Command> Look::clone() const {
