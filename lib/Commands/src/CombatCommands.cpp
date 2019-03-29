@@ -74,102 +74,6 @@ std::string CombatExamine::help() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-std::pair<std::vector<Response>, bool> CombatQAttack::execute() {
-//    Character character = characterController->getCharacter(username);
-    std::vector<Response> res;
-//
-//    removeExtraWhiteSpaces(input);
-//    Name targetName = input;
-//
-//    std::string commandName = "quick attack: \n";
-//
-//    //character is attacking himself
-//    if (character.getName() == targetName) {
-//        std::string userOutput = combatController->selfAttackMsg();
-//        Response userResponse = Response(commandName + userOutput, username);
-//        auto res = formulateResponse(userResponse);
-//        return std::make_pair(res, true);
-//    }
-//
-//    if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
-//        Character targetCharacter = characterController->getCharacter(targetName);
-//        //this is a new request
-//        if (combatController->isNewBattle(username, targetName)) {
-//            combatController->createNewBattle(character, targetCharacter);
-//
-//            Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
-//
-//            std::string targetOutput = combatController->sendQuickBattleRequest(character, targetCharacter);
-//            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
-//
-//            auto res = formulateResponse(userResponse, targetResponse);
-//            return std::make_pair(res, true);
-//        }
-//
-//        //see if character is sending duplicate attack requests
-//        if (combatController->checkDuplicateSendRequest(username, targetName)) {
-//            Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
-//            auto res = formulateResponse(userResponse);
-//            return std::make_pair(res, true);
-//        }
-//
-//        //see if character is replying to attack request
-//        if (combatController->replyPendingRequest(username, targetName)) {
-//
-//            combatController->setCombatState(targetName,username);
-//            //check if battle is ready, and if true start battle
-//            if (combatController->battleReady(username, targetName)) {
-//                std::string combatResults = combatController->executeQuickBattle(character, targetCharacter, input);
-//
-//                for (auto &fighter: combatController->getFighters(username, targetName)) {
-//                    Name name = fighter.getName();
-//                    characterController->setCharacterHP(name, fighter.getCurrentHP());
-//                }
-//
-//                if (combatController->isGameOver(username, targetName)) {
-//                    combatController->deleteGame(username, targetName);
-//                }
-//
-//                std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
-//                Response userResponse = Response(toMSG(targetName) + combatOutput, username);
-//
-//                std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
-//                Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
-//
-//                auto res = formulateResponse(userResponse, targetResponse);
-//                return std::make_pair(res, true);
-//            }
-//        }
-//    } else {
-//        //character is not in the room
-//        std::string error = "\tCharacter " + targetName + " not found\n";
-//        commandName += error;
-//        res.emplace_back(commandName, username);
-//        return std::make_pair(res, true);
-//    }
-
-    res.emplace_back("quick attack error\n", username);
-    return std::make_pair(res, true);
-
-}
-
-std::unique_ptr<Command> CombatQAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
-    return std::make_unique<CombatQAttack>(this->characterController, this->roomController,
-                                           this->combatController, username, input, connection);
-}
-
-std::unique_ptr<Command> CombatQAttack::clone() const {
-    return std::make_unique<CombatQAttack>(this->characterController, this->roomController,
-                                           this->combatController, this->username, this->input,
-                                           this->connection);
-}
-
-std::string CombatQAttack::help() {
-    return "/qAttack [name] - Send battle request without rounds to [name] or accept if sent a request.";
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
@@ -228,7 +132,7 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
                 std::string userOutput = " waiting for other player";
                 Response userResponse = Response(toMSG(targetName) + userOutput, username);
 
-                std::string targetOutput = targetName + " is ready for next round";
+                std::string targetOutput = username + " is ready for next round";
                 Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
 
                 auto res = formulateResponse(userResponse, targetResponse);

@@ -68,7 +68,7 @@ void Combat::setCombatState() {
 
 //todo fix
 bool Combat::battleReady() {
-    if(getInstigatorName() == "" && getOpponentName() == ""){
+    if(getInstigatorName().empty() && getOpponentName().empty()){
         return false;
     }
 
@@ -105,52 +105,6 @@ void Combat::updateFighters(Character &fighter1, Character &fighter2) {
     }
 }
 
-//todo remove this function and put the loop somewhere else?
-std::string Combat::runQuickBattle() {
-    int roundCounter = 0;
-    bool isWinner = false;
-    std::stringstream output;
-
-//    while (!isWinner) {
-//        roundCounter++;
-//        output << printRoundNumber(roundCounter);
-//
-//        for (unsigned int i = 0; i < fighters.size(); i++) {
-//            Character &attacker = getFighter(i);
-//            Character &defender = getFighter(getDefender(i));
-//
-//            output << attack(attacker, defender);
-//            output << "\n";
-//
-//            if (defender.getCurrentHP() == 0) {
-//                output << printWinner(attacker);
-//                output << "\n";
-//                isWinner = true;
-//                setState(STATE::END);
-//                break;
-//            }
-//        } //end for
-//    }// end while
-
-    return output.str();
-}
-
-Character &Combat::getAttacker(int i) {
-    if (i % 2) {
-        return fighterInstigator.fighter;
-    }
-    return fighterOpponent.fighter;
-}
-
-Character &Combat::getDefender(int i) {
-    if (i % 2) {
-        return fighterOpponent.fighter;
-    }
-    return fighterInstigator.fighter;
-}
-
-
-//todo refactor
 std::string Combat::runBattleRound() {
     std::stringstream output;
 
@@ -177,6 +131,19 @@ std::string Combat::runBattleRound() {
     return output.str();
 }
 
+Character &Combat::getAttacker(int i) {
+    if (i % 2) {
+        return fighterInstigator.fighter;
+    }
+    return fighterOpponent.fighter;
+}
+
+Character &Combat::getDefender(int i) {
+    if (i % 2) {
+        return fighterOpponent.fighter;
+    }
+    return fighterInstigator.fighter;
+}
 
 double Combat::attackMultiplier() {
     return rand() / (RAND_MAX + 1.);

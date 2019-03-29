@@ -28,8 +28,6 @@ public:
 
     void createNewBattle(Character &instigator, Character &target);
 
-    std::string sendQuickBattleRequest(const Character &fighter1, const Character &fighter2);
-
     std::string sendRoundBattleRequest(const Character &fighter1, const Character &fighter2);
 
     bool battleReady(const Name &fighter1, const Name &fighter2);
@@ -53,8 +51,6 @@ public:
     const Name getTargetName(const Name &instigator);
 
     Character &getFighter(Name &fighterName);
-
- //   const std::string executeQuickBattle(Character &fighter1, Character &fighter2, const Input &input);
 
     const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
 

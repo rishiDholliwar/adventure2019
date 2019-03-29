@@ -37,8 +37,6 @@ private:
 
     static const int MAX_NUM_PLAYERS = 2; //TODO try to make work for greater than 2 players
 
-    int MAX_NUM_ROUNDS = 50; //used for quick attack todo change later
-
     struct Fighter fighterInstigator;
     struct Fighter fighterOpponent;
     int roundCounter = 0;
@@ -66,9 +64,6 @@ public:
 
     bool battleReady();
 
-    //todo modify names
-    std::vector<Name> getOpponents();
-
     bool isInBattle(const Name &fighter);
 
     bool isNextRoundReady();
@@ -78,8 +73,6 @@ public:
     void resetRoundReady();
 
     void updateFighters(Character &fighter1, Character &fighter2);
-
-    std::string runQuickBattle();
 
     std::string runBattleRound();
 
@@ -97,6 +90,7 @@ public:
 
     bool isGameOverState();
 
+    //todo change to flee
     bool surrenderFighter(const Name &surrenderer);
 
 private :
