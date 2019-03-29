@@ -2,9 +2,17 @@
 #include <algorithm>
 #include <Utility.h>
 
-ObjectController::ObjectController(){
-	//
-};
+ObjectController::ObjectController(std::vector<Object> objVect) {
+	for (auto &obj : objVect) {
+		addObjectToList(obj);
+	}
+}
+
+void ObjectController::addObjectsToList(const std::vector<Object> objs) {
+	for (auto &obj : objs) {
+		addObjectToList(obj);
+	}
+}
 
 bool ObjectController::addObjectToList(const Object &object) {
 	objects.insert( { object.getID(), object } );

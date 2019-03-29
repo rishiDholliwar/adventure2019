@@ -7,6 +7,9 @@
 
 #include <Character.h>
 #include <Object.h>
+#include <ObjectController.h>
+#include <Extra.h>
+#include <CharacterController.h>
 #include <json.hpp>
 #include <boost/filesystem.hpp>
 #include <iomanip>
@@ -27,10 +30,11 @@ public:
 
     void load(Name characterToLoad, Character &aCharacter);
 
+    void load(std::string areaToLoad, ObjectController &objects);
+
     void load(std::string areaToLoad, RoomController &roomController);
 
     void load(std::string language, CommandTranslator &aTranslator);
-
 };
 
 

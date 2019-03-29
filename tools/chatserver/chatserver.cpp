@@ -8,7 +8,7 @@
 
 #include "json.hpp"
 #include "chatserver.h"
-#include <JSONObjects.h>
+// #include <JSONObjects.h>
 
 #include <experimental/filesystem>
 #include <fstream>
@@ -22,6 +22,7 @@
 
 #include <GameCommands.h>
 #include <UserCommands.h>
+#include <JSONThingy.h>
 
 void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::SAY, Say(&_characterController, &_roomController).clone());
@@ -84,11 +85,13 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         std::string invocationWord = input.at(0);
         std::string text = input.at(1);
 
+        auto invocation = _commandTranslator.translateMe(invocationWord);
+
         // TODO: Add a command parser around here in the future
         // Should return an enum on the type of the command
         // CommandHandler should map enums to Commands
         // This "/login" will be changed to the login enum
-        if ( (! _userController.isConnectionLoggedIn(message.connection)) && ((invocationWord != "/login") && (invocationWord != "/signup")) )
+        if ( (! _userController.isConnectionLoggedIn(message.connection)) && ((invocation != CommandType::LOGIN) && (invocation != CommandType::SIGNUP)) )
         {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
@@ -109,8 +112,6 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             username = tempInputParser.at(0);
             text = tempInputParser.at(1);
         }
-
-        auto invocation = _commandTranslator.translateMe(invocationWord);
 
         auto command = _commandHandler.getCommand(username, invocation, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
@@ -168,6 +169,7 @@ Game::Game(Config config)
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
 
     JSONThingy jt;
+    jt.load("mirkwood", _objectController);
     jt.load("mirkwood", _roomController);
 
     this->registerCommands();
@@ -200,13 +202,13 @@ main(int argc, char *argv[]) {
 
     std::string fileName = "mirkwood";
 
-    if (JSONObjects::fileExists(fileName)) {
-        cout << "file exists\n";
-    } else {
-        cout << "error, no such file\n";
-    }
+    // if (JSONObjects::fileExists(fileName)) {
+    //     cout << "file exists\n";
+    // } else {
+    //     cout << "error, no such file\n";
+    // }
 
-    std::vector<Object> objects = JSONObjects::getObjects(fileName);
+    // std::vector<Object> objects = JSONObjects::getObjects(fileName);
 
     // for (auto &obj : objects) {
     //     std::cout << "ID: " << obj.getID() << std::endl;

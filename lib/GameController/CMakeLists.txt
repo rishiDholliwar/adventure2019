@@ -19,7 +19,6 @@ target_link_libraries(gameController
     world
     Character
     controllers
-    NPC
   PRIVATE
     utility
     uniqueID

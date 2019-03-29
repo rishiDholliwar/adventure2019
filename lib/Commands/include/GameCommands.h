@@ -174,10 +174,17 @@ public:
 class Swap : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
+    const unsigned int TARGET_CHARACTER_NAME = 0;
+
     Name username;
     Input target;
-    std::vector<std::string> interactions;
-    void setInteractions(std::vector<std::string> i);
+    void setInteractions(std::vector<std::string> i, Name interactT);
+
+    std::vector<Name> interactions;
+    Name interactTarget;
 public:
     explicit
     Swap(CharacterController* characterController, Name username = "", Input target = "", Connection connection = Connection{})
@@ -191,7 +198,7 @@ public:
     ~Swap() = default;
     std::pair<std::vector<Response>, bool> execute() override;
     std::pair<std::vector<Response>, bool> callback() override;
-    // std::pair<std::vector<Response>, bool> interact();
+    std::pair<std::vector<Response>, bool> interact();
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
     std::string help() override;

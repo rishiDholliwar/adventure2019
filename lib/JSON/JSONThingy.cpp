@@ -73,6 +73,13 @@ void from_json(const json &j, Room &aRoom) {
                  j.at("extended_descriptions").get<std::vector<ExtendedDescription>>());
 }
 
+void to_json(json &j, const Extra &anExtra) {
+    j = json{
+            {"keywords", anExtra.getKeywords() },
+            {"desc", anExtra.getDesc() }
+    };
+}
+
 // RoomController
 void from_json(const json &j, RoomController &roomController) {
     roomController = RoomController(j.at("ROOMS").get<std::vector<Room>>());
@@ -81,13 +88,27 @@ void from_json(const json &j, RoomController &roomController) {
 // Objects
 void to_json(json &j, const Object &anObject) {
     j = json{
-            {"objectID", anObject.getID() },
-            {"objectName", anObject.getName() }
+            {"id", anObject.getObjectID() },
+            {"keywords", anObject.getKeywords() },
+            {"shortdesc", anObject.getShortDesc() },
+            {"longdesc", anObject.getLongDesc() },
+            {"extra", anObject.getExtra() }
     };
 }
 
+void from_json(const json &j, Extra &extraDesc) {
+    extraDesc = Extra(        
+        j.at("keywords").get<std::vector<std::string>>(),
+        j.at("desc").get<std::vector<std::string>>());
+}
+
 void from_json(const json &j, Object &anObject) {
-    anObject = Object( j.at("objectID").get<ID>(), j.at("objectName").get<Name>());
+    anObject = Object( 
+        j.at("id").get<ID>(), 
+        j.at("keywords").get<std::vector<std::string>>(), 
+        j.at("shortdesc").get<std::string>(), 
+        j.at("longdesc").get<std::vector<std::string>>(), 
+        j.at("extra").get<std::vector<Extra>>());
 }
 
 // Inventory
@@ -104,21 +125,42 @@ void from_json(const json &j, Inventory &anInventory) {
 // Characters
 void to_json(json &j, const Character &aCharacter) {
 
-    j = json{
+    if ( !(aCharacter.isNPC()) ) {
+
+        j = json{
             { "name", aCharacter.getName() },
             { "roomID", aCharacter.getRoomID() },
             { "wearing", aCharacter.getWearing() },
             { "inventory", aCharacter.getInventory() },
-    };
+        };
+
+    }
 }
 
 void from_json(const json &j, Character &aCharacter) {
-    aCharacter = Character(
+
+    auto isNPC = j.find("shortdesc");
+
+    if (isNPC == j.end()) {
+        aCharacter = Character(
             j.at("name").get<std::string>(),
             j.at("roomID").get<ID>(),
             j.at("inventory").get<Inventory>(),
             j.at("wearing").get<std::vector<Object>>());
+    } else {
+        aCharacter = Character(
+            j.at("id").get<ID>(),
+            j.at("keywords").get<std::vector<std::string>>(),
+            j.at("shortdesc").get<std::string>(),
+            j.at("longdesc").get<std::vector<std::string>>(),
+            j.at("description").get<std::vector<std::string>>());
+        aCharacter.setNPC();
+    }
 
+}
+
+void from_json(const json &j, ObjectController &objects) {
+    objects = ObjectController( j.at("OBJECTS").get<std::vector<Object>>());
 }
 
 void JSONThingy::save(Character &aCharacter) {
@@ -153,6 +195,23 @@ void JSONThingy::load(Name characterToLoad, Character &aCharacter) {
 
 }
 
+void JSONThingy::load(std::string areaToLoad, ObjectController &objects) {
+    if(!boost::filesystem::exists("./DataFiles/" + areaToLoad + ".json")) {
+        return;
+    }
+
+    std::fstream fs;
+    fs.open("./DataFiles/" + areaToLoad + ".json", std::fstream::in);
+    if(!fs.fail()) {
+        json j;
+        fs >> j;
+        fs.close();
+
+        objects = j.get<ObjectController>();
+    }
+
+}
+
 void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
 
     if(!boost::filesystem::exists("./DataFiles/" + areaToLoad + ".json")) {
@@ -167,18 +226,19 @@ void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
         json j;
         fs >> j;
         fs.close();
+        
         roomController = j.get<RoomController>();
     }
 }
 
 void JSONThingy::load(std::string language, CommandTranslator &aTranslator) {
 
-    if(!boost::filesystem::exists("./DataFiles/internalization.json")) {
+    if(!boost::filesystem::exists("./DataFiles/internationalization.json")) {
         return;
     }
 
     std::fstream fs;
-    fs.open("./DataFiles/internalization.json", std::fstream::in);
+    fs.open("./DataFiles/internationalization.json", std::fstream::in);
     if(!fs.fail()) {
         json j;
         fs >> j;
