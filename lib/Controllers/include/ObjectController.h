@@ -2,6 +2,7 @@
 #define ALTERSPACE_OBJECTCONTROLLER_H
 
 #include <string>
+#include <iostream>
 #include <unordered_map>
 
 #include <AlterSpace.h>
@@ -17,7 +18,11 @@ private:
     std::unordered_map<ID, Object> objects;
 
 public:
-    ObjectController();
+    ObjectController() = default;
+
+    explicit ObjectController(std::vector<Object> objVect); 
+
+    void addObjectsToList(const std::vector<Object> objs);
 
     bool addObjectToList(const Object &object);
 
@@ -41,11 +46,17 @@ public:
      * Post: returns the object
      *
      * */
+    const Object &getObjectFromList(const Name objectName) const;
+
     const Object &getObjectFromList(const ID objectID) const;
 
+    Name getObjectName(const ID objectID){ return getObjectFromList(objectID).getName();};
+
     // look and examine
-    std::string lookItem(ID roomId, ID objectID);
-    std::string examineItem(ID roomId, ID objectID);
+    std::string lookItem(Name objectName);
+    std::string examineItem(Name objectName);
+    std::string lookItem(ID objec);
+    std::string examineItem(ID objectID);
 };
 
 #endif //ALTERSPACE_OBJECTCONTROLLER_H

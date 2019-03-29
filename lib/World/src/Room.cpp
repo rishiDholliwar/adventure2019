@@ -1,10 +1,6 @@
 #include <algorithm>
 #include <Room.h>
 
-Room::Room(ID id, const Name& name){
-    this->id = id;
-    this->name = name;
-}
 
 /*
  *  Adders
@@ -14,12 +10,8 @@ void Room::addDescription(const std::string& description) {
     this->descriptions.push_back(description);
 }
 
-void Room::addExtendedDescription(const std::string& extDescription) {
-    this->extendedDescriptions.push_back(extDescription);
-}
-
-bool Room::addCharacter(ID characterId) {
-    return addUniqueItemToList(characterId, this->characterList);
+bool Room::addCharacter(const Name &userName){
+    return addUniqueItemToList(userName, this->characterList);
 }
 
 bool Room::addObject(ID objectId) {
@@ -27,23 +19,22 @@ bool Room::addObject(ID objectId) {
 }
 
 bool Room::addUserName(const Name &userName) {
-    return addUniqueItemToList(userName, this->usernameList);
+    return addUniqueItemToList(userName, this->characterList);
 }
 /*
  *  Removers
  */
 
-bool Room::removeCharacter(ID characterId) {
-    return removeUniqueItemFromList(characterId, this->characterList);
-}
+
 
 bool Room::removeObject(ID objectId) {
     return removeUniqueItemFromList(objectId, this->objectList);
 }
 
-bool Room::removeUserName(const Name &userName) {
-    return removeUniqueItemFromList(userName, this->usernameList);
+bool Room::removeCharacter(const Name &userName) {
+    return removeUniqueItemFromList(userName, this->characterList);
 }
+
 /*
  *  Link Rooms
  */
@@ -87,7 +78,7 @@ std::string Room::getTextOfRoomDetails() {
     }
 
     for (auto &description : this->extendedDescriptions){
-        outputString << description << "\n";
+        //outputString << description << "\n";
     }
 
     outputString << getTextOfDoorDetails();
@@ -164,4 +155,8 @@ bool Room::removeUniqueItemFromList(T id, std::vector<T> &list) {
     return size != list.size();
 }
 
-
+Room::Room(ID id, const Name &name, const std::vector<std::string> &descriptions, const std::vector<Door> &doorList,
+           const std::vector<ExtendedDescription> &extendedDescriptions) : id(id), name(name),
+                                                                           descriptions(descriptions),
+                                                                           doorList(doorList),
+                                                                           extendedDescriptions(extendedDescriptions) {}

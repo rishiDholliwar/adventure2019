@@ -9,6 +9,8 @@
 #include <CombatController.h>
 #include <CommandHandler.h>
 #include <Scheduler.h>
+#include <CommandTranslator.h>
+
 
 using networking::Server;
 using networking::Connection;
@@ -28,8 +30,8 @@ private:
   CharacterController _characterController;
   RoomController _roomController;
   ObjectController _objectController;
-  CombatController _combatController;
-
+    CombatController _combatController;
+  CommandTranslator _commandTranslator;
   std::unique_ptr<Server> _server;
   CommandHandler _commandHandler;
   std::unique_ptr<Scheduler> _scheduler;

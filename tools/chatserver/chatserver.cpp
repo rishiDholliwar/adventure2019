@@ -8,7 +8,7 @@
 
 #include "json.hpp"
 #include "chatserver.h"
-#include <JSONObjects.h>
+// #include <JSONObjects.h>
 
 #include <experimental/filesystem>
 #include <fstream>
@@ -18,28 +18,33 @@
 #include <Utility.h>
 #include <Scheduler.h>
 #include <ReturnCodes.h>
+#include <JSONThingy.h>
 
 #include <GameCommands.h>
 #include <UserCommands.h>
 #include <CombatCommands.h>
 
+
 void Game::registerCommands() {
-    _commandHandler.registerCommand("/say", Say(&_characterController, &_roomController).clone());
-    _commandHandler.registerCommand("/tell", Tell(&_characterController).clone());
-    _commandHandler.registerCommand("/whisper", Whisper(&_characterController,&_roomController).clone());
-    _commandHandler.registerCommand("/inventory", DisplayInventory(&_characterController).clone());
-    _commandHandler.registerCommand("/give", Give(&_characterController, &_objectController).clone());
-    _commandHandler.registerCommand("/swap", Swap(&_characterController).clone());
-    _commandHandler.registerCommand("/confuse", Confuse(&_characterController, &_roomController).clone());
-    _commandHandler.registerCommand("/login", Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
-    _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
-    _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
-    _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
+    _commandHandler.registerCommand(CommandType::SAY, Say(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand(CommandType::TELL, Tell(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::WHISPER, Whisper(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand(CommandType::INVENTORY, DisplayInventory(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::GIVE, Give(&_characterController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::CONFUSE, Confuse(&_characterController, &_roomController).clone());
+    _commandHandler.registerCommand(CommandType::LOGIN, Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::LOGOUT, Logout(&_userController, &_characterController, &_roomController).clone());
+    _commandHandler.registerCommand(CommandType::SIGNUP, Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::HELP, Help(&_characterController, &_commandHandler).clone());
+    _commandHandler.registerCommand(CommandType::LOOK, Look(&_characterController,&_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::EXAMINE, Examine(&_characterController,&_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::MOVE, Move(&_characterController,&_roomController).clone());
 
     //For combat
-    _commandHandler.registerCommand("/combat", CombatExamine(&_characterController, &_roomController, &_combatController).clone());
-    _commandHandler.registerCommand("/attack", CombatRoundAttack(&_characterController, &_roomController, &_combatController).clone());
-    _commandHandler.registerCommand("/battles", CombatBattles(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::COMBAT, CombatExamine(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::ATTACK, CombatRoundAttack(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::BATTLES, CombatBattles(&_characterController, &_roomController, &_combatController).clone());
 
 }
 
@@ -84,11 +89,13 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         std::string invocationWord = input.at(0);
         std::string text = input.at(1);
 
+        auto invocation = _commandTranslator.translateMe(invocationWord);
+
         // TODO: Add a command parser around here in the future
         // Should return an enum on the type of the command
         // CommandHandler should map enums to Commands
         // This "/login" will be changed to the login enum
-        if ( (! _userController.isConnectionLoggedIn(message.connection)) && ((invocationWord != "/login") && (invocationWord != "/signup")) )
+        if ( (! _userController.isConnectionLoggedIn(message.connection)) && ((invocation != CommandType::LOGIN) && (invocation != CommandType::SIGNUP)) )
         {
             result.push_back(Message{message.connection, std::string{"System: Please login first"}});
             return result;
@@ -110,10 +117,9 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             text = tempInputParser.at(1);
         }
 
-        auto command = _commandHandler.getCommand(username, invocationWord, text, message.connection);
+        auto command = _commandHandler.getCommand(username, invocation, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
-            std::cout << "command is nullptr" << std::endl;
             Message msg{message.connection, output};
             result.push_back(msg);
             continue;
@@ -163,7 +169,13 @@ Game::Game(Config config)
                                         [this](Connection c){this->removeConnection(c);});
     _userController = UserController();
     _commandHandler = CommandHandler();
+    _commandTranslator = CommandTranslator();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
+
+    JSONThingy jt;
+    jt.load("mirkwood", _objectController);
+    jt.load("mirkwood", _roomController);
+
     this->registerCommands();
 }
 
@@ -194,13 +206,13 @@ main(int argc, char *argv[]) {
 
     std::string fileName = "mirkwood";
 
-    if (JSONObjects::fileExists(fileName)) {
-        cout << "file exists\n";
-    } else {
-        cout << "error, no such file\n";
-    }
+    // if (JSONObjects::fileExists(fileName)) {
+    //     cout << "file exists\n";
+    // } else {
+    //     cout << "error, no such file\n";
+    // }
 
-    std::vector<Object> objects = JSONObjects::getObjects(fileName);
+    // std::vector<Object> objects = JSONObjects::getObjects(fileName);
 
     // for (auto &obj : objects) {
     //     std::cout << "ID: " << obj.getID() << std::endl;

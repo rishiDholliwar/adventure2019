@@ -17,8 +17,9 @@ std::pair<std::vector<Response>, bool> Login::execute() {
         JSONThingy jt;
         jt.load(username, tmpChar);
         characterController->addCharacter(tmpChar);
+        objectController->addObjectsToList(tmpChar.getInventory().getObjects());
 
-        roomController->addUserNameToRoom(tmpChar.getName(), tmpChar.getRoomID());
+        roomController->addCharacterToRoom(tmpChar.getName(), tmpChar.getRoomID());
     }
 
 
@@ -56,7 +57,7 @@ std::pair<std::vector<Response>, bool> Logout::execute() {
         jt.save(characterController->getCharacter(username));
         auto roomID = characterController->getCharacterRoomID(username);
         characterController->removeCharacter(username);
-        roomController->removeUserNameFromRoom(username, roomID);
+        roomController->removeCharacterFromRoom(username, roomID);
     }
     std::string returnMessage = Return::ReturnCodeToString(result.returnCode);
 

@@ -1,9 +1,18 @@
 #include <ObjectController.h>
 #include <algorithm>
+#include <Utility.h>
 
-ObjectController::ObjectController(){
-	//
-};
+ObjectController::ObjectController(std::vector<Object> objVect) {
+	for (auto &obj : objVect) {
+		addObjectToList(obj);
+	}
+}
+
+void ObjectController::addObjectsToList(const std::vector<Object> objs) {
+	for (auto &obj : objs) {
+		addObjectToList(obj);
+	}
+}
 
 bool ObjectController::addObjectToList(const Object &object) {
 	objects.insert( { object.getID(), object } );
@@ -23,4 +32,39 @@ bool ObjectController::doesObjectOfThisNameExist(const Name objectName) {
 
 const Object &ObjectController::getObjectFromList(const ID objectID) const {
     return objects.find(objectID)->second;
+}
+
+const Object& ObjectController::getObjectFromList(const Name objectName) const {
+    auto itr = find_if(objects.begin(), objects.end(), [ objectName ] (std::pair<ID, Object> const& objPair )->bool {
+        return objPair.second.getName() == objectName;
+    });
+    return itr->second;
+}
+
+std::string ObjectController::lookItem(Name objectName) {
+    auto object = getObjectFromList(objectName);
+    return object.getShortDesc()+"\n";
+}
+
+std::string ObjectController::examineItem(Name objectName) {
+    auto object = getObjectFromList(objectName);
+    auto extDescriptions = object.getLongDesc();
+    if (extDescriptions.empty()){
+        return lookItem(objectName);
+    }
+    return utility::extractStringVector(extDescriptions);
+}
+
+std::string ObjectController::lookItem(ID objectID) {
+    auto object = getObjectFromList(objectID);
+    return object.getShortDesc()+"\n";
+}
+
+std::string ObjectController::examineItem(ID objectID) {
+    auto object = getObjectFromList(objectID);
+    auto extDescriptions = object.getLongDesc();
+    if (extDescriptions.empty()){
+        return lookItem(objectID);
+    }
+    return utility::extractStringVector(extDescriptions);
 }

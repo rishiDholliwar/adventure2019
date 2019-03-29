@@ -16,6 +16,7 @@ find_package(Boost 1.66 COMPONENTS system filesystem REQUIRED)
 target_link_libraries(chatserver
   PUBLIC
     networking
+    jsonThingy
   PRIVATE
     scheduler
     commands

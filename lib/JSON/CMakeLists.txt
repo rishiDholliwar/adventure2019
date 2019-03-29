@@ -15,10 +15,14 @@ target_include_directories(jsonThingy
 
 target_link_libraries(jsonThingy
         PUBLIC
+        commandHandler
         Character
         Object
         Inventory
+        controllers
         json
+        controllers
+        world
         ${Boost_LIBRARIES}
         PRIVATE
         utility

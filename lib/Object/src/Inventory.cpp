@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <sstream>
 #include <Inventory.h>
-#include <JSONObjects.h>
+// #include <JSONObjects.h>
 
 void Inventory::addItem(Object object) {
     objects.push_back(object);

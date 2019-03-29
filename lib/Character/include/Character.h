@@ -3,19 +3,28 @@
 
 #include <string>
 #include <vector>
+#include <numeric>
 #include <AlterSpace.h>
 #include <Inventory.h>
 #include <UniqueID.h>
 #include <Object.h>
 #include <utility>
+#include <vector>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
 
+enum class CharacterType {
+    PLAYABLE,
+    NON_PLAYABLE,
+};
+
 class Character : public UniqueID {
 private:
     Name name;
+    ID characterID;
     ID roomID;
+    CharacterType characterType;
     Inventory inventory;
     std::vector<Object> wearing;
     bool confused;
@@ -29,26 +38,53 @@ private:
     unsigned int maxHP = 10;
     unsigned int maxMP = 10;
 
+    std::vector<std::string> keywords;
+
+    std::string shortdesc;
+    std::vector<std::string> longdesc;
+    std::vector<std::string> description;
+
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
 public:
     Character() = default;
+
+    //intialize new playable character
     Character(Name name, ID roomID) : name(std::move(name)), roomID(roomID)
     {
+
+        this->characterType = CharacterType::PLAYABLE;
         this->inventory = Inventory{};
         this->confused = false;
         this->wearing = std::vector<Object>();
     }
 
+    //constructor for playable character
     Character(Name name, ID roomID, Inventory inventory, std::vector<Object> wearing) :
             name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
+        this->characterType = CharacterType::PLAYABLE;
+        this->confused = false;
+    }
+
+    //constructor for npc
+    Character(ID characterID, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc, std::vector<std::string> description) :
+            characterID(characterID), keywords(keywords), shortdesc(shortdesc), longdesc(longdesc), description(description) {
+        this->name = std::accumulate(keywords.begin(), keywords.end(), std::string(" "));
         this->confused = false;
     }
 
     Name getName() const;
+    ID getCharacterID() const;
     ID getRoomID() const;
+    bool isNPC() const;
     ID getID() const;
+    void setNPC();
+
+    std::vector<std::string> const& getKeywords() const;
+    std::string const& getShortDesc() const;
+    std::vector<std::string> const& getLongDesc() const;
+    std::vector<std::string> const& getDescription() const;
     std::string getInfo() const;
     bool isConfused() const;
 
@@ -174,6 +210,7 @@ public:
     void setMaxHP(unsigned int maxHP);
 
     std::string examineCombat();
+
 };
 
 

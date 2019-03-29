@@ -274,7 +274,7 @@ void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *c
                                 std::vector<Character> &charactersInRoom) {
 
     Name name = player.getName();
-    for (auto name: roomCtrl->getUsernameList(characterCtrl->getCharacterRoomID(name))) {
+    for (auto name: roomCtrl->getCharacterList(characterCtrl->getCharacterRoomID(name))) {
         charactersInRoom.push_back(characterCtrl->getCharacter(name));
     }
 }
