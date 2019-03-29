@@ -6,6 +6,9 @@
 #include <boost/algorithm/string.hpp>
 #include <regex>
 
+
+//todo bug with /move
+
 using networking::Connection;
 
 static const std::string CHARACTER_SEPARATOR = " ";
@@ -74,7 +77,7 @@ std::string CombatExamine::help() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
+std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
 
@@ -221,18 +224,18 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
 }
 
 std::unique_ptr<Command>
-CombatRoundAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
-    return std::make_unique<CombatRoundAttack>(this->characterController, this->roomController,
+CombatAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
                                                this->combatController, username, input, connection);
 }
 
-std::unique_ptr<Command> CombatRoundAttack::clone() const {
-    return std::make_unique<CombatRoundAttack>(this->characterController, this->roomController,
+std::unique_ptr<Command> CombatAttack::clone() const {
+    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
                                                this->combatController, this->username, this->input,
                                                this->connection);
 }
 
-std::string CombatRoundAttack::help() {
+std::string CombatAttack::help() {
     return "/attack [name] - Send battle request with rounds to [name] or accept if sent a request.";
 }
 

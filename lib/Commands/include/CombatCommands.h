@@ -43,7 +43,7 @@ public:
     std::string help() override;
 };
 
-class CombatRoundAttack : public Command {
+class CombatAttack: public Command {
 private:
     RoomController *roomController;
     CombatController *combatController;
@@ -53,7 +53,7 @@ private:
 
 public:
     explicit
-    CombatRoundAttack(CharacterController *characterController, RoomController *roomController,
+    CombatAttack(CharacterController *characterController, RoomController *roomController,
                       CombatController *combatController,
                       Name username = "", Input input = "", Connection connection = Connection{})
             : roomController(roomController), combatController(combatController),
@@ -61,7 +61,7 @@ public:
         this->characterController = characterController;
     };
 
-    ~CombatRoundAttack() = default;
+    ~CombatAttack() = default;
     std::pair<std::vector<Response>, bool> execute() override;
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;

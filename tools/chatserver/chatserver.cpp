@@ -43,7 +43,7 @@ void Game::registerCommands() {
 
     //For combat
     _commandHandler.registerCommand(CommandType::COMBAT, CombatExamine(&_characterController, &_roomController, &_combatController).clone());
-    _commandHandler.registerCommand(CommandType::ATTACK, CombatRoundAttack(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::ATTACK, CombatAttack(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand(CommandType::BATTLES, CombatBattles(&_characterController, &_roomController, &_combatController).clone());
 
 }
