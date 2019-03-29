@@ -84,7 +84,7 @@ std::pair<std::vector<Response>, bool> CombatRoundAttack::execute() {
     std::string commandName = "attack: \n";
 
 
-    //target is already in a battle and no battle reqeust sent
+    //checks if target is in battle state, and if true no request sent
     if (combatController->isBattleState(targetName)) {
         std::string userOutput = combatController->sendTargetInCombatState(targetName);
         Response userResponse = Response(userOutput, username);
