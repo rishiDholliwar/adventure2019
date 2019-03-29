@@ -56,7 +56,6 @@ bool Combat::isInBattle(const Name &fighter) {
     return false;
 }
 
-
 //TODO will be used when player can enter options for each round
 std::string Combat::processInput(const Input &input) {
     return "";
@@ -66,9 +65,8 @@ void Combat::setCombatState() {
     setState(STATE::COMBAT);
 }
 
-//todo fix
 bool Combat::battleReady() {
-    if(getInstigatorName().empty() && getOpponentName().empty()){
+    if (getInstigatorName().empty() && getOpponentName().empty()) {
         return false;
     }
 
@@ -241,5 +239,4 @@ bool Combat::isGameOverState() {
 //    }
 
     return this->isGameOver;
-
 }

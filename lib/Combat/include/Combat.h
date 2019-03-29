@@ -90,8 +90,8 @@ public:
 
     bool isGameOverState();
 
-    //todo change to flee
-    bool surrenderFighter(const Name &surrenderer);
+    //todo implement
+    bool fleeFighter(const Name &surrenderer);
 
 private :
 

@@ -10,7 +10,7 @@
 
 /*
  * Combat controller is used to handle combat.
- * Currently combat is only 1 vs 1  and all rounds is executed in once instance.
+ * Currently combat is only 1 vs 1 and turn based rounds.
  */
 
 class CombatController {
@@ -54,16 +54,9 @@ public:
 
     const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
 
-    //todo remove?
-    bool isGameOver(const Name &fighter1, const Name &fighter2);
-
     bool isGameOver(const Name &fighter);
 
     void deleteGame(const Name fighter1, const Name fighter2);
-
-    void deleteGame(const Name fighter);
-
-    std::string sendQInvitationMsg(const Name &inviterName);
 
     std::string sendRoundInvitationMsg(const Name &inviterName);
 

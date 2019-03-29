@@ -11,20 +11,6 @@ void CombatController::createNewBattle(Character &instigator, Character &target)
     battleList.back().addOpponent(target);
 }
 
-//std::string CombatController::sendQuickBattleRequest(const Character &fighter1, const Character &fighter2) {
-//    if (isBattleOwner(fighter1.getName(), fighter2.getName())) {
-//        auto &battle = getBattle(fighter1.getName(), fighter2.getName());
-//        auto owner = battle.getOwner();
-//        if (owner == fighter1.getName()) {
-//            return sendQInvitationMsg(fighter1.getName());
-//        } else {
-//            return sendQInvitationMsg(fighter2.getName());
-//        }
-//    }
-//
-//    return "error sending invite";
-//}
-
 std::string CombatController::sendRoundBattleRequest(const Character &fighter1, const Character &fighter2) {
     if (isBattleOwner(fighter1.getName(), fighter2.getName())) {
         auto &battle = getBattle(fighter1.getName(), fighter2.getName());
@@ -89,6 +75,7 @@ bool CombatController::isBattleStarted(const Name &fighter1, const Name &fighter
             return true;
         }
     }
+
     return false;
 }
 
@@ -104,15 +91,6 @@ bool CombatController::isBattleState(const Name &fighter) {
     return false;
 }
 
-//const std::string
-//CombatController::executeQuickBattle(Character &fighter1, Character &fighter2, const Input &input) {
-//    auto &battle = getBattle(fighter1.getName(), fighter2.getName());
-//    battle.updateFighters(fighter1, fighter2);
-//    std::string results = battle.runBattleRound();
-//
-//    return results;
-//}
-
 const std::string
 CombatController::executeBattleRound(Character &fighter1, Character &fighter2, const Input &input) {
 //return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
@@ -122,11 +100,11 @@ CombatController::executeBattleRound(Character &fighter1, Character &fighter2, c
 
 }
 
-
 bool CombatController::checkInputForNextRound(const Name &instigator, const Input &input) {
     if (input.empty()) {
         return true;
     }
+
     return false;
 }
 
@@ -139,17 +117,6 @@ bool CombatController::isNextRoundReady(const Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
     return battle.isNextRoundReady();
 }
-
-//bool CombatController::isGameOver(const Name &fighter1, const Name &fighter2) {
-//    if (isBattleAssociation(fighter1, fighter2)) {
-//        auto &battle = getBattle(fighter1, fighter2);
-//        if (battle.isGameOverState()) {
-//            return true;
-//        }
-//    }
-//
-//    return false;
-//}
 
 void CombatController::resetRoundReady(const Name &fighterName) {
     auto &battle = getBattleInCombatState(fighterName);
@@ -164,7 +131,6 @@ Character &CombatController::getFighter(Name &fighter) {
     }
 
     return battle.getOpponent();
-
 }
 
 bool CombatController::isGameOver(const Name &fighter) {
@@ -175,7 +141,6 @@ bool CombatController::isGameOver(const Name &fighter) {
     }
 
     return false;
-
 }
 
 const Name CombatController::getTargetName(const Name &fighter) {
@@ -195,13 +160,11 @@ void CombatController::deleteGame(const Name fighter1, const Name fighter2) {
                                         if (battle.nameIsPendingWithInstigator(fighter2, fighter1)) {
                                             return true;
                                         }
-
                                     }),
 
                      battleList.end());
 }
 
-//todo need to add state for pending or in battle
 std::string CombatController::printAllBattles() {
     std::stringstream output;
     output << "Battles:\n";
@@ -268,12 +231,6 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
     }
 
     return false;
-}
-
-std::string CombatController::sendQInvitationMsg(const Name &inviterName) {
-    std::string output = "\n\t" + inviterName + " wants to quick attack you \n" +
-                         "\tEnter '/qattack " + inviterName + "' to battle\n";
-    return output;
 }
 
 std::string CombatController::sendRoundInvitationMsg(const Name &inviterName) {

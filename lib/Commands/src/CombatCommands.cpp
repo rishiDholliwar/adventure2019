@@ -5,7 +5,7 @@
 #include <Server.h>
 #include <boost/algorithm/string.hpp>
 #include <regex>
-//todo if user is in combat state can they be sent a request or send request??
+
 using networking::Connection;
 
 static const std::string CHARACTER_SEPARATOR = " ";

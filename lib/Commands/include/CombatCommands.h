@@ -14,10 +14,8 @@ using AlterSpace::Input;
 //Helper functions:
 void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *characterCtrl, Character player,
                                 std::vector<Character> &charactersInRoom);
-
 void removeExtraWhiteSpaces(Input &input); //removes all extra whitespaces to correct user errors when typing
 std::string toMSG(const Name &name);
-
 std::string fromMSG(const Name &name);
 
 class CombatExamine : public Command {
@@ -39,17 +37,13 @@ public:
     };
 
     ~CombatExamine() = default;
-
     std::pair<std::vector<Response>, bool> execute() override;
-
     std::unique_ptr<Command> clone() const override;
-
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
-
     std::string help() override;
 };
 
-class CombatRoundAttack: public Command {
+class CombatRoundAttack : public Command {
 private:
     RoomController *roomController;
     CombatController *combatController;
@@ -60,21 +54,17 @@ private:
 public:
     explicit
     CombatRoundAttack(CharacterController *characterController, RoomController *roomController,
-                  CombatController *combatController,
-                  Name username = "", Input input = "", Connection connection = Connection{})
+                      CombatController *combatController,
+                      Name username = "", Input input = "", Connection connection = Connection{})
             : roomController(roomController), combatController(combatController),
               username(std::move(username)), input(std::move(input)), connection(connection) {
         this->characterController = characterController;
     };
 
     ~CombatRoundAttack() = default;
-
     std::pair<std::vector<Response>, bool> execute() override;
-
     std::unique_ptr<Command> clone() const override;
-
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
-
     std::string help() override;
 };
 
@@ -97,13 +87,9 @@ public:
     };
 
     ~CombatBattles() = default;
-
     std::pair<std::vector<Response>, bool> execute() override;
-
     std::unique_ptr<Command> clone() const override;
-
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
-
     std::string help() override;
 };
 
