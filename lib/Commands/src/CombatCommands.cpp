@@ -78,6 +78,7 @@ std::string CombatExamine::help() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
+     std::cout << "combat attack\n";
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
 
@@ -87,66 +88,50 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     std::string commandName = "attack: \n";
 
 
-    //checks if target is in battle state, and if true no request sent
-    if (combatController->isBattleState(targetName)) {
-        std::string userOutput = combatController->sendTargetInCombatState(targetName);
-        Response userResponse = Response(userOutput, username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
-    }
-
+  
     //check if user is in battle state
     if (combatController->isBattleState(username)) {
         //todo do check to see if other player is still there and delete the game if they are not
         //checking to make sure input is correct from the user (the user only typed /attack)
-        if (combatController->checkInputForNextRound(username, input)) {
+       
             Name targetName = combatController->getTargetName(username);
             Character targetCharacter = characterController->getCharacter(targetName);
 
-            combatController->setFighterReady(username);
+           // combatController->setFighterReady(username);
+         
+            std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
 
-            if (combatController->isNextRoundReady(username)) {
-                std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
+            Character &fighter1 = combatController->getFighter(username);
+            Name fighterName1 = fighter1.getName();
+            characterController->setCharacterHP(fighterName1, fighter1.getCurrentHP());
 
-                Character &fighter1 = combatController->getFighter(username);
-                Name fighterName1 = fighter1.getName();
-                characterController->setCharacterHP(fighterName1, fighter1.getCurrentHP());
+            Character &fighter2 = combatController->getFighter(targetName);
+            Name fighterName2 = fighter2.getName();
+            characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
 
-                Character &fighter2 = combatController->getFighter(targetName);
-                Name fighterName2 = fighter2.getName();
-                characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
-
-                if (combatController->isGameOver(username)) {
-                    //todo change back to some other state for the characters
-                    combatController->deleteGame(username, targetName);
-                } else {
-                    combatController->resetRoundReady(username);
-                }
-
-                std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
-                Response userResponse = Response(toMSG(targetName) + combatOutput, username);
-
-                std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
-                Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
-
-                auto res = formulateResponse(userResponse, targetResponse);
-                return std::make_pair(res, true);
+            if (combatController->isGameOver(username)) {
+                //todo change back to some other state for the characters
+                combatController->deleteGame(username, targetName);
+                this->registerCallback = false;
             } else {
-                std::string userOutput = " waiting for other player";
-                Response userResponse = Response(toMSG(targetName) + userOutput, username);
-
-                std::string targetOutput = username + " is ready for next round";
-                Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
-
-                auto res = formulateResponse(userResponse, targetResponse);
-                return std::make_pair(res, true);
+               // combatController->resetRoundReady(username);
             }
-        }
 
-        std::string userOutput = "Error: enter '/attack' when ready for next round";
-        Response userResponse = Response(userOutput, username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+            std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
+            Response userResponse = Response(toMSG(targetName) + combatOutput, username);
+
+            std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
+            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
+
+            auto res = formulateResponse(userResponse, targetResponse);
+            return std::make_pair(res, true);
+            
+        
+
+        // std::string userOutput = "";
+        // Response userResponse = Response(userOutput, username);
+        // auto res = formulateResponse(userResponse);
+        // return std::make_pair(res, true);
     }
 
     //character is attacking himself
@@ -174,7 +159,18 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
+
+          //checks if target is in battle state, and if true no request sent
+            if (combatController->isBattleState(targetName)) {
+                std::string userOutput = combatController->sendTargetInCombatState(targetName);
+                Response userResponse = Response(userOutput, username);
+                auto res = formulateResponse(userResponse);
+                return std::make_pair(res, true);
+            }
+
+            std::cout << "new battle\n";
             combatController->createNewBattle(character, targetCharacter);
+           // combatController->setFighterReady(username);
 
             Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
 
@@ -186,25 +182,26 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         }
 
         //see if character is sending duplicate attack requests
-        if (combatController->checkDuplicateSendRequest(username, targetName)) {
-            Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
+        // if (combatController->checkDuplicateSendRequest(username, targetName)) {
+        //     Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
+        //     auto res = formulateResponse(userResponse);
+        //     return std::make_pair(res, true);
+        // }
 
         //see if character is replying to attack request
         if (combatController->replyPendingRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
-
+            this->registerCallback = true;
+            this->callbackAfterHeartbeats = ROUND_DURATION;
             //todo now fighters must be in combat state
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
                 Response userResponse = Response(
-                        toMSG(targetName) + "battle started.\n Enter '/attack' to start next round ", username);
+                        toMSG(targetName) + "battle started", username);
 
 
                 Response targetResponse = Response(
-                        fromMSG(username) + "battle started.\n Enter '/attack' to start next round ", targetName);
+                        fromMSG(username) + "battle started", targetName);
 
                 auto res = formulateResponse(userResponse, targetResponse);
                 return std::make_pair(res, true);
@@ -221,6 +218,17 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     res.emplace_back(commandName + "attack error\n", username);
     return std::make_pair(res, true);
 
+}
+
+std::pair<std::vector<Response>, bool> CombatAttack::callback() {
+    std::cout << "attack callback\n";
+    auto res = this->execute();
+
+    if (combatController->isBattleState(username)) {
+        this->registerCallback = true;
+    }
+
+    return std::make_pair(res.first, false);
 }
 
 std::unique_ptr<Command>

@@ -45,6 +45,9 @@ public:
 
 class CombatAttack: public Command {
 private:
+
+    const int ROUND_DURATION = 15;
+
     RoomController *roomController;
     CombatController *combatController;
     Name username;
@@ -59,10 +62,14 @@ public:
             : roomController(roomController), combatController(combatController),
               username(std::move(username)), input(std::move(input)), connection(connection) {
         this->characterController = characterController;
+       
+
+
     };
 
     ~CombatAttack() = default;
     std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> callback() override;
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
     std::string help() override;

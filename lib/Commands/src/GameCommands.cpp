@@ -865,7 +865,7 @@ std::pair<std::vector<Response>, bool> Move::execute() {
 
     // Update roomList to account for character moving
     roomController->removeCharacterFromRoom(username, roomId);
-    roomController->removeCharacterFromRoom(username, toID);
+    roomController->addCharacterToRoom(username, toID);
     characterController->setCharacterRoomID(username, toID);
 
 
