@@ -82,16 +82,10 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     std::vector<Response> res;
     if (!(characterController->doesCharacterExist(username))) {
         this->registerCallback = false;
-        Name targetName = combatController->getTargetName(username);
-        combatController->deleteGame(username,targetName);
-            characterController->toggleCharacterCombat(targetName);
-        Response userResponse = Response("Target doesn't exist, sorry!", targetName);
-        auto res = formulateResponse(userResponse);
+        // Response userResponse = Response("Target doesn't exist, sorry!", username);
+        //auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
-
-
-
     Character character = characterController->getCharacter(username);
 
 
@@ -223,18 +217,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             }
         }
     } else {
-        Name tn = combatController->getTargetName(username);
-        if (!(characterController->doesCharacterExist(tn))) {
-            this->registerCallback = false;
-            Name targetName = combatController->getTargetName(username);
-            combatController->deleteGame(username,targetName);
-            characterController->toggleCharacterCombat(username);
-            Response userResponse = Response("Target doesn't exist, sorry!", username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
-
-
         //character is not in the room
         std::string error = "\tCharacter " + targetName + " not found\n";
         commandName += error;
@@ -330,7 +312,7 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
 
 
 
-    //TODO need to use move command to go ro room after flee  
+    //TODO need to use move command to go ro room after flee
     if (combatController->isBattleState(username)) {
         Name targetName = combatController->getTargetName(username);
         Character targetCharacter = characterController->getCharacter(targetName);
