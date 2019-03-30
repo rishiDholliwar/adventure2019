@@ -124,23 +124,13 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         if(invocation != CommandType::LOGIN && invocation != CommandType::SIGNUP){
            // _characterController.toggleCharacterCombat(username);
             if(_characterController.isCharacterInCombat(username)){
-                if(invocation != CommandType::FLEE){
-
-                std::cout << "You are in combat. You can only flee";
-                //TODO should we just return?
-                result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
-                return result;
+                std::cout <<  "---------User: " << username << " is in combat---------\n";
+                if(invocation != CommandType::FLEE && invocation != CommandType::ATTACK){
+                    std::cout << "You are in combat. You can only flee";
+                    result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
+                    return result;
                 }
 
-
-                if(invocation != CommandType::ATTACK){
-                    std::cout << "You are in combat. You can only flee";
-                    //TODO should we just return?
-                  result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
-                    return result;
-                        
-                    }
-               // std::cout << "character: " << username << " is in combat\n";
             }
         }
 

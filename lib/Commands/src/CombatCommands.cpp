@@ -130,7 +130,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         if (combatController->isGameOver(username)) {
             //todo change back to some other state for the characters
             combatController->deleteGame(username, targetName);
-            characterController->toggleCharacterCombat(username,targetName);
+           characterController->toggleCharacterCombat(username,targetName);
             this->registerCallback = false;
         } 
 
