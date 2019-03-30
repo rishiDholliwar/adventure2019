@@ -259,3 +259,30 @@ bool Combat::isGameOverState() {
 bool Combat::isFleeState(){
     return isFleee;
 }
+
+bool Combat::isTargetLogoutState() {
+    return isTargetLogout;
+}
+
+void Combat::setFleeState(){
+    isFleee = true;
+}
+
+void Combat::setTargetLogoutState() {
+    isTargetLogout = true;
+}
+
+std::string Combat::logout(const Name &winner){
+    Character winnerCharacter;
+    if(winner != getInstigatorName()){
+        winnerCharacter = fighterInstigator.fighter;
+    } else {
+        winnerCharacter = fighterOpponent.fighter;
+    }
+
+    std::stringstream output;
+    output << printWinner(winnerCharacter);
+    isGameOver = true;
+    return output.str();
+
+}

@@ -66,8 +66,7 @@ Game::removeConnection(Connection c) {
 
         if(_combatController.isBattleState(username)){
             Name targetName = _combatController.getTargetName(username);
-            _combatController.deleteGame(username,targetName);
-            _characterController.toggleCharacterCombat(username,targetName);
+            _combatController.setTargetLogoutState(targetName);
             std::cout << "delete combat for: " << username << std::endl;
         }
 

@@ -80,21 +80,54 @@ std::string CombatExamine::help() {
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     std::cout << "combat attack\n";
     std::vector<Response> res;
-    if (!(characterController->doesCharacterExist(username))) {
+//    if (!(characterController->doesCharacterExist(username))) {
+//        this->registerCallback = false;
+//        // Response userResponse = Response("Target doesn't exist, sorry!", username);
+//        //auto res = formulateResponse(userResponse);
+//        return std::make_pair(res, true);
+//    }
+
+
+    if (combatController->isTargetLogoutState(username)) {
+        if (!(characterController->doesCharacterExist(username))) {
+            std::cout << "username: " << username << " is in logout function\n";
+            Name targetName = combatController->getTargetName(username);
+            std::cout << "target was: " << targetName << std::endl;
+            std::string results = combatController->logout(username);
+            std::cout << "results: " << results << std::endl;
+            combatController->deleteGame(username, targetName);
+            std::cout << "game deleted\n";
+            this->registerCallback = false;
+            characterController->toggleCharacterCombat(targetName);
+            Response userResponse = Response("target is offline:\n" + results, targetName);
+            std::cout << "did userResponse\n";
+            auto res = formulateResponse(userResponse);
+            std::cout << "did res\n";
+            return std::make_pair(res, true);
+        }
+        std::cout << "username: " << username << " is in logout function\n";
+        Name targetName = combatController->getTargetName(username);
+        std::cout << "target was: " << targetName << std::endl;
+        std::string results = combatController->logout(targetName);
+        std::cout << "results: " << results << std::endl;
+        combatController->deleteGame(username, targetName);
+        std::cout << "game deleted\n";
         this->registerCallback = false;
-        // Response userResponse = Response("Target doesn't exist, sorry!", username);
-        //auto res = formulateResponse(userResponse);
+        characterController->toggleCharacterCombat(username);
+        Response userResponse = Response("target is offline:\n" + results, username);
+        std::cout << "did userResponse\n";
+        auto res = formulateResponse(userResponse);
+        std::cout << "did res\n";
         return std::make_pair(res, true);
     }
+
+
     Character character = characterController->getCharacter(username);
 
 
     removeExtraWhiteSpaces(input);
 
     std::string commandName = "attack: \n";
-
-
-
 
 
     Name targetName = input;
@@ -107,15 +140,19 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
-    if (roomController->isTargetInRoom(username, character.getRoomID(),targetName)) {
+    if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
 
         if (combatController->isFleeState(username)) {
             Name targetName = combatController->getTargetName(username);
             Character targetCharacter = characterController->getCharacter(targetName);
+            std::string results = combatController->flee(character, targetCharacter, "");
             combatController->deleteGame(username, targetName);
             characterController->toggleCharacterCombat(username, targetName);
             this->registerCallback = false;
+            Response userResponse = Response("youu have fled:\n" + results, username);
+            Response targetResponse = Response("target has fled:\n" + results, targetName);
+            auto res = formulateResponse(userResponse, targetResponse);
             return std::make_pair(res, true);
         }
 
@@ -305,7 +342,7 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
     std::cout << "done\n";
 
 
-
+    std::vector<Response> res;
 
 
 
@@ -320,9 +357,9 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
         //  combatController->deleteGame(username, targetName);
         this->registerCallback = false;
 
-        Response userResponse = Response("you have fled:\n" + results, username);
-        Response targetResponse = Response("target has fled:\n" + results, targetName);
-        auto res = formulateResponse(userResponse, targetResponse);
+//        Response userResponse = Response("you have fled:\n" + results, username);
+//        Response targetResponse = Response("target has fled:\n" + results, targetName);
+//        auto res = formulateResponse(userResponse, targetResponse);
         return std::make_pair(res, true);
     } else {
         Response userResponse = Response("you are not in battle:", username);

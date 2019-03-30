@@ -50,13 +50,21 @@ public:
 
     bool isFleeState(Name &fighter);
 
+    void setFleeState(Name &fighter);
+
+    bool isTargetLogoutState(Name &fighter);
+
+    void setTargetLogoutState(Name &fighter);
+
+    std::string logout(Name &winner);
+
+    const std::string flee(Character &fighter1, Character &fighter2, const Input &input);
+
     const Name getTargetName(const Name &instigator);
 
     Character &getFighter(Name &fighterName);
 
     const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
-
-    const std::string flee(Character &fighter1, Character &fighter2, const Input &input);
 
     bool isGameOver(const Name &fighter);
 

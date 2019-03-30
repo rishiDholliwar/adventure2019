@@ -100,6 +100,11 @@ CombatController::executeBattleRound(Character &fighter1, Character &fighter2, c
 
 }
 
+void CombatController::setFleeState(Name &fighter) {
+    auto &battle = getBattleInCombatState(fighter);
+    battle.setFleeState();
+}
+
 const std::string
 CombatController::flee(Character &surrenderer, Character &winner, const Input &input) {
 //return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
@@ -118,6 +123,30 @@ bool CombatController::isFleeState(Name &fighter) {
     }
 
     return false;
+}
+
+bool CombatController::isTargetLogoutState(Name &fighter) {
+    for (auto &battle: battleList) {
+        if (battle.isTargetLogoutState()) {
+            if (battle.isInBattle(fighter)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void CombatController::setTargetLogoutState(Name &fighter) {
+    auto &battle = getBattleInCombatState(fighter);
+    battle.setTargetLogoutState();
+}
+
+std::string CombatController::logout(Name &winner) {
+    auto &battle = getBattleInCombatState(winner);
+    //battle.updateFighters(surrenderer, winner);
+    return battle.logout(winner);
+
 }
 
 

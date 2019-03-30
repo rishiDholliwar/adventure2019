@@ -30,6 +30,7 @@ private:
 
     bool isGameOver = false;
     bool isFleee = false;
+    bool isTargetLogout = false;
 
     struct Fighter {
         bool readyForNextRound;
@@ -93,7 +94,16 @@ public:
 
     bool isFleeState();
 
-    //todo implement
+    void setFleeState();
+
+    bool isTargetLogoutState();
+
+    void setTargetLogoutState();
+
+    std::string targetLogout(const Name &surrenderer);
+
+    std::string logout(const Name &loser);
+
     std::string flee(const Name &surrenderer);
 
 private :
