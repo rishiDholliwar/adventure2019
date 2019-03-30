@@ -443,56 +443,89 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         return std::make_pair(res, false);
     }
 
-    Name userKey = username;
-    Name targetKey = target;
+    originalUsername = username;
+    originalTargetUsername = characterController->getUsernameOfCharacter(target);
+    swappedCharacterName = target;
+    swappedTargetCharacterName = characterController->getCharName(username);
 
-    if (v.size() == 1) {
+    characterController->swapCharacter(username, originalTargetUsername);
+    
+    Response userResponse = Response("Successfully swapped!", username);
+    Response targetResponse = Response("A swap spell was cast on you!", originalTargetUsername);
 
-        targetKey = v.at(TARGET_CHARACTER_NAME);
+    auto res = formulateResponse(userResponse, targetResponse);
+    return std::make_pair(res, true);
 
-        if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
-            Response userResponse = Response("You are already under a swap spell!", username);
 
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
+    // if (v.size() == 1) {
 
-        characterController->swapCharacter(username, targetKey);
+    //     targetKey = v.at(TARGET_CHARACTER_NAME);
 
-        Response userResponse = Response("Successfully swapped!", username);
+    //     if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
+    //         Response userResponse = Response("You are already under a swap spell!", username);
 
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+    //         auto res = formulateResponse(userResponse);
+    //         return std::make_pair(res, true);
+    //     }
+    //     characterController->swapCharacter(username, targetKey);
 
-    } else {
+    //     Response userResponse = Response("Successfully swapped!", username);
 
-        if (!(characterController->doesCharacterExist(target))) {
+    //     auto res = formulateResponse(userResponse);
+    //     return std::make_pair(res, true);
 
-            Response userResponse = Response("Target doesn't exist, sorry!", username);
+    // } else {
+    //     Name userKey = username;
+    //     Name targetKey = characterController->getCharName(username);
+    //     Name targetCharName = characterController->getCharName(targetKey);
 
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, false);
-        }
+    //     if (!(userKey == targetKey) && !(userKey == targetCharName)) {
 
-        targetKey = characterController->getCharName(username);
+    //         Response userResponse = Response("There's some funky magic going on...", username);
+    //         auto res = formulateResponse(userResponse);
+    //         return std::make_pair(res, false);
+    //     }
+        
 
-        if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
+    //     if (!(characterController->doesCharacterExist(target))) {
 
-            Response userResponse = Response("You are already under a swap spell!", userKey);
-            Response targetResponse = Response("You are already under a swap spell!", targetKey);
+    //         Response userResponse = Response("Target doesn't exist, sorry!", username);
 
-            auto res = formulateResponse(userResponse, targetResponse);
-            return std::make_pair(res, true);
-        }
+    //         auto res = formulateResponse(userResponse);
+    //         return std::make_pair(res, false);
+    //     }
 
-        characterController->swapCharacter(username, target);
+    //     targetKey = characterController->getCharName(username);
 
-        Response userResponse = Response("Successfully swapped!", username);
-        Response targetResponse = Response("A swap spell was cast on you!", target);
+    //     if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
-        auto res = formulateResponse(userResponse, targetResponse);
-        return std::make_pair(res, true);
-    }
+    //         Response userResponse = Response("You are already under a swap spell!", userKey);
+    //         Response targetResponse = Response("You are already under a swap spell!", targetKey);
+
+    //         auto res = formulateResponse(userResponse, targetResponse);
+    //         return std::make_pair(res, true);
+    //     }
+
+    //     if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
+
+    //         Response userResponse = Response("You are already under a swap spell!", userKey);
+    //         Response targetResponse = Response("You are already under a swap spell!", targetKey);
+
+    //         auto res = formulateResponse(userResponse, targetResponse);
+    //         return std::make_pair(res, true);
+    //     }
+
+    //     originalCharName = characterController->getCharName(username);
+    //     Name targetKeyName = characterController->getUsernameOfCharacter(target);
+    //     characterController->swapCharacter(username, targetKeyName);
+    //     originalTarget = target;
+
+    //     Response userResponse = Response("Successfully swapped!", username);
+    //     Response targetResponse = Response("A swap spell was cast on you!", target);
+
+    //     auto res = formulateResponse(userResponse, targetResponse);
+    //     return std::make_pair(res, true);
+    // }
 
 }
 
@@ -539,59 +572,131 @@ std::pair<std::vector<Response>, bool> Swap::interact() {
 }
 
 std::pair<std::vector<Response>, bool> Swap::callback() {
-    Name userKey = username;
-    Name targetKey = characterController->getCharName(username);
 
-    if (characterController->isCharacterNPC(username)) {
-        targetKey = interactTarget;
-
-        if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
-            characterController->swapCharacter(userKey, targetKey);
-
-            Response userResponse = Response("Successfully unswapped!", userKey);
-            auto res = formulateResponse(userResponse);
-
-            return std::make_pair(res, true);
-        }
-
-        Response userResponse = Response("You are not under a swap spell", userKey);
-
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+    if( characterController->getCharName(originalUsername) != swappedCharacterName || 
+            characterController->getCharName(originalTargetUsername) != swappedTargetCharacterName) {
+        registerCallback = true;
+        callbackAfterHeartbeats = 50;
+        return std::make_pair(std::vector<Response>{}, false);
     }
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
 
-        Name targetCharName = characterController->getCharName(username);
+    characterController->swapCharacter(originalUsername, originalTargetUsername);
 
-        characterController->swapCharacter(userKey, targetKey);
-
-        Response userResponse = Response("Successfully unswapped!", userKey);
-        Response targetResponse = Response("You have been successfully unswapped!", targetKey);
-
-        auto res = formulateResponse(userResponse, targetResponse);
-        return std::make_pair(res, true);
-
-    }
-
-    Response userResponse = Response("You are not under a swap spell", userKey);
-    Response targetResponse = Response("You are not under a swap spell", target);
+    Response userResponse = Response("Successfully unswapped!", originalUsername);
+    Response targetResponse = Response("You have been successfully unswapped!", originalTargetUsername);
 
     auto res = formulateResponse(userResponse, targetResponse);
     return std::make_pair(res, true);
+
+
+    // if (characterController->isCharacterNPC(username)) {
+    //     targetKey = interactTarget;
+
+    //     if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
+    //         characterController->swapCharacter(userKey, targetKey);
+
+    //         Response userResponse = Response("Successfully unswapped!", userKey);
+    //         auto res = formulateResponse(userResponse);
+
+    //         return std::make_pair(res, true);
+    //     }
+
+    //     Response userResponse = Response("You are not under a swap spell", userKey);
+
+    //     auto res = formulateResponse(userResponse);
+    //     return std::make_pair(res, true);
+    // }
+
+    // Name targetCharName = characterController->getCharName(targetKey);
+
+
+    // if (characterController->getCharName(username) != characterController->getUsernameOfCharacter(username)) {
+    //     std::cout << "char is already swapped " << username << std::endl;
+    //     std::cout << "original Charname is " << originalCharName << std::endl;
+    //     std::cout << "originalTarget is " << originalTarget << std::endl;
+
+    //     if (originalTarget == characterController->getCharName(username) && originalCharName == characterController->getCharName(originalTarget)) {
+    //         Name originalTargetKey = characterController->getUsernameOfCharacter(originalTarget);
+    //         characterController->swapCharacter(username, originalTarget);
+
+    //         std::cout << "after swap, originalTarget's charname is " << characterController->getCharName(originalTarget) << std::endl;
+
+    //         if (originalTarget == characterController->getCharName(originalTarget)) {
+    //             std::cout << "the most recent swap unswapped " << originalTarget << std::endl;
+
+    //             Response userResponse = Response("the most recent swap has been unswapped!", username);
+    //             Response targetResponse = Response("the most recent swap has been unswapped!", originalTarget);
+
+    //             auto res = formulateResponse(userResponse, targetResponse);
+    //             return std::make_pair(res, true);
+    //         }
+
+    //         auto res = this->execute();
+
+    //         if (! res.second ) {
+    //             callbackAfterHeartbeats = 50;
+    //             this->registerCallback = true;
+    //         }
+        
+    //         std::cout << "funky magic dude 1" << username << std::endl;
+
+    //         return res;            
+    //     }
+
+    //     auto res = this->execute();
+
+    //     if (! res.second ) {
+    //         callbackAfterHeartbeats = 50;
+    //         this->registerCallback = true;
+    //     }
+        
+    //     std::cout << "funky magic dude 2" << username << std::endl;
+
+    //     return res;
+    // }
+
+    // if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
+
+    //     Name targetCharName = characterController->getCharName(username);
+
+    //     characterController->swapCharacter(userKey, targetKey);
+
+    //     Response userResponse = Response("Successfully unswapped!", userKey);
+    //     Response targetResponse = Response("You have been successfully unswapped!", targetKey);
+
+    //     auto res = formulateResponse(userResponse, targetResponse);
+    //     return std::make_pair(res, true);
+
+    // }
+
+    // Response userResponse = Response("You are not under a swap spell", userKey);
+    // Response targetResponse = Response("You are not under a swap spell", target);
+
+    // auto res = formulateResponse(userResponse, targetResponse);
+    // return std::make_pair(res, true);
 }
 
 std::unique_ptr<Command> Swap::clone(Name username, Input target, Connection connection = Connection{}) const {
     auto swap = std::make_unique<Swap>(this->characterController, username, target);
-    swap->setInteractions(this->interactions, this->interactTarget);
+    // swap->setCallbacks(this->originalTarget, this->originalCharName);
+    if(target.find("interact ") != std::string::npos) {
+        swap->setInteractions(this->interactions, this->interactTarget);
+    }
     return std::move(swap);
 }
 
 std::unique_ptr<Command> Swap::clone() const {
     auto swap = std::make_unique<Swap>(this->characterController, this->username, this->target);
+    // swap->setCallbacks(this->originalTarget, this->originalCharName);
     swap->setInteractions(this->interactions, this->interactTarget);
     return std::move(swap);
 }
+
+// void Swap::setCallbacks(Name origTarget, Name origCharName) {
+//     originalTarget = origTarget;
+//     originalCharName = origCharName;
+// }
 
 void Swap::setInteractions(std::vector<std::string> i, Name interactT) {
     interactions = i;

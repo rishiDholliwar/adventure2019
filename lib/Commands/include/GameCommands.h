@@ -182,9 +182,17 @@ private:
     Name username;
     Input target;
     void setInteractions(std::vector<std::string> i, Name interactT);
+    // void setCallbacks(Name origName, Name origTarget);
 
     std::vector<Name> interactions;
     Name interactTarget;
+
+    Name originalUsername;
+    Name originalTargetUsername;
+
+    Name swappedCharacterName;
+    Name swappedTargetCharacterName;
+
 public:
     explicit
     Swap(CharacterController* characterController, Name username = "", Input target = "", Connection connection = Connection{})
@@ -192,7 +200,7 @@ public:
             this->characterController = characterController;
             registerInteraction = true;
             registerCallback = true;
-            callbackAfterHeartbeats = 300;
+            callbackAfterHeartbeats = 150;
            };
 
     ~Swap() = default;
