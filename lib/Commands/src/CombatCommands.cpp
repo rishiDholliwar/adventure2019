@@ -128,21 +128,25 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
+    if (combatController->isFleeState(username)) {
+        std::cout << "in attack flee" << std::endl;
+        combatController->deleteGame(username, targetName);
+//            Name targetName = combatController->getTargetName(username);
+//            Character targetCharacter = characterController->getCharacter(targetName);
+//            std::string results = combatController->flee(character, targetCharacter, "");
+//            combatController->deleteGame(username, targetName);
+//            characterController->toggleCharacterCombat(username, targetName);
+        this->registerCallback = false;
+//            Response userResponse = Response("you have fled:\n" + results, username);
+//            Response targetResponse = Response("target has fled:\n" + results, targetName);
+//            auto res = formulateResponse(userResponse, targetResponse);
+        return std::make_pair(res, true);
+    }
+
     if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
 
-        if (combatController->isFleeState(username)) {
-            Name targetName = combatController->getTargetName(username);
-            Character targetCharacter = characterController->getCharacter(targetName);
-            std::string results = combatController->flee(character, targetCharacter, "");
-            combatController->deleteGame(username, targetName);
-            characterController->toggleCharacterCombat(username, targetName);
-            this->registerCallback = false;
-            Response userResponse = Response("youu have fled:\n" + results, username);
-            Response targetResponse = Response("target has fled:\n" + results, targetName);
-            auto res = formulateResponse(userResponse, targetResponse);
-            return std::make_pair(res, true);
-        }
+
 
         //check if user is in battle state
         if (combatController->isBattleState(username)) {
@@ -173,8 +177,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             auto res = formulateResponse(userResponse, targetResponse);
             return
-                    std::make_pair(res,
-                                   true);
+                    std::make_pair(res, true);
         }
 
         //this is a new request
@@ -326,23 +329,21 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
     if (combatController->isBattleState(username)) {
         Name targetName = combatController->getTargetName(username);
         Character targetCharacter = characterController->getCharacter(targetName);
+        combatController->setFleeState(username);
         std::string results = combatController->flee(character, targetCharacter, "");
-        //  combatController->deleteGame(username, targetName);
+
+        characterController->toggleCharacterCombat(username,targetName);
         this->registerCallback = false;
 
-//        Response userResponse = Response("you have fled:\n" + results, username);
-//        Response targetResponse = Response("target has fled:\n" + results, targetName);
-//        auto res = formulateResponse(userResponse, targetResponse);
+        Response userResponse = Response("you have fled:\n" + results, username);
+        Response targetResponse = Response("target has fled:\n" + results, targetName);
+        auto res = formulateResponse(userResponse, targetResponse);
         return std::make_pair(res, true);
     } else {
         Response userResponse = Response("you are not in battle:", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
-
-    // Response targetResponse = Response("target has fleed:",
-    //                                  username);
-
 }
 
 std::unique_ptr<Command> CombatFlee::clone(Name username, Input input, Connection connection = Connection{}) const {
