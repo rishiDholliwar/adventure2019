@@ -45,7 +45,7 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::COMBAT, CombatExamine(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand(CommandType::ATTACK, CombatAttack(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand(CommandType::BATTLES, CombatBattles(&_characterController, &_roomController, &_combatController).clone());
-
+    _commandHandler.registerCommand(CommandType::FLEE, CombatFlee(&_characterController, &_roomController, &_combatController).clone());
 }
 
 void
@@ -102,6 +102,9 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         }
 
         std::string username = _userController.getUsernameWithConnection(message.connection);
+        
+
+
         std::string output = "Invalid command";
 
         if (username.empty()) {
@@ -117,6 +120,31 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             text = tempInputParser.at(1);
         }
 
+      //  PERMISSIONS COULD BE CHECKED HERE
+        if(invocation != CommandType::LOGIN && invocation != CommandType::SIGNUP){
+           // _characterController.toggleCharacterCombat(username);
+            if(_characterController.isCharacterInCombat(username)){
+                if(invocation != CommandType::FLEE){
+
+                std::cout << "You are in combat. You can only flee";
+                //TODO should we just return?
+                result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
+                return result;
+                }
+
+
+                if(invocation != CommandType::ATTACK){
+                    std::cout << "You are in combat. You can only flee";
+                    //TODO should we just return?
+                  result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
+                    return result;
+                        
+                    }
+               // std::cout << "character: " << username << " is in combat\n";
+            }
+        }
+
+
         auto command = _commandHandler.getCommand(username, invocation, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {
@@ -124,6 +152,8 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             result.push_back(msg);
             continue;
         }
+
+
 
         _scheduler->schedule(command, 0);
 

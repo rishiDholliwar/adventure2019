@@ -29,6 +29,7 @@ private:
     STATE currentState;
 
     bool isGameOver = false;
+    bool isFleee = false;
 
     struct Fighter {
         bool readyForNextRound;
@@ -72,6 +73,8 @@ public:
 
     void resetRoundReady();
 
+    bool isFlee();
+
     void updateFighters(Character &fighter1, Character &fighter2);
 
     std::string runBattleRound();
@@ -91,7 +94,7 @@ public:
     bool isGameOverState();
 
     //todo implement
-    bool fleeFighter(const Name &surrenderer);
+    std::string flee(const Name &surrenderer);
 
 private :
 

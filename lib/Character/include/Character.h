@@ -28,6 +28,7 @@ private:
     Inventory inventory;
     std::vector<Object> wearing;
     bool confused;
+    bool combat;
 
     //For combat
     unsigned int currentHP = maxHP; //todo need to set this to correct value with json
@@ -210,6 +211,10 @@ public:
     void setMaxHP(unsigned int maxHP);
 
     std::string examineCombat();
+
+    bool isInCombat();
+
+    void toggleCombat();
 
 };
 

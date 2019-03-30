@@ -100,6 +100,20 @@ CombatController::executeBattleRound(Character &fighter1, Character &fighter2, c
 
 }
 
+const std::string
+CombatController::flee(Character &surrenderer, Character &winner, const Input &input) {
+//return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
+    auto &battle = getBattle(surrenderer.getName(), winner.getName());
+    battle.updateFighters(surrenderer,winner);
+    return battle.flee(surrenderer.getName());
+}
+
+bool CombatController::isFlee(Name &fighter1,Name &fighter2 ){
+     auto &battle = getBattle(fighter1,fighter2);
+     return battle.isFlee();
+}
+
+
 bool CombatController::checkInputForNextRound(const Name &instigator, const Input &input) {
     if (input.empty()) {
         return true;

@@ -10,7 +10,7 @@
 //todo bug with /move
 
 using networking::Connection;
-
+using AlterSpace::ID;
 static const std::string CHARACTER_SEPARATOR = " ";
 
 //if user types /examineCombat then print all characters in the room
@@ -87,56 +87,67 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     std::string commandName = "attack: \n";
 
+    //checking flee
+    //TODO add another state in combat for flee?
 
-  
+
+
     //check if user is in battle state
     if (combatController->isBattleState(username)) {
+
+        //TODO refactor 
+        Name tn =  combatController->getTargetName(username);
+        if(combatController->isFlee(username,tn)){
+            Name targetName = combatController->getTargetName(username);
+            Character targetCharacter = characterController->getCharacter(targetName);
+            combatController->deleteGame(username, targetName);
+            characterController->toggleCharacterCombat(username,targetName);
+            this->registerCallback = false;
+            Response targetResponse = Response("", targetName);
+
+            auto res = formulateResponse(targetResponse);
+            return std::make_pair(res, true);
+        }
+
+
+
         //todo do check to see if other player is still there and delete the game if they are not
         //checking to make sure input is correct from the user (the user only typed /attack)
        
-            Name targetName = combatController->getTargetName(username);
-            Character targetCharacter = characterController->getCharacter(targetName);
+        Name targetName = combatController->getTargetName(username);
+        Character targetCharacter = characterController->getCharacter(targetName);
+     
+        std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
 
-           // combatController->setFighterReady(username);
-         
-            std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
+        Character &fighter1 = combatController->getFighter(username);
+        Name fighterName1 = fighter1.getName();
+        characterController->setCharacterHP(fighterName1, fighter1.getCurrentHP());
 
-            Character &fighter1 = combatController->getFighter(username);
-            Name fighterName1 = fighter1.getName();
-            characterController->setCharacterHP(fighterName1, fighter1.getCurrentHP());
+        Character &fighter2 = combatController->getFighter(targetName);
+        Name fighterName2 = fighter2.getName();
+        characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
 
-            Character &fighter2 = combatController->getFighter(targetName);
-            Name fighterName2 = fighter2.getName();
-            characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
+        if (combatController->isGameOver(username)) {
+            //todo change back to some other state for the characters
+            combatController->deleteGame(username, targetName);
+            characterController->toggleCharacterCombat(username,targetName);
+            this->registerCallback = false;
+        } 
 
-            if (combatController->isGameOver(username)) {
-                //todo change back to some other state for the characters
-                combatController->deleteGame(username, targetName);
-                this->registerCallback = false;
-            } else {
-               // combatController->resetRoundReady(username);
-            }
+        std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
+        Response userResponse = Response(toMSG(targetName) + combatOutput, username);
 
-            std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
-            Response userResponse = Response(toMSG(targetName) + combatOutput, username);
+        std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
+        Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
 
-            std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
-            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
-
-            auto res = formulateResponse(userResponse, targetResponse);
-            return std::make_pair(res, true);
-            
-        
-
-        // std::string userOutput = "";
-        // Response userResponse = Response(userOutput, username);
-        // auto res = formulateResponse(userResponse);
-        // return std::make_pair(res, true);
+        auto res = formulateResponse(userResponse, targetResponse);
+        return std::make_pair(res, true);
     }
 
     //character is attacking himself
     if (character.getName() == targetName) {
         std::string userOutput = combatController->selfAttackMsg();
+  
         Response userResponse = Response(commandName + userOutput, username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
@@ -182,15 +193,17 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         }
 
         //see if character is sending duplicate attack requests
-        // if (combatController->checkDuplicateSendRequest(username, targetName)) {
-        //     Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
-        //     auto res = formulateResponse(userResponse);
-        //     return std::make_pair(res, true);
-        // }
+        if (combatController->checkDuplicateSendRequest(username, targetName)) {
+            Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, true);
+        }
 
         //see if character is replying to attack request
         if (combatController->replyPendingRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
+            characterController->toggleCharacterCombat(username,targetName);
+            //characterController->toggleCharacterCombat(targetName);
             this->registerCallback = true;
             this->callbackAfterHeartbeats = ROUND_DURATION;
             //todo now fighters must be in combat state
@@ -273,6 +286,78 @@ std::unique_ptr<Command> CombatBattles::clone() const {
 std::string CombatBattles::help() {
     return "/battles - See list of pending battles.";
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::pair<std::vector<Response>, bool> CombatFlee::execute() {
+    //TODO i dont think your suppose to be able to use this command when not in combat state
+     Character character = characterController->getCharacter(username);
+
+
+
+        //PRINT ALL NEIGHBORUING ROOMS 
+        std::cout << "Neighbouring rooms\n";
+           
+        ID roomID = character.getRoomID();
+        std::cout << "Current room id: " << roomID << std::endl;
+
+        std::vector<Room> rooms = roomController->getRoomList();
+       for(auto&room : rooms){
+        //std::cout << room.getName() << std::endl;
+
+       }
+
+            std::cout << "done\n";
+
+
+
+
+
+
+
+
+
+    //TODO need to use move command to go ro room after flee  
+    if(combatController->isBattleState(username)){
+        Name targetName = combatController->getTargetName(username);
+        Character targetCharacter = characterController->getCharacter(targetName);
+        std::string results = combatController->flee(character,targetCharacter,"");
+      //  combatController->deleteGame(username, targetName);
+        this->registerCallback = false;
+
+        Response userResponse = Response("you have fled:\n" + results, username);
+        Response targetResponse = Response("target has fled:\n" + results, targetName);
+        auto res = formulateResponse(userResponse,targetResponse);
+        return std::make_pair(res, true);
+    } else {
+       Response userResponse = Response("you are not in battle:", username);
+       auto res = formulateResponse(userResponse);
+       return std::make_pair(res, true);
+    }
+
+    // Response targetResponse = Response("target has fleed:",
+    //                                  username);
+ 
+}
+
+std::unique_ptr<Command> CombatFlee::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<CombatFlee>(this->characterController, this->roomController,
+                                           this->combatController, username, input, connection);
+}
+
+std::unique_ptr<Command> CombatFlee::clone() const {
+    return std::make_unique<CombatFlee>(this->characterController, this->roomController,
+                                           this->combatController, this->username, this->input,
+                                           this->connection);
+}
+
+std::string CombatFlee::help() {
+    return "/flee - escape from a battle.";
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 //Helper functions:
 

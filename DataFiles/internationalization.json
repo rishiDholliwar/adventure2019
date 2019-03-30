@@ -38,7 +38,8 @@
 
         "/COMBAT": "COMBAT",
         "/ATTACK": "ATTACK",
-        "/BATTLES": "BATTLES"
+        "/BATTLES": "BATTLES",
+        "/FLEE": "FLEE"
     },
     "FR": {
         "/dire": "SAY"

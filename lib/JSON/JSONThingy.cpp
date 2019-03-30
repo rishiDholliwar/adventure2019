@@ -51,7 +51,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
     //COMBAT
     {COMBAT, "COMBAT"},
     {ATTACK, "ATTACK"},
-    {BATTLES, "BATTLES"}
+    {BATTLES, "BATTLES"},
+    {FLEE, "FLEE"}
 
 
 })

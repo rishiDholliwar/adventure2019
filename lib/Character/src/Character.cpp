@@ -243,3 +243,11 @@ std::string Character::examineCombat() {
 
     return output.str();
 }
+
+bool  Character::isInCombat(){
+  return combat;
+}
+
+void Character::toggleCombat(){
+   combat = !combat;
+}

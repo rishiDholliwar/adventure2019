@@ -227,3 +227,12 @@ bool CharacterController::isCharacterConfused(Name &username) {
 void CharacterController::setCharacterHP( Name &username,unsigned int hp){
     getCharacter(username).setCurrentHP(hp);
 }
+
+bool CharacterController::isCharacterInCombat(Name &username){
+    return getCharacter(username).isInCombat();
+}
+
+void CharacterController::toggleCharacterCombat(Name &username, Name &targetname){
+    getCharacter(username).toggleCombat();
+    getCharacter(targetname).toggleCombat();
+}

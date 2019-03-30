@@ -48,11 +48,15 @@ public:
 
     void resetRoundReady(const Name &fighterName);
 
+    bool isFlee(Name &fighter1,Name &fighter2);
+
     const Name getTargetName(const Name &instigator);
 
     Character &getFighter(Name &fighterName);
 
     const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
+
+    const std::string flee(Character &fighter1, Character &fighter2, const Input &input);
 
     bool isGameOver(const Name &fighter);
 

@@ -217,6 +217,10 @@ public:
 
     //for combat
     void setCharacterHP(Name &username,unsigned int hp);
+
+    bool isCharacterInCombat(Name &username);
+
+    void toggleCharacterCombat(Name &username, Name &targetname);
 };
 
 

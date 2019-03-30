@@ -56,6 +56,7 @@ enum CommandType
     COMBAT,
     ATTACK,
     BATTLES,
+    FLEE,
 
 
     UNKNOWN = -1
