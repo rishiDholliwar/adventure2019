@@ -73,8 +73,6 @@ public:
 
     void resetRoundReady();
 
-    bool isFlee();
-
     void updateFighters(Character &fighter1, Character &fighter2);
 
     std::string runBattleRound();
@@ -92,6 +90,8 @@ public:
     bool isCombatState();
 
     bool isGameOverState();
+
+    bool isFleeState();
 
     //todo implement
     std::string flee(const Name &surrenderer);

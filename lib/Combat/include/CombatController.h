@@ -48,7 +48,7 @@ public:
 
     void resetRoundReady(const Name &fighterName);
 
-    bool isFlee(Name &fighter1,Name &fighter2);
+    bool isFleeState(Name &fighter);
 
     const Name getTargetName(const Name &instigator);
 

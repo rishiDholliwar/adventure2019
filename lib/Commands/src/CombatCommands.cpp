@@ -78,45 +78,31 @@ std::string CombatExamine::help() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
-     std::cout << "combat attack\n";
+    std::cout << "combat attack\n";
     Character character = characterController->getCharacter(username);
     std::vector<Response> res;
 
     removeExtraWhiteSpaces(input);
-    Name targetName = input;
 
     std::string commandName = "attack: \n";
 
-    //checking flee
-    //TODO add another state in combat for flee?
 
 
+    if (combatController->isFleeState(username)) {
+        Name targetName = combatController->getTargetName(username);
+        Character targetCharacter = characterController->getCharacter(targetName);
+        combatController->deleteGame(username, targetName);
+        characterController->toggleCharacterCombat(username, targetName);
+        this->registerCallback = false;
+        return std::make_pair(res, true);
+    }
 
     //check if user is in battle state
     if (combatController->isBattleState(username)) {
-
-        //TODO refactor 
-        Name tn =  combatController->getTargetName(username);
-        if(combatController->isFlee(username,tn)){
-            Name targetName = combatController->getTargetName(username);
-            Character targetCharacter = characterController->getCharacter(targetName);
-            combatController->deleteGame(username, targetName);
-            characterController->toggleCharacterCombat(username,targetName);
-            this->registerCallback = false;
-            Response targetResponse = Response("", targetName);
-
-            auto res = formulateResponse(targetResponse);
-            return std::make_pair(res, true);
-        }
-
-
-
         //todo do check to see if other player is still there and delete the game if they are not
-        //checking to make sure input is correct from the user (the user only typed /attack)
-       
         Name targetName = combatController->getTargetName(username);
         Character targetCharacter = characterController->getCharacter(targetName);
-     
+
         std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
 
         Character &fighter1 = combatController->getFighter(username);
@@ -128,11 +114,10 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
 
         if (combatController->isGameOver(username)) {
-            //todo change back to some other state for the characters
             combatController->deleteGame(username, targetName);
-           characterController->toggleCharacterCombat(username,targetName);
+            characterController->toggleCharacterCombat(username, targetName);
             this->registerCallback = false;
-        } 
+        }
 
         std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
         Response userResponse = Response(toMSG(targetName) + combatOutput, username);
@@ -144,20 +129,22 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
+    Name targetName = input;
+
     //character is attacking himself
-    if (character.getName() == targetName) {
+    if (character.getName() == input) {
         std::string userOutput = combatController->selfAttackMsg();
-  
         Response userResponse = Response(commandName + userOutput, username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
 
-    if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
+    if (roomController->isTargetInRoom(username, character.getRoomID(),targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
 
         //battle has already been accepted by both people
         if (combatController->isBattleStarted(username, targetName)) {
+            std::cout << "--------------Battle startyed-----------\n";
             std::string combatOutput = combatController->sendOwnerFightingMsg(targetName);
             Response userResponse = Response(toMSG(targetName) + combatOutput, username);
 
@@ -171,7 +158,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
 
-          //checks if target is in battle state, and if true no request sent
+            //checks if target is in battle state, and if true no request sent
             if (combatController->isBattleState(targetName)) {
                 std::string userOutput = combatController->sendTargetInCombatState(targetName);
                 Response userResponse = Response(userOutput, username);
@@ -181,7 +168,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             std::cout << "new battle\n";
             combatController->createNewBattle(character, targetCharacter);
-           // combatController->setFighterReady(username);
+            // combatController->setFighterReady(username);
 
             Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
 
@@ -202,7 +189,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         //see if character is replying to attack request
         if (combatController->replyPendingRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
-            characterController->toggleCharacterCombat(username,targetName);
+            characterController->toggleCharacterCombat(username, targetName);
             //characterController->toggleCharacterCombat(targetName);
             this->registerCallback = true;
             this->callbackAfterHeartbeats = ROUND_DURATION;
@@ -247,13 +234,13 @@ std::pair<std::vector<Response>, bool> CombatAttack::callback() {
 std::unique_ptr<Command>
 CombatAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
     return std::make_unique<CombatAttack>(this->characterController, this->roomController,
-                                               this->combatController, username, input, connection);
+                                          this->combatController, username, input, connection);
 }
 
 std::unique_ptr<Command> CombatAttack::clone() const {
     return std::make_unique<CombatAttack>(this->characterController, this->roomController,
-                                               this->combatController, this->username, this->input,
-                                               this->connection);
+                                          this->combatController, this->username, this->input,
+                                          this->connection);
 }
 
 std::string CombatAttack::help() {
@@ -290,23 +277,23 @@ std::string CombatBattles::help() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatFlee::execute() {
     //TODO i dont think your suppose to be able to use this command when not in combat state
-     Character character = characterController->getCharacter(username);
+    Character character = characterController->getCharacter(username);
 
 
 
-        //PRINT ALL NEIGHBORUING ROOMS 
-        std::cout << "Neighbouring rooms\n";
-           
-        ID roomID = character.getRoomID();
-        std::cout << "Current room id: " << roomID << std::endl;
+    //PRINT ALL NEIGHBORUING ROOMS
+    std::cout << "Neighbouring rooms\n";
 
-        std::vector<Room> rooms = roomController->getRoomList();
-       for(auto&room : rooms){
+    ID roomID = character.getRoomID();
+    std::cout << "Current room id: " << roomID << std::endl;
+
+    std::vector<Room> rooms = roomController->getRoomList();
+    for (auto &room : rooms) {
         //std::cout << room.getName() << std::endl;
 
-       }
+    }
 
-            std::cout << "done\n";
+    std::cout << "done\n";
 
 
 
@@ -317,37 +304,37 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
 
 
     //TODO need to use move command to go ro room after flee  
-    if(combatController->isBattleState(username)){
+    if (combatController->isBattleState(username)) {
         Name targetName = combatController->getTargetName(username);
         Character targetCharacter = characterController->getCharacter(targetName);
-        std::string results = combatController->flee(character,targetCharacter,"");
-      //  combatController->deleteGame(username, targetName);
+        std::string results = combatController->flee(character, targetCharacter, "");
+        //  combatController->deleteGame(username, targetName);
         this->registerCallback = false;
 
         Response userResponse = Response("you have fled:\n" + results, username);
         Response targetResponse = Response("target has fled:\n" + results, targetName);
-        auto res = formulateResponse(userResponse,targetResponse);
+        auto res = formulateResponse(userResponse, targetResponse);
         return std::make_pair(res, true);
     } else {
-       Response userResponse = Response("you are not in battle:", username);
-       auto res = formulateResponse(userResponse);
-       return std::make_pair(res, true);
+        Response userResponse = Response("you are not in battle:", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
     }
 
     // Response targetResponse = Response("target has fleed:",
     //                                  username);
- 
+
 }
 
 std::unique_ptr<Command> CombatFlee::clone(Name username, Input input, Connection connection = Connection{}) const {
     return std::make_unique<CombatFlee>(this->characterController, this->roomController,
-                                           this->combatController, username, input, connection);
+                                        this->combatController, username, input, connection);
 }
 
 std::unique_ptr<Command> CombatFlee::clone() const {
     return std::make_unique<CombatFlee>(this->characterController, this->roomController,
-                                           this->combatController, this->username, this->input,
-                                           this->connection);
+                                        this->combatController, this->username, this->input,
+                                        this->connection);
 }
 
 std::string CombatFlee::help() {

@@ -104,13 +104,20 @@ const std::string
 CombatController::flee(Character &surrenderer, Character &winner, const Input &input) {
 //return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
     auto &battle = getBattle(surrenderer.getName(), winner.getName());
-    battle.updateFighters(surrenderer,winner);
+    battle.updateFighters(surrenderer, winner);
     return battle.flee(surrenderer.getName());
 }
 
-bool CombatController::isFlee(Name &fighter1,Name &fighter2 ){
-     auto &battle = getBattle(fighter1,fighter2);
-     return battle.isFlee();
+bool CombatController::isFleeState(Name &fighter) {
+    for (auto &battle: battleList) {
+        if (battle.isFleeState()) {
+            if (battle.isInBattle(fighter)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 
@@ -159,6 +166,7 @@ bool CombatController::isGameOver(const Name &fighter) {
 
 const Name CombatController::getTargetName(const Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
+
     if (battle.getInstigatorName() == fighter) {
         return battle.getOpponentName();
     }

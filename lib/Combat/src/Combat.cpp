@@ -103,10 +103,6 @@ void Combat::updateFighters(Character &fighter1, Character &fighter2) {
     }
 }
 
-bool Combat::isFlee(){
-    return isFleee;
-}
-
  std::string Combat::flee(const Name &surrenderer){
     Character winner;
     if(surrenderer != getInstigatorName()){
@@ -258,4 +254,8 @@ bool Combat::isGameOverState() {
 //    }
 
     return this->isGameOver;
+}
+
+bool Combat::isFleeState(){
+    return isFleee;
 }
