@@ -63,17 +63,8 @@ Game::removeConnection(Connection c) {
         _scheduler->schedule(forcedLogout, 0);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
-
-        if(_combatController.isBattleState(username)){
-            Name targetName = _combatController.getTargetName(username);
-            _combatController.deleteGame(username,targetName);
-            _characterController.toggleCharacterCombat(username,targetName);
-            std::cout << "delete combat for: " << username << std::endl;
-        }
-
-
-
     }
+
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
     _clients.erase(eraseBegin, std::end(_clients));
 }

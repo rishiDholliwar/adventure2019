@@ -221,6 +221,9 @@ public:
     bool isCharacterInCombat(Name &username);
 
     void toggleCharacterCombat(Name &username, Name &targetname);
+
+    void toggleCharacterCombat(Name &username);
+
 };
 
 

@@ -236,3 +236,7 @@ void CharacterController::toggleCharacterCombat(Name &username, Name &targetname
     getCharacter(username).toggleCombat();
     getCharacter(targetname).toggleCombat();
 }
+
+void CharacterController::toggleCharacterCombat(Name &username){
+    getCharacter(username).toggleCombat();
+}
