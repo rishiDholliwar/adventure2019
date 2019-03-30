@@ -88,46 +88,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
 
 
-    if (combatController->isFleeState(username)) {
-        Name targetName = combatController->getTargetName(username);
-        Character targetCharacter = characterController->getCharacter(targetName);
-        combatController->deleteGame(username, targetName);
-        characterController->toggleCharacterCombat(username, targetName);
-        this->registerCallback = false;
-        return std::make_pair(res, true);
-    }
 
-    //check if user is in battle state
-    if (combatController->isBattleState(username)) {
-        //todo do check to see if other player is still there and delete the game if they are not
-        Name targetName = combatController->getTargetName(username);
-        Character targetCharacter = characterController->getCharacter(targetName);
-
-        std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
-
-        Character &fighter1 = combatController->getFighter(username);
-        Name fighterName1 = fighter1.getName();
-        characterController->setCharacterHP(fighterName1, fighter1.getCurrentHP());
-
-        Character &fighter2 = combatController->getFighter(targetName);
-        Name fighterName2 = fighter2.getName();
-        characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
-
-        if (combatController->isGameOver(username)) {
-            combatController->deleteGame(username, targetName);
-            characterController->toggleCharacterCombat(username, targetName);
-            this->registerCallback = false;
-        }
-
-        std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
-        Response userResponse = Response(toMSG(targetName) + combatOutput, username);
-
-        std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
-        Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
-
-        auto res = formulateResponse(userResponse, targetResponse);
-        return std::make_pair(res, true);
-    }
 
     Name targetName = input;
 
@@ -141,6 +102,47 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     if (roomController->isTargetInRoom(username, character.getRoomID(),targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
+
+        if (combatController->isFleeState(username)) {
+            Name targetName = combatController->getTargetName(username);
+            Character targetCharacter = characterController->getCharacter(targetName);
+            combatController->deleteGame(username, targetName);
+            characterController->toggleCharacterCombat(username, targetName);
+            this->registerCallback = false;
+            return std::make_pair(res, true);
+        }
+
+        //check if user is in battle state
+        if (combatController->isBattleState(username)) {
+            //todo do check to see if other player is still there and delete the game if they are not
+            Name targetName = combatController->getTargetName(username);
+            Character targetCharacter = characterController->getCharacter(targetName);
+
+            std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
+
+            Character &fighter1 = combatController->getFighter(username);
+            Name fighterName1 = fighter1.getName();
+            characterController->setCharacterHP(fighterName1, fighter1.getCurrentHP());
+
+            Character &fighter2 = combatController->getFighter(targetName);
+            Name fighterName2 = fighter2.getName();
+            characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
+
+            if (combatController->isGameOver(username)) {
+                combatController->deleteGame(username, targetName);
+                characterController->toggleCharacterCombat(username, targetName);
+                this->registerCallback = false;
+            }
+
+            std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
+            Response userResponse = Response(toMSG(targetName) + combatOutput, username);
+
+            std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
+            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
+
+            auto res = formulateResponse(userResponse, targetResponse);
+            return std::make_pair(res, true);
+        }
 
         //battle has already been accepted by both people
         if (combatController->isBattleStarted(username, targetName)) {
