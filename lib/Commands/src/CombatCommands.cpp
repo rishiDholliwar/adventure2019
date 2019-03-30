@@ -79,8 +79,15 @@ std::string CombatExamine::help() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     std::cout << "combat attack\n";
-    Character character = characterController->getCharacter(username);
     std::vector<Response> res;
+    if (!(characterController->doesCharacterExist(username))) {
+        this->registerCallback = false;
+       // Response userResponse = Response("Target doesn't exist, sorry!", username);
+        //auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+    Character character = characterController->getCharacter(username);
+
 
     removeExtraWhiteSpaces(input);
 

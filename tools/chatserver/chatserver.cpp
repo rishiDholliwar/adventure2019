@@ -64,6 +64,12 @@ Game::removeConnection(Connection c) {
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
 
+        if(_combatController.isBattleState(username)){
+            Name targetName = _combatController.getTargetName(username);
+            _combatController.deleteGame(username,targetName);
+            _characterController.toggleCharacterCombat(username,targetName);
+            std::cout << "delete combat for: " << username << std::endl;
+        }
 
 
 
