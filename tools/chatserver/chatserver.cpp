@@ -133,7 +133,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
            // _characterController.toggleCharacterCombat(username);
             if(_characterController.isCharacterInCombat(username)){
                 std::cout <<  "---------User: " << username << " is in combat---------\n";
-                if(invocation != CommandType::FLEE && invocation != CommandType::ATTACK){
+                if(invocation != CommandType::FLEE){
                     std::cout << "You are in combat. You can only flee";
                     result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
                     return result;

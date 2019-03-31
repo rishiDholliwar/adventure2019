@@ -6,9 +6,6 @@
 #include <boost/algorithm/string.hpp>
 #include <regex>
 
-
-//todo bug with /move
-
 using networking::Connection;
 using AlterSpace::ID;
 static const std::string CHARACTER_SEPARATOR = " ";
