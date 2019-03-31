@@ -17,6 +17,7 @@ void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *c
 void removeExtraWhiteSpaces(Input &input); //removes all extra whitespaces to correct user errors when typing
 std::string toMSG(const Name &name);
 std::string fromMSG(const Name &name);
+void removeTargets(std::vector<std::string> &characterList, Name username);
 
 class CombatExamine : public Command {
 private:
