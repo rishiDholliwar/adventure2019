@@ -40,7 +40,7 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::LOOK, Look(&_characterController,&_roomController, &_objectController).clone());
     _commandHandler.registerCommand(CommandType::EXAMINE, Examine(&_characterController,&_roomController, &_objectController).clone());
     _commandHandler.registerCommand(CommandType::MOVE, Move(&_characterController,&_roomController).clone());
-     _commandHandler.registerCommand("/pickup", Pickup(&_characterController,&_roomController, &_objectController).clone());
+     _commandHandler.registerCommand(CommandType::PICKUP, Pickup(&_characterController,&_roomController, &_objectController).clone());
 
 }
 
