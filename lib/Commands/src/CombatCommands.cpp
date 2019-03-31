@@ -5,8 +5,6 @@
 #include <Server.h>
 #include <boost/algorithm/string.hpp>
 #include <regex>
-#include <cstdlib>      // std::rand, std::srand
-#include <ctime>        // std::time
 #include <algorithm>    // std::random_shuffle
 
 using networking::Connection;
@@ -111,16 +109,15 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
-
     Character character = characterController->getCharacter(username);
 
     std::string commandName = "attack: \n";
 
-    removeExtraWhiteSpaces(input);
-    Name targetName = input;
+    removeExtraWhiteSpaces(targetInput);
+    Name targetName = targetInput;
 
     //check character is attacking himself
-    if (character.getName() == input) {
+    if (character.getName() == targetInput) {
         std::string userOutput = combatController->selfAttackMsg();
         Response userResponse = Response(commandName + userOutput, username);
         auto res = formulateResponse(userResponse);
@@ -142,7 +139,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             Name targetName = combatController->getTargetName(username);
             Character targetCharacter = characterController->getCharacter(targetName);
 
-            std::string combatResults = combatController->executeBattleRound(character, targetCharacter, input);
+            std::string combatResults = combatController->executeBattleRound(character, targetCharacter, targetInput);
 
             Character &fighter1 = combatController->getFighter(username);
             Name fighterName1 = fighter1.getName();
@@ -243,7 +240,7 @@ CombatAttack::clone(Name username, Input input, Connection connection = Connecti
 
 std::unique_ptr<Command> CombatAttack::clone() const {
     return std::make_unique<CombatAttack>(this->characterController, this->roomController,
-                                          this->combatController, this->username, this->input,
+                                          this->combatController, this->username, this->targetInput,
                                           this->connection);
 }
 
@@ -280,126 +277,90 @@ std::string CombatBattles::help() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatFlee::execute() {
-    //TODO i dont think your suppose to be able to use this command when not in combat state
     Character character = characterController->getCharacter(username);
 
+    if (combatController->isBattleState(username)) {
+        Name targetName = combatController->getTargetName(username);
+        Character targetCharacter = characterController->getCharacter(targetName);
+        combatController->setFleeState(username);
+        std::string results = combatController->flee(character, targetCharacter, "");
 
-    std::vector<std::string> directions{"north", "east", "south", "west"};
-    std::random_shuffle(directions.begin(), directions.end());
+        characterController->toggleCharacterCombat(username, targetName);
+        this->registerCallback = false;
 
-    ID roomId = character.getRoomID();
+        ID roomId = character.getRoomID();
+        std::vector<std::string> directions{"north", "east", "south", "west"};
+        std::random_shuffle(directions.begin(), directions.end());
 
+        for (auto &direction: directions) {
+            ID toID = roomController->getDoorDesignatedRoomId(roomId, direction);
+            if (toID != Door::unfoundDoorId) {
+                if (roomController->getDoorStatus(roomId, direction) != Door::LOCKED) {
+                    std::vector<std::string> userList = roomController->getCharacterList(
+                            characterController->getCharacterRoomID(username));
+                    // Update roomList to account for character moving
+                    roomController->removeCharacterFromRoom(username, roomId);
+                    roomController->removeCharacterFromRoom(username, toID);
+                    characterController->setCharacterRoomID(username, toID);
 
-//        //PRINT ALL NEIGHBORUING ROOMS
-//        std::cout << "Neighbouring rooms\n";
-//
-//
-//        std::cout << "Current room id: " << roomId << std::endl;
-//        std::cout << "gadi : " << roomController->getAllDoorInformationInRoom(roomId) << std::endl;
-//        roomController->searchDoor(roomId, "north");
-//        std::vector<Room> rooms = roomController->getRoomList();
-//        for (auto &room : rooms) {
-//            //std::cout << room.getName() << std::endl;
-//
-//        }
-
-      //  std::cout << "done\n";
-
-
-        std::vector<Response> res;
-
-
-
-
-
-
-        //TODO need to use move command to go ro room after flee
-        if (combatController->isBattleState(username)) {
-            Name targetName = combatController->getTargetName(username);
-            Character targetCharacter = characterController->getCharacter(targetName);
-            combatController->setFleeState(username);
-            std::string results = combatController->flee(character, targetCharacter, "");
-
-            characterController->toggleCharacterCombat(username, targetName);
-            this->registerCallback = false;
-
-
-            for (auto &direction: directions) {
-                ID toID = roomController->getDoorDesignatedRoomId(roomId, direction);
-                if (toID != Door::unfoundDoorId) {
-                    if (roomController->getDoorStatus(roomId, direction) != Door::LOCKED) {
-                        std::vector<std::string> userList = roomController->getCharacterList(
-                                characterController->getCharacterRoomID(username));
-                        // Update roomList to account for character moving
-                        roomController->removeCharacterFromRoom(username, roomId);
-                        roomController->removeCharacterFromRoom(username, toID);
-                        characterController->setCharacterRoomID(username, toID);
-
-
-                        Response userResponse = Response("you have fled " + direction + "\n" + results, username);
-                        Response targetResponse = Response("target has fled:\n" + results, targetName);
-                        auto res = formulateResponse(userResponse, targetResponse);
-                        return std::make_pair(res, true);
-
-
-                    }
+                    Response userResponse = Response("you have fled " + direction + "\n" + results, username);
+                    Response targetResponse = Response("target has fled:\n" + results, targetName);
+                    auto res = formulateResponse(userResponse, targetResponse);
+                    return std::make_pair(res, true);
                 }
             }
-
-
-
-
-            Response userResponse = Response("you have fled:\n" + results, username);
-            Response targetResponse = Response("target has fled:\n" + results, targetName);
-            auto res = formulateResponse(userResponse, targetResponse);
-            return std::make_pair(res, true);
-        } else {
-            Response userResponse = Response("you are not in battle:", username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
         }
-    }
 
-    std::unique_ptr<Command> CombatFlee::clone(Name username, Input input, Connection connection = Connection{}) const {
-        return std::make_unique<CombatFlee>(this->characterController, this->roomController,
-                                            this->combatController, username, input, connection);
+        Response userResponse = Response("you have fled:\n" + results, username);
+        Response targetResponse = Response("target has fled:\n" + results, targetName);
+        auto res = formulateResponse(userResponse, targetResponse);
+        return std::make_pair(res, true);
+    } else {
+        Response userResponse = Response("you are not in battle:", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
     }
+}
 
-    std::unique_ptr<Command> CombatFlee::clone() const {
-        return std::make_unique<CombatFlee>(this->characterController, this->roomController,
-                                            this->combatController, this->username, this->input,
-                                            this->connection);
-    }
+std::unique_ptr<Command> CombatFlee::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<CombatFlee>(this->characterController, this->roomController,
+                                        this->combatController, username, input, connection);
+}
 
-    std::string CombatFlee::help() {
-        return "/flee - escape from a battle.";
-    }
+std::unique_ptr<Command> CombatFlee::clone() const {
+    return std::make_unique<CombatFlee>(this->characterController, this->roomController,
+                                        this->combatController, this->username, this->input,
+                                        this->connection);
+}
 
+std::string CombatFlee::help() {
+    return "/flee - escape from a battle and move to a random neighboring room";
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Helper functions:
 
-    void removeExtraWhiteSpaces(Input &input) {
-        input = std::regex_replace(input, std::regex("^ +| +$|( ) +"), "$1");
-    }
+void removeExtraWhiteSpaces(Input &input) {
+    input = std::regex_replace(input, std::regex("^ +| +$|( ) +"), "$1");
+}
 
-    void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *characterCtrl,
-                                    Character player,
-                                    std::vector<Character> &charactersInRoom) {
+void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *characterCtrl,
+                                Character player,
+                                std::vector<Character> &charactersInRoom) {
 
-        Name name = player.getName();
-        for (auto name: roomCtrl->getCharacterList(characterCtrl->getCharacterRoomID(name))) {
-            charactersInRoom.push_back(characterCtrl->getCharacter(name));
-        }
+    Name name = player.getName();
+    for (auto name: roomCtrl->getCharacterList(characterCtrl->getCharacterRoomID(name))) {
+        charactersInRoom.push_back(characterCtrl->getCharacter(name));
     }
+}
 
-    std::string toMSG(const Name &name) {
-        return "To [" + name + "]: ";
-    }
+std::string toMSG(const Name &name) {
+    return "To [" + name + "]: ";
+}
 
-    std::string fromMSG(const Name &name) {
-        return "From [" + name + "]: ";
-    }
+std::string fromMSG(const Name &name) {
+    return "From [" + name + "]: ";
+}
 
 
 void removeTargets(std::vector<std::string> &characterList, Name username) {

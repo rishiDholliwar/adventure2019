@@ -52,7 +52,7 @@ private:
     RoomController *roomController;
     CombatController *combatController;
     Name username;
-    Input input;
+    Input targetInput;
     Connection connection;
 
 public:
@@ -61,7 +61,7 @@ public:
                       CombatController *combatController,
                       Name username = "", Input input = "", Connection connection = Connection{})
             : roomController(roomController), combatController(combatController),
-              username(std::move(username)), input(std::move(input)), connection(connection) {
+              username(std::move(username)), targetInput(std::move(input)), connection(connection) {
         this->characterController = characterController;
     };
 
