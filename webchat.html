@@ -131,7 +131,6 @@
             color: #ffc107;
         }
 
-
         .logoutBtn {
             color: white;
             background-color: red;
@@ -275,6 +274,8 @@
 
             $('.logoutBtn').css("display", "none");
             $("#welcomeMessage").css("display", "none");
+
+
             Prompt = new CustomPrompt();
 
             function CustomPrompt() {
@@ -285,6 +286,7 @@
                     $('#usernameVal').focus();
                     $('#d_boxbody').append("Password");
                     $('#d_boxbody').append("<br><input id='passwordVal' placeholder=\"Enter Password\">");
+                    $('#d_boxbody').append("<br><input type='checkbox' onclick='passwordDisplayToggle()'><span style='font-size: 16px;font-weight:normal;'>Hide Password</span>");
                 };
 
                 this.render = function (title, errorMessage, isLogin) {
@@ -380,6 +382,14 @@
             }
         });
 
+        function passwordDisplayToggle() {
+            var x = document.getElementById("passwordVal");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
     </script>
 </head>
 
