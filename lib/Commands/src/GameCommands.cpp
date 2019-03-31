@@ -754,42 +754,110 @@ std::string Swap::help() {
 //Pickup
 std::pair<std::vector<Response>, bool> Pickup::execute(){
 
-    std::cout << "pickup command called" << std::endl;
     if(target.empty()){
         Response userResponse = Response("Please input a target.\n", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
-    std::cout << "Lets figure out what the object we want is ID'd " << target << std::endl;
+
+    std::vector<std::string> inputStrings = utility::popFront(target);
+
+    if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+        return this->interact();
+    }
+
     ID roomID = characterController->getCharacterRoomID(username);
     auto objectList = roomController->getObjectList(roomID);
+
+    std::vector<Object> interactableItems;
+
     for(const ID objectID : objectList){
         Name objectName = objectController->getObjectName(objectID);
         if(objectName == target){
             //we found the item
             //lets assume that item is valid and checked
-            Object item = objectController->getObjectFromList(objectName);
-            characterController->addItemToCharacterInventory(username,item);
-            roomController->removeObjectFromRoom(objectID,roomID);
-            Response userResponse = Response(objectName + " has been added to your inventory.\n", username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
+            interactableItems.push_back(objectController->getObjectFromList(objectID));
         }
     }
-    Response userResponse = Response("You can't find that item.\n", username);
+    if(interactableItems.size() > MULTIPLE_ITEMS){
+        interactions = interactableItems;
+
+        std::stringstream ss;
+        ss << "There are 1 item named " << interactableItems[0].getName() << ". Which item would you like to pickup?\n";
+
+        int counter = 0;
+        for (auto &obj : interactions) {
+            ss << "\t" << ++counter << ". " << obj.getName() << ", ID: " << obj.getID() << "\n";
+        }
+
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    } else if(interactableItems.size() == 1){
+        Object item = objectController->getObjectFromList(interactableItems[0].getName());
+        characterController->addItemToCharacterInventory(username,item);
+        roomController->removeObjectFromRoom(interactableItems[0].getID(),roomID);
+        Response userResponse = Response(interactableItems[0].getName() + " has been added to your inventory.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    } else {
+        Response userResponse = Response("You can't find that item.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+}
+
+std::pair<std::vector<Response>, bool> Pickup::interact() {
+    std::cout << "pickup interaction" << std::endl;
+
+    std::vector<std::string> v = utility::tokenizeString(target);
+
+    if ( v.size() != 2 ) {
+        std::cout << "Too many arguments..." << std::endl;
+        Response userResponse = Response("Please enter /pickup interact {index number of the item you wish to pickup}.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    std::stringstream ss{v.at(INTERACT_CHOICE)};
+    int index = -1;
+    ss >> index;
+    index--;
+    if ( index >= interactions.size() || index < 0 ) {
+        Response userResponse = Response("Please enter /pickup interact {index number of the item you wish to pickup}.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    ID interactionID = interactions.at(index).getID();
+    Name interactionName = interactions.at(index).getName();
+
+    Name charName = characterController->getCharName(username);
+
+
+    //DO LOGIC
+
+    //generate response
+    Object item = objectController->getObjectFromList(interactionName);
+    characterController->addItemToCharacterInventory(username,item);
+    roomController->removeObjectFromRoom(interactionID,characterController->getCharacterRoomID(username));
+    Response userResponse = Response(interactionName + " has been added to your inventory.\n", username);
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
 }
 
+
 std::unique_ptr<Command> Pickup::clone() const {
     auto pickup = std::make_unique<Pickup>(this->characterController, this->roomController, this->objectController,
                                              this->username, this->target);
+    pickup->setInteractions(this->interactions, this->interactTarget);
     return std::move(pickup);
 }
 
 std::unique_ptr<Command> Pickup::clone(Name username, Input target, Connection connection) const {
     auto pickup = std::make_unique<Pickup>(this->characterController, this->roomController, this->objectController,
                                              username, target);
+    pickup->setInteractions(this->interactions, this->interactTarget);
     return std::move(pickup);
 }
 
@@ -797,6 +865,10 @@ std::string Pickup::help() {
     return "/look [target] - get detailed description of the target.";
 }
 
+void Pickup::setInteractions(std::vector<Object> i, Name interactT) {
+    interactions = i;
+    interactTarget = interactT;
+}
 
 std::pair<std::vector<Response>, bool> Help::execute() {
     const auto commands = commandHandler->getAllCommands();

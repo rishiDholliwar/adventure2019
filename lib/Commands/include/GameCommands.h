@@ -258,6 +258,7 @@ private:
     Input target;
     std::vector<std::string> interactions;
     void setInteractions(std::vector<std::string> i);
+
 public:
     explicit
     Examine(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
@@ -284,8 +285,17 @@ private:
     ObjectController* objectController;
     Name username;
     Input target;
-    std::vector<std::string> interactions;
-    void setInteractions(std::vector<std::string> i);
+    std::vector<Object> interactions;
+
+    void setInteractions(std::vector<Object> i, Name interactT);
+
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int MULTIPLE_ITEMS = 1;
+
+    const unsigned int INTERACT_CHOICE = 1;
+
+    // int interactItemChoice;
+    Name interactTarget;
 public:
     explicit
     Pickup(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
