@@ -68,6 +68,17 @@ bool Room::removeDoor(ID doorId) {
     return size != list.size();
 }
 
+void Room::removeDoorByDirection(const std::string& direction) {
+    auto it = std::find_if(doorList.begin(), doorList.end(),
+            [&direction](const Door& door)
+            {return door.getDirection() == direction;});
+
+    // if id exist
+    if (it != doorList.end()) {
+        doorList.erase(it);
+    }
+}
+
 std::string Room::getTextOfRoomDetails() {
     std::stringstream outputString;
     outputString << "Room ID: " << this->getId() << "\n" <<

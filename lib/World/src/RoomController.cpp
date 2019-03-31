@@ -4,7 +4,18 @@
 
 RoomController::RoomController(){}
 
-RoomController::RoomController(const std::vector<Room> roomList) : roomList(roomList) {}
+RoomController::RoomController(const std::vector<Room> roomList) : roomList(roomList) {
+    for(Room& room : this->roomList) {
+        auto& doors = room.getDoorList();
+        for(auto& door : doors ) {
+            if(searchRoom(door.getDesignatedRoomId()) == nullptr) {
+                std::cout << "In room: " << room.getName() << std::endl;
+                std::cout << "Deleted door to: " << door.getDesignatedRoomId() << std::endl;
+                room.removeDoorByDirection(door.getDirection());
+            }
+        }
+    }
+}
 
 /*
  * Getters
