@@ -174,10 +174,17 @@ public:
 class Swap : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
+    const unsigned int TARGET_CHARACTER_NAME = 0;
+
     Name username;
     Input target;
-    std::vector<std::string> interactions;
-    void setInteractions(std::vector<std::string> i);
+    void setInteractions(std::vector<std::string> i, Name interactT);
+
+    std::vector<Name> interactions;
+    Name interactTarget;
 public:
     explicit
     Swap(CharacterController* characterController, Name username = "", Input target = "", Connection connection = Connection{})
@@ -191,45 +198,27 @@ public:
     ~Swap() = default;
     std::pair<std::vector<Response>, bool> execute() override;
     std::pair<std::vector<Response>, bool> callback() override;
-    // std::pair<std::vector<Response>, bool> interact();
+    std::pair<std::vector<Response>, bool> interact();
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
     std::string help() override;
 };
 
-
-//move
-class Move : public Command
-{
-private:
-    Name username;
-    Input direction;
-    std::vector<std::string> interactions;
-    RoomController* roomController;
-    void removeTargets(std::vector<std::string> &characterList, Name username);
-public:
-    explicit
-    Move(CharacterController* characterController,RoomController* roomController, Name username = "", Input direction = "", Connection connection = Connection{})
-            : roomController(roomController), username(std::move(username)), direction(std::move(direction)) {
-        this->characterController = characterController;
-    };
-
-    ~Move() = default;
-    std::pair<std::vector<Response>, bool> execute() override;
-    std::unique_ptr<Command> clone() const override;
-    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
-    std::string help() override;
-};
 
 //look
 class Look : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
     RoomController* roomController;
     ObjectController* objectController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
+
+    void setInteractions(std::vector<std::string> i);
 public:
     explicit
     Look(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
@@ -252,11 +241,15 @@ public:
 class Examine : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
     RoomController* roomController;
     ObjectController* objectController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
+
     void setInteractions(std::vector<std::string> i);
 
 public:
@@ -335,5 +328,31 @@ public:
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
     std::string help() override;
 };
+
+//move
+class Move : public Command
+{
+private:
+    Name username;
+    Input direction;
+    std::vector<std::string> interactions;
+    RoomController* roomController;
+public:
+    explicit
+    Move(CharacterController* characterController,RoomController* roomController, Name username = "", Input direction = "", Connection connection = Connection{})
+            : username(std::move(username)), direction(std::move(direction)) {
+        this->characterController = characterController;
+        this->roomController = roomController;;
+    };
+
+    ~Move() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+
+    void removeTargets(std::vector<std::string> &characterList, Name username);
+};
+
 
 #endif //ALTERSPACE_GAMECOMMANDS_H

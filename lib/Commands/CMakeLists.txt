@@ -1,7 +1,8 @@
 add_library(commands
   src/Command.cpp
   src/GameCommands.cpp
-  src/UserCommands.cpp)
+  src/UserCommands.cpp
+  src/ResetCommand.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 

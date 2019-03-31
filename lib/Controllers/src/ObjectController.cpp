@@ -2,20 +2,17 @@
 #include <algorithm>
 #include <Utility.h>
 
-ObjectController::ObjectController(){
+ObjectController::ObjectController(std::vector<Object> objVect) {
+	for (auto &obj : objVect) {
+		addObjectToList(obj);
+	}
+}
 
-
-    Object a = Object("sword");
-    Object b = Object("shield");
-    Object c = Object("sword");
-    addObjectToList(a);
-    addObjectToList(b);
-    addObjectToList(c);
-
-    std::cout << "Sword: " << a.getID() << " Shield: " << b.getID() << std::endl;
-
-
-};
+void ObjectController::addObjectsToList(const std::vector<Object> objs) {
+	for (auto &obj : objs) {
+		addObjectToList(obj);
+	}
+}
 
 bool ObjectController::addObjectToList(const Object &object) {
 	objects.insert( { object.getID(), object } );
@@ -31,6 +28,19 @@ bool ObjectController::doesObjectOfThisNameExist(const Name objectName) {
 	});
 
 	return itr != objects.end();
+}
+
+Object ObjectController::getObjectFromListByJSONObjectID(const ID jsonObjectID) const {
+	auto itr = find_if(objects.begin(), objects.end(), [ jsonObjectID ] (std::pair<ID, Object> const& objPair )->bool {
+        return objPair.second.getObjectID() == jsonObjectID;
+    });
+    auto objectID = itr->second.getObjectID();
+    auto keywords = itr->second.getKeywords();
+    auto shortdesc = itr->second.getShortDesc();
+    auto longdesc = itr->second.getLongDesc();
+    auto extra = itr->second.getExtra();
+    Object newObj(objectID, keywords, shortdesc, longdesc, extra);
+    return std::move(newObj);
 }
 
 const Object &ObjectController::getObjectFromList(const ID objectID) const {

@@ -1,5 +1,5 @@
 add_library(controllers
-        src/CharacterController.cpp src/ObjectController.cpp)
+        src/CharacterController.cpp src/ObjectController.cpp src/ResetController.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
@@ -14,12 +14,12 @@ target_include_directories(controllers
 
 target_link_libraries(controllers
 PRIVATE
-	NPC
         world
         Character
         Object
         Inventory
         utility
+        Reset
         ${Boost_LIBRARIES}
         )
 

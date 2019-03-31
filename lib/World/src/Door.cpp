@@ -24,3 +24,7 @@ void Door::setDoorLocked() {
 void Door::setDoorUnlocked() {
     status = UNLOCKED;
 }
+
+Door::Door(const std::string &direction, const std::vector<std::string> &descriptions,
+        const std::vector<std::string> &keywords, ID designatedRoomID) : designatedRoomID(designatedRoomID), direction(direction),
+                                                           keywords(keywords), descriptions(descriptions) {}
