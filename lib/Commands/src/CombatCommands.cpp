@@ -89,7 +89,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(targetName))) {
                 characterController->toggleCharacterCombat(targetName);
-                Response userResponse = Response("target is offline:\n" + results, targetName);
+                Response userResponse = Response("Target is offline:\n" + results, targetName);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
             }
@@ -101,7 +101,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(username))) {
                 characterController->toggleCharacterCombat(username);
-                Response userResponse = Response("target is offline:\n" + results, username);
+                Response userResponse = Response("Target is offline:\n" + results, username);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
             }
@@ -155,15 +155,10 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
                 this->registerCallback = false;
             }
 
-            std::string combatOutput = combatController->sendOwnerFightingMsg(targetName) + combatResults;
-            Response userResponse = Response(toMSG(targetName) + combatOutput, username);
-
-            std::string targetOutput = combatController->sendTargetFightingMsg(username) + combatResults;
-            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
-
+            Response userResponse = Response(combatResults, username);
+            Response targetResponse = Response(combatResults, targetName);
             auto res = formulateResponse(userResponse, targetResponse);
-            return
-                    std::make_pair(res, true);
+            return std::make_pair(res, true);
         }
 
         //this is a new request
@@ -204,8 +199,8 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
-                Response userResponse = Response(toMSG(targetName) + "battle started", username);
-                Response targetResponse = Response(fromMSG(username) + "battle started", targetName);
+                Response userResponse = Response(toMSG(targetName) + "Battle Started!", username);
+                Response targetResponse = Response(fromMSG(username) + "Battle Started!", targetName);
                 auto res = formulateResponse(userResponse, targetResponse);
                 return std::make_pair(res, true);
             }
@@ -307,8 +302,8 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
                             characterController->getCharacterRoomID(username));
                     removeTargets(characterList, username);
 
-                    Response userResponse = Response("you have fled " + direction + "\n" + results, username);
-                    Response targetResponse = Response("target has fled:\n" + results, targetName);
+                    Response userResponse = Response("\nYou have fled " + direction + "\n" + results, username);
+                    Response targetResponse = Response("\nTarget has fled:\n" + results, targetName);
                     auto res = formulateResponse(userResponse, targetResponse);
                     return std::make_pair(res, true);
                 }
