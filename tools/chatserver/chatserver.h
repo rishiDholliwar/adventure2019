@@ -7,6 +7,7 @@
 #include <RoomController.h>
 #include <ObjectController.h>
 #include <CombatController.h>
+#include <MiniGameController.h>
 #include <CommandHandler.h>
 #include <Scheduler.h>
 #include <CommandTranslator.h>
@@ -30,7 +31,8 @@ private:
   CharacterController _characterController;
   RoomController _roomController;
   ObjectController _objectController;
-    CombatController _combatController;
+  CombatController _combatController;
+  MiniGameController _miniGameController;
   CommandTranslator _commandTranslator;
   std::unique_ptr<Server> _server;
   CommandHandler _commandHandler;

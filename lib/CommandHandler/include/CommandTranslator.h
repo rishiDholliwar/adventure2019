@@ -58,6 +58,10 @@ enum CommandType
     BATTLES,
     FLEE,
 
+    //MINI GAME
+    TTT,
+    TTTT,
+
 
     UNKNOWN = -1
 };

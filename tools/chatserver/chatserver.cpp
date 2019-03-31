@@ -23,6 +23,7 @@
 #include <GameCommands.h>
 #include <UserCommands.h>
 #include <CombatCommands.h>
+#include <MiniGameCommands.h>
 
 
 void Game::registerCommands() {
@@ -46,6 +47,11 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::ATTACK, CombatAttack(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand(CommandType::BATTLES, CombatBattles(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand(CommandType::FLEE, CombatFlee(&_characterController, &_roomController, &_combatController).clone());
+
+    //For mini game
+    _commandHandler.registerCommand(CommandType::TTT, tttBrowser(&_characterController,  &_miniGameController).clone());
+    _commandHandler.registerCommand(CommandType::TTTT, tttTerminal(&_characterController,  &_miniGameController).clone());
+
 }
 
 void
