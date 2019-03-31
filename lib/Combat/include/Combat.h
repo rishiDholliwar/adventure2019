@@ -33,7 +33,6 @@ private:
     bool isTargetLogout = false;
 
     struct Fighter {
-        bool readyForNextRound;
         Character fighter;
     };
 
@@ -67,12 +66,6 @@ public:
     bool battleReady();
 
     bool isInBattle(const Name &fighter);
-
-    bool isNextRoundReady();
-
-    void setPlayerReadyForNextRound(const Name &fighter);
-
-    void resetRoundReady();
 
     void updateFighters(Character &fighter1, Character &fighter2);
 

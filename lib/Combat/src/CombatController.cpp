@@ -68,17 +68,6 @@ void CombatController::setCombatState(const Name &instigator, const Name &target
     }
 }
 
-bool CombatController::isBattleStarted(const Name &fighter1, const Name &fighter2) {
-    if (isBattleAssociation(fighter1, fighter2)) {
-        auto &battle = getBattle(fighter1, fighter2);
-        if (battle.isCombatState()) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 bool CombatController::isBattleState(const Name &fighter) {
     for (auto &battle: battleList) {
         if (battle.isCombatState()) {
@@ -147,30 +136,6 @@ std::string CombatController::logout(Name &winner) {
     //battle.updateFighters(surrenderer, winner);
     return battle.logout(winner);
 
-}
-
-
-bool CombatController::checkInputForNextRound(const Name &instigator, const Input &input) {
-    if (input.empty()) {
-        return true;
-    }
-
-    return false;
-}
-
-void CombatController::setFighterReady(const Name &fighter) {
-    auto &battle = getBattleInCombatState(fighter);
-    battle.setPlayerReadyForNextRound(fighter);
-}
-
-bool CombatController::isNextRoundReady(const Name &fighter) {
-    auto &battle = getBattleInCombatState(fighter);
-    return battle.isNextRoundReady();
-}
-
-void CombatController::resetRoundReady(const Name &fighterName) {
-    auto &battle = getBattleInCombatState(fighterName);
-    battle.resetRoundReady();
 }
 
 Character &CombatController::getFighter(Name &fighter) {

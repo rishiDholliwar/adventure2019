@@ -129,24 +129,13 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     }
 
     if (combatController->isFleeState(username)) {
-        std::cout << "in attack flee" << std::endl;
         combatController->deleteGame(username, targetName);
-//            Name targetName = combatController->getTargetName(username);
-//            Character targetCharacter = characterController->getCharacter(targetName);
-//            std::string results = combatController->flee(character, targetCharacter, "");
-//            combatController->deleteGame(username, targetName);
-//            characterController->toggleCharacterCombat(username, targetName);
         this->registerCallback = false;
-//            Response userResponse = Response("you have fled:\n" + results, username);
-//            Response targetResponse = Response("target has fled:\n" + results, targetName);
-//            auto res = formulateResponse(userResponse, targetResponse);
         return std::make_pair(res, true);
     }
 
     if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character targetCharacter = characterController->getCharacter(targetName);
-
-
 
         //check if user is in battle state
         if (combatController->isBattleState(username)) {

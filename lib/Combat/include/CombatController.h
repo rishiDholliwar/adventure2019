@@ -38,16 +38,6 @@ public:
 
     void setCombatState(const Name &instigator, const Name &target);
 
-    bool isBattleStarted(const Name &fighter1, const Name &fighter2);
-
-    bool checkInputForNextRound(const Name &instigator, const Input &input);
-
-    void setFighterReady(const Name &instigator);
-
-    bool isNextRoundReady(const Name &instigator);
-
-    void resetRoundReady(const Name &fighterName);
-
     bool isFleeState(Name &fighter);
 
     void setFleeState(Name &fighter);

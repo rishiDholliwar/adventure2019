@@ -4,12 +4,10 @@
 
 //todo go to vector to non vector!!!
 void Combat::addInstigator(Character &instigator) {
-    fighterInstigator.readyForNextRound = false;
     fighterInstigator.fighter = instigator;
 }
 
 void Combat::addOpponent(Character &opponent) {
-    fighterOpponent.readyForNextRound = false;
     fighterOpponent.fighter = opponent;
 }
 
@@ -73,26 +71,6 @@ bool Combat::battleReady() {
     return true;
 }
 
-bool Combat::isNextRoundReady() {
-    return fighterInstigator.readyForNextRound && fighterOpponent.readyForNextRound;
-}
-
-void Combat::setPlayerReadyForNextRound(const Name &fighterName) {
-    if (fighterName == fighterInstigator.fighter.getName()) {
-        fighterInstigator.readyForNextRound = true;
-    }
-
-    if (fighterName == fighterOpponent.fighter.getName()) {
-        fighterOpponent.readyForNextRound = true;
-    }
-}
-
-void Combat::resetRoundReady() {
-    fighterInstigator.readyForNextRound = false;
-    fighterOpponent.readyForNextRound = false;
-}
-
-
 void Combat::updateFighters(Character &fighter1, Character &fighter2) {
     if (fighter1.getName() == fighterInstigator.fighter.getName()) {
         addInstigator(fighter1);
@@ -103,10 +81,10 @@ void Combat::updateFighters(Character &fighter1, Character &fighter2) {
     }
 }
 
- std::string Combat::flee(const Name &surrenderer){
+std::string Combat::flee(const Name &surrenderer) {
     Character winner;
-    if(surrenderer != getInstigatorName()){
-    winner = fighterInstigator.fighter;
+    if (surrenderer != getInstigatorName()) {
+        winner = fighterInstigator.fighter;
     } else {
         winner = fighterOpponent.fighter;
     }
@@ -116,7 +94,7 @@ void Combat::updateFighters(Character &fighter1, Character &fighter2) {
     isGameOver = true;
     return output.str();
 
- }
+}
 
 std::string Combat::runBattleRound() {
     std::stringstream output;
@@ -256,7 +234,7 @@ bool Combat::isGameOverState() {
     return this->isGameOver;
 }
 
-bool Combat::isFleeState(){
+bool Combat::isFleeState() {
     return isFleee;
 }
 
@@ -264,7 +242,7 @@ bool Combat::isTargetLogoutState() {
     return isTargetLogout;
 }
 
-void Combat::setFleeState(){
+void Combat::setFleeState() {
     isFleee = true;
 }
 
@@ -272,9 +250,9 @@ void Combat::setTargetLogoutState() {
     isTargetLogout = true;
 }
 
-std::string Combat::logout(const Name &winner){
+std::string Combat::logout(const Name &winner) {
     Character winnerCharacter;
-    if(winner != getInstigatorName()){
+    if (winner != getInstigatorName()) {
         winnerCharacter = fighterInstigator.fighter;
     } else {
         winnerCharacter = fighterOpponent.fighter;
