@@ -60,9 +60,6 @@ public:
 
     bool nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2);
 
-    //TODO will be used when player can enter options for each round
-    std::string processInput(const Input &input);
-
     bool battleReady();
 
     bool isInBattle(const Name &fighter);
@@ -77,8 +74,6 @@ public:
 
     std::string printRoundNumber(int number);
 
-    void setCombatState();
-
     bool isPendingState();
 
     bool isCombatState();
@@ -87,13 +82,13 @@ public:
 
     bool isFleeState();
 
-    void setFleeState();
-
     bool isTargetLogoutState();
 
-    void setTargetLogoutState();
+    void setCombatState();
 
-    std::string targetLogout(const Name &surrenderer);
+    void setFleeState();
+
+    void setTargetLogoutState();
 
     std::string logout(const Name &loser);
 

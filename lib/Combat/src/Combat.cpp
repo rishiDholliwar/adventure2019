@@ -29,19 +29,16 @@ const Name Combat::getOpponentName() {
 
 //todo refactor
 bool Combat::nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2) {
-
     if (getInstigatorName() == fighter1) {
         if (getOpponentName() == fighter2) {
             return true;
         }
-
     }
 
     if (getInstigatorName() == fighter2) {
         if (getOpponentName() == fighter1) {
             return true;
         }
-
     }
 
     return false;
@@ -51,16 +48,8 @@ bool Combat::isInBattle(const Name &fighter) {
     if (getInstigatorName() == fighter || getOpponentName() == fighter) {
         return true;
     }
+
     return false;
-}
-
-//TODO will be used when player can enter options for each round
-std::string Combat::processInput(const Input &input) {
-    return "";
-}
-
-void Combat::setCombatState() {
-    setState(STATE::COMBAT);
 }
 
 bool Combat::battleReady() {
@@ -79,21 +68,6 @@ void Combat::updateFighters(Character &fighter1, Character &fighter2) {
         addInstigator(fighter2);
         addOpponent(fighter1);
     }
-}
-
-std::string Combat::flee(const Name &surrenderer) {
-    Character winner;
-    if (surrenderer != getInstigatorName()) {
-        winner = fighterInstigator.fighter;
-    } else {
-        winner = fighterOpponent.fighter;
-    }
-    isFlee = true;
-    std::stringstream output;
-    output << printWinner(winner);
-    isGameOver = true;
-    return output.str();
-
 }
 
 std::string Combat::runBattleRound() {
@@ -227,11 +201,7 @@ bool Combat::isCombatState() {
 }
 
 bool Combat::isGameOverState() {
-//    if (this->currentState == STATE::END) {
-//        return true;
-//    }
-
-    return this->isGameOver;
+    return isGameOver;
 }
 
 bool Combat::isFleeState() {
@@ -240,6 +210,10 @@ bool Combat::isFleeState() {
 
 bool Combat::isTargetLogoutState() {
     return isTargetLogout;
+}
+
+void Combat::setCombatState() {
+    setState(STATE::COMBAT);
 }
 
 void Combat::setFleeState() {
@@ -260,6 +234,21 @@ std::string Combat::logout(const Name &winner) {
 
     std::stringstream output;
     output << printWinner(winnerCharacter);
+    isGameOver = true;
+    return output.str();
+
+}
+
+std::string Combat::flee(const Name &surrenderer) {
+    Character winner;
+    if (surrenderer != getInstigatorName()) {
+        winner = fighterInstigator.fighter;
+    } else {
+        winner = fighterOpponent.fighter;
+    }
+    isFlee = true;
+    std::stringstream output;
+    output << printWinner(winner);
     isGameOver = true;
     return output.str();
 
