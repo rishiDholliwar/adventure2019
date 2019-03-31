@@ -88,7 +88,7 @@ std::string Combat::flee(const Name &surrenderer) {
     } else {
         winner = fighterOpponent.fighter;
     }
-    isFleee = true;
+    isFlee = true;
     std::stringstream output;
     output << printWinner(winner);
     isGameOver = true;
@@ -235,7 +235,7 @@ bool Combat::isGameOverState() {
 }
 
 bool Combat::isFleeState() {
-    return isFleee;
+    return isFlee;
 }
 
 bool Combat::isTargetLogoutState() {
@@ -243,7 +243,7 @@ bool Combat::isTargetLogoutState() {
 }
 
 void Combat::setFleeState() {
-    isFleee = true;
+    isFlee = true;
 }
 
 void Combat::setTargetLogoutState() {

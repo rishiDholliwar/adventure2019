@@ -24,12 +24,12 @@ private:
     enum class STATE {
         PENDING,
         COMBAT,
-        END
+        END //todo doesnt work???
     };
     STATE currentState;
 
     bool isGameOver = false;
-    bool isFleee = false;
+    bool isFlee = false;
     bool isTargetLogout = false;
 
     struct Fighter {

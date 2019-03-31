@@ -86,7 +86,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         if (!(characterController->doesCharacterExist(username))) {
             Name targetName = combatController->getTargetName(username);
             std::string results = combatController->logout(username);
-            combatController->deleteGame(username, targetName);
+            combatController->deleteBattle(username, targetName);
             this->registerCallback = false;
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(targetName))) {
@@ -98,7 +98,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         } else {
             Name targetName = combatController->getTargetName(username);
             std::string results = combatController->logout(targetName);
-            combatController->deleteGame(username, targetName);
+            combatController->deleteBattle(username, targetName);
             this->registerCallback = false;
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(username))) {
@@ -129,7 +129,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     //check if a fighter fled
     if (combatController->isFleeState(username)) {
-        combatController->deleteGame(username, targetName);
+        combatController->deleteBattle(username, targetName);
         this->registerCallback = false;
         return std::make_pair(res, true);
     }
@@ -153,7 +153,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
 
             if (combatController->isGameOver(username)) {
-                combatController->deleteGame(username, targetName);
+                combatController->deleteBattle(username, targetName);
                 characterController->toggleCharacterCombat(username, targetName);
                 this->registerCallback = false;
             }

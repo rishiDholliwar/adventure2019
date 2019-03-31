@@ -58,7 +58,7 @@ public:
 
     bool isGameOver(const Name &fighter);
 
-    void deleteGame(const Name fighter1, const Name fighter2);
+    void deleteBattle(const Name fighter1, const Name fighter2);
 
     std::string sendRoundInvitationMsg(const Name &inviterName);
 

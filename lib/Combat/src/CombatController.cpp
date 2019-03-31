@@ -168,7 +168,7 @@ const Name CombatController::getTargetName(const Name &fighter) {
     return battle.getInstigatorName();
 }
 
-void CombatController::deleteGame(const Name fighter1, const Name fighter2) {
+void CombatController::deleteBattle(const Name fighter1, const Name fighter2) {
 
     battleList.erase(std::remove_if(battleList.begin(), battleList.end(),
                                     [&fighter1, &fighter2](Combat battle) {
