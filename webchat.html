@@ -131,24 +131,22 @@
       color: #ffc107;
     }
 
-    .loginBtn {
-      float: left;
-    }
-
     .logoutBtn {
       color: white;
       background-color: red;
       border-color: red;
-      float: left;
-      margin-top: 5px;
-      margin-right: 10px;
+      position: absolute;
+      top: 10px;
+      right: 50px;
+
     }
 
     #welcomeMessage {
       font-family: sans-serif;
       font-size: 15px;
-      margin: 0px;
-      margin-top: 5px;
+      position: absolute;
+      top: 20px;
+      right: 50px;
     }
 
   </style>
@@ -390,7 +388,7 @@
 <h1>Web Chat</h1>
 
 Chat Server: <input id="uri" size="40">
-<br>
+
 <button class="connect loginBtn" onclick="Prompt.render('Login','',true)">Login</button>
 <button class="connect signupBtn" onclick="Prompt.render('Signup','',false)">Signup</button>
 <span><button id="disconnect" class="logoutBtn" onclick="Logout.doLogout()">Logout</button>
