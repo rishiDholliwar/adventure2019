@@ -13,8 +13,6 @@ using AlterSpace::Name;
 
 class ObjectController
 {
-private:
-    std::unordered_map<ID, Object> objects;
 
 public:
     ObjectController();
@@ -52,6 +50,10 @@ public:
     std::string examineItem(Name objectName);
     std::string lookItem(ID objec);
     std::string examineItem(ID objectID);
+
+private:
+    std::unordered_map<ID, Object> objects;
+
 };
 
 #endif //ALTERSPACE_OBJECTCONTROLLER_H

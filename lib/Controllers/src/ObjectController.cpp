@@ -4,6 +4,17 @@
 
 ObjectController::ObjectController(){
 
+
+    Object a = Object("sword");
+    Object b = Object("shield");
+    Object c = Object("sword");
+    addObjectToList(a);
+    addObjectToList(b);
+    addObjectToList(c);
+
+    std::cout << "Sword: " << a.getID() << " Shield: " << b.getID() << std::endl;
+
+
 };
 
 bool ObjectController::addObjectToList(const Object &object) {

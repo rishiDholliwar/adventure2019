@@ -37,6 +37,8 @@ void Game::registerCommands() {
     _commandHandler.registerCommand("/logout", Logout(&_userController, &_characterController, &_roomController).clone());
     _commandHandler.registerCommand("/signup", Signup(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand("/help", Help(&_characterController, &_commandHandler).clone());
+    _commandHandler.registerCommand("/pickup", Pickup(&_characterController,&_roomController, &_objectController).clone());
+
 }
 
 void

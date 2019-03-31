@@ -25,7 +25,9 @@ RoomController::RoomController(){
     addDoorToRoom(1005, 1, 1000, "South");
     addDoorToRoom(1006, 1, 1000, "Up");
 
-    addObjectToRoom(8801,1000);
+    addObjectToRoom(15,1000);
+    addObjectToRoom(16,1000);
+    addObjectToRoom(17,1000);
 
     auto room = searchRoom(1000);
     room->addDescription("Test description 1.");

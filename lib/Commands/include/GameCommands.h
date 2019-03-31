@@ -290,9 +290,10 @@ public:
     explicit
     Pickup(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
     Name username = "", Input target = "", Connection connection = Connection{})
-    : roomController(roomController), username(std::move(username)), target(std::move(target)) {
+    : roomController(roomController),
+    objectController(objectController),
+    username(std::move(username)), target(std::move(target)) {
         this->characterController = characterController;
-        this->objectController = objectController;
         registerInteraction = true;
     };
     ~Pickup() = default;

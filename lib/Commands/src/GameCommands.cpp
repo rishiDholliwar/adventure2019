@@ -549,11 +549,6 @@ std::string Move::help() {
 
 std::pair<std::vector<Response>, bool> Look::execute() {
 
-    //TODO::DELETE THIS
-    objectController->addObjectToList(Object(8801,"sword"));
-
-    std::cout << "PLEASE WORK WTF: " << objectController->getObjectFromList(8801).getName();
-
     std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
 
@@ -576,8 +571,8 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         // format object name into string stream
         ss << "Items in room: \n";
         for (const ID objectId : objectList){
-           ss << "\t" <<objectController->getObjectName(objectId) << "\n";
 
+            ss << "\t" <<objectController->getObjectName(objectId) << " ID: " << objectId << "\n";
         }
 
         ss << roomController->getAllDoorInformationInRoom(roomId);
@@ -758,17 +753,15 @@ std::string Swap::help() {
 
 //Pickup
 std::pair<std::vector<Response>, bool> Pickup::execute(){
-    //TODO:: DELETE THIS
-    objectController->addObjectToList(Object(8801,"sword"));
 
-
+    std::cout << "pickup command called" << std::endl;
     if(target.empty()){
         Response userResponse = Response("Please input a target.\n", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
+    std::cout << "Lets figure out what the object we want is ID'd " << target << std::endl;
     ID roomID = characterController->getCharacterRoomID(username);
-
     auto objectList = roomController->getObjectList(roomID);
     for(const ID objectID : objectList){
         Name objectName = objectController->getObjectName(objectID);
@@ -777,6 +770,7 @@ std::pair<std::vector<Response>, bool> Pickup::execute(){
             //lets assume that item is valid and checked
             Object item = objectController->getObjectFromList(objectName);
             characterController->addItemToCharacterInventory(username,item);
+            roomController->removeObjectFromRoom(objectID,roomID);
             Response userResponse = Response(objectName + " has been added to your inventory.\n", username);
             auto res = formulateResponse(userResponse);
             return std::make_pair(res, true);
@@ -788,15 +782,15 @@ std::pair<std::vector<Response>, bool> Pickup::execute(){
 }
 
 std::unique_ptr<Command> Pickup::clone() const {
-    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+    auto pickup = std::make_unique<Pickup>(this->characterController, this->roomController, this->objectController,
                                              this->username, this->target);
-    return std::move(examine);
+    return std::move(pickup);
 }
 
 std::unique_ptr<Command> Pickup::clone(Name username, Input target, Connection connection) const {
-    auto examine = std::make_unique<Examine>(this->characterController, this->roomController, this->objectController,
+    auto pickup = std::make_unique<Pickup>(this->characterController, this->roomController, this->objectController,
                                              username, target);
-    return std::move(examine);
+    return std::move(pickup);
 }
 
 std::string Pickup::help() {
