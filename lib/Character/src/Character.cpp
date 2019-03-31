@@ -75,7 +75,7 @@ void Character::addItemToInventory(Object obj) {
 }
 
 void Character::setRoomID(ID roomID) {
-    Character::roomID = roomID;
+    this->roomID = roomID;
 }
 
 bool Character::hasItem(ID objectId) {
@@ -118,8 +118,12 @@ bool Character::isWearing(Name objectName) {
 }
 
 void Character::wear(ID objectId) {
+	std::cout << "wear entered" << std::endl;
+	std::cout << "unique id is " << objectId << std::endl;
     wearing.push_back(getItemFromInventory(objectId));
+    std::cout << "yo" << std::endl;
     dropItem(objectId);
+    std::cout << "wear done" << std::endl;
 }
 
 ID Character::getWearingID(Name objectName) {

@@ -20,7 +20,7 @@ class Object : public UniqueID {
 private:
     ID objectID;
     Name objectName;
-    std::unordered_map<Property, Value> abilities;
+    // std::unordered_map<Property, Value> abilities;
     std::vector<std::string> keywords;
     std::string shortdesc;
     std::vector<std::string> longdesc;
@@ -41,6 +41,16 @@ public:
         this->objectName = std::accumulate(keywords.begin(), keywords.end(), std::string(""));
     }
 
+    Object(const Object &tempObject) {
+        this->id = tempObject.id;
+        this->objectName = tempObject.getName();
+        this->objectID = tempObject.getObjectID();
+        this->keywords = tempObject.getKeywords();
+        this->shortdesc = tempObject.getShortDesc();
+        this->longdesc = tempObject.getLongDesc();
+        this->extra = tempObject.getExtra();
+    }
+
     // Object(ID objectID, Name objectName, std::unordered_map<Property, Value> abilities, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc) {
     //     this->objectID = objectID;
     //     this->objectName = objectName;
@@ -56,7 +66,7 @@ public:
 
     ID getObjectID() const;
 
-    std::unordered_map<Property, Value> getAbilities();
+    // std::unordered_map<Property, Value> getAbilities();
 
     const std::vector<std::string> getKeywords() const;
 

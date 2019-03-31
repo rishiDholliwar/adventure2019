@@ -1,5 +1,5 @@
 add_library(controllers
-        src/CharacterController.cpp src/ObjectController.cpp)
+        src/CharacterController.cpp src/ObjectController.cpp src/ResetController.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 
@@ -19,6 +19,7 @@ PRIVATE
         Object
         Inventory
         utility
+        Reset
         ${Boost_LIBRARIES}
         )
 

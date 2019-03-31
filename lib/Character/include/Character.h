@@ -10,6 +10,7 @@
 #include <Object.h>
 #include <utility>
 #include <vector>
+#include <boost/algorithm/string/join.hpp>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
@@ -34,7 +35,7 @@ private:
     std::string shortdesc;
     std::vector<std::string> longdesc;
     std::vector<std::string> description;
-    
+
     std::vector<Object>::iterator getWearingIterator(ID objectId);
     std::vector<Object>::iterator getWearingIterator(Name objectName);
 
@@ -61,14 +62,30 @@ public:
     //constructor for npc
     Character(ID characterID, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc, std::vector<std::string> description) :
             characterID(characterID), keywords(keywords), shortdesc(shortdesc), longdesc(longdesc), description(description) {
-        this->name = std::accumulate(keywords.begin(), keywords.end(), std::string(" "));
+        this->name = boost::algorithm::join(keywords, " ");
         this->confused = false;
+    }
+
+    Character(const Character& npc) {
+        this->name = npc.getName();
+        this->characterID = npc.getCharacterID();
+        this->characterType = npc.getType();
+        this->inventory = npc.getInventory();
+        this->wearing = npc.getWearing();
+        this->confused = false;
+        this->roomID = npc.roomID;
+
+        this->keywords = npc.getKeywords();
+        this->shortdesc = npc.getShortDesc();
+        this->longdesc = npc.getLongDesc();
+        this->description = npc.getDescription();
     }
 
     Name getName() const;
     ID getCharacterID() const;
     ID getRoomID() const;
     bool isNPC() const;
+    CharacterType getType() const {return characterType;};
     ID getID() const;
     void setNPC();
 

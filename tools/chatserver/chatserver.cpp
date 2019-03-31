@@ -22,6 +22,7 @@
 
 #include <GameCommands.h>
 #include <UserCommands.h>
+#include <ResetCommand.h>
 #include <JSONThingy.h>
 
 void Game::registerCommands() {
@@ -164,12 +165,15 @@ Game::Game(Config config)
     _commandHandler = CommandHandler();
     _commandTranslator = CommandTranslator();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
+    _resetController = ResetController(&_roomController, &_characterController, &_objectController);
 
     JSONThingy jt;
     jt.load("mirkwood", _objectController);
     jt.load("mirkwood", _roomController);
+    jt.load("mirkwood", _resetController);
 
     this->registerCommands();
+    _scheduler->schedule(std::make_shared<ResetCommand>(&_resetController, 300), 0);
 }
 
 std::string

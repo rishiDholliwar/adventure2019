@@ -209,11 +209,16 @@ public:
 class Look : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
     RoomController* roomController;
     ObjectController* objectController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
+
+    void setInteractions(std::vector<std::string> i);
 public:
     explicit
     Look(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
@@ -236,11 +241,15 @@ public:
 class Examine : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
     RoomController* roomController;
     ObjectController* objectController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
+
     void setInteractions(std::vector<std::string> i);
 public:
     explicit
