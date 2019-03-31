@@ -27,7 +27,6 @@ PRIVATE
     userController
     utility
     combat
-    commandsListing
     miniGame
     ${Boost_LIBRARIES}
 )

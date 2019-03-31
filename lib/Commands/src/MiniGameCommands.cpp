@@ -17,11 +17,13 @@ std::unique_ptr<Command> tttBrowser::clone(Name username, Input input, Connectio
     return std::make_unique<tttBrowser>(this->characterController, this->miniGameController, username, input,
                                         connection);
 }
+
 std::unique_ptr<Command> tttBrowser::clone() const {
     return std::make_unique<tttBrowser>(this->characterController, this->miniGameController, this->username,
                                         this->input,
                                         this->connection);
 }
+
 std::string tttBrowser::help() {
     return "/ttt - open tic tac toe game in browser";
 }
@@ -40,11 +42,13 @@ std::unique_ptr<Command> tttTerminal::clone(Name username, Input input, Connecti
     return std::make_unique<tttTerminal>(this->characterController, this->miniGameController, username, input,
                                          connection);
 }
+
 std::unique_ptr<Command> tttTerminal::clone() const {
     return std::make_unique<tttTerminal>(this->characterController, this->miniGameController, this->username,
                                          this->input,
                                          this->connection);
 }
+
 std::string tttTerminal::help() {
     return "/tttt - open tic tac toe game in terminal";
 }

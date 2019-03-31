@@ -23,9 +23,6 @@ add_library(jsonUser
 add_library(jsonObjects
         include/JSONObjects.h)
 
-add_library(commandsListing
-        include/CommandsListing.h)
-
 target_include_directories(utility
         PUBLIC
         $<INSTALL_INTERFACE:include>
@@ -52,14 +49,6 @@ target_include_directories(jsonUser
         )
 
 target_include_directories(jsonObjects
-        PUBLIC
-        $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        PRIVATE
-        ${Boost_INCLUDE_DIR}
-        )
-
-target_include_directories(commandsListing
         PUBLIC
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -136,12 +125,6 @@ set_target_properties(stringModifier
                       CXX_STANDARD 17
 )
 
-set_target_properties(commandsListing
-        PROPERTIES
-        LINKER_LANGUAGE CXX
-        CXX_STANDARD 17
-        )
-
 install(TARGETS utility
         ARCHIVE DESTINATION lib
 )
@@ -165,6 +148,3 @@ install(TARGETS jsonUser
 install(TARGETS jsonObjects
         ARCHIVE DESTINATION lib
 )
-install(TARGETS commandsListing
-        ARCHIVE DESTINATION lib
-        )
