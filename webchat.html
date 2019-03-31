@@ -131,6 +131,7 @@
       color: #ffc107;
     }
 
+
     .logoutBtn {
       color: white;
       background-color: red;
@@ -138,7 +139,6 @@
       position: absolute;
       top: 10px;
       right: 50px;
-
     }
 
     #welcomeMessage {
@@ -195,8 +195,8 @@
         if (text == "Loggedinsuccesfully" ||
                 text == "Succesfullycreatedcharacter") {
           Prompt.cancel();
-          $('.loginBtn').css("display", "none");
-          $('.signupBtn').css("display", "none");
+          $('.loginBtn').css('visibility','hidden');
+          $('.signupBtn').css('visibility','hidden');
           $('.logoutBtn').css("display", "block");
           $("#welcomeMessage").css("display", "block");
           $('#sendMessage').focus();
@@ -370,8 +370,8 @@
 
       function logout() {
         this.doLogout = function () {
-          $('.loginBtn').css("display", "block");
-          $('.signupBtn').css("display", "block");
+          $('.loginBtn').css('visibility','visible');
+          $('.signupBtn').css('visibility','visible');
           $('.logoutBtn').css("display", "none");
           $("#welcomeMessage").css("display", "none");
           $('#username').html('');
