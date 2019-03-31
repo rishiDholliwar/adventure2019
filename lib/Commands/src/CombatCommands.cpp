@@ -7,6 +7,9 @@
 #include <regex>
 #include <algorithm>    // std::random_shuffle
 
+//todo bug with flee then /combat
+
+
 using networking::Connection;
 using AlterSpace::ID;
 static const std::string CHARACTER_SEPARATOR = " ";
@@ -302,6 +305,9 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
                     roomController->removeCharacterFromRoom(username, roomId);
                     roomController->removeCharacterFromRoom(username, toID);
                     characterController->setCharacterRoomID(username, toID);
+
+                    std::vector<std::string> characterList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
+                    removeTargets(characterList, username);
 
                     Response userResponse = Response("you have fled " + direction + "\n" + results, username);
                     Response targetResponse = Response("target has fled:\n" + results, targetName);

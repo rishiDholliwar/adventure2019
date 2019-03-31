@@ -40,7 +40,6 @@ bool CombatController::checkDuplicateSendRequest(const Name &instigator, const N
     if (isBattleAssociation(instigator, target)) {
         auto &battle = getBattle(instigator, target);
 
-        //todo maybe only need pending part
         if (battle.getInstigator().getName() == instigator && battle.isPendingState()) {
             return true;
         }
@@ -82,61 +81,11 @@ bool CombatController::isBattleState(const Name &fighter) {
 
 const std::string
 CombatController::executeBattleRound(Character &fighter1, Character &fighter2, const Input &input) {
-//return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
     auto &battle = getBattle(fighter1.getName(), fighter2.getName());
     battle.updateFighters(fighter1, fighter2);
     return battle.runBattleRound();
-
 }
 
-void CombatController::setFleeState(Name &fighter) {
-    auto &battle = getBattleInCombatState(fighter);
-    battle.setFleeState();
-}
-
-const std::string
-CombatController::flee(Character &surrenderer, Character &winner, const Input &input) {
-//return getBattle(combat, Combat(), userName).processInput(input); // Todo use when implemented for rounds
-    auto &battle = getBattle(surrenderer.getName(), winner.getName());
-    battle.updateFighters(surrenderer, winner);
-    return battle.flee(surrenderer.getName());
-}
-
-bool CombatController::isFleeState(Name &fighter) {
-    for (auto &battle: battleList) {
-        if (battle.isFleeState()) {
-            if (battle.isInBattle(fighter)) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-bool CombatController::isTargetLogoutState(Name &fighter) {
-    for (auto &battle: battleList) {
-        if (battle.isTargetLogoutState()) {
-            if (battle.isInBattle(fighter)) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-void CombatController::setTargetLogoutState(Name &fighter) {
-    auto &battle = getBattleInCombatState(fighter);
-    battle.setTargetLogoutState();
-}
-
-std::string CombatController::logout(Name &winner) {
-    auto &battle = getBattleInCombatState(winner);
-    //battle.updateFighters(surrenderer, winner);
-    return battle.logout(winner);
-
-}
 
 Character &CombatController::getFighter(Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
@@ -179,6 +128,52 @@ void CombatController::deleteBattle(const Name fighter1, const Name fighter2) {
                                     }),
 
                      battleList.end());
+}
+
+void CombatController::setFleeState(Name &fighter) {
+    auto &battle = getBattleInCombatState(fighter);
+    battle.setFleeState();
+}
+
+const std::string
+CombatController::flee(Character &surrenderer, Character &winner, const Input &input) {
+    auto &battle = getBattle(surrenderer.getName(), winner.getName());
+    battle.updateFighters(surrenderer, winner);
+    return battle.flee(surrenderer.getName());
+}
+
+bool CombatController::isFleeState(Name &fighter) {
+    for (auto &battle: battleList) {
+        if (battle.isFleeState()) {
+            if (battle.isInBattle(fighter)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool CombatController::isTargetLogoutState(Name &fighter) {
+    for (auto &battle: battleList) {
+        if (battle.isTargetLogoutState()) {
+            if (battle.isInBattle(fighter)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void CombatController::setTargetLogoutState(Name &fighter) {
+    auto &battle = getBattleInCombatState(fighter);
+    battle.setTargetLogoutState();
+}
+
+std::string CombatController::logout(Name &winner) {
+    auto &battle = getBattleInCombatState(winner);
+    return battle.logout(winner);
 }
 
 std::string CombatController::printAllBattles() {

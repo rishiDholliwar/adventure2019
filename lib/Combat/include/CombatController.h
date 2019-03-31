@@ -38,6 +38,16 @@ public:
 
     void setCombatState(const Name &instigator, const Name &target);
 
+    const Name getTargetName(const Name &instigator);
+
+    Character &getFighter(Name &fighterName);
+
+    const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
+
+    bool isGameOver(const Name &fighter);
+
+    void deleteBattle(const Name fighter1, const Name fighter2);
+
     bool isFleeState(Name &fighter);
 
     void setFleeState(Name &fighter);
@@ -49,16 +59,6 @@ public:
     std::string logout(Name &winner);
 
     const std::string flee(Character &fighter1, Character &fighter2, const Input &input);
-
-    const Name getTargetName(const Name &instigator);
-
-    Character &getFighter(Name &fighterName);
-
-    const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
-
-    bool isGameOver(const Name &fighter);
-
-    void deleteBattle(const Name fighter1, const Name fighter2);
 
     std::string sendRoundInvitationMsg(const Name &inviterName);
 
