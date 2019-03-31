@@ -57,7 +57,6 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
 
     res.emplace_back(output.str(), username);
     return std::make_pair(res, true);
-
 }
 
 std::unique_ptr<Command> CombatExamine::clone(Name username, Input input, Connection connection = Connection{}) const {
@@ -89,7 +88,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             std::string results = combatController->logout(username);
             combatController->deleteGame(username, targetName);
             this->registerCallback = false;
-            //in case the other user logout at the same time as you
+            //check if other user logged out just after you
             if ((characterController->doesCharacterExist(targetName))) {
                 characterController->toggleCharacterCombat(targetName);
                 Response userResponse = Response("target is offline:\n" + results, targetName);
@@ -101,7 +100,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             std::string results = combatController->logout(targetName);
             combatController->deleteGame(username, targetName);
             this->registerCallback = false;
-            //in case the other user logout at the same time as you
+            //check if other user logged out just after you
             if ((characterController->doesCharacterExist(username))) {
                 characterController->toggleCharacterCombat(username);
                 Response userResponse = Response("target is offline:\n" + results, username);
@@ -120,7 +119,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     removeExtraWhiteSpaces(input);
     Name targetName = input;
 
-    //character is attacking himself
+    //check character is attacking himself
     if (character.getName() == input) {
         std::string userOutput = combatController->selfAttackMsg();
         Response userResponse = Response(commandName + userOutput, username);
@@ -128,6 +127,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
+    //check if a fighter fled
     if (combatController->isFleeState(username)) {
         combatController->deleteGame(username, targetName);
         this->registerCallback = false;
@@ -180,7 +180,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
                 return std::make_pair(res, true);
             }
 
-            std::cout << "new battle\n";
             combatController->createNewBattle(character, targetCharacter);
 
             Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
@@ -192,28 +191,24 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             return std::make_pair(res, true);
         }
 
-        //see if character is sending duplicate attack requests
+        //check if character is sending duplicate attack requests
         if (combatController->checkDuplicateSendRequest(username, targetName)) {
             Response userResponse = Response(combatController->sendDuplicateRequestMsg(targetName), username);
             auto res = formulateResponse(userResponse);
             return std::make_pair(res, true);
         }
 
-        //see if character is replying to attack request
+        //check if character is replying to attack request
         if (combatController->replyPendingRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
             characterController->toggleCharacterCombat(username, targetName);
-            //characterController->toggleCharacterCombat(targetName);
             this->registerCallback = true;
             this->callbackAfterHeartbeats = ROUND_DURATION;
-            //todo now fighters must be in combat state
+
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
                 Response userResponse = Response(toMSG(targetName) + "battle started", username);
-
-
                 Response targetResponse = Response(fromMSG(username) + "battle started", targetName);
-
                 auto res = formulateResponse(userResponse, targetResponse);
                 return std::make_pair(res, true);
             }
@@ -228,11 +223,9 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     res.emplace_back(commandName + "attack error\n", username);
     return std::make_pair(res, true);
-
 }
 
 std::pair<std::vector<Response>, bool> CombatAttack::callback() {
-    std::cout << "attack callback\n";
     auto res = this->execute();
 
     if (combatController->isBattleState(username)) {
@@ -321,7 +314,7 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
         combatController->setFleeState(username);
         std::string results = combatController->flee(character, targetCharacter, "");
 
-        characterController->toggleCharacterCombat(username,targetName);
+        characterController->toggleCharacterCombat(username, targetName);
         this->registerCallback = false;
 
         Response userResponse = Response("you have fled:\n" + results, username);
@@ -352,9 +345,6 @@ std::string CombatFlee::help() {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 //Helper functions:
 
 void removeExtraWhiteSpaces(Input &input) {

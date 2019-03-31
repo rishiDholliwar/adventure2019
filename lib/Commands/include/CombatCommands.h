@@ -62,9 +62,6 @@ public:
             : roomController(roomController), combatController(combatController),
               username(std::move(username)), input(std::move(input)), connection(connection) {
         this->characterController = characterController;
-       
-
-
     };
 
     ~CombatAttack() = default;
