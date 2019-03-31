@@ -197,8 +197,10 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
-                Response userResponse = Response(toMSG(targetName) + combatController->sendBattleStartedMsg(), username);
-                Response targetResponse = Response(fromMSG(username) + combatController->sendBattleStartedMsg(), targetName);
+                Response userResponse = Response(toMSG(targetName) + combatController->sendBattleStartedMsg(),
+                                                 username);
+                Response targetResponse = Response(fromMSG(username) + combatController->sendBattleStartedMsg(),
+                                                   targetName);
                 auto res = formulateResponse(userResponse, targetResponse);
                 return std::make_pair(res, true);
             }
@@ -206,7 +208,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     } else {
         //character is not in the room
 
-        commandName +=  combatController->sendCharacterNotFoundMsg(targetName);
+        commandName += combatController->sendCharacterNotFoundMsg(targetName);
         res.emplace_back(commandName, username);
         return std::make_pair(res, true);
     }
