@@ -60,6 +60,8 @@ public:
 
     const std::string flee(Character &fighter1, Character &fighter2, const Input &input);
 
+    std::string printAllBattles();
+
     std::string sendRoundInvitationMsg(const Name &inviterName);
 
     std::string sendDuplicateRequestMsg(const Name &joiner);
@@ -68,15 +70,25 @@ public:
 
     std::string sendThreatMsg();
 
+    std::string sendBattleStartedMsg();
+
+    std::string sendCharacterNotFoundMsg(const Name &target);
+
     std::string sendOwnerFightingMsg(const Name &target);
 
     std::string sendTargetFightingMsg(const Name &target);
 
-    std::string printAllBattles();
-
     std::string sendTargetInCombatState(const Name &target);
 
     std::string sendSelfInCombatState();
+
+    std::string sendTargetOfflineMsg();
+
+    std::string sendNotInBattleMsg();
+
+    std::string sendYouFledMsg(std::string direction);
+
+    std::string sendTargetFledMsg();
 
 private:
 

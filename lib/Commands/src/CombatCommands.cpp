@@ -48,8 +48,7 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
             output << targetCharacter.examineCombat();
             output << "\n";
         } else {
-            std::string error = "\tCharacter " + targetName + " not found\n\n";
-            output << error;
+            output << combatController->sendCharacterNotFoundMsg(targetName);
         }
     }
 
@@ -75,7 +74,6 @@ std::string CombatExamine::help() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
-    std::cout << "combat attack\n";
     std::vector<Response> res;
 
     //check if a fighter has logged out
@@ -89,7 +87,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(targetName))) {
                 characterController->toggleCharacterCombat(targetName);
-                Response userResponse = Response("Target is offline:\n" + results, targetName);
+                Response userResponse = Response(combatController->sendTargetOfflineMsg() + results, targetName);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
             }
@@ -101,7 +99,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(username))) {
                 characterController->toggleCharacterCombat(username);
-                Response userResponse = Response("Target is offline:\n" + results, username);
+                Response userResponse = Response(combatController->sendTargetOfflineMsg() + results, username);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
             }
@@ -199,16 +197,16 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             //check if battle is ready, and if true start battle
             if (combatController->battleReady(username, targetName)) {
-                Response userResponse = Response(toMSG(targetName) + "Battle Started!", username);
-                Response targetResponse = Response(fromMSG(username) + "Battle Started!", targetName);
+                Response userResponse = Response(toMSG(targetName) + combatController->sendBattleStartedMsg(), username);
+                Response targetResponse = Response(fromMSG(username) + combatController->sendBattleStartedMsg(), targetName);
                 auto res = formulateResponse(userResponse, targetResponse);
                 return std::make_pair(res, true);
             }
         }
     } else {
         //character is not in the room
-        std::string error = "\tCharacter " + targetName + " not found\n";
-        commandName += error;
+
+        commandName +=  combatController->sendCharacterNotFoundMsg(targetName);
         res.emplace_back(commandName, username);
         return std::make_pair(res, true);
     }
@@ -302,20 +300,20 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
                             characterController->getCharacterRoomID(username));
                     removeTargets(characterList, username);
 
-                    Response userResponse = Response("\nYou have fled " + direction + "\n" + results, username);
-                    Response targetResponse = Response("\nTarget has fled:\n" + results, targetName);
+                    Response userResponse = Response(combatController->sendYouFledMsg(direction) + results, username);
+                    Response targetResponse = Response(combatController->sendTargetFledMsg() + results, targetName);
                     auto res = formulateResponse(userResponse, targetResponse);
                     return std::make_pair(res, true);
                 }
             }
         }
 
-        Response userResponse = Response("you have fled:\n" + results, username);
-        Response targetResponse = Response("target has fled:\n" + results, targetName);
+        Response userResponse = Response(combatController->sendYouFledMsg("") + results, username);
+        Response targetResponse = Response(combatController->sendTargetFledMsg() + results, targetName);
         auto res = formulateResponse(userResponse, targetResponse);
         return std::make_pair(res, true);
     } else {
-        Response userResponse = Response("you are not in battle:", username);
+        Response userResponse = Response(combatController->sendNotInBattleMsg(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }

@@ -244,6 +244,12 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
     return false;
 }
 
+//Public messages:
+
+std::string CombatController::sendCharacterNotFoundMsg(const Name &target) {
+    return "\tCharacter " + target + " not found\n\n";
+}
+
 std::string CombatController::sendRoundInvitationMsg(const Name &inviterName) {
     std::string output = "\n\t" + inviterName + " wants to attack you \n" +
                          "\tEnter '/attack " + inviterName + "' to battle\n";
@@ -278,4 +284,24 @@ std::string CombatController::sendTargetInCombatState(const Name &target) {
 std::string CombatController::sendSelfInCombatState() {
     return "You cannot attack another player while in  combat.\n"
            "Enter '/flee' to escape (not implemented)";
+}
+
+std::string CombatController::sendBattleStartedMsg() {
+    return "Battle Started!";
+}
+
+std::string CombatController::sendTargetOfflineMsg() {
+    return "\nTarget is offline:\n";
+}
+
+std::string CombatController::sendNotInBattleMsg() {
+    return "you are not in battle:";
+}
+
+std::string CombatController::sendYouFledMsg(std::string direction) {
+    return "\nYou have fled " + direction + "\n";
+}
+
+std::string CombatController::sendTargetFledMsg() {
+    return "\nTarget has fled:\n";
 }
