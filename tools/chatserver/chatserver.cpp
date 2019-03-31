@@ -126,7 +126,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             std::vector<std::string> tempInputParser = utility::tokenizeString(text);
 
             if (tempInputParser.size() != 2) {
-                result.push_back(Message{message.connection, std::string{"System: temp input size is not 2"}});
+                result.push_back(Message{message.connection, std::string{"Fill in all fields"}});
                 return result;
             }
 
