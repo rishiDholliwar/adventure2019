@@ -295,7 +295,7 @@ std::string CombatController::sendTargetOfflineMsg() {
 }
 
 std::string CombatController::sendNotInBattleMsg() {
-    return "you are not in battle:";
+    return "you are not in battle.";
 }
 
 std::string CombatController::sendYouFledMsg(std::string direction) {
