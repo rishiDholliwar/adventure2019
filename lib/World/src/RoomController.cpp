@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <RoomController.h>
 #include <iostream>
+#include <PigeonEXE.h>
 
 RoomController::RoomController(){}
 
@@ -13,6 +14,43 @@ RoomController::RoomController(const std::vector<Room> roomList) : roomList(room
             }
         }
     }
+
+    PigeonEXE pE(this);
+    auto test = pE.getShortestDirection(8800, 8869);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8801);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8802);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8803);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8804);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8805);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8806);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8807);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8808);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8809);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8800, 8810);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8810, 8800);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8810, 8867);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8810, 8867);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8845, 8843);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8843, 8845);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+    test = pE.getShortestDirection(8830, 8813);
+    std::cout << "TEST: " << test.first << " " << test.second << std::endl;
+
 }
 
 /*
