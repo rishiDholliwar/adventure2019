@@ -46,13 +46,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
     //SPELLS
     {SWAP, "SWAP"},
     {CONFUSE, "CONFUSE"},
-    {DECOY, "DECOY"},
 
     //COMBAT
     {COMBAT, "COMBAT"},
     {ATTACK, "ATTACK"},
     {BATTLES, "BATTLES"},
     {FLEE, "FLEE"},
+    {DECOY,"DECOY"},
 
     //MINI GAME
     {TTT, "TTT"},

@@ -20,6 +20,12 @@ private:
 
 public:
 
+    void replaceFighterWithDummy(Name replaceCharacter){
+        auto &battle = getBattleInCombatState(replaceCharacter);
+        battle.replaceFighterWithDummy(replaceCharacter);
+    }
+
+
     CombatController() = default;
 
     bool isBattleState(const Name &instigator);
@@ -44,13 +50,19 @@ public:
 
     const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
 
+    void updateFighters(Character &fighter1, Character &fighter2);
+
     bool isGameOver(const Name &fighter);
 
     void deleteBattle(const Name fighter1, const Name fighter2);
 
     bool isFleeState(Name &fighter);
 
+    bool isDecoyState(Name &fighter);
+
     void setFleeState(Name &fighter);
+
+    void setDecoyState(Name &fighter);
 
     bool isTargetLogoutState(Name &fighter);
 

@@ -86,6 +86,15 @@ CombatController::executeBattleRound(Character &fighter1, Character &fighter2, c
     return battle.runBattleRound();
 }
 
+void
+CombatController::updateFighters(Character &fighter1, Character &fighter2) {
+    std::cout << fighter1.getName() << std::endl;
+    auto &battle = getBattle(fighter1.getName(), fighter2.getName());
+    battle.updateFighters(fighter1, fighter2);
+}
+
+
+
 
 Character &CombatController::getFighter(Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
@@ -135,6 +144,13 @@ void CombatController::setFleeState(Name &fighter) {
     battle.setFleeState();
 }
 
+void CombatController::setDecoyState(Name &fighter) {
+    auto &battle = getBattleInCombatState(fighter);
+    battle.setDecoyState();
+}
+
+
+
 const std::string
 CombatController::flee(Character &surrenderer, Character &winner, const Input &input) {
     auto &battle = getBattle(surrenderer.getName(), winner.getName());
@@ -145,6 +161,17 @@ CombatController::flee(Character &surrenderer, Character &winner, const Input &i
 bool CombatController::isFleeState(Name &fighter) {
     for (auto &battle: battleList) {
         if (battle.isFleeState()) {
+            if (battle.isInBattle(fighter)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool CombatController::isDecoyState(Name &fighter) {
+    for (auto &battle: battleList) {
+        if (battle.isDecoyState()) {
             if (battle.isInBattle(fighter)) {
                 return true;
             }
@@ -305,3 +332,4 @@ std::string CombatController::sendYouFledMsg(std::string direction) {
 std::string CombatController::sendTargetFledMsg() {
     return "\nTarget has fled:\n";
 }
+

@@ -51,6 +51,14 @@ private:
 public:
     Character() = default;
 
+    //initalize dummycharacter
+    Character(Name name){
+        this->characterType = CharacterType::NON_PLAYABLE;
+        this->inventory = Inventory{};
+        this->confused = false;
+        this->wearing = std::vector<Object>();
+    }
+
     //intialize new playable character
     Character(Name name, ID roomID) : name(std::move(name)), roomID(roomID)
     {

@@ -78,7 +78,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     //check if a fighter has logged out
     if (combatController->isTargetLogoutState(username)) {
-
         if (!(characterController->doesCharacterExist(username))) {
             Name targetName = combatController->getTargetName(username);
             std::string results = combatController->logout(username);
@@ -129,7 +128,32 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
+    if(combatController->isDecoyState((username))){
+        std::cout << "in decoy\n";
+        std::cout << "un: " << username<< std::endl;
+        std::cout << "tn: " << targetName<< std::endl;
+
+
+        // combatController->deleteBattle(username,targetName);
+        //this->registerCallback = false;
+       combatController->replaceFighterWithDummy(username);
+        combatController->setDecoyState(username);
+        combatController->setDecoyState(targetName);
+
+     //   combatController->createNewBattle(characterController->getCharacter(targetName),dummyCharacter);
+       // combatController->setCombatState(username,targetName);
+     //   characterController->toggleCharacterCombat(username);
+        this->registerCallback = true;
+
+        //combatController->updateFighters(characterController->getCharacter(dummy),characterController->getCharacter(targetName));
+        //this->registerCallback = false;
+        return std::make_pair(res, true);
+    }
+
     if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
+        std::cout << "un: " << username<< std::endl;
+        std::cout << "tn: " << targetName<< std::endl;
+
         Character targetCharacter = characterController->getCharacter(targetName);
 
         //check if user is in battle state
@@ -161,7 +185,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
-
+        std::cout << "making new battle\n";
             //checks if target is in battle state, and if true no request sent
             if (combatController->isBattleState(targetName)) {
                 std::string userOutput = combatController->sendTargetInCombatState(targetName);
@@ -309,7 +333,6 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
                 }
             }
         }
-
         Response userResponse = Response(combatController->sendYouFledMsg("") + results, username);
         Response targetResponse = Response(combatController->sendTargetFledMsg() + results, targetName);
         auto res = formulateResponse(userResponse, targetResponse);
@@ -334,6 +357,48 @@ std::unique_ptr<Command> CombatFlee::clone() const {
 
 std::string CombatFlee::help() {
     return "/flee - escape from a battle and move to a random neighboring room";
+}
+
+
+
+
+
+std::pair<std::vector<Response>, bool> Decoy::execute() {
+    Character character = characterController->getCharacter(username);
+
+    if (combatController->isBattleState(username)) {
+   Name targetName = combatController->getTargetName(username);
+        Character targetCharacter = characterController->getCharacter(targetName);
+       // characterController->toggleCharacterCombat(username);
+
+        combatController->setDecoyState(username);
+
+        Response userResponse = Response("You've successfully casted decoy.", username);
+        Response targetResponse = Response("Oh wait, is that a decoy?", targetName);
+        auto res = formulateResponse(userResponse, targetResponse);
+        return std::make_pair(res, true);
+    } else {
+        std::cout << " DECOY 3 \n";
+
+        Response userResponse = Response(combatController->sendNotInBattleMsg(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+}
+
+std::unique_ptr<Command> Decoy::clone(Name username, Input input, Connection connection = Connection{}) const {
+    return std::make_unique<Decoy>(this->characterController, this->roomController,
+                                        this->combatController, username, input, connection);
+}
+
+std::unique_ptr<Command> Decoy::clone() const {
+    return std::make_unique<Decoy>(this->characterController, this->roomController,
+                                        this->combatController, this->username, this->input,
+                                        this->connection);
+}
+
+std::string Decoy::help() {
+    return "/decoy - escape from a battle and leave a dummy in your place";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

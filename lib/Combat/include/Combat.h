@@ -30,6 +30,7 @@ private:
 
     bool isGameOver = false;
     bool isFlee = false;
+    bool isDecoy = false;
     bool isTargetLogout = false;
 
     struct Fighter {
@@ -40,9 +41,23 @@ private:
 
     struct Fighter fighterInstigator;
     struct Fighter fighterOpponent;
+
+    struct Fighter dummy;
     int roundCounter = 0;
 
 public:
+
+    void replaceFighterWithDummy(Name replaceCharacter){
+        Name name = "dummy";
+        if(replaceCharacter == getInstigatorName()){
+            Character dummy(name,getInstigator().getRoomID());
+            fighterInstigator.fighter = dummy;
+            return;
+        }
+
+        Character dummy(name,getOpponent().getRoomID());
+        fighterOpponent.fighter = dummy;
+    }
 
     Combat() = default;
 
@@ -82,11 +97,15 @@ public:
 
     bool isFleeState();
 
+    bool isDecoyState();
+
     bool isTargetLogoutState();
 
     void setCombatState();
 
     void setFleeState();
+
+    void setDecoyState();
 
     void setTargetLogoutState();
 

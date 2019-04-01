@@ -47,6 +47,8 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::ATTACK, CombatAttack(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand(CommandType::BATTLES, CombatBattles(&_characterController, &_roomController, &_combatController).clone());
     _commandHandler.registerCommand(CommandType::FLEE, CombatFlee(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::DECOY, Decoy(&_characterController, &_roomController, &_combatController).clone());
+
 
     //For mini game
     _commandHandler.registerCommand(CommandType::TTT, tttBrowser(&_characterController,  &_miniGameController).clone());
@@ -139,7 +141,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
            // _characterController.toggleCharacterCombat(username);
             if(_characterController.isCharacterInCombat(username)){
                 std::cout <<  "---------User: " << username << " is in combat---------\n";
-                if(invocation != CommandType::FLEE){
+                if(invocation != CommandType::FLEE && invocation != CommandType::DECOY){
                     std::cout << "You are in combat. You can only flee";
                     result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
                     return result;

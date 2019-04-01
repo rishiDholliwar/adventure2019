@@ -7,6 +7,9 @@ void Combat::addInstigator(Character &instigator) {
     fighterInstigator.fighter = instigator;
 }
 
+
+
+
 void Combat::addOpponent(Character &opponent) {
     fighterOpponent.fighter = opponent;
 }
@@ -61,12 +64,18 @@ bool Combat::battleReady() {
 }
 
 void Combat::updateFighters(Character &fighter1, Character &fighter2) {
+
+    std::cout << fighter1.getName() << std::endl;
     if (fighter1.getName() == fighterInstigator.fighter.getName()) {
         addInstigator(fighter1);
         addOpponent(fighter2);
+
+        std::cout << fighter1.getName() << std::endl;
     } else {
         addInstigator(fighter2);
         addOpponent(fighter1);
+
+        std::cout << fighter1.getName() << std::endl;
     }
 }
 
@@ -208,6 +217,10 @@ bool Combat::isFleeState() {
     return isFlee;
 }
 
+bool Combat::isDecoyState(){
+    return isDecoy;
+}
+
 bool Combat::isTargetLogoutState() {
     return isTargetLogout;
 }
@@ -218,6 +231,10 @@ void Combat::setCombatState() {
 
 void Combat::setFleeState() {
     isFlee = true;
+}
+
+void Combat::setDecoyState(){
+    isDecoy = true;
 }
 
 void Combat::setTargetLogoutState() {
