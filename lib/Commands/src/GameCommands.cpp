@@ -424,11 +424,25 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         return this->interact();
     }
 
-    std::vector<Name> v = characterController->getNPCKeys(target);
+    std::vector<Name> v = characterController->getUsernamesOfCharacter(target);
+    ID roomId = characterController->getCharacterRoomID(username);
+
+    for (auto npcName = v.begin(); npcName != v.end(); ) {
+        std::cout << *npcName << std::endl;
+        if (characterController->getCharacterRoomID(*npcName) != roomId) {
+            std::cout << "Erasing: " << *npcName << std::endl;
+            npcName = v.erase(npcName);
+        }
+        else {
+            ++npcName;
+        }
+    }
+
+    std::cout << "v.size is " << v.size() << std::endl;
 
     if (v.size() > 1) {
-        interactions = v;
 
+        interactions = v;
         std::stringstream ss;
 
         ss << "There is more than 1 NPC named " << target << ". Which NPC would you like to swap with?\n";
@@ -443,61 +457,29 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
         return std::make_pair(res, false);
     }
 
-    Name userKey = username;
-    Name targetKey = target;
-
-    if (v.size() == 1) {
-
-        targetKey = v.at(TARGET_CHARACTER_NAME);
-
-        if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
-            Response userResponse = Response("You are already under a swap spell!", username);
-
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
-
-        characterController->swapCharacter(username, targetKey);
-
-        Response userResponse = Response("Successfully swapped!", username);
+    if (v.empty()) {
+        Response userResponse = Response("Target doesn't exist, sorry!", username);
 
         auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
-
-    } else {
-
-        if (!(characterController->doesCharacterExist(target))) {
-
-            Response userResponse = Response("Target doesn't exist, sorry!", username);
-
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, false);
-        }
-
-        targetKey = characterController->getCharName(username);
-
-        if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
-
-            Response userResponse = Response("You are already under a swap spell!", userKey);
-            Response targetResponse = Response("You are already under a swap spell!", targetKey);
-
-            auto res = formulateResponse(userResponse, targetResponse);
-            return std::make_pair(res, true);
-        }
-
-        characterController->swapCharacter(username, target);
-
-        Response userResponse = Response("Successfully swapped!", username);
-        Response targetResponse = Response("A swap spell was cast on you!", target);
-
-        auto res = formulateResponse(userResponse, targetResponse);
-        return std::make_pair(res, true);
+        return std::make_pair(res, false);
     }
 
+    originalUsername = username;
+    originalTargetUsername = v.front();
+    swappedCharacterName = target;
+    swappedTargetCharacterName = characterController->getCharName(username);
+
+    characterController->swapCharacter(username, originalTargetUsername);
+    
+    Response userResponse = Response("Successfully swapped!", username);
+    Response targetResponse = Response("A swap spell was cast on you!", originalTargetUsername);
+
+    auto res = formulateResponse(userResponse, targetResponse);
+    return std::make_pair(res, true);
 }
 
 std::pair<std::vector<Response>, bool> Swap::interact() {
-    Name userKey = username;
+    originalUsername = username;
 
     std::vector<std::string> v = utility::tokenizeString(target);
 
@@ -520,82 +502,53 @@ std::pair<std::vector<Response>, bool> Swap::interact() {
         return std::make_pair(res, false);
     }
 
-    Name targetKey = interactions.at(index);
-    interactTarget = targetKey;
+    originalTargetUsername = interactions.at(index);
+    swappedCharacterName = characterController->getCharName(originalTargetUsername);
+    swappedTargetCharacterName = characterController->getCharName(username);
 
-    if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
-        Response userResponse = Response("You are already under a swap spell!", username);
-
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
-    }
-
-    characterController->swapCharacter(username, targetKey);
-
+    characterController->swapCharacter(username, originalTargetUsername);
+    
     Response userResponse = Response("Successfully swapped!", username);
+    Response targetResponse = Response("A swap spell was cast on you!", originalTargetUsername);
 
-    auto res = formulateResponse(userResponse);
+    auto res = formulateResponse(userResponse, targetResponse);
     return std::make_pair(res, true);
 }
 
 std::pair<std::vector<Response>, bool> Swap::callback() {
-    Name userKey = username;
-    Name targetKey = characterController->getCharName(username);
 
-    if (characterController->isCharacterNPC(username)) {
-        targetKey = interactTarget;
-
-        if ((userKey != targetKey) && (userKey == characterController->getCharName(targetKey))) {
-            characterController->swapCharacter(userKey, targetKey);
-
-            Response userResponse = Response("Successfully unswapped!", userKey);
-            auto res = formulateResponse(userResponse);
-
-            return std::make_pair(res, true);
-        }
-
-        Response userResponse = Response("You are not under a swap spell", userKey);
-
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+    if( characterController->getCharName(originalUsername) != swappedCharacterName || 
+            characterController->getCharName(originalTargetUsername) != swappedTargetCharacterName) {
+        registerCallback = true;
+        callbackAfterHeartbeats = 50;
+        return std::make_pair(std::vector<Response>{}, false);
     }
 
-    if ((userKey != targetKey) && (targetKey == target) && (userKey == characterController->getCharName(targetKey))) {
+    characterController->swapCharacter(originalUsername, originalTargetUsername);
 
-        Name targetCharName = characterController->getCharName(username);
-
-        characterController->swapCharacter(userKey, targetKey);
-
-        Response userResponse = Response("Successfully unswapped!", userKey);
-        Response targetResponse = Response("You have been successfully unswapped!", targetKey);
-
-        auto res = formulateResponse(userResponse, targetResponse);
-        return std::make_pair(res, true);
-
-    }
-
-    Response userResponse = Response("You are not under a swap spell", userKey);
-    Response targetResponse = Response("You are not under a swap spell", target);
+    Response userResponse = Response("Successfully unswapped!", originalUsername);
+    Response targetResponse = Response("You have been successfully unswapped!", originalTargetUsername);
 
     auto res = formulateResponse(userResponse, targetResponse);
     return std::make_pair(res, true);
 }
 
 std::unique_ptr<Command> Swap::clone(Name username, Input target, Connection connection = Connection{}) const {
-    auto swap = std::make_unique<Swap>(this->characterController, username, target);
-    swap->setInteractions(this->interactions, this->interactTarget);
+    auto swap = std::make_unique<Swap>(this->characterController, this->roomController, username, target);
+    if(target.find("interact ") != std::string::npos) {
+        swap->setInteractions(this->interactions);
+    }
     return std::move(swap);
 }
 
 std::unique_ptr<Command> Swap::clone() const {
-    auto swap = std::make_unique<Swap>(this->characterController, this->username, this->target);
-    swap->setInteractions(this->interactions, this->interactTarget);
+    auto swap = std::make_unique<Swap>(this->characterController, this->roomController, this->username, this->target);
+    swap->setInteractions(this->interactions);
     return std::move(swap);
 }
 
-void Swap::setInteractions(std::vector<std::string> i, Name interactT) {
+void Swap::setInteractions(std::vector<std::string> i) {
     interactions = i;
-    interactTarget = interactT;
 }
 
 std::string Swap::help() {
@@ -653,8 +606,8 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
         if (characterName == target) {
         
-            if (!characterController->doesCharacterExist(characterName) && !characterController->getNPCKeys(characterName).empty()) {
-                std::vector<Name> npcNames = characterController->getNPCKeys(characterName);
+            if (!characterController->doesCharacterExist(characterName) && !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                std::vector<Name> npcNames = characterController->getUsernamesOfCharacter(characterName);
                 for(auto& name : npcNames) {
                     std::cout << "list: " << name << std::endl;
                 }
@@ -809,9 +762,9 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
     for (Name characterName : characterList){
         if (characterName == target) {
 
-            if (!characterController->doesCharacterExist(characterName) && !characterController->getNPCKeys(characterName).empty()) {
-                std::vector<Name> npcNames = characterController->getNPCKeys(characterName);
-
+            std::vector<Name> npcNames = characterController->getUsernamesOfCharacter(characterName);
+            if (!characterController->doesCharacterExist(characterName) && !npcNames.empty()) {
+                
                 for (auto npcName = npcNames.begin(); npcName != npcNames.end(); ) {
                     std::cout << *npcName << std::endl;
                     if (characterController->getCharacterRoomID(*npcName) != roomId) {
@@ -837,14 +790,11 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
                     Response userResponse = Response(ss.str(), username);
                     auto res = formulateResponse(userResponse);
                     return std::make_pair(res, false);
-                } else {
-                    characterName = npcNames[0];
                 }
-
             }
 
-            ss << index << ". "  << characterName << "\n" << characterController->examineCharacter(characterName) << "\n";
-            ss << characterController->characterListInventory(characterName) << characterController->getCharacterInfo(characterName) << "\n";
+            ss << index << ". "  << characterName << "\n" << characterController->examineCharacter(npcNames.front()) << "\n";
+            ss << "Inventory: \n" << characterController->characterListInventory(npcNames.front()) << characterController->getCharacterInfo(npcNames.front()) << "\n";
             index += 1;
         }
     }
@@ -983,16 +933,18 @@ std::pair<std::vector<Response>, bool> Move::execute() {
     }
     // list of users to notify that character moved north
     std::vector<std::string> userList = roomController->getCharacterList(characterController->getCharacterRoomID(username));
+
+    Name charName = characterController->getCharName(username);
     // Update roomList to account for character moving
-    roomController->removeCharacterFromRoom(username, roomId);
-    roomController->addCharacterToRoom(username, toID);
+    roomController->removeCharacterFromRoom(charName, roomId);
+    roomController->addCharacterToRoom(charName, toID);
     characterController->setCharacterRoomID(username, toID);
 
     // send message to the moving user and another message to users in the room
     Response userResponse = Response("Headed " + direction, username);
-    std::string genericMessage = username + " headed " + direction;
+    std::string genericMessage = charName + " headed " + direction;
 
-    std::string enteringMessage = username + " entered the room";
+    std::string enteringMessage = charName + " entered the room";
 
     Response empty = Response();
     std::vector<std::string> characterList = roomController->getCharacterList(characterController->getCharacterRoomID(username));

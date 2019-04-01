@@ -179,20 +179,28 @@ private:
 
     const unsigned int TARGET_CHARACTER_NAME = 0;
 
+    RoomController* roomController;
+
     Name username;
     Input target;
-    void setInteractions(std::vector<std::string> i, Name interactT);
+    void setInteractions(std::vector<std::string> i);
 
     std::vector<Name> interactions;
-    Name interactTarget;
+
+    Name originalUsername;
+    Name originalTargetUsername;
+
+    Name swappedCharacterName;
+    Name swappedTargetCharacterName;
+
 public:
     explicit
-    Swap(CharacterController* characterController, Name username = "", Input target = "", Connection connection = Connection{})
-        : username(std::move(username)), target(std::move(target)) {
+    Swap(CharacterController* characterController, RoomController* roomController, Name username = "", Input target = "", Connection connection = Connection{})
+        : roomController(roomController), username(std::move(username)), target(std::move(target)) {
             this->characterController = characterController;
             registerInteraction = true;
             registerCallback = true;
-            callbackAfterHeartbeats = 300;
+            callbackAfterHeartbeats = 150;
            };
 
     ~Swap() = default;
