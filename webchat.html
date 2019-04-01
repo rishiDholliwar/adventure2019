@@ -175,7 +175,7 @@
             border-radius: .25em .25em 0 0;
         }
 
-        .up:hover, .left:hover, .right:hover, .down:hover,#lookBtn:hover
+        .up:hover, .left:hover, .right:hover, .down:hover,#lookBtn:hover,#combatBtn:hover
         {
             cursor: pointer;
             color: red;
@@ -201,7 +201,13 @@
 
         #lookBtn{
             position: absolute;
-            left: 75px;
+            left: 85px;
+        }
+
+        #combatBtn {
+            position: absolute;
+            left: 85px;
+            top: 25px;
         }
 
     </style>
@@ -337,6 +343,11 @@
 
             $('#lookBtn').click(function () {
                 ws.send("/look");
+                sendGameMessage.value = "";
+            });
+
+            $('#combatBtn').click(function () {
+                ws.send("/combat");
                 sendGameMessage.value = "";
             });
 
@@ -553,9 +564,12 @@ Chat Server: <input id="uri" size="40">
         <div id="d-left" class="button d left" style="font-size: 24px;" onclick="leftBtn()"><span
                 class="label">&#9664;</span></div>
     </div>
-    <div id="lookBtn" style="font-size: 24px;" onclick="upBtn()"><span class="label">&#128065;</span>
+    <div id="lookBtn" style="font-size: 24px;" onclick="upBtn()"><span class="label">&#128065;</span> </div>
+    <div    id="combatBtn" style="font-size: 24px; color: gray" ><span class="label">&#9876;</span> </div>
 
-    </div>
+
+
+</div>
 
 </body>
 </html>
