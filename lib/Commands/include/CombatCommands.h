@@ -47,7 +47,7 @@ public:
 class CombatAttack: public Command {
 private:
 
-    const int ROUND_DURATION = 25;
+    const int ROUND_DURATION = 20;
 
     RoomController *roomController;
     CombatController *combatController;
