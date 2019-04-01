@@ -284,7 +284,7 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
         this->registerCallback = false;
 
         ID roomId = character.getRoomID();
-        std::vector<std::string> directions{"north", "east", "south", "west"};
+        std::vector<std::string> directions{"north", "east", "south", "west","up","down"};
         std::random_shuffle(directions.begin(), directions.end());
 
         for (auto &direction: directions) {
