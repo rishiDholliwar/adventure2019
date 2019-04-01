@@ -56,7 +56,7 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
     }
 
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
-    
+
 
     std::string message = inputStrings.at(MESSAGE);
 
@@ -104,12 +104,6 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
     }
 
     Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
-
-    if(characterController->isCharacterNPC(targetUserName)){
-        Response userResponse = Response(targetCharName + " is an NPC..... why would you want to talk to it ???", username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
-    }
 
 
 
