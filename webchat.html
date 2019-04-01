@@ -156,21 +156,6 @@
         }
 
         /* Used code from https://codepen.io/sloveland/pen/AJFaE?editors=1100 */
-        /*.button {*/
-        /*cursor: pointer;*/
-        /*box-shadow: 0 0 3px 1px #555;*/
-        /*text-align: center;*/
-        /*}*/
-
-        button:hover {
-            box-shadow: 0 0 5px 1px #333;
-            cursor: pointer;
-            color: #031e11;
-        }
-
-        button:active {
-            box-shadow: 0 0 5px 1px #333 inset;
-        }
 
         .d-pad {
             width: 80px;
@@ -323,6 +308,26 @@
                 sendGameMessage.value = "";
             });
 
+            $('#d-up').click(function () {
+                ws.send("/move north");
+                sendGameMessage.value = "";
+            });
+
+            $('#d-down').click(function () {
+                ws.send("/move south");
+                sendGameMessage.value = "";
+            });
+
+            $('#d-left').click(function () {
+                ws.send("/move left");
+                sendGameMessage.value = "";
+            });
+
+            $('#d-right').click(function () {
+                ws.send("/move right");
+                sendGameMessage.value = "";
+            });
+
             $('#sendMessage').keyup(function (e) {
                 e.preventDefault();
                 if (e.keyCode === 13) {
@@ -339,7 +344,6 @@
 
             $('.logoutBtn').css("display", "none");
             $("#welcomeMessage").css("display", "none");
-
 
             Prompt = new CustomPrompt();
 
@@ -458,21 +462,21 @@
             }
         }
 
-        function upBtn() {
-            alert("clicked up");
-        }
-
-        function downBtn() {
-            alert("clicked down");
-        }
-
-        function leftBtn() {
-            alert("clicked left");
-        }
-
-        function rightBtn() {
-            alert("clicked right");
-        }
+        // function upBtn() {
+        //     alert("clicked up");
+        // }
+        //
+        // function downBtn() {
+        //     alert("clicked down");
+        // }
+        //
+        // function leftBtn() {
+        //     alert("clicked left");
+        // }
+        //
+        // function rightBtn() {
+        //     alert("clicked right");
+        // }
     </script>
 </head>
 
