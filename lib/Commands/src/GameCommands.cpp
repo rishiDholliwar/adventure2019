@@ -46,14 +46,17 @@ std::pair<std::vector<Response>, bool> Tell::execute() {
 
     Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
-    Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
+
 
     //if tell target character is not currently logged in
-    if (!characterController->doesCharacterExist(targetUserName)) {
-        Response userResponse = Response(targetCharName + ": is not currently logged in", username);
+    if (!characterController->doesCharacterExist(targetCharName)) {
+        Response userResponse = Response(targetCharName + " is not currently logged in", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
+
+    Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
+    
 
     std::string message = inputStrings.at(MESSAGE);
 
@@ -84,7 +87,7 @@ std::string Tell::help() {
 std::pair<std::vector<Response>, bool> Whisper::execute() {
     std::vector<std::string> inputStrings = utility::popFront(input);
 
-    if (input.empty() || inputStrings.size() != 2) {
+    if (input.empty() || inputStrings.at(1).empty()) {
         Response userResponse = Response(help(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
@@ -92,14 +95,22 @@ std::pair<std::vector<Response>, bool> Whisper::execute() {
 
     Name charName = characterController->getCharName(username);
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
-    Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
 
     //if tell target character is not currently logged in
-    if (!characterController->doesCharacterExist(targetUserName)) {
-        Response userResponse = Response(targetCharName + ": is not currently logged in", username);
+    if (!characterController->doesCharacterExist(targetCharName)) {
+        Response userResponse = Response(targetCharName + " is not currently logged in", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
+
+    Name targetUserName = characterController->getUsernameOfCharacter(targetCharName);
+
+    if(characterController->isCharacterNPC(targetUserName)){
+        Response userResponse = Response(targetCharName + " is an NPC..... why would you want to talk to it ???", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
 
 
 
