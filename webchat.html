@@ -175,7 +175,7 @@
             border-radius: .25em .25em 0 0;
         }
 
-        .up:hover, .left:hover, .right:hover, .down:hover,#lookBtn:hover,#combatBtn:hover
+        .up:hover, .left:hover, .right:hover, .down:hover,#lookBtn:hover,#combatBtn:hover,#helpBtn:hover
         {
             cursor: pointer;
             color: red;
@@ -208,6 +208,12 @@
             position: absolute;
             left: 85px;
             top: 25px;
+        }
+
+        #helpBtn {
+            position: absolute;
+            left: 90px;
+            top: 55px;
         }
 
     </style>
@@ -351,6 +357,11 @@
                 sendGameMessage.value = "";
             });
 
+            $('#helpBtn').click(function () {
+                ws.send("/help");
+                sendGameMessage.value = "";
+            });
+
             $('#sendMessage').keyup(function (e) {
                 e.preventDefault();
                 if (e.keyCode === 13) {
@@ -487,21 +498,6 @@
             }
         }
 
-        // function upBtn() {
-        //     alert("clicked up");
-        // }
-        //
-        // function downBtn() {
-        //     alert("clicked down");
-        // }
-        //
-        // function leftBtn() {
-        //     alert("clicked left");
-        // }
-        //
-        // function rightBtn() {
-        //     alert("clicked right");
-        // }
     </script>
 </head>
 
@@ -566,7 +562,8 @@ Chat Server: <input id="uri" size="40">
                 class="label">&#9664;</span></div>
     </div>
     <div id="lookBtn" style="font-size: 24px;" onclick="upBtn()"><span class="label">&#128065;</span> </div>
-    <div    id="combatBtn" style="font-size: 24px; color: gray" ><span class="label">&#9876;</span> </div>
+    <div id="combatBtn" style="font-size: 24px; color: gray" ><span class="label">&#9876;</span> </div>
+    <div id="helpBtn" style="font-size: 24px; color: black" ><span class="label">&#63;</span> </div>
 
 
 
