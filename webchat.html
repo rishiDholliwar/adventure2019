@@ -175,7 +175,8 @@
             border-radius: .25em .25em 0 0;
         }
 
-        .up:hover, .left:hover, .right:hover, .down:hover,#lookBtn:hover,#combatBtn:hover,#helpBtn:hover
+        .up:hover, .left:hover, .right:hover, .down:hover,#lookBtn:hover,#combatBtn:hover,
+        #helpBtn:hover,#inventoryBtn:hover,#tttBtn:hover
         {
             cursor: pointer;
             color: red;
@@ -215,6 +216,24 @@
             left: 90px;
             top: 55px;
         }
+
+        #inventoryBtn {
+            position: absolute;
+            left: 125px;
+
+        }
+
+        #tttBtn {
+            position: absolute;
+            left: 125px;
+            top: 30px;
+        }
+
+        /*#Btn {*/
+            /*position: absolute;*/
+            /*left: 90px;*/
+            /*top: 55px;*/
+        /*}*/
 
     </style>
 
@@ -359,6 +378,16 @@
 
             $('#helpBtn').click(function () {
                 ws.send("/help");
+                sendGameMessage.value = "";
+            });
+
+            $('#inventoryBtn').click(function () {
+                ws.send("/inventory");
+                sendGameMessage.value = "";
+            });
+
+            $('#tttBtn').click(function () {
+                ws.send("/ttt " + sendGameMessage.value);
                 sendGameMessage.value = "";
             });
 
@@ -561,9 +590,11 @@ Chat Server: <input id="uri" size="40">
         <div id="d-left" class="button d left" style="font-size: 24px;" onclick="leftBtn()"><span
                 class="label">&#9664;</span></div>
     </div>
-    <div id="lookBtn" style="font-size: 24px;" onclick="upBtn()"><span class="label">&#128065;</span> </div>
+    <div id="lookBtn" style="font-size: 24px;" ><span class="label">&#128065;</span> </div>
     <div id="combatBtn" style="font-size: 24px; color: gray" ><span class="label">&#9876;</span> </div>
     <div id="helpBtn" style="font-size: 24px; color: black" ><span class="label">&#63;</span> </div>
+    <div id="inventoryBtn" style="font-size: 24px;"  ><span class="label">&#128176;</span> </div>
+    <div id="tttBtn" style="font-size: 24px; color: white" ><span class="label">#</span> </div>
 
 
 
