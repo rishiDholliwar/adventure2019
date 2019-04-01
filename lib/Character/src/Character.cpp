@@ -235,11 +235,8 @@ std::string Character::examineCombat() {
 
     output << "\tName: " << name << "\n"
            << "\tHP: " << std::to_string(currentHP) + "/" + std::to_string(maxHP) + "\n"
-           //<< "\t\tcurrentMP: " << currentMP << + "\n"
-        //   << "\tmaxHP: " << maxHP << "\n"
-           //<< "\t\tmaxMP: " << maxMP << std::endl
-           << "\tattack: " << attack << "\n"
-           << "\tdefence: " << defense << "\n";
+           << "\tAttack: " << attack << "\n"
+           << "\tDefence: " << defense << "\n";
 
     return output.str();
 }

@@ -25,7 +25,7 @@ std::unique_ptr<Command> tttBrowser::clone() const {
 }
 
 std::string tttBrowser::help() {
-    return "/ttt - open tic tac toe game in browser";
+    return "/ttt - Opens tic tac toe game in browser";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,5 +50,8 @@ std::unique_ptr<Command> tttTerminal::clone() const {
 }
 
 std::string tttTerminal::help() {
-    return "/tttt - open tic tac toe game in terminal";
+    return "/tttt - Opens tic tac toe game in terminal\n"
+           "/tttt [0-2,0-2] - Make move on the game board\n"
+           "/tttt reset -  Resets the game board\n"
+           "/tttt quitGame - Quits the game.\n";
 }

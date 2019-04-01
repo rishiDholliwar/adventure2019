@@ -291,7 +291,7 @@ std::string CombatController::sendBattleStartedMsg() {
 }
 
 std::string CombatController::sendTargetOfflineMsg() {
-    return "\nTarget is offline:\n";
+    return "\nOpponent is offline:\n";
 }
 
 std::string CombatController::sendNotInBattleMsg() {
@@ -299,9 +299,9 @@ std::string CombatController::sendNotInBattleMsg() {
 }
 
 std::string CombatController::sendYouFledMsg(std::string direction) {
-    return "\nYou have fled " + direction + "\n";
+    return "\nYou have fled " + direction + ":\n";
 }
 
 std::string CombatController::sendTargetFledMsg() {
-    return "\nTarget has fled:\n";
+    return "\nOpponent has fled:\n";
 }

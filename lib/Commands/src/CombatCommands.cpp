@@ -69,7 +69,7 @@ std::unique_ptr<Command> CombatExamine::clone() const {
 
 std::string CombatExamine::help() {
     return "/combat: Displays combat information for all players in room.\n"
-           "/combat [name]: Displays combat information for [name].";
+           "/combat [target]: Displays combat information for [name].";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +240,7 @@ std::unique_ptr<Command> CombatAttack::clone() const {
 }
 
 std::string CombatAttack::help() {
-    return "/attack [name] - Send battle request with rounds to [name] or accept if sent a request.";
+    return "/attack [target] - Send battle request with rounds to [name] or accept if sent a request.";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -286,8 +286,8 @@
                     $('#usernameVal').focus();
                     $('#d_boxbody').append("Password");
                     $('#d_boxbody').append("<br><input id='passwordVal' placeholder=\"Enter Password\">");
-                    $('#d_boxbody').append("<br><input type='checkbox' onclick='passwordDisplayToggle()'><span style='font-size: 16px;font-weight:normal;'>Hide Password</span>");
-
+                    $('#d_boxbody').append("<br><input type='checkbox' onclick='passwordDisplayToggle()'><span style='font-size: 16px;font-weight:normal;'>Show Password</span>");
+                    document.getElementById("passwordVal").type = "password";
                 };
 
                 this.render = function (title, errorMessage, isLogin) {
