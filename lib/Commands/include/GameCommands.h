@@ -307,6 +307,42 @@ public:
     std::string help() override;
 };
 
+//drop
+class Drop : public Command {
+private:
+    RoomController* roomController;
+    ObjectController* objectController;
+    Name username;
+    Input target;
+    std::vector<Object> interactions;
+
+    void setInteractions(std::vector<Object> i, Name interactT);
+
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int MULTIPLE_ITEMS = 1;
+
+    const unsigned int INTERACT_CHOICE = 1;
+
+    // int interactItemChoice;
+    Name interactTarget;
+public:
+    explicit
+    Drop(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
+           Name username = "", Input target = "", Connection connection = Connection{})
+            : roomController(roomController),
+              objectController(objectController),
+              username(std::move(username)), target(std::move(target)) {
+        this->characterController = characterController;
+        registerInteraction = true;
+    };
+    ~Drop() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> interact();
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
+    std::string help() override;
+};
+
 
 
 class Help : public Command

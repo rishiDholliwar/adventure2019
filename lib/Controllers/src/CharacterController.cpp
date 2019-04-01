@@ -222,3 +222,7 @@ void CharacterController::confuseCharacter(Name &targetCharacterName){
 bool CharacterController::isCharacterConfused(Name &username) {
     return getCharacter(username).isConfused();
 }
+
+std::vector<Object> CharacterController::getAllItemsFromCharacter(Name &username) {
+    return getCharacter(username).getInventory().getObjects();
+}

@@ -154,7 +154,6 @@ std::pair<std::vector<Response>, bool> DisplayInventory::execute() {
     if(inventoryList.empty()) {
         Response userResponse = Response("Your inventory is empty!", username);
         auto res = formulateResponse(userResponse);
-
     	return std::make_pair(res, true);
     }
 
@@ -1039,13 +1038,134 @@ std::unique_ptr<Command> Pickup::clone(Name username, Input target, Connection c
 }
 
 std::string Pickup::help() {
-    return "/look [target] - get detailed description of the target.";
+    return "/pickup [target] - add target item into inventory";
 }
 
 void Pickup::setInteractions(std::vector<Object> i, Name interactT) {
     interactions = i;
     interactTarget = interactT;
 }
+
+//Drop
+std::pair<std::vector<Response>, bool> Drop::execute(){
+
+    if(target.empty()){
+        Response userResponse = Response("Please input an item in your inventory.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
+    std::vector<std::string> inputStrings = utility::popFront(target);
+
+    if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+        return this->interact();
+    }
+
+    ID roomID = characterController->getCharacterRoomID(username);
+
+    auto objectList = characterController->getAllItemsFromCharacter(username);
+
+    std::vector<Object> interactableItems;
+    for(const auto objectListItem : objectList){
+        Name objectName = objectListItem.getName();
+        if(objectName == target){
+            //we found the item
+            //lets assume that item is valid and checked
+            interactableItems.push_back(objectListItem);
+        }
+    }
+    if(interactableItems.size() > MULTIPLE_ITEMS){
+        interactions = interactableItems;
+        std::stringstream ss;
+        ss << "There are 1 item named " << interactableItems[0].getName() << ". Which item would you like to drop?\n";
+        int counter = 0;
+        for (auto &obj : interactions) {
+            ss << "\t" << ++counter << ". " << obj.getName() << ", ID: " << obj.getID() << "\n";
+        }
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    } else if(interactableItems.size() == 1){
+        std::cout << "DROPPING ITEM OF SIZE 1 NO INTERACTION";
+        Object item = objectController->getObjectFromList(interactableItems[0].getName());
+        characterController->dropItemFromCharacterInventory(username,interactableItems[0].getID());
+        roomController->addObjectToRoom(interactableItems[0].getID(),roomID);
+        Response userResponse = Response(interactableItems[0].getName() + " has been dropped from your inventory.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    } else {
+        Response userResponse = Response("You don't own that item.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+}
+
+std::pair<std::vector<Response>, bool> Drop::interact() {
+    std::cout << "drop interaction" << std::endl;
+
+    std::vector<std::string> v = utility::tokenizeString(target);
+
+    if ( v.size() != 2 ) {
+        std::cout << "Too many arguments..." << std::endl;
+        Response userResponse = Response("Please enter /drop interact {index number of the item you wish to drop}.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    std::stringstream ss{v.at(INTERACT_CHOICE)};
+    int index = -1;
+    ss >> index;
+    index--;
+    if ( index >= interactions.size() || index < 0 ) {
+        Response userResponse = Response("Please enter /drop interact {index number of the item you wish to drop}.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    ID interactionID = interactions.at(index).getID();
+    Name interactionName = interactions.at(index).getName();
+
+    Name charName = characterController->getCharName(username);
+
+
+    //DO LOGIC
+
+    //generate response
+    Object item = objectController->getObjectFromList(interactionName);
+    characterController->dropItemFromCharacterInventory(username,item.getID());
+    roomController->addObjectToRoom(interactionID,characterController->getCharacterRoomID(username));
+    Response userResponse = Response(interactionName + " has been dropped from your inventory.\n", username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+
+std::unique_ptr<Command> Drop::clone() const {
+    auto drop = std::make_unique<Drop>(this->characterController, this->roomController, this->objectController,
+                                           this->username, this->target);
+    drop->setInteractions(this->interactions, this->interactTarget);
+    return std::move(drop);
+}
+
+std::unique_ptr<Command> Drop::clone(Name username, Input target, Connection connection) const {
+    auto drop = std::make_unique<Drop>(this->characterController, this->roomController, this->objectController,
+                                           username, target);
+    drop->setInteractions(this->interactions, this->interactTarget);
+    return std::move(drop);
+}
+
+std::string Drop::help() {
+    return "/drop [target] - drop target item from your inventory.";
+}
+
+void Drop::setInteractions(std::vector<Object> i, Name interactT) {
+    interactions = i;
+    interactTarget = interactT;
+}
+
+
+
+
 
 std::pair<std::vector<Response>, bool> Help::execute() {
     const auto commands = commandHandler->getAllCommands();
@@ -1074,6 +1194,10 @@ std::unique_ptr<Command> Help::clone() const {
 std::string Help::help() {
     return "/help - 911 what is your emergency?";
 }
+
+
+
+
 
 // move
 std::pair<std::vector<Response>, bool> Move::execute() {

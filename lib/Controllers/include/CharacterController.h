@@ -149,6 +149,8 @@ public:
 
     std::vector<Object> getItemsFromCharacterInventory(Name &username, Name itemName);
 
+    std::vector<Object> getAllItemsFromCharacter(Name &username);
+
     /*
      * obtain item from users inventory
      *
