@@ -732,29 +732,6 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     auto characterList = roomController->getCharacterList(roomId);
     auto objectList = roomController->getObjectList(roomId);
 
-    // generate testing objects
-    if (inputStrings.size() >= 2) {
-        if ((inputStrings.at(CHECK_INTERACT) == "generate")) {
-            std::vector<std::string> keywords;
-            keywords.emplace_back("chief ");
-            keywords.emplace_back("guard");
-            std::vector<std::string> longdesc;
-            longdesc.emplace_back("longdesc1");
-            longdesc.emplace_back("longdesc2");
-            std::vector<Extra> extra;
-            Object* obj1 = new Object(1, keywords, "shortdesc of object", longdesc, extra);
-            Object* obj2 = new Object(1, keywords, "shortdesc of object", longdesc, extra);
-            objectController->addObjectToList(*obj1);
-            objectController->addObjectToList(*obj2);
-            roomController->addObjectToRoom(obj1->getID(), roomId);
-            roomController->addObjectToRoom(obj2->getID(), roomId);
-            Response userResponse = Response("Test objects generated.\n", username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
-    }
-    //testing ONLY ^^^^
-
     ss << line;
 
 
@@ -779,7 +756,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         ss << line;
         Response userResponse = Response(ss.str(), username);
         auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+        return std::make_pair(res, false);
     }
 
     // with argument
@@ -969,7 +946,7 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
     if (target.empty()){
         Response userResponse = Response("Please input a target.\n", username);
         auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
+        return std::make_pair(res, false);
     }
 
     interactions.clear();
