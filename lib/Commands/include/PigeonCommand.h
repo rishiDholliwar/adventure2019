@@ -20,22 +20,36 @@ using networking::Connection;
 class PigeonMail : public Command
 {
 private:
+    const unsigned int INTERACT_CHOICE = 1;
+
     RoomController* roomController;
-    PigeonMail* pigeonMail;
-    ObjectController* objectController;
+    PigeonEXE* pigeonEXE;
     Name username;
     Input input;
+    Name targetUsername;
     Name pigeonUsername;
+    Name pigeonName;
+    ID itemUniqueID;
+    ID objectID;
+    std::vector<std::pair<Name, Object>> interactions;
+
+    void setInteractions(std::vector<std::pair<Name, Object>> i);
+
 public:
     explicit
-    PigeonMail(CharacterController* characterController, RoomController* roomController, PigeonMail* pigeonMail, ObjectController* objectController, Name username = "", Input input = "", Connection connection = Connection{})
-        : roomController(roomController), pigeonMail(pigeonMail), objectController(objectController), username(std::move(username)), input(std::move(input)) {
+    PigeonMail(CharacterController* characterController, RoomController* roomController, PigeonEXE* pigeonEXE, Name username = "", Input input = "", Connection connection = Connection{})
+        : roomController(roomController), pigeonEXE(pigeonEXE), username(std::move(username)), input(std::move(input)) {
             this->characterController = characterController;
+            registerInteraction = true;
+            registerCallback = true;
+            callbackAfterHeartbeats = 50;
            };
 
     ~PigeonMail() = default;
     std::pair<std::vector<Response>, bool> execute() override;
     std::pair<std::vector<Response>, bool> callback() override;
+    std::pair<std::vector<Response>, bool> interact();
+    void releaseThePigeon();
     std::unique_ptr<Command> clone() const override;
     std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
     std::string help() override;

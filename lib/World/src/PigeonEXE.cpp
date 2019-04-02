@@ -3,7 +3,7 @@
 #include <iostream>
 
 PigeonEXE::DirectionDistance PigeonEXE::getShortestDirection(ID fromRoom, ID toRoom) {
-    auto toMap = shortestMap.find(fromRoom);
+    auto toMap = this->shortestMap.find(fromRoom);
     if( toMap == shortestMap.end() || toMap->second.find(toRoom) == toMap->second.end() ) {
         calculate(fromRoom, toRoom);
         toMap = shortestMap.find(fromRoom);
@@ -19,8 +19,17 @@ PigeonEXE::DirectionDistance PigeonEXE::getShortestDirection(ID fromRoom, ID toR
 }
 
 int PigeonEXE::calculate(ID fromRoom, ID toRoom) {
+    if( _roomController == nullptr ) {
+        return -1;
+    }
     auto room = _roomController->searchRoom(fromRoom);
     if( room == nullptr ) {
+        return 0;
+    }
+
+    if( fromRoom == toRoom ) {
+        auto fromMap = &shortestMap.emplace(fromRoom, std::unordered_map<ID, DirectionDistance>{}).first->second;
+        fromMap->emplace(toRoom, std::make_pair("", 0));
         return 0;
     }
 

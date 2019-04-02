@@ -23,6 +23,7 @@
 #include <GameCommands.h>
 #include <UserCommands.h>
 #include <ResetCommand.h>
+#include <PigeonCommand.h>
 #include <JSONThingy.h>
 
 void Game::registerCommands() {
@@ -40,6 +41,7 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::LOOK, Look(&_characterController,&_roomController, &_objectController).clone());
     _commandHandler.registerCommand(CommandType::EXAMINE, Examine(&_characterController,&_roomController, &_objectController).clone());
     _commandHandler.registerCommand(CommandType::MOVE, Move(&_characterController,&_roomController).clone());
+    _commandHandler.registerCommand(CommandType::PIGEONMAIL, PigeonMail(&_characterController,&_roomController, &_pigeonEXE).clone());
 }
 
 void
@@ -173,6 +175,7 @@ Game::Game(Config config)
     jt.load("mirkwood", _resetController);
 
     _pigeonEXE = PigeonEXE(&_roomController);
+    _pigeonEXE.getShortestDirection(8865, 8865);
 
     this->registerCommands();
     _scheduler->schedule(std::make_shared<ResetCommand>(&_resetController, 300), 0);
