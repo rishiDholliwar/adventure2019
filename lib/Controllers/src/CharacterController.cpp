@@ -44,7 +44,7 @@ void CharacterController::addCharacter(Character &aCharacter) {
     _characters.emplace(username, aCharacter).second;
 }
 
-void CharacterController::addNPC(Character aNPC) {
+void CharacterController::addNPC(Character &aNPC) {
 
     aNPC.setNPC();
 
