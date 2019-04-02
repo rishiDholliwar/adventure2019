@@ -811,21 +811,25 @@ std::pair<std::vector<Response>, bool> Look::execute() {
                     }
                 }
 
-                if (npcNames.size() > 1) {
-                    std::cout << "more than 1" << std::endl;
-                    interactions = npcNames;
-                    std::stringstream ss;
+                interactions = npcNames;
 
-                    for (auto &name : interactions) {
-                        intss << "\t" << ++index << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
-                    }
+                for (auto &name : interactions) {
+                    intss << "\t" << ++index << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
+                }
+
+                if (index > 1) {
+                    std::cout << "more than 1" << std::endl;
+
                     break;
-                } else if (npcNames.size() == 1) {
+                } else if (index == 1) {
                     std::cout << "Help" << std::endl;
                     characterName = npcNames.front();
                     std::cout << "Help" << std::endl;
                     std::cout << characterName << std::endl;
                     std::cout << "Seg fault?" << std::endl;
+
+                    ss << "\t" << characterName << "\n" << characterController->lookCharacter(characterName) << "\n";
+                    break;
                 } else {
                     std::cout << "npc list is empty???" << std::endl;
                     continue;
@@ -834,7 +838,6 @@ std::pair<std::vector<Response>, bool> Look::execute() {
             }
             ss << "\t" << characterName << "\n" << characterController->lookCharacter(characterName) << "\n";
             index += 1;
-
         }
     }
 
@@ -993,21 +996,25 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
                     }
                 }
 
-                if (npcNames.size() > 1) {
-                    std::cout << "more than 1" << std::endl;
-                    interactions = npcNames;
-                    std::stringstream ss;
+                interactions = npcNames;
 
-                    for (auto &name : interactions) {
-                        intss << "\t" << ++index << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
-                    }
+                for (auto &name : interactions) {
+                    intss << "\t" << ++index << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
+                }
+
+                if (index > 1) {
+                    std::cout << "more than 1" << std::endl;
+
                     break;
-                } else if (npcNames.size() == 1) {
+                } else if (index == 1) {
                     std::cout << "Help" << std::endl;
                     characterName = npcNames.front();
                     std::cout << "Help" << std::endl;
                     std::cout << characterName << std::endl;
                     std::cout << "Seg fault?" << std::endl;
+
+                    ss << "\t" << characterName << "\n" << characterController->examineCharacter(characterName) << "\n";
+                    break;
                 } else {
                     std::cout << "npc list is empty???" << std::endl;
                     continue;
@@ -1016,7 +1023,6 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
             }
             ss << "\t" << characterName << "\n" << characterController->examineCharacter(characterName) << "\n";
             index += 1;
-
         }
     }
 
