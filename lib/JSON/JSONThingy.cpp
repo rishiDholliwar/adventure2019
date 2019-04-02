@@ -62,6 +62,30 @@ NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
 
 })
 
+//Resets
+void from_json(const json &j, Reset &reset) {
+    auto action = j.at("action").get<std::string>();
+
+    if (action == "npc") {
+        reset = Reset(action,
+                        j.at("id").get<int>(),
+                        j.at("limit").get<int>(),
+                        j.at("room").get<int>());
+    } else if (action == "equip" || action == "give") {
+        reset = Reset(action,
+                        j.at("id").get<int>());
+    } else if (action == "object") {
+        reset = Reset(action,
+                        j.at("id").get<int>(),
+                        j.at("room").get<int>());
+    } else if (action == "door") {
+        reset = Reset(action,
+                        j.at("id").get<int>(),
+                        j.at("room").get<int>(),
+                        j.at("state").get<std::string>());
+    }
+}
+
 // Doors
 void from_json(const json &j, Door &aDoor) {
     aDoor = Door(j.at("dir").get<std::string>(),
@@ -110,17 +134,17 @@ void to_json(json &j, const Object &anObject) {
 }
 
 void from_json(const json &j, Extra &extraDesc) {
-    extraDesc = Extra(        
+    extraDesc = Extra(
         j.at("keywords").get<std::vector<std::string>>(),
         j.at("desc").get<std::vector<std::string>>());
 }
 
 void from_json(const json &j, Object &anObject) {
-    anObject = Object( 
-        j.at("id").get<ID>(), 
-        j.at("keywords").get<std::vector<std::string>>(), 
-        j.at("shortdesc").get<std::string>(), 
-        j.at("longdesc").get<std::vector<std::string>>(), 
+    anObject = Object(
+        j.at("id").get<ID>(),
+        j.at("keywords").get<std::vector<std::string>>(),
+        j.at("shortdesc").get<std::string>(),
+        j.at("longdesc").get<std::vector<std::string>>(),
         j.at("extra").get<std::vector<Extra>>());
 }
 
@@ -139,14 +163,14 @@ void from_json(const json &j, Inventory &anInventory) {
 void to_json(json &j, const Character &aCharacter) {
 
     if ( !(aCharacter.isNPC()) ) {
-
+        std::cout << "xD" << std::endl;
         j = json{
             { "name", aCharacter.getName() },
             { "roomID", aCharacter.getRoomID() },
             { "wearing", aCharacter.getWearing() },
             { "inventory", aCharacter.getInventory() },
         };
-
+        std::cout << j.dump() << std::endl;
     }
 }
 
@@ -240,7 +264,7 @@ void JSONThingy::load(std::string areaToLoad, RoomController &roomController) {
         json j;
         fs >> j;
         fs.close();
-        
+
         roomController = j.get<RoomController>();
     }
 }
@@ -264,4 +288,22 @@ void JSONThingy::load(std::string language, CommandTranslator &aTranslator) {
 
     }
 
+}
+
+void JSONThingy::load(std::string areaToLoad, ResetController &resetController) {
+    if(!boost::filesystem::exists("./DataFiles/" + areaToLoad + ".json")) {
+        std::cout << "room file not found" << std::endl;
+        return;
+    }
+
+    std::fstream fs;
+    fs.open("./DataFiles/" + areaToLoad + ".json", std::fstream::in);
+    if(!fs.fail()) {
+        json j;
+        fs >> j;
+        fs.close();
+
+        resetController.addResets(j.at("RESETS").get<std::vector<Reset>>());
+        resetController.addNPCs(j.at("NPCS").get<std::vector<Character>>());
+    }
 }

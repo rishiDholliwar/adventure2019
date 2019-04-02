@@ -23,6 +23,7 @@ target_link_libraries(jsonThingy
         json
         controllers
         world
+        Reset
         ${Boost_LIBRARIES}
         PRIVATE
         utility

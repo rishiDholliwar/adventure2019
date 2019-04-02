@@ -25,14 +25,16 @@
 #include <CombatCommands.h>
 #include <MiniGameCommands.h>
 
+#include <ResetCommand.h>
+
 
 void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::SAY, Say(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand(CommandType::TELL, Tell(&_characterController).clone());
     _commandHandler.registerCommand(CommandType::WHISPER, Whisper(&_characterController,&_roomController).clone());
     _commandHandler.registerCommand(CommandType::INVENTORY, DisplayInventory(&_characterController).clone());
-    _commandHandler.registerCommand(CommandType::GIVE, Give(&_characterController, &_objectController).clone());
-    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::GIVE, Give(&_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand(CommandType::CONFUSE, Confuse(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand(CommandType::LOGIN, Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand(CommandType::LOGOUT, Logout(&_userController, &_characterController, &_roomController).clone());
@@ -78,7 +80,6 @@ Game::removeConnection(Connection c) {
 
 
     }
-
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
     _clients.erase(eraseBegin, std::end(_clients));
 }
@@ -116,9 +117,6 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
         }
 
         std::string username = _userController.getUsernameWithConnection(message.connection);
-        
-
-
         std::string output = "Invalid command";
 
         if (username.empty()) {
@@ -205,12 +203,15 @@ Game::Game(Config config)
     _commandHandler = CommandHandler();
     _commandTranslator = CommandTranslator();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
+    _resetController = ResetController(&_roomController, &_characterController, &_objectController);
 
     JSONThingy jt;
     jt.load("mirkwood", _objectController);
     jt.load("mirkwood", _roomController);
+    jt.load("mirkwood", _resetController);
 
     this->registerCommands();
+    _scheduler->schedule(std::make_shared<ResetCommand>(&_resetController, 300), 0);
 }
 
 std::string
@@ -236,57 +237,7 @@ main(int argc, char *argv[]) {
         return 1;
     }
     using namespace std;
-////////////////////////////
 
-    std::string fileName = "mirkwood";
-
-    // if (JSONObjects::fileExists(fileName)) {
-    //     cout << "file exists\n";
-    // } else {
-    //     cout << "error, no such file\n";
-    // }
-
-    // std::vector<Object> objects = JSONObjects::getObjects(fileName);
-
-    // for (auto &obj : objects) {
-    //     std::cout << "ID: " << obj.getID() << std::endl;
-
-    //     std::cout << "Type: " << obj.getName() << std::endl;
-
-    //     std::cout << "Abilities: " << std::endl;
-    //     for (auto &a : obj.getAbilities()) {
-    //       std::cout << "\t" << a.first << ", " << a.second << std::endl;
-    //     }
-
-    //     std::cout << " Keywords: " << std::endl;
-    //     for (auto &kw : obj.getKeywords()) {
-    //         std::cout << "\t" << kw << std::endl;
-    //     }
-
-    //     std::cout << " Shortdesc: " << obj.getShortDesc() << std::endl;
-
-    //     std::cout << " Longdesc: " << std::endl;
-    //     for (auto &ld : obj.getLongDesc()) {
-    //         std::cout << "\t" << ld << std::endl;
-    //     }
-
-    //     std::cout << " Extra: " << std::endl;
-    //     std::cout << "\tKeywords: " << std::endl;
-    //     for (auto &ekw : obj.getExtraKeywords()) {
-    //         std::cout << " \t" << ekw << std::endl;
-    //     }
-
-    //     std::cout << std::endl;
-
-    //     std::cout << "\tDesc: " << std::endl;
-    //     for (auto &ed : obj.getExtraDesc()) {
-    //         std::cout << " \t" << ed << std::endl;
-    //     }
-
-    //     std::cout << std::endl;
-    // }
-
-/////////////////////////////
     unsigned short port = std::stoi(argv[1]);
     auto webpage = getHTTPMessage(argv[2]);
 

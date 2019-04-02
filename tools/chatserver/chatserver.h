@@ -8,10 +8,10 @@
 #include <ObjectController.h>
 #include <CombatController.h>
 #include <MiniGameController.h>
+#include <ResetController.h>
 #include <CommandHandler.h>
 #include <Scheduler.h>
 #include <CommandTranslator.h>
-
 
 using networking::Server;
 using networking::Connection;
@@ -33,6 +33,7 @@ private:
   ObjectController _objectController;
   CombatController _combatController;
   MiniGameController _miniGameController;
+  ResetController _resetController;
   CommandTranslator _commandTranslator;
   std::unique_ptr<Server> _server;
   CommandHandler _commandHandler;

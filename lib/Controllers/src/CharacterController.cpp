@@ -64,22 +64,16 @@ ID CharacterController::getNPCID(Name &npcKey) {
     return _characters.find(npcKey)->second.getID();
 }
 
-std::vector<Name> CharacterController::getNPCKeys(Name npcName) {
-    int npcNameLength = npcName.length();
-    std::vector<Name> npcKeys{};
+std::vector<Name> CharacterController::getUsernamesOfCharacter(Name characterName) {
+    std::vector<Name> usernames{};
 
     for (auto&character : _characters) {
-
-        if (!character.second.isNPC()) {
-            continue;
-        }
-
-        if (character.second.getName() == npcName) {
-            npcKeys.push_back(character.first);
+        if (character.second.getName() == characterName) {
+            usernames.push_back(character.first);
         }
     }
 
-    return npcKeys;
+    return usernames;
 }
 
 Name CharacterController::getCharName(Name &username) {

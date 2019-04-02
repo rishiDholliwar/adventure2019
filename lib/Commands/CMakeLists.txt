@@ -2,7 +2,9 @@ add_library(commands
   src/Command.cpp
   src/GameCommands.cpp
   src/UserCommands.cpp
-  src/CombatCommands.cpp include/MiniGameCommands.h src/MiniGameCommands.cpp)
+  src/CombatCommands.cpp include/MiniGameCommands.h src/MiniGameCommands.cpp
+  src/UserCommands.cpp
+  src/ResetCommand.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
 

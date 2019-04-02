@@ -10,6 +10,7 @@
 #include <Object.h>
 #include <utility>
 #include <vector>
+#include <boost/algorithm/string/join.hpp>
 
 using AlterSpace::ID;
 using AlterSpace::Name;
@@ -31,7 +32,7 @@ private:
     bool combat = false;
 
     //For combat
-    unsigned int currentHP = maxHP; //todo need to set this to correct value with json
+    unsigned int currentHP = 0; //todo need to set this to correct value with json
     unsigned int currentMP;
     unsigned int attack = 5;
     unsigned int defense = 1;
@@ -59,6 +60,7 @@ public:
         this->inventory = Inventory{};
         this->confused = false;
         this->wearing = std::vector<Object>();
+        this->currentHP = maxHP;
     }
 
     //constructor for playable character
@@ -66,19 +68,38 @@ public:
             name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
         this->characterType = CharacterType::PLAYABLE;
         this->confused = false;
+        this->currentHP = maxHP;
     }
 
     //constructor for npc
     Character(ID characterID, std::vector<std::string> keywords, std::string shortdesc, std::vector<std::string> longdesc, std::vector<std::string> description) :
             characterID(characterID), keywords(keywords), shortdesc(shortdesc), longdesc(longdesc), description(description) {
-        this->name = std::accumulate(keywords.begin(), keywords.end(), std::string(" "));
+        this->name = boost::algorithm::join(keywords, " ");
         this->confused = false;
+        this->currentHP = maxHP;
+    }
+
+    Character(const Character& npc) {
+        this->name = npc.getName();
+        this->characterID = npc.getCharacterID();
+        this->characterType = npc.getType();
+        this->inventory = npc.getInventory();
+        this->wearing = npc.getWearing();
+        this->confused = false;
+        this->roomID = npc.roomID;
+
+        this->keywords = npc.getKeywords();
+        this->shortdesc = npc.getShortDesc();
+        this->longdesc = npc.getLongDesc();
+        this->description = npc.getDescription();
+        this->currentHP = maxHP;
     }
 
     Name getName() const;
     ID getCharacterID() const;
     ID getRoomID() const;
     bool isNPC() const;
+    CharacterType getType() const {return characterType;};
     ID getID() const;
     void setNPC();
 
