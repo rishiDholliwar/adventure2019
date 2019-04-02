@@ -34,7 +34,7 @@ public:
 
     void addCharacter(Character &aCharacter);
 
-    void addNPC(Character aNPC);
+    Name addNPC(Character aNPC);
 
     /*
      * Remove user from the list of characters
@@ -205,7 +205,7 @@ public:
     */
     std::string characterListInventory(Name &username);
 
-    // look and examine 
+    // look and examine
     std::string lookCharacter(Name& userName);
     std::string examineCharacter(Name& userName);
 

@@ -44,7 +44,7 @@ void CharacterController::addCharacter(Character &aCharacter) {
     _characters.emplace(username, aCharacter).second;
 }
 
-void CharacterController::addNPC(Character aNPC) {
+Name CharacterController::addNPC(Character aNPC) {
 
     aNPC.setNPC();
 
@@ -53,6 +53,7 @@ void CharacterController::addNPC(Character aNPC) {
     Name npcKey = ss.str();
 
     _characters.emplace(npcKey, aNPC);
+    return npcKey;
 }
 
 void CharacterController::removeCharacter(Name &username){

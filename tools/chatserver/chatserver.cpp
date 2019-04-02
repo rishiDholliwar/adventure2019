@@ -172,6 +172,8 @@ Game::Game(Config config)
     jt.load("mirkwood", _roomController);
     jt.load("mirkwood", _resetController);
 
+    _pigeonEXE = PigeonEXE(&_roomController);
+
     this->registerCommands();
     _scheduler->schedule(std::make_shared<ResetCommand>(&_resetController, 300), 0);
 }
