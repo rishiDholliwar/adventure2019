@@ -56,7 +56,9 @@ const Object& ObjectController::getObjectFromList(const Name objectName) const {
 
 std::string ObjectController::lookItem(Name objectName) {
     auto object = getObjectFromList(objectName);
-    return object.getShortDesc()+"\n";
+    std::stringstream ss;
+    ss << "\t" << object.getShortDesc() << "\n";
+    return ss.str();
 }
 
 std::string ObjectController::examineItem(Name objectName) {
@@ -70,7 +72,9 @@ std::string ObjectController::examineItem(Name objectName) {
 
 std::string ObjectController::lookItem(ID objectID) {
     auto object = getObjectFromList(objectID);
-    return object.getShortDesc()+"\n";
+    std::stringstream ss;
+    ss << "\t" << object.getShortDesc() << "\n";
+    return ss.str();
 }
 
 std::string ObjectController::examineItem(ID objectID) {

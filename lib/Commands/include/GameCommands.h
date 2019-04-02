@@ -255,12 +255,13 @@ class Examine : public Command
 {
 private:
     const unsigned int CHECK_INTERACT = 0;
-    const unsigned int INTERACT_CHOICE = 1;
+    const unsigned int INTERACT_TARGET = 1;
 
     RoomController* roomController;
     ObjectController* objectController;
     Name username;
     Input target;
+    std::string line = "---------------------------\n";
     std::vector<std::string> interactions;
 
     void setInteractions(std::vector<std::string> i);

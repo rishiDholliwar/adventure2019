@@ -2390,6 +2390,12 @@
       "room": 8861
     },
     {
+      "action": "npc",
+      "id": 8805,
+      "limit": 1,
+      "room": 8800
+    },
+    {
       "action": "give",
       "id": 8808
     },
@@ -2422,6 +2428,11 @@
       "action": "object",
       "id": 8809,
       "room": 8861
+    },
+    {
+      "action": "object",
+      "id": 8809,
+      "room": 8800
     },
     {
       "action": "object",
