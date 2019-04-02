@@ -72,7 +72,7 @@ public:
         this->characterType = npc.getType();
         this->inventory = npc.getInventory();
         this->wearing = npc.getWearing();
-        this->confused = false;
+        this->confused = npc.confused;
         this->roomID = npc.roomID;
 
         this->keywords = npc.getKeywords();
