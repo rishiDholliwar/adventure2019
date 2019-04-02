@@ -854,7 +854,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     }
 
     if (index >= 2){
-        ss << line;
+        intss << line;
         Response userResponse = Response(intss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -1038,7 +1038,7 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
     }
 
     if (index >= 2){
-        ss << line;
+        intss << line;
         Response userResponse = Response(intss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
