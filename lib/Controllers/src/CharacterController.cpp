@@ -84,6 +84,24 @@ Character &CharacterController::getCharacter(Name &username) {
     return _characters.find(username)->second;
 }
 
+Character& CharacterController::getCharacter(ID uniqueID) {
+    auto it = std::find_if(_characters.begin(), _characters.end(),
+                        [&uniqueID] (auto const& character) {
+                            return uniqueID == character.second.getID();
+                        });
+
+    return it->second;
+}
+
+bool CharacterController::doesCharacterExist(ID uniqueID) {
+    auto it = std::find_if(_characters.begin(), _characters.end(),
+                        [&uniqueID] (auto const& character) {
+                            return uniqueID == character.second.getID();
+                        });
+
+    return it != _characters.end();
+}
+
 // Character &CharacterController::getCharacterByCharName(Name &charName) {
 //     auto it = find_if(_characters.begin(), _characters.end(),
 //                         [&charName] (auto const& character) {

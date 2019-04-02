@@ -42,7 +42,7 @@ public:
             this->characterController = characterController;
             registerInteraction = true;
             registerCallback = true;
-            callbackAfterHeartbeats = 50;
+            callbackAfterHeartbeats = 25;
            };
 
     ~PigeonMail() = default;

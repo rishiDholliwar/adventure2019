@@ -42,8 +42,8 @@ std::pair<std::vector<Response>, bool> PigeonMail::execute() {
             int counter = 0;
             for( auto& interaction : interactions ) {
                 ss << ++counter << ". Character: " << characterController->getCharName(interaction.first) << "\n";
-                ss << "\t" << characterController->getCharacterInfo(interaction.first) << "\n";
-                ss << "  Item to give: " << interaction.second.getName() << " ID: " << interaction.second.getID() << "\n";
+                ss << " - ID: " << characterController->getNPCID(interaction.first) << "\n";
+                ss << "  Item to give: " << interaction.second.getName() << " - ID: " << interaction.second.getID() << "\n";
             }
             Response userResponse = Response(ss.str(), username);
             auto res = formulateResponse(userResponse);
@@ -91,9 +91,12 @@ std::pair<std::vector<Response>, bool> PigeonMail::execute() {
             auto res = formulateResponse(userResponse);
             return std::make_pair(res, false);
         }
-        ID roomID = characterController->getCharacterRoomID(pUsername);
+
         ID userRoomID = characterController->getCharacterRoomID(username);
-        auto [direction, distance] = pigeonEXE->getShortestDirection(roomID, userRoomID);
+        auto toRoomID = characterController->getCharacterRoomID(pUsername);
+
+        auto [direction, distance] = pigeonEXE->getShortestDirection(userRoomID, toRoomID);
+
         std::stringstream message;
         if( characterController->characterHasItem(pUsername, itemUniqueID) ) {
             message << "It looks like your pigeon has either delivered the package or lost it...\n";
@@ -120,6 +123,15 @@ void PigeonMail::releaseThePigeon() {
     Object obj = characterController->getItemFromCharacterInventory(username, itemUniqueID);
     objectID = obj.getObjectID();
     characterController->dropItemFromCharacterInventory(username, itemUniqueID);
+
+    auto toRoomID = characterController->getCharacterRoomID(targetUsername);
+    auto testID = roomID;
+    while( testID != toRoomID ){
+        auto [direction, distance] = pigeonEXE->getShortestDirection(testID, toRoomID);
+        testID = roomController->getDoorDesignatedRoomId(testID, direction);
+        std::cout << testID << " : " << direction << std::endl;
+    }
+
 
     Character pigeon("Pigeon", roomID);
     auto pigeonUniqueID = pigeon.getID();
@@ -282,6 +294,7 @@ std::pair<std::vector<Response>, bool> PigeonMail::interact() {
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
     }
+
     releaseThePigeon();
     ss.clear();
     ss << "Pigeon released. Your tracking number is: " << characterController->getCharName(pigeonUsername) << "\n";

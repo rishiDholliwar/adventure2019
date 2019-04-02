@@ -58,6 +58,8 @@ public:
     */
     Character &getCharacter(Name &username);
 
+    Character &getCharacter(ID uniqueID);
+
     Name getUsernameOfCharacter(Name &charName);
 
     // Character &getCharacterByCharName(Name &charName);
@@ -74,6 +76,8 @@ public:
      * Post-Condition: Returns true if the character exists
     */
     bool doesCharacterExist(Name &userName);
+
+    bool doesCharacterExist(ID uniqueID);
 
     /*
      * Obtain a list of all users currently in the game
