@@ -920,13 +920,28 @@ std::pair<std::vector<Response>, bool> Look::interact() {
     if (has_only_digits){
         ID objectId = std::stoul(interactTarget);
         Name objectName = objectController->getObjectName(objectId);
-        ss << line;
-        ss << "\t" <<objectName << "-" << objectId << "\n" <<objectController->lookItem(objectId)<< "\n";
-        ss << line;
+        auto objectList = roomController->getObjectList(roomId);
+        if (roomController->doesObjectExistInRoom(roomId, objectId)) {
+            ss << line;
+            ss << "\t" << objectName << "-" << objectId << "\n" << objectController->lookItem(objectId) << "\n";
+            ss << line;
+        }else{
+            ss << objectName << " is not in the room.\n";
+            Response userResponse = Response(ss.str(), username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, false);
+        }
     }else{
-        ss << line;
-        ss << "\t" <<interactTarget << "\n" <<characterController->lookCharacter(interactTarget)<< "\n";
-        ss << line;
+        if (characterController->getCharacterRoomID(interactTarget) == roomId) {
+            ss << line;
+            ss << "\t" << interactTarget << "\n" << characterController->lookCharacter(interactTarget) << "\n";
+            ss << line;
+        }else{
+            ss << interactTarget << " is not in the room.\n";
+            Response userResponse = Response(ss.str(), username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, false);
+        }
     }
 
 
@@ -1089,13 +1104,28 @@ std::pair<std::vector<Response>, bool> Examine::interact() {
     if (has_only_digits){
         ID objectId = std::stoul(interactTarget);
         Name objectName = objectController->getObjectName(objectId);
-        ss << line;
-        ss << "\t" <<objectName << "-" << objectId << "\n" <<objectController->examineItem(objectId)<< "\n";
-        ss << line;
+        auto objectList = roomController->getObjectList(roomId);
+        if (roomController->doesObjectExistInRoom(roomId, objectId)) {
+            ss << line;
+            ss << "\t" << objectName << "-" << objectId << "\n" << objectController->examineItem(objectId) << "\n";
+            ss << line;
+        }else{
+            ss << objectName << " is not in the room.\n";
+            Response userResponse = Response(ss.str(), username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, false);
+        }
     }else{
-        ss << line;
-        ss << "\t" <<interactTarget << "\n" <<characterController->examineCharacter(interactTarget)<< "\n";
-        ss << line;
+        if (characterController->getCharacterRoomID(interactTarget) == roomId) {
+            ss << line;
+            ss << "\t" << interactTarget << "\n" << characterController->examineCharacter(interactTarget) << "\n";
+            ss << line;
+        }else{
+            ss << interactTarget << " is not in the room.\n";
+            Response userResponse = Response(ss.str(), username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, false);
+        }
     }
 
     Response userResponse = Response(ss.str(), username);
