@@ -785,7 +785,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     // with argument
 
     bool targetFound = false;
-    int index = 1;
+    int index = 0;
 
     intss << "There is more than 1 NPC/objects named " << target << ". Which NPC/objects would you like to look at?\n";
 
@@ -817,16 +817,10 @@ std::pair<std::vector<Response>, bool> Look::execute() {
                     interactions = npcNames;
                     std::stringstream ss;
 
-                    ss << "There is more than 1 NPC named " << target << ". Which NPC would you like to look at?\n";
-
-                    int counter = 0;
                     for (auto &name : interactions) {
-                        ss << "\t" << ++counter << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
+                        intss << "\t" << ++index << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
                     }
-
-                    Response userResponse = Response(ss.str(), username);
-                    auto res = formulateResponse(userResponse);
-                    return std::make_pair(res, false);
+                    break;
                 } else if (npcNames.size() == 1) {
                     std::cout << "Help" << std::endl;
                     characterName = npcNames.front();
@@ -859,14 +853,14 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         }
     }
 
-    if (index >= 3){
+    if (index >= 2){
         intss << line;
         Response userResponse = Response(intss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
     }
 
-    if (index <= 1){
+    if (index <= 0){
         Response userResponse = Response("Target not found.\n", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
