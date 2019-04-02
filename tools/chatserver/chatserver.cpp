@@ -22,6 +22,7 @@
 
 #include <GameCommands.h>
 #include <UserCommands.h>
+#include <ResetCommand.h>
 #include <JSONThingy.h>
 
 void Game::registerCommands() {
@@ -29,8 +30,8 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::TELL, Tell(&_characterController).clone());
     _commandHandler.registerCommand(CommandType::WHISPER, Whisper(&_characterController,&_roomController).clone());
     _commandHandler.registerCommand(CommandType::INVENTORY, DisplayInventory(&_characterController).clone());
-    _commandHandler.registerCommand(CommandType::GIVE, Give(&_characterController, &_objectController).clone());
-    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::GIVE, Give(&_characterController, &_roomController, &_objectController).clone());
+    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand(CommandType::CONFUSE, Confuse(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand(CommandType::LOGIN, Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand(CommandType::LOGOUT, Logout(&_userController, &_characterController, &_roomController).clone());
@@ -164,12 +165,15 @@ Game::Game(Config config)
     _commandHandler = CommandHandler();
     _commandTranslator = CommandTranslator();
     _scheduler      = std::make_unique<Scheduler>(config.heartbeat);
+    _resetController = ResetController(&_roomController, &_characterController, &_objectController);
 
     JSONThingy jt;
     jt.load("mirkwood", _objectController);
     jt.load("mirkwood", _roomController);
+    jt.load("mirkwood", _resetController);
 
     this->registerCommands();
+    _scheduler->schedule(std::make_shared<ResetCommand>(&_resetController, 300), 0);
 }
 
 std::string

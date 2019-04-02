@@ -113,6 +113,7 @@ std::pair<std::vector<Response>, bool> Signup::execute() {
 
         characterController->addCharacter(username, *(roomController), *(objectController));
         JSONThingy jt;
+        std::cout << characterController->getCharacter(username).getName() << std::endl;
         jt.save(characterController->getCharacter(username));
     }
 

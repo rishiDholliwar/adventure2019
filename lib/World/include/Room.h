@@ -40,8 +40,8 @@ public:
          *          return true if the element is successfully added
          *          return false otherwise
      */
-    bool addObject(ID objectId);
-    bool addCharacter(const Name &userName);
+    void addObject(ID objectId);
+    void addCharacter(const Name &userName);
     bool addDoor(ID doorId, ID designatedRoomId, const std::string& direction);
     bool addUserName(const Name &userName);
 
@@ -54,6 +54,7 @@ public:
     bool removeObject(ID objectId);
     bool removeCharacter(const Name &userName);
     bool removeDoor(ID doorId);
+    void removeDoorByDirection(const std::string& direction);
 
 
     /*
