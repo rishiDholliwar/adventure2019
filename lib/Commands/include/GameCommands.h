@@ -346,6 +346,7 @@ public:
     Wear(CharacterController* characterController, Name username = "", Input input = "", Connection connection = Connection{})
         : username(std::move(username)), input(std::move(input)) {
             this->characterController = characterController;
+            registerInteraction = true;
            };
 
     ~Wear() = default;
@@ -377,6 +378,7 @@ public:
         : username(std::move(username)), input(std::move(input)) {
             this->characterController = characterController;
             this->objectController = objectController;
+            registerInteraction = true;
            };
     ~Takeoff() = default;
     std::pair<std::vector<Response>, bool> execute() override;
