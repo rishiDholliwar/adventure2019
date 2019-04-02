@@ -910,7 +910,6 @@ void Move::removeTargets(std::vector<std::string> &characterList, Name username)
 
 //Info
 std::pair<std::vector<Response>, bool> Info::execute() {
-    Name charName = characterController->getCharacter(username).getName();
     Response userResponse = Response(characterController->getCharacterInfo(username), username);
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
@@ -978,9 +977,10 @@ std::pair<std::vector<Response>, bool> Wear::execute() {
     }
 
     // Wear item (drops item from inventory)
-    characterController->characterWearItem(username, objectName);
+    ID objectID = characterController->getItemIDFromCharacterInventory(username, objectName);
+    characterController->characterWearItem(username, objectID);
 
-    if (characterController->characterHasItem(username, objectName) || !characterController->characterIsWearingItem(username, objectName)) {
+    if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
         Response userResponse = Response("Wearing item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -1015,9 +1015,10 @@ std::pair<std::vector<Response>, bool> Wear::interact() {
 
     // Wear item (drops item from inventory)
     Name objectName = interactions.at(index).getName();
-    characterController->characterWearItem(username, objectName);
+    ID objectID = interactions.at(index).getID();
+    characterController->characterWearItem(username, objectID);
 
-    if (characterController->characterHasItem(username, objectName) || !characterController->characterIsWearingItem(username, objectName)) {
+    if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
         Response userResponse = Response("Wearing item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -1098,9 +1099,9 @@ std::pair<std::vector<Response>, bool> Takeoff::execute() {
 
     // Drop item from user wear (adds item to inventory)
     ID objectID = characterController->getItemIDFromCharacterWearing(username, objectName);
-    characterController->characterRemoveItem(username, objectController->getObject(objectID));
+    characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
 
-    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectName)) {
+    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
         Response userResponse = Response("Taking off item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -1138,9 +1139,9 @@ std::pair<std::vector<Response>, bool> Takeoff::interact() {
     Name objectName = interactions.at(index).getName();
 
     // Drop item from user wear (adds item to inventory)
-    characterController->characterRemoveItem(username, objectController->getObject(objectID));
+    characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
 
-    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectName)) {
+    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
         Response userResponse = Response("Taking off item has failed.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);

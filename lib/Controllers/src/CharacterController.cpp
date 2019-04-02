@@ -193,8 +193,7 @@ bool CharacterController::characterIsWearingItem(Name &username, Name itemName) 
     return getCharacter(username).isWearing(itemName);
 }
 
-void CharacterController::characterWearItem(Name &username, Name itemName) {
-    ID itemID = getItemIDFromCharacterInventory(username, itemName);
+void CharacterController::characterWearItem(Name &username, ID itemID) {
     getCharacter(username).wear(itemID);
 }
 

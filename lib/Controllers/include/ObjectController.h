@@ -20,7 +20,7 @@ private:
 public:
     ObjectController() = default;
 
-    explicit ObjectController(std::vector<Object> objVect); 
+    explicit ObjectController(std::vector<Object> objVect);
 
     void addObjectsToList(const std::vector<Object> objs);
 
@@ -37,8 +37,6 @@ public:
     bool doesObjectExist(const ID objectID);
 
     bool doesObjectOfThisNameExist(const Name objectName);
-
-    const Object &getObject(const ID objectID) const;
 
     /* Get Object By Name:
      *
