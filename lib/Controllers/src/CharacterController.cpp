@@ -44,8 +44,7 @@ void CharacterController::addCharacter(Character &aCharacter) {
     _characters.emplace(username, aCharacter).second;
 }
 
-Name CharacterController::addNPC(Character aNPC) {
-
+Name CharacterController::addNPC(Character& aNPC) {
     aNPC.setNPC();
 
     std::stringstream ss;

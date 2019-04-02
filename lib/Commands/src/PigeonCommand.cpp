@@ -151,7 +151,7 @@ std::pair<std::vector<Response>, bool> PigeonMail::callback() {
         if( ! characterController->doesCharacterExist(username) ) {
             roomController->removeCharacterFromRoom(pigeonName, roomID);
             if(characterController->characterHasItem(pigeonUsername, itemUniqueID)) {
-                roomController->addObjectToRoom(objectID, roomID);
+                roomController->addObjectToRoom(itemUniqueID, roomID);
             }
             characterController->removeCharacter(pigeonUsername);
             return std::make_pair(res, false);
@@ -176,10 +176,8 @@ std::pair<std::vector<Response>, bool> PigeonMail::callback() {
                 message << "Target is offline. Pigeon has returned your items\n";
                 message << "Thank you for using Pigeon Mail Delivery Services. :)";
 
-                roomController->removeCharacterFromRoom(pigeonName, roomID);
-                if(characterController->characterHasItem(pigeonUsername, itemUniqueID)) {
-                    roomController->addObjectToRoom(objectID, roomID);
-                }
+                std::cout << "removed: " << roomController->removeCharacterFromRoom(pigeonName, roomID) << std::endl;
+
                 characterController->removeCharacter(pigeonUsername);
 
                 res.emplace_back(message.str(), username);
@@ -207,9 +205,7 @@ std::pair<std::vector<Response>, bool> PigeonMail::callback() {
             }
 
             roomController->removeCharacterFromRoom(pigeonName, roomID);
-            if(characterController->characterHasItem(pigeonUsername, itemUniqueID)) {
-                roomController->addObjectToRoom(objectID, roomID);
-            }
+
             characterController->removeCharacter(pigeonUsername);
 
             std::stringstream message;
@@ -240,7 +236,7 @@ std::pair<std::vector<Response>, bool> PigeonMail::callback() {
 
         roomController->removeCharacterFromRoom(pigeonName, roomID);
         if(characterController->characterHasItem(pigeonUsername, itemUniqueID)) {
-            roomController->addObjectToRoom(objectID, roomID);
+            roomController->addObjectToRoom(itemUniqueID, roomID);
         }
         characterController->removeCharacter(pigeonUsername);
 

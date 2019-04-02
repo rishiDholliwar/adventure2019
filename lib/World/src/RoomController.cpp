@@ -230,6 +230,26 @@ bool RoomController::isDoorLocked(ID roomId, std::string &direction) {
     Door::DoorStatus status = door->getStatus();
     return status == Door::DoorStatus::LOCKED;
 }
+
+bool RoomController::doesObjectExistInRoom(ID roomId, ID objectId) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return false;
+    }
+    auto objectList = room->getObjectList();
+    auto it = std::find(objectList.begin(), objectList.end(), objectId);
+    return it != objectList.end();
+}
+
+bool RoomController::doesCharacterExistInRoom(ID roomId, Name characterName) {
+    auto room = searchRoom(roomId);
+    if (room == nullptr){
+        return false;
+    }
+    auto characterList = room->getCharacterList();
+    auto it = std::find(characterList.begin(), characterList.end(), characterName);
+    return it != characterList.end();
+}
 /*
  * search functions
  */
