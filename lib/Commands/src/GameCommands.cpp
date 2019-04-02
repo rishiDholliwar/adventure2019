@@ -784,7 +784,6 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
     // with argument
 
-    bool targetFound = false;
     int index = 0;
 
     intss << "There is more than 1 NPC/objects named " << target << ". Which NPC/objects would you like to look at?\n";
@@ -845,7 +844,6 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     for (const ID objectId : objectList){
         Name objectName = objectController->getObjectName(objectId);
         if (objectName == target) {
-            targetFound = true;
             ss << "\t" << target << "- " << objectId<< "\n" << objectController->lookItem(objectId);
             intss << "\t" << ++index << ". " << target << "- ID: "  <<
                objectId<< "- Type: Item\n";
@@ -977,9 +975,9 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
     for (auto &characterName : characterList){
 
         if (characterName == target) {
-            std::vector<Name> npcNames = characterController->getUsernamesOfCharacter(characterName);
-            if (!characterController->doesCharacterExist(characterName) && !npcNames.empty()) {
 
+            if (!characterController->doesCharacterExist(characterName) && !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                std::vector<Name> npcNames = characterController->getUsernamesOfCharacter(characterName);
                 for(auto& name : npcNames) {
                     std::cout << "list: " << name << std::endl;
                 }
@@ -996,16 +994,15 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
                     }
                 }
 
-                interactions = npcNames;
-
-                for (auto &name : interactions) {
-                    intss << "\t" << ++index << ". " << target << "- " << characterController->getCharacterInfo(name);
-                }
-
                 if (npcNames.size() > 1) {
                     std::cout << "more than 1" << std::endl;
+                    interactions = npcNames;
+                    std::stringstream ss;
 
-
+                    for (auto &name : interactions) {
+                        intss << "\t" << ++index << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
+                    }
+                    break;
                 } else if (npcNames.size() == 1) {
                     std::cout << "Help" << std::endl;
                     characterName = npcNames.front();
@@ -1018,8 +1015,8 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
                 }
 
             }
-            targetFound = true;
-            ss << "\t" << characterName << "\n" << characterController->lookCharacter(characterName) << "\n";
+            ss << "\t" << characterName << "\n" << characterController->examineCharacter(characterName) << "\n";
+            index += 1;
 
         }
     }

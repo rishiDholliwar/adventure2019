@@ -69,6 +69,7 @@ public:
     Character(const Character& npc) {
         this->name = npc.getName();
         this->characterID = npc.getCharacterID();
+        this->id  = npc.id;
         this->characterType = npc.getType();
         this->inventory = npc.getInventory();
         this->wearing = npc.getWearing();

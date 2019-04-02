@@ -34,7 +34,7 @@ public:
 
     void addCharacter(Character &aCharacter);
 
-    void addNPC(Character aNPC);
+    void addNPC(Character &aNPC);
 
     /*
      * Remove user from the list of characters
