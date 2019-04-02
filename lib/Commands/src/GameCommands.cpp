@@ -717,29 +717,6 @@ std::string Swap::help() {
 std::pair<std::vector<Response>, bool> Look::execute() {
     std::vector<std::string> inputStrings = utility::popFront(target);
 
-    // generate testing objects
-    if (inputStrings.size() >= 2) {
-        if ((inputStrings.at(CHECK_INTERACT) == "generate")) {
-            std::vector<std::string> keywords;
-            keywords.emplace_back("chief ");
-            keywords.emplace_back("guard");
-            std::vector<std::string> longdesc;
-            longdesc.emplace_back("longdesc1");
-            longdesc.emplace_back("longdesc2");
-            std::vector<Extra> extra;
-            Object* obj1 = new Object(1, keywords, "shortdesc of object", longdesc, extra);
-            Object* obj2 = new Object(1, keywords, "shortdesc of object", longdesc, extra);
-            objectController->addObjectToList(*obj1);
-            objectController->addObjectToList(*obj2);
-            roomController->addObjectToRoom(obj1->getID(), 8800);
-            roomController->addObjectToRoom(obj2->getID(), 8800);
-            Response userResponse = Response("Test objects generated.\n", username);
-            auto res = formulateResponse(userResponse);
-            return std::make_pair(res, true);
-        }
-    }
-    //testing ONLY ^^^^
-
     if (inputStrings.size() >= 2) {
         if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
             return this->interact();
@@ -754,6 +731,29 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
     auto characterList = roomController->getCharacterList(roomId);
     auto objectList = roomController->getObjectList(roomId);
+
+    // generate testing objects
+    if (inputStrings.size() >= 2) {
+        if ((inputStrings.at(CHECK_INTERACT) == "generate")) {
+            std::vector<std::string> keywords;
+            keywords.emplace_back("chief ");
+            keywords.emplace_back("guard");
+            std::vector<std::string> longdesc;
+            longdesc.emplace_back("longdesc1");
+            longdesc.emplace_back("longdesc2");
+            std::vector<Extra> extra;
+            Object* obj1 = new Object(1, keywords, "shortdesc of object", longdesc, extra);
+            Object* obj2 = new Object(1, keywords, "shortdesc of object", longdesc, extra);
+            objectController->addObjectToList(*obj1);
+            objectController->addObjectToList(*obj2);
+            roomController->addObjectToRoom(obj1->getID(), roomId);
+            roomController->addObjectToRoom(obj2->getID(), roomId);
+            Response userResponse = Response("Test objects generated.\n", username);
+            auto res = formulateResponse(userResponse);
+            return std::make_pair(res, true);
+        }
+    }
+    //testing ONLY ^^^^
 
     ss << line;
 
@@ -918,7 +918,7 @@ std::pair<std::vector<Response>, bool> Look::interact() {
         ID objectId = std::stoul(interactTarget);
         Name objectName = objectController->getObjectName(objectId);
         ss << line;
-        ss << "\t" <<objectName << "\n" <<objectController->lookItem(objectId)<< "\n";
+        ss << "\t" <<objectName << "-" << objectId << "\n" <<objectController->lookItem(objectId)<< "\n";
         ss << line;
     }else{
         ss << line;
@@ -966,7 +966,6 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
     auto characterList = roomController->getCharacterList(roomId);
     auto objectList = roomController->getObjectList(roomId);
 
-    bool targetFound = false;
     int index = 0;
 
     intss << "There is more than 1 NPC/objects named " << target << ". Which NPC/objects would you like to examine?\n";
@@ -1026,7 +1025,6 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
     for (const ID objectId : objectList){
         Name objectName = objectController->getObjectName(objectId);
         if (objectName == target) {
-            targetFound = true;
             ss << "\t" << target << "- " << objectId<< "\n" << objectController->lookItem(objectId);
             intss << "\t" << ++index << ". " << target << "- ID: "  <<
                   objectId<< "- Type: Item\n";
@@ -1041,7 +1039,7 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
         return std::make_pair(res, false);
     }
 
-    if (!targetFound){
+    if (index <= 0){
         Response userResponse = Response("Target not found.\n", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -1086,7 +1084,7 @@ std::pair<std::vector<Response>, bool> Examine::interact() {
         ID objectId = std::stoul(interactTarget);
         Name objectName = objectController->getObjectName(objectId);
         ss << line;
-        ss << "\t" <<objectName << "\n" <<objectController->examineItem(objectId)<< "\n";
+        ss << "\t" <<objectName << "-" << objectId << "\n" <<objectController->examineItem(objectId)<< "\n";
         ss << line;
     }else{
         ss << line;
