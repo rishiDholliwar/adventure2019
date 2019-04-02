@@ -2393,6 +2393,18 @@
       "action": "npc",
       "id": 8805,
       "limit": 1,
+      "room": 8802
+    },
+    {
+      "action": "npc",
+      "id": 8805,
+      "limit": 2,
+      "room": 8800
+    },
+    {
+      "action": "npc",
+      "id": 8805,
+      "limit": 2,
       "room": 8800
     },
     {
