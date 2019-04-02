@@ -14,7 +14,7 @@ static const std::string CHARACTER_SEPARATOR = " ";
 //if user types /examineCombat then print all characters in the room
 //else print the names the user has entered
 std::pair<std::vector<Response>, bool> CombatExamine::execute() {
-    Character character = characterController->getCharacter(username);
+    Character &character = characterController->getCharacter(username);
     std::vector<Response> res;
 
     std::stringstream output;
@@ -23,12 +23,8 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
     bool whiteSpacesOnly = std::all_of(input.begin(), input.end(), isspace);
     if (input == "" || whiteSpacesOnly) {
 
-        std::vector<Character> charactersInRoom;
-        getCharactersInCurrentRoom(roomController, characterController, characterController->getCharacter(username),
-                                   charactersInRoom);
-
-        for (auto &character: charactersInRoom) {
-            output << character.examineCombat();
+        for (auto name:  roomController->getCharacterList(characterController->getCharacterRoomID(username))) {
+            output << characterController->getCharacter(name).examineCombat();
             output << "\n";
         }
 
@@ -44,7 +40,7 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
     //print characters the user has entered
     for (auto &targetName: inputs) {
         if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
-            Character targetCharacter = characterController->getCharacter(targetName);
+            Character &targetCharacter = characterController->getCharacter(targetName);
             output << targetCharacter.examineCombat();
             output << "\n";
         } else {
@@ -107,7 +103,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
-    Character character = characterController->getCharacter(username);
+    Character &character = characterController->getCharacter(username);
 
     std::string commandName = "attack: \n";
 
@@ -130,12 +126,12 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     }
 
     if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
-        Character targetCharacter = characterController->getCharacter(targetName);
+        Character &targetCharacter = characterController->getCharacter(targetName);
 
         //check if user is in battle state
         if (combatController->isBattleState(username)) {
             Name targetName = combatController->getTargetName(username);
-            Character targetCharacter = characterController->getCharacter(targetName);
+            Character &targetCharacter = characterController->getCharacter(targetName);
 
             std::string combatResults = combatController->executeBattleRound(character, targetCharacter, targetInput);
 
@@ -272,11 +268,11 @@ std::string CombatBattles::help() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatFlee::execute() {
-    Character character = characterController->getCharacter(username);
+    Character &character = characterController->getCharacter(username);
 
     if (combatController->isBattleState(username)) {
         Name targetName = combatController->getTargetName(username);
-        Character targetCharacter = characterController->getCharacter(targetName);
+        Character &targetCharacter = characterController->getCharacter(targetName);
         combatController->setFleeState(username);
         std::string results = combatController->flee(character, targetCharacter, "");
 
@@ -284,7 +280,7 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
         this->registerCallback = false;
 
         ID roomId = character.getRoomID();
-        std::vector<std::string> directions{"north", "east", "south", "west","up","down"};
+        std::vector<std::string> directions{"north", "east", "south", "west", "up", "down"};
         std::random_shuffle(directions.begin(), directions.end());
 
         for (auto &direction: directions) {
@@ -343,16 +339,6 @@ void removeExtraWhiteSpaces(Input &input) {
     input = std::regex_replace(input, std::regex("^ +| +$|( ) +"), "$1");
 }
 
-void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *characterCtrl,
-                                Character player,
-                                std::vector<Character> &charactersInRoom) {
-
-    Name name = player.getName();
-    for (auto name: roomCtrl->getCharacterList(characterCtrl->getCharacterRoomID(name))) {
-        charactersInRoom.push_back(characterCtrl->getCharacter(name));
-    }
-}
-
 std::string toMSG(const Name &name) {
     return "To [" + name + "]: ";
 }
@@ -360,7 +346,6 @@ std::string toMSG(const Name &name) {
 std::string fromMSG(const Name &name) {
     return "From [" + name + "]: ";
 }
-
 
 void removeTargets(std::vector<std::string> &characterList, Name username) {
     characterList.erase(

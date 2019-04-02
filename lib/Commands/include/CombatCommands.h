@@ -12,8 +12,6 @@ using AlterSpace::Name;
 using AlterSpace::Input;
 
 //Helper functions:
-void getCharactersInCurrentRoom(RoomController *roomCtrl, CharacterController *characterCtrl, Character player,
-                                std::vector<Character> &charactersInRoom);
 void removeExtraWhiteSpaces(Input &input); //removes all extra whitespaces to correct user errors when typing
 std::string toMSG(const Name &name);
 std::string fromMSG(const Name &name);
