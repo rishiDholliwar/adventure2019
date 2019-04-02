@@ -11,6 +11,7 @@
         "/WHISPER": "WHISPER",
 
         "/MOVE": "MOVE",
+        "/DPADMOVE": "DPADMOVE",
         "/NORTH": "NORTH",
         "/SOUTH": "SOUTH",
         "/WEST": "WEST",

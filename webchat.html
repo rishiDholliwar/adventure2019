@@ -347,22 +347,22 @@
             });
 
             $('#d-up').click(function () {
-                ws.send("/move north");
+                ws.send("/DPADMOVE NorthUp");
                 sendGameMessage.value = "";
             });
 
             $('#d-down').click(function () {
-                ws.send("/move south");
+                ws.send("/DPADMOVE SouthDown");
                 sendGameMessage.value = "";
             });
 
             $('#d-left').click(function () {
-                ws.send("/move west");
+                ws.send("/DPADMOVE west");
                 sendGameMessage.value = "";
             });
 
             $('#d-right').click(function () {
-                ws.send("/move east");
+                ws.send("/DPADMOVE east");
                 sendGameMessage.value = "";
             });
 
