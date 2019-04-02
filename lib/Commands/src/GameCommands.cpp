@@ -939,7 +939,7 @@ std::pair<std::vector<Response>, bool> Wear::execute() {
         return this->interact();
     }
 
-    Name objectName = inputStrings.at(OBJECT_NAME);
+    Name objectName = input;
 
     // Validate user input format
     if (objectName.empty()) {
@@ -1060,7 +1060,7 @@ std::pair<std::vector<Response>, bool> Takeoff::execute() {
         return this->interact();
     }
 
-    Name objectName = inputStrings.at(OBJECT_NAME);
+    Name objectName = input;
 
     // Validate user input format
     if (objectName.empty()) {
