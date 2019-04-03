@@ -52,6 +52,7 @@ private:
     Name username;
     Input targetInput;
     Connection connection;
+    bool isCharacterNPCS();
 
 public:
     explicit

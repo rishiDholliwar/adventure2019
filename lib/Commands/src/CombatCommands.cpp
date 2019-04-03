@@ -11,6 +11,41 @@ using networking::Connection;
 using AlterSpace::ID;
 static const std::string CHARACTER_SEPARATOR = " ";
 
+bool  CombatAttack::isCharacterNPCS() {
+    std::stringstream ss;
+    ID roomId = characterController->getCharacterRoomID(username);
+
+    auto characterList = roomController->getCharacterList(roomId);
+    std::vector<Character> toExamineUsers;
+    std::vector<Name> toExamineNPCS;
+
+
+    for (auto &characterName : characterList) {
+        if (!characterController->doesCharacterExist(characterName) &&
+            !characterController->getUsernamesOfCharacter(characterName).empty()) {
+            toExamineNPCS = characterController->getUsernamesOfCharacter(characterName);
+
+            for (auto npcName = toExamineNPCS.begin(); npcName != toExamineNPCS.end();) {
+                if (characterController->getCharacterRoomID(*npcName) != roomId) {
+                    npcName = toExamineNPCS.erase(npcName);
+                } else {
+                    ++npcName;
+                }
+            }
+        } else {
+            toExamineUsers.push_back(characterController->getCharacter(characterName));
+        }
+    }
+
+    for (auto &character: toExamineNPCS) {
+        Name name = characterController->getCharacter(character).getName();
+        if (name == targetInput) {
+            return true;
+        }
+    }
+    return false;
+}
+
 //if user types /examineCombat then print all characters in the room
 //else print the names the user has entered
 std::pair<std::vector<Response>, bool> CombatExamine::execute() {
@@ -52,7 +87,6 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
             ss << characterController->getCharacter(name).examineCombat();
             ss << "\n";
         }
-
     }
 
     for (auto &character:  toExamineNPCS) {
@@ -96,6 +130,16 @@ std::string CombatExamine::help() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     std::vector<Response> res;
+    std::cout << "\n\n--------------------------------Combat Begin-----------------------------\n";
+
+    // check if npc
+    if (isCharacterNPCS()) {
+        this->registerCallback = false;
+        std::cout << "rc to false\n";
+        Response userResponse = Response("npcs not available", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
 
     //check if a fighter has logged out
     if (combatController->isTargetLogoutState(username)) {
@@ -182,6 +226,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
+            std::cout << "is new battle\n";
 
             //checks if target is in battle state, and if true no request sent
             if (combatController->isBattleState(targetName)) {
@@ -211,6 +256,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
         //check if character is replying to attack request
         if (combatController->replyPendingRequest(username, targetName)) {
+            std::cout << "reply battle\n";
             combatController->setCombatState(targetName, username);
             characterController->toggleCharacterCombat(username, targetName);
             this->registerCallback = true;
