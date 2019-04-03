@@ -146,8 +146,7 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
 
             }
         }
-
-
+    
         auto command = _commandHandler.getCommand(username, invocation, text, message.connection);
         // TODO: Maybe return an "Invalid" Command later on
         if ( command == nullptr ) {

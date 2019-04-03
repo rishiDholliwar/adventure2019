@@ -14,42 +14,163 @@ static const std::string CHARACTER_SEPARATOR = " ";
 //if user types /examineCombat then print all characters in the room
 //else print the names the user has entered
 std::pair<std::vector<Response>, bool> CombatExamine::execute() {
-    Character &character = characterController->getCharacter(username);
-    std::vector<Response> res;
 
-    std::stringstream output;
-    output << "combat examine: \n";
+    std::cout << "1. target: " << target << std::endl;
+    std::vector<std::string> inputStrings = utility::popFront(target);
+    //std::cout << "2. target: " << inputStrings.at(0) << std::endl;
+    if((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+        return this->interact();
+    }
 
-    bool whiteSpacesOnly = std::all_of(input.begin(), input.end(), isspace);
-    if (input == "" || whiteSpacesOnly) {
+    std::stringstream ss;
+    ID roomId = characterController->getCharacterRoomID(username);
 
-        for (auto name:  roomController->getCharacterList(characterController->getCharacterRoomID(username))) {
-            output << characterController->getCharacter(name).examineCombat();
-            output << "\n";
+    auto characterList = roomController->getCharacterList(roomId);
+  
+    std::string line = "---------------------------\n";
+
+    ss << line;
+    std::vector<Character> ce;
+    std::vector<Name> npcNames;
+    std::cout << "2. target: " << target << std::endl;
+    // with no argument
+    if (target.empty()){
+         std::cout << "no target\n";
+
+        for (auto &characterName : characterList){
+    
+            if (!characterController->doesCharacterExist(characterName) && !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                       std::cout << "in  if\n";
+               npcNames = characterController->getUsernamesOfCharacter(characterName);
+
+                std::cout << npcNames.size() << std::endl;
+
+                for (auto npcName = npcNames.begin(); npcName != npcNames.end(); ) {
+               
+                        if (characterController->getCharacterRoomID(*npcName) != roomId) {
+                           
+                            npcName = npcNames.erase(npcName);
+                        } else {
+                     
+                            ++npcName;
+                        }
+
+                }
+            } else {
+                    ce.push_back(characterController->getCharacter(characterName));
+                std::cout << "in else\n";
+            }
         }
 
-        res.emplace_back(output.str(), username);
+        for (auto &character:  ce) {
+            Name n = character.getName();
+            ss << characterController->getCharacter(n).examineCombat();
+            ss << "\n";
+        }
+
+       for (auto &character:  npcNames) {
+            std::cout << "npc: " << character << std::endl;
+            ss << characterController->getCharacter(character).examineCombat();
+            ss << "\n";
+        }
+
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
+
     }
 
-    removeExtraWhiteSpaces(input);
+    //specific target
+  std::cout << "specific target\n";
 
-    std::vector<std::string> inputs;
-    boost::split(inputs, input, boost::is_any_of(CHARACTER_SEPARATOR));
+        for (auto &characterName : characterList){
 
-    //print characters the user has entered
-    for (auto &targetName: inputs) {
-        if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
-            Character &targetCharacter = characterController->getCharacter(targetName);
-            output << targetCharacter.examineCombat();
-            output << "\n";
-        } else {
-            output << combatController->sendCharacterNotFoundMsg(targetName);
+             if (characterName == target) {
+    
+            if (!characterController->doesCharacterExist(characterName) && !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                       std::cout << "in  if\n";
+               npcNames = characterController->getUsernamesOfCharacter(characterName);
+
+                std::cout << npcNames.size() << std::endl;
+
+                for (auto npcName = npcNames.begin(); npcName != npcNames.end(); ) {
+               
+                        if (characterController->getCharacterRoomID(*npcName) != roomId) {
+                           
+                            npcName = npcNames.erase(npcName);
+                        } else {
+                     
+                            ++npcName;
+                        }
+
+                }
+            } else {
+                    ce.push_back(characterController->getCharacter(characterName));
+                std::cout << "in else\n";
+            }
         }
     }
 
-    res.emplace_back(output.str(), username);
+        for (auto &character:  ce) {
+            Name n = character.getName();
+            ss << characterController->getCharacter(n).examineCombat();
+            ss << "\n";
+        }
+
+       for (auto &character:  npcNames) {
+            std::cout << "npc: " << character << std::endl;
+            ss << characterController->getCharacter(character).examineCombat();
+            ss << "\n";
+        }
+
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+
+    
+
+
+}
+
+
+
+std::pair<std::vector<Response>, bool> CombatExamine::interact() {
+    std::cout << "look interacting" << std::endl;
+
+    std::vector<std::string> v = utility::tokenizeString(target);
+
+    if ( v.size() != 2 ) {
+        std::cout << "Too many arguments..." << std::endl;
+        Response userResponse = Response("Please enter /look interact {index number of the npc you wish to look at}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+    std::stringstream ss{v.at(INTERACT_CHOICE)};
+    int index = -1;
+    ss >> index;
+    index--;
+
+    if ( index >= interactions.size() || index < 0 ) {
+        Response userResponse = Response("Please enter /look interact {index number of the npc you wish to look at}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+    Name npcKey = interactions.at(index);
+
+    ss.clear();
+    ss << characterController->getCharName(npcKey) << "\n" <<characterController->lookCharacter(npcKey) << "\n";
+
+    Response userResponse = Response(ss.str(), username);
+    auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
+}
+
+void CombatExamine::setInteractions(std::vector<std::string> i) {
+    interactions = i;
 }
 
 std::unique_ptr<Command> CombatExamine::clone(Name username, Input input, Connection connection = Connection{}) const {
@@ -59,7 +180,7 @@ std::unique_ptr<Command> CombatExamine::clone(Name username, Input input, Connec
 
 std::unique_ptr<Command> CombatExamine::clone() const {
     return std::make_unique<CombatExamine>(this->characterController, this->roomController,
-                                           this->combatController, this->username, this->input,
+                                           this->combatController, this->username, this->target,
                                            this->connection);
 }
 
@@ -70,6 +191,20 @@ std::string CombatExamine::help() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
+
+std::cout << "combat execute "  << std::endl;
+std::cout << "input "  << targetInput<< std::endl;
+std::vector<std::string> inputStrings = utility::popFront(targetInput);
+for(auto&temp : inputStrings){
+    std::cout << "is: " << temp << std::endl;
+}
+std::cout << "interact string: " << inputStrings.at(CHECK_INTERACT) << std::endl;
+    if((inputStrings.at(0) == "interact")) { //todo ad the empty part 
+        std::cout << " calling interact\n";
+        return this->interact();
+    }
+
+
     std::vector<Response> res;
 
     //check if a fighter has logged out
@@ -125,7 +260,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         return std::make_pair(res, true);
     }
 
-    if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
+  //  if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character &targetCharacter = characterController->getCharacter(targetName);
 
         //check if user is in battle state
@@ -157,25 +292,109 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
+               std::stringstream ss;
+                ID roomId = characterController->getCharacterRoomID(username);
 
-            //checks if target is in battle state, and if true no request sent
-            if (combatController->isBattleState(targetName)) {
-                std::string userOutput = combatController->sendTargetInCombatState(targetName);
-                Response userResponse = Response(userOutput, username);
-                auto res = formulateResponse(userResponse);
+                auto characterList = roomController->getCharacterList(roomId);
+              
+                std::string line = "---------------------------\n";
+
+                ss << line;
+                std::vector<Name> ce;
+                std::vector<Name> npcNames;
+            std::cout << "new battle with: " << targetInput << std::endl;
+
+                int index = 1;
+                    // search character
+            for (auto &characterName : characterList) {
+
+                if (characterName == targetInput) {
+                        npcAttack = targetInput;
+                        std::cout << "set npcAttack to " << npcAttack << std::endl;
+                
+                   // std::cout << " add to interactions\n";
+                interactions.push_back(characterName);
+                    if (!characterController->doesCharacterExist(characterName) && !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                        std::vector<Name> npcNames = characterController->getUsernamesOfCharacter(characterName);
+                        for(auto& name : npcNames) {
+                            //std::cout << "list: " << name << std::endl;
+                        }
+                        std::cout << npcNames.size() << std::endl;
+
+                        for (auto npcName = npcNames.begin(); npcName != npcNames.end(); ) {
+                            std::cout << *npcName << std::endl;
+                            if (characterController->getCharacterRoomID(*npcName) != roomId) {
+                              //  std::cout << "Erasing: " << *npcName << std::endl;
+                                npcName = npcNames.erase(npcName);
+                            }
+                            else {
+                                ++npcName;
+                            }
+                        }
+
+                        if (npcNames.size() > 1) {
+                           // std::cout << "more than 1" << std::endl;
+                            interactions = npcNames;
+                            std::stringstream ss;
+
+                            ss << "There is more than 1 NPC named " << targetInput << ". Which NPC would you like to look at?\n";
+
+                            int counter = 0;
+                            for (auto &name : interactions) {
+                                ss << "\t" << ++counter << ". " << targetInput << "- " << characterController->getCharacter(name).examineCombat() << "\n";
+                            }
+
+                            Response userResponse = Response(ss.str(), username);
+                            auto res = formulateResponse(userResponse);
+                            return std::make_pair(res, false);
+                        } else if (npcNames.size() == 1) {
+                            std::cout << "Help" << std::endl;
+                            characterName = npcNames.front();
+                            std::cout << "Help" << std::endl;
+                            std::cout << characterName << std::endl;
+                            std::cout << "Seg fault?" << std::endl;
+                        } else {
+                            std::cout << "npc list is empty???" << std::endl;
+                            continue;
+                        }
+
+                    } else {
+
+                          //checks if target is in battle state, and if true no request sent
+                                // if (combatController->isBattleState(targetName)) {
+                                //     targetName = 
+                                //     std::string userOutput = combatController->sendTargetInCombatState(targetName);
+                                //     Response userResponse = Response(userOutput, username);
+                                //     auto res = formulateResponse(userResponse);
+                                //     return std::make_pair(res, true);
+                                // }
+
+                                // combatController->createNewBattle(character, targetCharacter);
+
+                                // Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
+
+                                // std::string targetOutput = combatController->sendRoundBattleRequest(character, targetCharacter);
+                                // Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
+
+                                // auto res = formulateResponse(userResponse, targetResponse);
+                                // return std::make_pair(res, true);
+        }
+                    }
+                    ss << index << ". " << characterName << "\n" << characterController->lookCharacter(characterName) << "\n";
+                    index += 1;
+
+                }
+                Response userResponse = Response("attack npc", username);
+                this->registerCallback = false;
+
+                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
             }
 
-            combatController->createNewBattle(character, targetCharacter);
 
-            Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
 
-            std::string targetOutput = combatController->sendRoundBattleRequest(character, targetCharacter);
-            Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
 
-            auto res = formulateResponse(userResponse, targetResponse);
-            return std::make_pair(res, true);
-        }
+          
 
         //check if character is sending duplicate attack requests
         if (combatController->checkDuplicateSendRequest(username, targetName)) {
@@ -201,13 +420,13 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
                 return std::make_pair(res, true);
             }
         }
-    } else {
+    //} else {
         //character is not in the room
 
-        commandName += combatController->sendCharacterNotFoundMsg(targetName);
-        res.emplace_back(commandName, username);
-        return std::make_pair(res, true);
-    }
+    //     commandName += combatController->sendCharacterNotFoundMsg(targetName);
+    //     res.emplace_back(commandName, username);
+    //     return std::make_pair(res, true);
+    // }
 
     res.emplace_back(commandName + "attack error\n", username);
     return std::make_pair(res, true);
@@ -223,16 +442,98 @@ std::pair<std::vector<Response>, bool> CombatAttack::callback() {
     return std::make_pair(res.first, false);
 }
 
+std::pair<std::vector<Response>, bool> CombatAttack::interact() {
+    std::cout << "------look interacting--------" << std::endl;
+    // std::cout << "targetInput " << targetInput << std::endl;
+        // std::cout << "interaction(0): " <<  interactions.at(0) << std::endl;
+    std::vector<std::string> v = utility::tokenizeString(targetInput);
+
+    // for(auto& temp : v){
+
+    //    std::cout << "v: " << temp << std::endl;
+    // }
+
+    //  for(auto& temp : interactions){
+
+    //    std::cout << "interaction c: " << temp << std::endl;
+    // }
+
+
+    if ( v.size() != 2 ) {
+        std::cout << "Too many arguments..." << std::endl;
+        Response userResponse = Response("Please enter /look interact {index number of the npc you wish to look at}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+  //  std::cout << "in interact\n";
+   // std::cout << "targetInput: " << targetInput << std::endl;
+    // if (combatController->isBattleState(targetName)) {
+               // std::cout <<"attacking: \n";
+ 
+    std::cout << characterController->getCharacter(username).examineCombat() << std::endl;
+  std::cout << "npc attack: " <<  npcAttack << std::endl;
+   //  std::cout << "interaction(0): " <<  interactions.at(0) << std::endl;
+               // std::cout << characterController->getCharacter(npcAttack).examineCombat() << std::endl;
+      
+            combatController->createNewBattle(characterController->getCharacter(username), characterController->getCharacter(npcAttack));
+
+           // Response userResponse = Response(toMSG(targetName) + combatController->sendThreatMsg(), username);
+
+            // std::string targetOutput = combatController->sendRoundBattleRequest(character, targetCharacter);
+            // Response targetResponse = Response(fromMSG(username) + targetOutput, targetName);
+
+            //auto res = formulateResponse(userResponse, targetResponse);
+           // return std::make_pair(res, true);
+    //    }
+    // std::stringstream ss{v.at(1)};
+    // int index = -1;
+    // ss >> index;
+    // index--;
+    // std::cout << "index: "<< index << " >=  interactions size: " << interactions.size() << std::endl;
+    // if ( index >= interactions.size() || index < 0 ) {
+    //     Response userResponse = Response("Please enter /look interact {index number of the npc you wish to look at}.", username);
+    //     auto res = formulateResponse(userResponse);
+
+    //     return std::make_pair(res, false);
+    // }
+
+    std::cout << "============end interaction===============\n";
+
+    // Name npcKey = npcAttack;
+
+    // ss.clear();
+    // ss << characterController->getCharName(npcKey) << "\n" <<characterController->lookCharacter(npcKey) << "\n";
+
+    Response userResponse = Response("end", username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+void CombatAttack::setInteractions(std::vector<std::string> i, Name npcAttack) {
+    interactions = i;
+    this->npcAttack = npcAttack;
+}
+
+
+
 std::unique_ptr<Command>
 CombatAttack::clone(Name username, Input input, Connection connection = Connection{}) const {
-    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
+    auto att  = std::make_unique<CombatAttack>(this->characterController, this->roomController,
                                           this->combatController, username, input, connection);
+att->setInteractions(this->interactions,npcAttack);
+return std::move(att);
+
 }
 
 std::unique_ptr<Command> CombatAttack::clone() const {
-    return std::make_unique<CombatAttack>(this->characterController, this->roomController,
+    auto att = std::make_unique<CombatAttack>(this->characterController, this->roomController,
                                           this->combatController, this->username, this->targetInput,
                                           this->connection);
+
+    att->setInteractions(this->interactions,npcAttack);
+return std::move(att);
 }
 
 std::string CombatAttack::help() {
@@ -250,6 +551,8 @@ std::pair<std::vector<Response>, bool> CombatBattles::execute() {
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
 }
+
+
 
 std::unique_ptr<Command> CombatBattles::clone(Name username, Input input, Connection connection = Connection{}) const {
     return std::make_unique<CombatBattles>(this->characterController, this->roomController,
