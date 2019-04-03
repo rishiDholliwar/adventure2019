@@ -176,7 +176,8 @@
         }
 
         .north:hover, .west:hover, .east:hover, .south:hover, #lookBtn:hover, #combatBtn:hover,
-        #helpBtn:hover, #inventoryBtn:hover, #tttBtn:hover, #clearBtn:hover,#upBtn:hover,#downBtn:hover  {
+        #helpBtn:hover, #inventoryBtn:hover, #tttBtn:hover, #clearBtn:hover,#upBtn:hover,#downBtn:hover,
+         #northWestBtn:hover, #northEastBtn:hover,#southWestBtn:hover,#southEastBtn:hover {
             cursor: pointer;
             color: red;
         }
@@ -237,13 +238,37 @@
         #upBtn {
             position: absolute;
             left: 28px;
-            top: -40px;
+            top: -38px;
         }
 
         #downBtn {
             position: absolute;
             left: 25px;
             top:  76px;
+        }
+
+        #northWestBtn {
+            position: absolute;
+            left: 5px;
+            top:  -5px;
+        }
+
+        #northEastBtn {
+            position: absolute;
+            left: 50px;
+            top:  -5px;
+        }
+
+        #southWestBtn {
+            position: absolute;
+            left: 5px;
+            top:  46px;
+        }
+
+        #southEastBtn {
+            position: absolute;
+            left: 48px;
+            top:  46px;
         }
 
     </style>
@@ -414,6 +439,26 @@
 
             $('#downBtn').click(function () {
                 ws.send("/move down");
+                sendGameMessage.value = "";
+            });
+
+            $('#northWestBtn').click(function () {
+                ws.send("/move northwest");
+                sendGameMessage.value = "";
+            });
+
+            $('#northEastBtn').click(function () {
+                ws.send("/move northeast");
+                sendGameMessage.value = "";
+            });
+
+            $('#southWestBtn').click(function () {
+                ws.send("/move southwest");
+                sendGameMessage.value = "";
+            });
+
+            $('#southEastBtn').click(function () {
+                ws.send("/move southeast");
                 sendGameMessage.value = "";
             });
 
@@ -627,6 +672,12 @@ Chat Server: <input id="uri" size="40">
 
     <div id="upBtn" style="font-size: 38px;"><span class="label">&#8226;</span></div>
     <div id="downBtn" style="font-size: 38px;"><span class="label">&#8226;</span></div>
+
+    <div id="northWestBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+    <div id="northEastBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+
+    <div id="southWestBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+    <div id="southEastBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
 
 
 </div>
