@@ -1137,7 +1137,7 @@ void Move::removeTargets(std::vector<std::string> &characterList, Name username)
 
 std::pair<std::vector<Response>, bool> DPADMove::execute() {
 
-    std::cout << "DPADMove: " << direction << std::endl;
+    std::cout << "DPADMove:" << direction << std::endl;
 
     ID roomId = characterController->getCharacterRoomID(username);
     ID toID = roomController->getDoorDesignatedRoomId(roomId, direction);
