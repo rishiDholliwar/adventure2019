@@ -107,6 +107,7 @@ bool CharacterController::doesCharacterExist(Name &username) {
 }
 
 bool CharacterController::isCharacterNPC(Name &npcKey) {
+    std::cout << "is npc: " << npcKey << std::endl;
     return _characters.find(npcKey)->second.isNPC();
 }
 

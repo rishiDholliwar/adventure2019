@@ -738,7 +738,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         // format username into string stream
         ss << "Characters in room: \n";
         for (const auto& characterName : characterList){
-            ss << "\t" << characterName << "\n";
+            ss << "\t-----" << characterName << "\n";
         }
 
         // format object name into string stream
@@ -791,7 +791,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
                     int counter = 0;
                     for (auto &name : interactions) {
-                        ss << "\t" << ++counter << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
+                        ss << "\t" << ++counter << ". " << target << "\n" << characterController->getCharacterInfo(name) << "\n";
                     }
 
                     Response userResponse = Response(ss.str(), username);
