@@ -2,15 +2,6 @@
 #include <cmath>
 #include <sstream>
 
-//todo go to vector to non vector!!!
-void Combat::addInstigator(Character &instigator) {
-    fighterInstigator = instigator;
-}
-
-void Combat::addOpponent(Character &opponent) {
-    fighterOpponent = opponent;
-}
-
 Character &Combat::getInstigator() {
     return fighterInstigator;
 }
@@ -62,11 +53,11 @@ bool Combat::battleReady() {
 
 void Combat::updateFighters(Character &fighter1, Character &fighter2) {
     if (fighter1.getName() == fighterInstigator.getName()) {
-        addInstigator(fighter1);
-        addOpponent(fighter2);
+       fighterInstigator = fighter1;
+        fighterOpponent = fighter2;
     } else {
-        addInstigator(fighter2);
-        addOpponent(fighter1);
+        fighterInstigator = fighter2;
+        fighterOpponent = fighter1;
     }
 }
 

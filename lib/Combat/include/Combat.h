@@ -40,14 +40,13 @@ private:
 
 public:
 
-    Combat() {
+    Combat(Character &instigator,Character &opponent) {
         srand(static_cast<unsigned int>(time(0)));
         setState(STATE::PENDING);
+
+        fighterInstigator = instigator;
+        fighterOpponent = opponent;
     };
-
-    void addInstigator(Character &instigator);
-
-    void addOpponent(Character &opponent);
 
     Character &getInstigator();
 

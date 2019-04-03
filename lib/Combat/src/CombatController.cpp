@@ -6,9 +6,7 @@ bool CombatController::isNewBattle(const Name &instigator, const Name &target) {
 }
 
 void CombatController::createNewBattle(Character &instigator, Character &target) {
-    battleList.push_back(Combat());
-    battleList.back().addInstigator(instigator);
-    battleList.back().addOpponent(target);
+    battleList.push_back(Combat(instigator,target));
 }
 
 std::string CombatController::sendRoundBattleRequest(const Character &fighter1, const Character &fighter2) {
