@@ -28,7 +28,7 @@ protected:
     int callbackAfterHeartbeats = 0;
 public:
     Command() = default;
-    ~Command() = default;
+    virtual ~Command() = default;
     virtual std::pair<std::vector<Response>, bool> execute() = 0;
     virtual std::pair<std::vector<Response>, bool> callback();
     std::pair<std::vector<Response>, bool> runCallback();

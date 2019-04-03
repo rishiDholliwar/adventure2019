@@ -83,6 +83,7 @@ public:
     }
 
     Name getName() const;
+    void setName(const std::string& name) {this->name = name;};
     ID getCharacterID() const;
     ID getRoomID() const;
     bool isNPC() const;
