@@ -48,7 +48,7 @@ bool CombatController::checkDuplicateSendRequest(const Name &instigator, const N
     return false;
 }
 
-bool CombatController::replyPendingRequest(const Name &instigator, const Name &target) {
+bool CombatController::replyBattleRequest(const Name &instigator, const Name &target) {
     if (isBattleAssociation(instigator, target)) {
         auto &battle = getBattle(instigator, target);
 
@@ -97,7 +97,7 @@ Character &CombatController::getFighter(Name &fighter) {
     return battle.getOpponent();
 }
 
-bool CombatController::isGameOver(const Name &fighter) {
+bool CombatController::isBattleOver(const Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
 
     if (battle.isGameOverState()) {

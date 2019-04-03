@@ -44,7 +44,9 @@ private:
 
 public:
 
-    Combat() = default;
+    Combat() {
+        srand(static_cast<unsigned int>(time(0)));
+    };
 
     void addInstigator(Character &instigator);
 

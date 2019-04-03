@@ -10,7 +10,7 @@
 
 /*
  * Combat controller is used to handle combat.
- * Currently combat is only 1 vs 1 and turn based rounds.
+ * Currently combat is only 1 vs 1 against users and not npcs.
  */
 
 class CombatController {
@@ -34,7 +34,7 @@ public:
 
     bool checkDuplicateSendRequest(const Name &instigator, const Name &target);
 
-    bool replyPendingRequest(const Name &instigator, const Name &target);
+    bool replyBattleRequest(const Name &instigator, const Name &target);
 
     void setCombatState(const Name &instigator, const Name &target);
 
@@ -44,7 +44,7 @@ public:
 
     const std::string executeBattleRound(Character &fighter1, Character &fighter2, const Input &input);
 
-    bool isGameOver(const Name &fighter);
+    bool isBattleOver(const Name &fighter);
 
     void deleteBattle(const Name fighter1, const Name fighter2);
 

@@ -14,11 +14,9 @@ static const std::string CHARACTER_SEPARATOR = " ";
 bool CombatAttack::isCharacterNPCS() {
     std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
-
     auto characterList = roomController->getCharacterList(roomId);
     std::vector<Character> toExamineUsers;
     std::vector<Name> toExamineNPCS;
-
 
     for (auto &characterName : characterList) {
         if (!characterController->doesCharacterExist(characterName) &&
@@ -47,7 +45,7 @@ bool CombatAttack::isCharacterNPCS() {
 }
 
 //if user types /examineCombat then print all characters in the room
-//else print the names the user has entered
+//else print the name the user has entered
 std::pair<std::vector<Response>, bool> CombatExamine::execute() {
     std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
@@ -130,7 +128,6 @@ std::string CombatExamine::help() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     std::vector<Response> res;
-    std::cout << "\n\n--------------------------------Combat Begin-----------------------------\n";
 
     //check if a fighter has logged out
     if (combatController->isTargetLogoutState(username)) {
@@ -212,7 +209,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             Name fighterName2 = fighter2.getName();
             characterController->setCharacterHP(fighterName2, fighter2.getCurrentHP());
 
-            if (combatController->isGameOver(username)) {
+            if (combatController->isBattleOver(username)) {
                 combatController->deleteBattle(username, targetName);
                 characterController->toggleCharacterCombat(username, targetName);
                 this->registerCallback = false;
@@ -226,7 +223,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
         //this is a new request
         if (combatController->isNewBattle(username, targetName)) {
-            std::cout << "is new battle\n";
 
             //checks if target is in battle state, and if true no request sent
             if (combatController->isBattleState(targetName)) {
@@ -255,8 +251,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         }
 
         //check if character is replying to attack request
-        if (combatController->replyPendingRequest(username, targetName)) {
-            std::cout << "reply battle\n";
+        if (combatController->replyBattleRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
             characterController->toggleCharacterCombat(username, targetName);
             this->registerCallback = true;
