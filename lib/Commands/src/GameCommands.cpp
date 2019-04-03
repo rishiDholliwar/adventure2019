@@ -948,7 +948,7 @@ std::pair<std::vector<Response>, bool> Wear::execute() {
         return std::make_pair(res, false);
     }
 
-    // Check if item does not exist in user inventory
+    // Error checking for state before wear
     if (!characterController->characterHasItem(username, objectName)) {
         Response userResponse = Response(objectName + " is not in your inventory", username);
         auto res = formulateResponse(userResponse);
@@ -976,10 +976,12 @@ std::pair<std::vector<Response>, bool> Wear::execute() {
         return std::make_pair(res, false);
     }
 
-    // Wear item (drops item from inventory)
     ID objectID = characterController->getItemIDFromCharacterInventory(username, objectName);
+
+    // Wear item (drops item from inventory)
     characterController->characterWearItem(username, objectID);
 
+    // Error checking for state after wear
     if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
         Response userResponse = Response("Wearing item has failed.", username);
         auto res = formulateResponse(userResponse);
@@ -1013,11 +1015,20 @@ std::pair<std::vector<Response>, bool> Wear::interact() {
         return std::make_pair(res, false);
     }
 
-    // Wear item (drops item from inventory)
     Name objectName = interactions.at(index).getName();
     ID objectID = interactions.at(index).getID();
+
+    // Error checking for state before wear
+    if (!characterController->characterHasItem(username, objectID)) {
+        Response userResponse = Response(objectName + "is not in your inventory", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Wear item (drops item from inventory)
     characterController->characterWearItem(username, objectID);
 
+    // Error checking for state after wear
     if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
         Response userResponse = Response("Wearing item has failed.", username);
         auto res = formulateResponse(userResponse);
@@ -1069,7 +1080,7 @@ std::pair<std::vector<Response>, bool> Takeoff::execute() {
         return std::make_pair(res, false);
     }
 
-    // Check if character is not wearing item
+    // Error checking for state before takeoff
     if (!characterController->characterIsWearingItem(username, objectName)) {
         Response userResponse = Response("You are not wearing " + objectName, username);
         auto res = formulateResponse(userResponse);
@@ -1101,6 +1112,7 @@ std::pair<std::vector<Response>, bool> Takeoff::execute() {
     ID objectID = characterController->getItemIDFromCharacterWearing(username, objectName);
     characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
 
+    // Error checking for state after takeoff
     if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
         Response userResponse = Response("Taking off item has failed.", username);
         auto res = formulateResponse(userResponse);
@@ -1138,9 +1150,17 @@ std::pair<std::vector<Response>, bool> Takeoff::interact() {
     ID objectID = interactions.at(index).getID();
     Name objectName = interactions.at(index).getName();
 
+    // Error checking for state before takeoff
+    if (!characterController->characterIsWearingItem(username, objectName)) {
+        Response userResponse = Response("You are not wearing " + objectName, username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
     // Drop item from user wear (adds item to inventory)
     characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
 
+    // Error checking for state after takeoff
     if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
         Response userResponse = Response("Taking off item has failed.", username);
         auto res = formulateResponse(userResponse);
