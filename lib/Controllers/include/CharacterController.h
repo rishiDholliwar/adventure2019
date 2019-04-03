@@ -47,7 +47,7 @@ public:
 
     ID getNPCID(Name &npcKey);
 
-    std::vector<Name> getNPCKeys(Name npcName);
+    std::vector<Name> getUsernamesOfCharacter(Name characterName);
 
     /*
      * Returns a character object of the specified username

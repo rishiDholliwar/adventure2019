@@ -31,7 +31,7 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::WHISPER, Whisper(&_characterController,&_roomController).clone());
     _commandHandler.registerCommand(CommandType::INVENTORY, DisplayInventory(&_characterController).clone());
     _commandHandler.registerCommand(CommandType::GIVE, Give(&_characterController, &_objectController).clone());
-    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController).clone());
+    _commandHandler.registerCommand(CommandType::SWAP, Swap(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand(CommandType::CONFUSE, Confuse(&_characterController, &_roomController).clone());
     _commandHandler.registerCommand(CommandType::LOGIN, Login(&_userController, &_characterController, &_roomController, &_objectController).clone());
     _commandHandler.registerCommand(CommandType::LOGOUT, Logout(&_userController, &_characterController, &_roomController).clone());
