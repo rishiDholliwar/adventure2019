@@ -4,27 +4,27 @@
 
 //todo go to vector to non vector!!!
 void Combat::addInstigator(Character &instigator) {
-    fighterInstigator.fighter = instigator;
+    fighterInstigator = instigator;
 }
 
 void Combat::addOpponent(Character &opponent) {
-    fighterOpponent.fighter = opponent;
+    fighterOpponent = opponent;
 }
 
 Character &Combat::getInstigator() {
-    return fighterInstigator.fighter;
+    return fighterInstigator;
 }
 
 Character &Combat::getOpponent() {
-    return fighterOpponent.fighter;
+    return fighterOpponent;
 }
 
 const Name Combat::getInstigatorName() {
-    return fighterInstigator.fighter.getName();
+    return fighterInstigator.getName();
 }
 
 const Name Combat::getOpponentName() {
-    return fighterOpponent.fighter.getName();
+    return fighterOpponent.getName();
 }
 
 //todo refactor
@@ -61,7 +61,7 @@ bool Combat::battleReady() {
 }
 
 void Combat::updateFighters(Character &fighter1, Character &fighter2) {
-    if (fighter1.getName() == fighterInstigator.fighter.getName()) {
+    if (fighter1.getName() == fighterInstigator.getName()) {
         addInstigator(fighter1);
         addOpponent(fighter2);
     } else {
@@ -98,16 +98,16 @@ std::string Combat::runBattleRound() {
 
 Character &Combat::getAttacker(int i) {
     if (i % 2) {
-        return fighterInstigator.fighter;
+        return fighterInstigator;
     }
-    return fighterOpponent.fighter;
+    return fighterOpponent;
 }
 
 Character &Combat::getDefender(int i) {
     if (i % 2) {
-        return fighterOpponent.fighter;
+        return fighterOpponent;
     }
-    return fighterInstigator.fighter;
+    return fighterInstigator;
 }
 
 double Combat::attackMultiplier() {
@@ -227,9 +227,9 @@ void Combat::setTargetLogoutState() {
 std::string Combat::logout(const Name &winner) {
     Character winnerCharacter;
     if (winner != getInstigatorName()) {
-        winnerCharacter = fighterInstigator.fighter;
+        winnerCharacter = fighterInstigator;
     } else {
-        winnerCharacter = fighterOpponent.fighter;
+        winnerCharacter = fighterOpponent;
     }
 
     std::stringstream output;
@@ -242,9 +242,9 @@ std::string Combat::logout(const Name &winner) {
 std::string Combat::flee(const Name &surrenderer) {
     Character winner;
     if (surrenderer != getInstigatorName()) {
-        winner = fighterInstigator.fighter;
+        winner = fighterInstigator;
     } else {
-        winner = fighterOpponent.fighter;
+        winner = fighterOpponent;
     }
     isFlee = true;
     std::stringstream output;

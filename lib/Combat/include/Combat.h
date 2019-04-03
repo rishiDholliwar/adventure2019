@@ -32,14 +32,10 @@ private:
     bool isFlee = false;
     bool isTargetLogout = false;
 
-    struct Fighter {
-        Character fighter;
-    };
-
     static const int MAX_NUM_PLAYERS = 2; //TODO try to make work for greater than 2 players
 
-    struct Fighter fighterInstigator;
-    struct Fighter fighterOpponent;
+    Character fighterInstigator;
+    Character fighterOpponent;
     int roundCounter = 0;
 
 public:
