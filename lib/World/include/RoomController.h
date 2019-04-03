@@ -119,6 +119,9 @@ public:
      */
     Door* searchDoor(ID roomId, const std::string& direction);
 
+    bool doesObjectExistInRoom(ID roomId, ID objectId);
+    bool doesCharacterExistInRoom(ID roomId, Name characterName);
+
     // Validity checkers
     //        bool roomExists(ID roomId);
     //        bool roomHasCharacter(ID roomId, Name& userName);
@@ -136,8 +139,8 @@ public:
     //        std::string examineRoom(ID roomId);
     //        std::string lookRoomKeyword(ID roomId, std::string keyword);
 
-        // std::string lookNPC(ID roomId);
-        // std::string examineNPC(ID roomId);
+    // std::string lookNPC(ID roomId);
+    // std::string examineNPC(ID roomId);
 
 private:
     std::vector<Room> roomList;

@@ -37,7 +37,12 @@ void ResetController::reset() {
 			int count = std::count_if(charactersInRoom.begin(), charactersInRoom.end(), [ &npcName ]( const Name& npc ){ return (npcName == npc ); });
 			//if number of that npc is less than reset limit, create one npcs with the same info as the npc in npcs, equip and give whatever items that follow
 			if (count < reset->getLimit()) {
-				Character newNPC = npcs[npcid];
+				auto characterID = npcs[npcid].getCharacterID();
+				auto keywords = npcs[npcid].getKeywords();
+				auto shortdesc = npcs[npcid].getShortDesc();
+				auto longdesc = npcs[npcid].getLongDesc();
+				auto desc = npcs[npcid].getDescription();
+				Character newNPC(characterID, keywords, shortdesc, longdesc, desc);
 				newNPC.setRoomID(roomID);
 
 				while( reset != resets.end() ) {
