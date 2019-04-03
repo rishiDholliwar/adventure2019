@@ -32,13 +32,12 @@ private:
     bool combat = false;
 
     //For combat
-    unsigned int currentHP = 0; //todo need to set this to correct value with json
+    unsigned int maxHP = 10;
+    unsigned int maxMP = 10;
+    unsigned int currentHP = maxHP; //todo need to set this to correct value with json
     unsigned int currentMP;
     unsigned int attack = 5;
     unsigned int defense = 1;
-
-    unsigned int maxHP = 10;
-    unsigned int maxMP = 10;
 
     std::vector<std::string> keywords;
 
@@ -60,7 +59,6 @@ public:
         this->inventory = Inventory{};
         this->confused = false;
         this->wearing = std::vector<Object>();
-        this->currentHP = maxHP;
     }
 
     //constructor for playable character
@@ -68,7 +66,6 @@ public:
             name(std::move(name)), roomID(roomID), inventory(std::move(inventory)), wearing(std::move(wearing)) {
         this->characterType = CharacterType::PLAYABLE;
         this->confused = false;
-        this->currentHP = maxHP;
     }
 
     //constructor for npc
@@ -76,7 +73,6 @@ public:
             characterID(characterID), keywords(keywords), shortdesc(shortdesc), longdesc(longdesc), description(description) {
         this->name = boost::algorithm::join(keywords, " ");
         this->confused = false;
-        this->currentHP = maxHP;
     }
 
     Character(const Character& npc) {
@@ -93,7 +89,6 @@ public:
         this->shortdesc = npc.getShortDesc();
         this->longdesc = npc.getLongDesc();
         this->description = npc.getDescription();
-        this->currentHP = maxHP;
     }
 
     Name getName() const;
@@ -237,7 +232,7 @@ public:
 
     bool isInCombat();
 
-    void toggleCombat();
+    void setCombatState(bool state);
 
 };
 

@@ -86,7 +86,7 @@ std::string Combat::runBattleRound() {
 
         if (defender.getCurrentHP() == 0) {
             output << printWinner(attacker);
-            //setState(STATE::END); //todo this breaks the code, no idea why??
+           // setState(STATE::END); //todo this breaks the code, no idea why??
             isGameOver = true;
             return output.str();
         }
@@ -191,10 +191,11 @@ bool Combat::isPendingState() {
 }
 
 bool Combat::isCombatState() {
-    return this->currentState == STATE::COMBAT);
+    return this->currentState == STATE::COMBAT;
 }
 
 bool Combat::isGameOverState() {
+   // return this->currentState == STATE::END;
     return isGameOver;
 }
 

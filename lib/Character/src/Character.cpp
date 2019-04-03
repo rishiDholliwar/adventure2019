@@ -245,6 +245,6 @@ bool  Character::isInCombat(){
   return combat;
 }
 
-void Character::toggleCombat(){
-   combat = !combat;
+void Character::setCombatState(bool state){
+   combat = state;
 }

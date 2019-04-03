@@ -245,11 +245,11 @@ bool CharacterController::isCharacterInCombat(Name &username){
     return getCharacter(username).isInCombat();
 }
 
-void CharacterController::toggleCharacterCombat(Name &username, Name &targetname){
-    getCharacter(username).toggleCombat();
-    getCharacter(targetname).toggleCombat();
+void CharacterController::setCharacterCombat(Name &username, Name &targetname, bool state){
+    getCharacter(username).setCombatState(state);
+    getCharacter(targetname).setCombatState(state);
 }
 
-void CharacterController::toggleCharacterCombat(Name &username){
-    getCharacter(username).toggleCombat();
+void CharacterController::setCharacterCombat(Name &username,bool state){
+    getCharacter(username).setCombatState(state);
 }

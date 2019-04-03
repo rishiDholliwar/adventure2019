@@ -139,7 +139,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             this->registerCallback = false;
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(targetName))) {
-                characterController->toggleCharacterCombat(targetName);
+                characterController->setCharacterCombat(targetName,false);
                 Response userResponse = Response(combatController->sendTargetOfflineMsg() + results, targetName);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
@@ -151,7 +151,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             this->registerCallback = false;
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(username))) {
-                characterController->toggleCharacterCombat(username);
+                characterController->setCharacterCombat(username,false);
                 Response userResponse = Response(combatController->sendTargetOfflineMsg() + results, username);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
@@ -211,7 +211,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             if (combatController->isBattleOver(username)) {
                 combatController->deleteBattle(username, targetName);
-                characterController->toggleCharacterCombat(username, targetName);
+                characterController->setCharacterCombat(username, targetName,false);
                 this->registerCallback = false;
             }
 
@@ -253,7 +253,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         //check if character is replying to attack request
         if (combatController->replyBattleRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
-            characterController->toggleCharacterCombat(username, targetName);
+            characterController->setCharacterCombat(username, targetName,true);
             this->registerCallback = true;
             this->callbackAfterHeartbeats = ROUND_DURATION;
 
@@ -342,7 +342,7 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
         combatController->setFleeState(username);
         std::string results = combatController->flee(character, targetCharacter, "");
 
-        characterController->toggleCharacterCombat(username, targetName);
+        characterController->setCharacterCombat(username, targetName,false);
         this->registerCallback = false;
 
         ID roomId = character.getRoomID();

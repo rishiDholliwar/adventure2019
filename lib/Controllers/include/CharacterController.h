@@ -224,9 +224,9 @@ public:
 
     bool isCharacterInCombat(Name &username);
 
-    void toggleCharacterCombat(Name &username, Name &targetname);
+    void setCharacterCombat(Name &username, Name &targetname,bool state);
 
-    void toggleCharacterCombat(Name &username);
+    void setCharacterCombat(Name &username,bool state);
 
 };
 
