@@ -11,7 +11,7 @@ using networking::Connection;
 using AlterSpace::ID;
 static const std::string CHARACTER_SEPARATOR = " ";
 
-bool  CombatAttack::isCharacterNPCS() {
+bool CombatAttack::isCharacterNPCS() {
     std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
 
@@ -351,7 +351,8 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
         this->registerCallback = false;
 
         ID roomId = character.getRoomID();
-        std::vector<std::string> directions{"north", "east", "south", "west", "up", "down", "northeast", "southeast", "northwest", "southwest"};
+        std::vector<std::string> directions{"north", "east", "south", "west", "up", "down", "northeast", "southeast",
+                                            "northwest", "southwest"};
         std::random_shuffle(directions.begin(), directions.end());
 
         for (auto &direction: directions) {
