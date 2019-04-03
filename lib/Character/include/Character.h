@@ -82,10 +82,11 @@ public:
     Character(const Character& npc) {
         this->name = npc.getName();
         this->characterID = npc.getCharacterID();
+        this->id  = npc.id;
         this->characterType = npc.getType();
         this->inventory = npc.getInventory();
         this->wearing = npc.getWearing();
-        this->confused = false;
+        this->confused = npc.confused;
         this->roomID = npc.roomID;
 
         this->keywords = npc.getKeywords();
@@ -96,6 +97,7 @@ public:
     }
 
     Name getName() const;
+    void setName(const std::string& name) {this->name = name;};
     ID getCharacterID() const;
     ID getRoomID() const;
     bool isNPC() const;

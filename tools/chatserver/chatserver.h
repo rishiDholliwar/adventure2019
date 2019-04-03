@@ -12,6 +12,7 @@
 #include <CommandHandler.h>
 #include <Scheduler.h>
 #include <CommandTranslator.h>
+#include <PigeonEXE.h>
 
 using networking::Server;
 using networking::Connection;
@@ -38,6 +39,8 @@ private:
   std::unique_ptr<Server> _server;
   CommandHandler _commandHandler;
   std::unique_ptr<Scheduler> _scheduler;
+
+  PigeonEXE _pigeonEXE;
 
   std::vector<Connection> _clients;
   long _heartbeat = 1000;

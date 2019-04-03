@@ -31,6 +31,7 @@
         "/GIVE": "GIVE",
         "/WEAR": "WEAR",
         "/TAKEOFF": "TAKEOFF",
+        "/PIGEONMAIL": "PIGEONMAIL",
 
         "/SWAP": "SWAP",
         "/CONFUSE": "CONFUSE",

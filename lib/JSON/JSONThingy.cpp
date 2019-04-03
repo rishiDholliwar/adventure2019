@@ -42,6 +42,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
     {GIVE, "GIVE"},
     {WEAR, "WEAR"},
     {TAKEOFF, "TAKEOFF"},
+    {PIGEONMAIL, "PIGEONMAIL"},
 
     //SPELLS
     {SWAP, "SWAP"},

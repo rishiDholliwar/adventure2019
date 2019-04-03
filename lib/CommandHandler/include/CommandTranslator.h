@@ -46,6 +46,7 @@ enum CommandType
     GIVE,
     WEAR,
     TAKEOFF,
+    PIGEONMAIL,
 
     //SPELLS
     SWAP,
