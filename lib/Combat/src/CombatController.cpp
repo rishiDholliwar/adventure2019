@@ -182,20 +182,14 @@ std::string CombatController::printAllBattles() {
 
     if (!battleList.empty()) {
         for (auto &battle: battleList) {
-            if (battle.isPendingState()) {
-                output << "\t Instigator: " << battle.getInstigatorName() << "\n";
-                output << "\t Pending requests to: " << battle.getOpponentName() << "\n\n";
-                continue;
-            }
-
             if (battle.isCombatState()) {
                 output << "\t " << battle.getInstigatorName() << " is fighting " << battle.getOpponentName() << "\n\n";
                 continue;
 
             }
 
-            output << "battle print error for " << battle.getInstigatorName() << "\n\n";
-
+            output << "\t Instigator: " << battle.getInstigatorName() << "\n";
+            output << "\t Pending requests to: " << battle.getOpponentName() << "\n\n";
         }
     } else {
         output << "\tNo battles\n";
