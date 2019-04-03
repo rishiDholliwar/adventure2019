@@ -9,7 +9,6 @@
 
 using networking::Connection;
 using AlterSpace::ID;
-static const std::string CHARACTER_SEPARATOR = " ";
 
 bool CombatAttack::isCharacterNPCS() {
     ID roomId = characterController->getCharacterRoomID(username);

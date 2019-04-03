@@ -9,6 +9,6 @@ void AI::makeMove(Board &board) {
 
     } while (board.spotTaken(row, col));
 
-    board.makeMove(this->player, row, col);
+    board.makeMove(this->piece, row, col);
 
 }

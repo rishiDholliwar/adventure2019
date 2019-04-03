@@ -10,21 +10,15 @@
  */
 class AI {
 private:
-    Pieces player;
+    Pieces piece;
 
 public:
-    AI(Pieces player) {
-        this->player = player;
-        srand(static_cast<unsigned int>(time(0)));
-    }
-
     AI() {
-        this->player = player;
         srand(static_cast<unsigned int>(time(0)));
     }
 
     void setPLayer(Pieces player) {
-        this->player = player;
+        this->piece = player;
     }
 
     void makeMove(Board &board);
