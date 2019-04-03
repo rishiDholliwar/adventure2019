@@ -151,6 +151,15 @@ std::string CharacterController::examineCharacter(Name &userName) {
     return utility::extractStringVector(extDescriptions);
 }
 
+std::string CharacterController::examineCombatCharacter(Name &userName){
+    auto character = getCharacter(userName);
+
+//    if (extDescriptions.empty()){
+//        return lookCharacter(userName);
+//    }
+    return getCharacter(userName).examineCombat();
+}
+
 std::string CharacterController::getCharacterInfo(Name &username) {
     return getCharacter(username).getInfo();
 }

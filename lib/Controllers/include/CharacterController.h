@@ -211,6 +211,7 @@ public:
 
     // look and examine
     std::string lookCharacter(Name& userName);
+    std::string examineCombatCharacter(Name& userName);
     std::string examineCharacter(Name& userName);
 
     void swapCharacter(Name &userCharacterName, Name &targetCharacterName);

@@ -14,32 +14,43 @@ static const std::string CHARACTER_SEPARATOR = " ";
 bool CombatAttack::isCharacterNPCS() {
     std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
+
     auto characterList = roomController->getCharacterList(roomId);
     std::vector<Character> toExamineUsers;
-    std::vector<Name> toExamineNPCS;
+    std::vector<std::vector<Name>> toExamineNPCS;
+    std::vector<Name> npcs;
+
+    characterList.erase(unique(characterList.begin(), characterList.end()), characterList.end());
 
     for (auto &characterName : characterList) {
-        if (!characterController->doesCharacterExist(characterName) &&
-            !characterController->getUsernamesOfCharacter(characterName).empty()) {
-            toExamineNPCS = characterController->getUsernamesOfCharacter(characterName);
+        if(characterName == targetInput){
+            std::cout << "cn: " << characterName << std::endl;
+            if (!characterController->doesCharacterExist(characterName) &&
+                !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                npcs = characterController->getUsernamesOfCharacter(characterName);
 
-            for (auto npcName = toExamineNPCS.begin(); npcName != toExamineNPCS.end();) {
-                if (characterController->getCharacterRoomID(*npcName) != roomId) {
-                    npcName = toExamineNPCS.erase(npcName);
-                } else {
-                    ++npcName;
+                for (auto npcName = npcs.begin(); npcName != npcs.end();) {
+                    if (characterController->getCharacterRoomID(*npcName) == roomId) {
+                        npcName = npcs.erase(npcName);
+                        std::cout << "Retruning true for: " << *npcName << std::endl;
+                        return true;
+                    } else {
+                        ++npcName;
+                    }
+                    //   toExamineNPCS.push_back(npcs);
+
                 }
             }
-        } else {
-            toExamineUsers.push_back(characterController->getCharacter(characterName));
         }
-    }
 
-    for (auto &character: toExamineNPCS) {
-        Name name = characterController->getCharacter(character).getName();
-        if (name == targetInput) {
-            return true;
-        }
+        //return toExamineNPCS.empty();
+//    for (auto &character: toExamineNPCS) {
+//        Name name = characterController->getCharacter(character).getName();
+//        if (name == targetInput) {
+//            return true;
+//        }
+//    }
+//    return false;
     }
     return false;
 }
@@ -52,22 +63,25 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
 
     auto characterList = roomController->getCharacterList(roomId);
     std::vector<Character> toExamineUsers;
-    std::vector<Name> toExamineNPCS;
-
+    std::vector<std::vector<Name>> toExamineNPCS;
+    std::vector<Name> npcs;
     bool isSpecificTarget = !input.empty();
+
+    characterList.erase(unique(characterList.begin(), characterList.end()), characterList.end());
 
     for (auto &characterName : characterList) {
         if (!characterController->doesCharacterExist(characterName) &&
             !characterController->getUsernamesOfCharacter(characterName).empty()) {
-            toExamineNPCS = characterController->getUsernamesOfCharacter(characterName);
+            npcs = characterController->getUsernamesOfCharacter(characterName);
 
-            for (auto npcName = toExamineNPCS.begin(); npcName != toExamineNPCS.end();) {
+            for (auto npcName = npcs.begin(); npcName != npcs.end();) {
                 if (characterController->getCharacterRoomID(*npcName) != roomId) {
-                    npcName = toExamineNPCS.erase(npcName);
+                    npcName = npcs.erase(npcName);
                 } else {
                     ++npcName;
                 }
             }
+            toExamineNPCS.push_back(npcs);
         } else {
             toExamineUsers.push_back(characterController->getCharacter(characterName));
         }
@@ -86,17 +100,18 @@ std::pair<std::vector<Response>, bool> CombatExamine::execute() {
             ss << "\n";
         }
     }
-
-    for (auto &character:  toExamineNPCS) {
-        Name name = characterController->getCharacter(character).getName();
-        if (isSpecificTarget) {
-            if (name == input) {
+    for (auto &ex:  toExamineNPCS) {
+        for (auto &character:  ex) {
+            Name name = characterController->getCharacter(character).getName();
+            if (isSpecificTarget) {
+                if (name == input) {
+                    ss << characterController->getCharacter(character).examineCombat();
+                    ss << "\n";
+                }
+            } else {
                 ss << characterController->getCharacter(character).examineCombat();
                 ss << "\n";
             }
-        } else {
-            ss << characterController->getCharacter(character).examineCombat();
-            ss << "\n";
         }
     }
 
@@ -139,7 +154,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             this->registerCallback = false;
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(targetName))) {
-                characterController->setCharacterCombat(targetName,false);
+                characterController->setCharacterCombat(targetName, false);
                 Response userResponse = Response(combatController->sendTargetOfflineMsg() + results, targetName);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
@@ -151,7 +166,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
             this->registerCallback = false;
             //check if other user logged out just after you
             if ((characterController->doesCharacterExist(username))) {
-                characterController->setCharacterCombat(username,false);
+                characterController->setCharacterCombat(username, false);
                 Response userResponse = Response(combatController->sendTargetOfflineMsg() + results, username);
                 auto res = formulateResponse(userResponse);
                 return std::make_pair(res, true);
@@ -211,7 +226,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
             if (combatController->isBattleOver(username)) {
                 combatController->deleteBattle(username, targetName);
-                characterController->setCharacterCombat(username, targetName,false);
+                characterController->setCharacterCombat(username, targetName, false);
                 this->registerCallback = false;
             }
 
@@ -253,7 +268,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         //check if character is replying to attack request
         if (combatController->replyBattleRequest(username, targetName)) {
             combatController->setCombatState(targetName, username);
-            characterController->setCharacterCombat(username, targetName,true);
+            characterController->setCharacterCombat(username, targetName, true);
             this->registerCallback = true;
             this->callbackAfterHeartbeats = ROUND_DURATION;
 
@@ -342,7 +357,7 @@ std::pair<std::vector<Response>, bool> CombatFlee::execute() {
         combatController->setFleeState(username);
         std::string results = combatController->flee(character, targetCharacter, "");
 
-        characterController->setCharacterCombat(username, targetName,false);
+        characterController->setCharacterCombat(username, targetName, false);
         this->registerCallback = false;
 
         ID roomId = character.getRoomID();

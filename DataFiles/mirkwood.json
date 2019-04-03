@@ -295,9 +295,9 @@
     {
       "id": 8806,
       "abilities": {
-          "minDamage": "2",
-          "maxDamage": "5",
-          "equipSlot": "hands"
+        "minDamage": "2",
+        "maxDamage": "5",
+        "equipSlot": "hands"
       },
       "keywords": [
         "scimitar"
@@ -2346,18 +2346,6 @@
       "room": 8859
     },
     {
-      "action": "npc",
-      "id": 8808,
-      "limit": 2,
-      "room": 8800
-    },
-    {
-      "action": "npc",
-      "id": 8808,
-      "limit": 2,
-      "room": 8800
-    },
-    {
       "action": "door",
       "id": 1,
       "room": 8859,
@@ -2417,6 +2405,12 @@
       "action": "npc",
       "id": 8805,
       "limit": 2,
+      "room": 8800
+    },
+    {
+      "action": "npc",
+      "id": 8800,
+      "limit": 1,
       "room": 8800
     },
     {
