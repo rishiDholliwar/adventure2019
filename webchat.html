@@ -176,7 +176,7 @@
         }
 
         .north:hover, .west:hover, .east:hover, .south:hover, #lookBtn:hover, #combatBtn:hover,
-        #helpBtn:hover, #inventoryBtn:hover, #tttBtn:hover, #clearBtn:hover {
+        #helpBtn:hover, #inventoryBtn:hover, #tttBtn:hover, #clearBtn:hover,#upBtn:hover,#downBtn:hover  {
             cursor: pointer;
             color: red;
         }
@@ -232,6 +232,18 @@
             position: absolute;
             left: 125px;
             top: 55px;
+        }
+
+        #upBtn {
+            position: absolute;
+            left: 28px;
+            top: -40px;
+        }
+
+        #downBtn {
+            position: absolute;
+            left: 25px;
+            top:  76px;
         }
 
     </style>
@@ -392,6 +404,16 @@
 
             $('#clearBtn').click(function () {
                 $("#messages").text("");
+                sendGameMessage.value = "";
+            });
+
+            $('#upBtn').click(function () {
+                ws.send("/move up");
+                sendGameMessage.value = "";
+            });
+
+            $('#downBtn').click(function () {
+                ws.send("/move down");
                 sendGameMessage.value = "";
             });
 
@@ -602,6 +624,9 @@ Chat Server: <input id="uri" size="40">
     <div id="inventoryBtn" style="font-size: 24px;"><span class="label">&#128176;</span></div>
     <div id="tttBtn" style="font-size: 24px; color: white"><span class="label">#</span></div>
     <div id="clearBtn" style="font-size: 24px;"><span class="label">&#10060;</span></div>
+
+    <div id="upBtn" style="font-size: 38px;"><span class="label">&#8226;</span></div>
+    <div id="downBtn" style="font-size: 38px;"><span class="label">&#8226;</span></div>
 
 
 </div>
