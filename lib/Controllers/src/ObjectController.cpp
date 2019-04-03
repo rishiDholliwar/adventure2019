@@ -16,6 +16,7 @@ void ObjectController::addObjectsToList(const std::vector<Object> objs) {
 
 bool ObjectController::addObjectToList(const Object &object) {
 	objects.insert( { object.getID(), object } );
+    return true;
 }
 
 bool ObjectController::doesObjectExist(const ID objectID) {
@@ -37,7 +38,7 @@ Object ObjectController::getObjectFromListByJSONObjectID(const ID jsonObjectID) 
     auto objectID = itr->second.getObjectID();
     auto keywords = itr->second.getKeywords();
     auto shortdesc = itr->second.getShortDesc();
-    auto longdesc = itr->second.getLongDesc();  
+    auto longdesc = itr->second.getLongDesc();
     auto extra = itr->second.getExtra();
     Object newObj(objectID, keywords, shortdesc, longdesc, extra);
     return std::move(newObj);
@@ -56,7 +57,9 @@ const Object& ObjectController::getObjectFromList(const Name objectName) const {
 
 std::string ObjectController::lookItem(Name objectName) {
     auto object = getObjectFromList(objectName);
-    return object.getShortDesc()+"\n";
+    std::stringstream ss;
+    ss << "\t" << object.getShortDesc() << "\n";
+    return ss.str();
 }
 
 std::string ObjectController::examineItem(Name objectName) {
@@ -70,7 +73,9 @@ std::string ObjectController::examineItem(Name objectName) {
 
 std::string ObjectController::lookItem(ID objectID) {
     auto object = getObjectFromList(objectID);
-    return object.getShortDesc()+"\n";
+    std::stringstream ss;
+    ss << "\t" << object.getShortDesc() << "\n";
+    return ss.str();
 }
 
 std::string ObjectController::examineItem(ID objectID) {

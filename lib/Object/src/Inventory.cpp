@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <sstream>
 #include <Inventory.h>
+
+#include <iostream>
 // #include <JSONObjects.h>
 
 void Inventory::addItem(Object object) {
@@ -19,7 +21,6 @@ std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
 
 bool Inventory::doesItemExist(ID objectID)
 {
-
     return getItemIterator(objectID) != objects.end();
 }
 
