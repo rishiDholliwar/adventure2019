@@ -12,19 +12,14 @@ using AlterSpace::ID;
 static const std::string CHARACTER_SEPARATOR = " ";
 
 bool CombatAttack::isCharacterNPCS() {
-    std::stringstream ss;
     ID roomId = characterController->getCharacterRoomID(username);
-
     auto characterList = roomController->getCharacterList(roomId);
-    std::vector<Character> toExamineUsers;
-    std::vector<std::vector<Name>> toExamineNPCS;
     std::vector<Name> npcs;
 
     characterList.erase(unique(characterList.begin(), characterList.end()), characterList.end());
 
     for (auto &characterName : characterList) {
-        if(characterName == targetInput){
-            std::cout << "cn: " << characterName << std::endl;
+        if (characterName == targetInput) {
             if (!characterController->doesCharacterExist(characterName) &&
                 !characterController->getUsernamesOfCharacter(characterName).empty()) {
                 npcs = characterController->getUsernamesOfCharacter(characterName);
@@ -32,25 +27,13 @@ bool CombatAttack::isCharacterNPCS() {
                 for (auto npcName = npcs.begin(); npcName != npcs.end();) {
                     if (characterController->getCharacterRoomID(*npcName) == roomId) {
                         npcName = npcs.erase(npcName);
-                        std::cout << "Retruning true for: " << *npcName << std::endl;
                         return true;
                     } else {
                         ++npcName;
                     }
-                    //   toExamineNPCS.push_back(npcs);
-
                 }
             }
         }
-
-        //return toExamineNPCS.empty();
-//    for (auto &character: toExamineNPCS) {
-//        Name name = characterController->getCharacter(character).getName();
-//        if (name == targetInput) {
-//            return true;
-//        }
-//    }
-//    return false;
     }
     return false;
 }
