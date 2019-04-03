@@ -151,9 +151,9 @@ void Whisper::removeTargets(std::vector<std::string> &characterList, Name userna
 
 //DisplayInventory
 std::pair<std::vector<Response>, bool> DisplayInventory::execute() {
-	std::cout << "Inventory " << std::endl;
+    std::cout << "Inventory " << std::endl;
 
-	//get the string containing inventory listed numerically
+    //get the string containing inventory listed numerically
     std::string inventoryList = characterController->characterListInventory(username);
 
     //check if inventory is empty or not
@@ -161,7 +161,7 @@ std::pair<std::vector<Response>, bool> DisplayInventory::execute() {
         Response userResponse = Response("Your inventory is empty!", username);
         auto res = formulateResponse(userResponse);
 
-    	return std::make_pair(res, true);
+        return std::make_pair(res, true);
     }
 
     Response userResponse = Response("Your inventory has: \n" + inventoryList, username);
@@ -186,7 +186,7 @@ std::string DisplayInventory::help() {
 
 //Give
 std::pair<std::vector<Response>, bool> Give::execute() {
-	std::vector<std::string> inputStrings = utility::popFront(input);
+    std::vector<std::string> inputStrings = utility::popFront(input);
 
     if ((inputStrings.at(CHECK_INTERACT) == "interact") && (!(interactionsCharacters.empty()) || !(interactionsGifts.empty())) ) {
         return this->interact();
@@ -205,12 +205,12 @@ std::pair<std::vector<Response>, bool> Give::execute() {
         }
     }
 
-	//check if user input format is incorrect
-	if (targetCharName.empty() || giftName.empty()) {
-		Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
-		auto res = formulateResponse(userResponse);
-		return std::make_pair(res, false);
-	}
+    //check if user input format is incorrect
+    if (targetCharName.empty() || giftName.empty()) {
+        Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
 
     //check if gift item exists in user inventory
     if (!characterController->characterHasItem(username, giftName)) {
@@ -274,7 +274,7 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 
         interactCharacterTarget = v.front();
         interactGiftTarget = giftItems.front().getName();
-        
+
         Response userResponse = Response(ss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -283,34 +283,34 @@ std::pair<std::vector<Response>, bool> Give::execute() {
     Name targetUserName = v.front();
     ID giftID = giftItems.front().getID();
 
-	characterController->dropItemFromCharacterInventory(username, giftID);
+    characterController->dropItemFromCharacterInventory(username, giftID);
 
-	//drop item from user inventory
-	if (characterController->characterHasItem(username, giftID)) {
+    //drop item from user inventory
+    if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
-		return std::make_pair(res, false);
+        return std::make_pair(res, false);
     }
 
-	//add item to target user inventory
-	characterController->addItemToCharacterInventory(targetUserName, objectController->getObjectFromList(giftID));
+    //add item to target user inventory
+    characterController->addItemToCharacterInventory(targetUserName, objectController->getObjectFromList(giftID));
     std::cout << objectController->getObjectFromList(giftID).getName() << std::endl;
 
-	if (!characterController->characterHasItem(targetUserName, giftID)) {
+    if (!characterController->characterHasItem(targetUserName, giftID)) {
         characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));
-		Response userResponse = Response("Giving " + giftName + " to character " + targetCharName + " has failed.", username);
-		auto res = formulateResponse(userResponse);
-		return std::make_pair(res, false);
-	}
+        Response userResponse = Response("Giving " + giftName + " to character " + targetCharName + " has failed.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
 
     Name charName = characterController->getCharName(username);
 
-	//generate response
-	Response userResponse = Response("You have given " + giftName + " to character " + targetCharName + "!", username);
+    //generate response
+    Response userResponse = Response("You have given " + giftName + " to character " + targetCharName + "!", username);
     Response targetResponse = Response(charName + " has given " + giftName + " to you!", targetUserName);
-	auto res = formulateResponse(userResponse, targetResponse);
+    auto res = formulateResponse(userResponse, targetResponse);
 
-	return std::make_pair(res, true);
+    return std::make_pair(res, true);
 }
 
 std::pair<std::vector<Response>, bool> Give::interact() {
@@ -335,10 +335,10 @@ std::pair<std::vector<Response>, bool> Give::interact() {
         return std::make_pair(res, false);
     } else if (!interactionsCharacters.empty() && interactionsGifts.empty() && v.size() != 2 ) {
         std::cout << "character isn't empty " << std::endl;
-    	Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
-    	auto res = formulateResponse(userResponse);
+        Response userResponse = Response("Please enter /give interact {index number of the item you wish to give}.", username);
+        auto res = formulateResponse(userResponse);
 
-    	return std::make_pair(res, false);
+        return std::make_pair(res, false);
     } else if (interactionsCharacters.empty() && !interactionsGifts.empty() && v.size() != 2 ) {
         std::cout << "gifts isn't empty" << std::endl;
         Response userResponse = Response("Please enter /give interact {index number of the character you wish to give to}.", username);
@@ -454,37 +454,37 @@ std::pair<std::vector<Response>, bool> Give::interact() {
     std::cout << "target user name is : " << targetUserName << std::endl;
     std::cout << "gift id is " << giftID << std::endl;
 
-	//drop item from user inventory
-	characterController->dropItemFromCharacterInventory(username, giftID);
+    //drop item from user inventory
+    characterController->dropItemFromCharacterInventory(username, giftID);
 
-	if (characterController->characterHasItem(username, giftID)) {
+    if (characterController->characterHasItem(username, giftID)) {
         Response userResponse = Response("Gifting item has failed.", username);
         auto res = formulateResponse(userResponse);
-		return std::make_pair(res, false);
+        return std::make_pair(res, false);
     }
 
-	//add item to target user inventory
-	characterController->addItemToCharacterInventory(targetUserName, objectController->getObjectFromList(giftID));
+    //add item to target user inventory
+    characterController->addItemToCharacterInventory(targetUserName, objectController->getObjectFromList(giftID));
 
-	if (!characterController->characterHasItem(targetUserName, giftID)) {
+    if (!characterController->characterHasItem(targetUserName, giftID)) {
         characterController->addItemToCharacterInventory(username, objectController->getObjectFromList(giftID));
-		Response userResponse = Response("Giving " + interactGiftTarget + " to character " + targetUserName + " has failed.", username);
-		auto res = formulateResponse(userResponse);
-		return std::make_pair(res, false);
-	}
+        Response userResponse = Response("Giving " + interactGiftTarget + " to character " + targetUserName + " has failed.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
 
     Name charName = characterController->getCharName(username);
     Name targetCharName = characterController->getCharName(targetUserName);
-	//generate response
-	Response userResponse = Response("You have given " + interactGiftTarget + " to character " + targetCharName + "!", username);
+    //generate response
+    Response userResponse = Response("You have given " + interactGiftTarget + " to character " + targetCharName + "!", username);
     Response targetResponse = Response(charName + " has given " + interactGiftTarget + " to you!", targetUserName);
 
     interactionsCharacters.clear();
     interactionsGifts.clear();
 
-	auto res = formulateResponse(userResponse, targetResponse);
+    auto res = formulateResponse(userResponse, targetResponse);
 
-	return std::make_pair(res, true);
+    return std::make_pair(res, true);
 }
 
 
@@ -628,7 +628,7 @@ std::pair<std::vector<Response>, bool> Swap::execute() {
     swappedTargetCharacterName = characterController->getCharName(username);
 
     characterController->swapCharacter(username, originalTargetUsername);
-    
+
     Response userResponse = Response("Successfully swapped!", username);
     Response targetResponse = Response("A swap spell was cast on you!", originalTargetUsername);
 
@@ -665,7 +665,7 @@ std::pair<std::vector<Response>, bool> Swap::interact() {
     swappedTargetCharacterName = characterController->getCharName(username);
 
     characterController->swapCharacter(username, originalTargetUsername);
-    
+
     Response userResponse = Response("Successfully swapped!", username);
     Response targetResponse = Response("A swap spell was cast on you!", originalTargetUsername);
 
@@ -675,8 +675,8 @@ std::pair<std::vector<Response>, bool> Swap::interact() {
 
 std::pair<std::vector<Response>, bool> Swap::callback() {
 
-    if( characterController->getCharName(originalUsername) != swappedCharacterName || 
-            characterController->getCharName(originalTargetUsername) != swappedTargetCharacterName) {
+    if( characterController->getCharName(originalUsername) != swappedCharacterName ||
+        characterController->getCharName(originalTargetUsername) != swappedTargetCharacterName) {
         registerCallback = true;
         callbackAfterHeartbeats = 50;
         return std::make_pair(std::vector<Response>{}, false);
@@ -738,7 +738,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
         // format username into string stream
         ss << "Characters in room: \n";
         for (const auto& characterName : characterList){
-            ss << "\t-----" << characterName << "\n";
+            ss << "\t" << characterName << "\n";
         }
 
         // format object name into string stream
@@ -763,7 +763,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
     for (auto &characterName : characterList){
 
         if (characterName == target) {
-        
+
             if (!characterController->doesCharacterExist(characterName) && !characterController->getUsernamesOfCharacter(characterName).empty()) {
                 std::vector<Name> npcNames = characterController->getUsernamesOfCharacter(characterName);
                 for(auto& name : npcNames) {
@@ -791,7 +791,7 @@ std::pair<std::vector<Response>, bool> Look::execute() {
 
                     int counter = 0;
                     for (auto &name : interactions) {
-                        ss << "\t" << ++counter << ". " << target << "\n" << characterController->getCharacterInfo(name) << "\n";
+                        ss << "\t" << ++counter << ". " << target << "- " << characterController->getCharacterInfo(name) << "\n";
                     }
 
                     Response userResponse = Response(ss.str(), username);
@@ -922,7 +922,7 @@ std::pair<std::vector<Response>, bool> Examine::execute() {
 
             std::vector<Name> npcNames = characterController->getUsernamesOfCharacter(characterName);
             if (!characterController->doesCharacterExist(characterName) && !npcNames.empty()) {
-                
+
                 for (auto npcName = npcNames.begin(); npcName != npcNames.end(); ) {
                     std::cout << *npcName << std::endl;
                     if (characterController->getCharacterRoomID(*npcName) != roomId) {
@@ -1137,11 +1137,11 @@ void Move::removeTargets(std::vector<std::string> &characterList, Name username)
 
 std::pair<std::vector<Response>, bool> DPADMove::execute() {
 
-    std::cout << "DPADMove:" << direction << std::endl;
+    std::cout << "DPADMove: " << direction << std::endl;
 
     ID roomId = characterController->getCharacterRoomID(username);
     ID toID = roomController->getDoorDesignatedRoomId(roomId, direction);
-     std::cout << "designated Room: "<<toID << std::endl;
+    std::cout << "designated Room: "<<toID << std::endl;
 
     if(direction != "NorthUp" && direction != "SouthDown" ){
 
