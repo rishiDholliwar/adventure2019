@@ -187,17 +187,11 @@ void Combat::setState(STATE state) {
 }
 
 bool Combat::isPendingState() {
-    if (this->currentState == STATE::PENDING) {
-        return true;
-    }
-    return false;
+    return this->currentState == STATE::PENDING;
 }
 
 bool Combat::isCombatState() {
-    if (this->currentState == STATE::COMBAT) {
-        return true;
-    }
-    return false;
+    return this->currentState == STATE::COMBAT);
 }
 
 bool Combat::isGameOverState() {
