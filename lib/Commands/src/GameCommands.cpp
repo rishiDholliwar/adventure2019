@@ -980,6 +980,7 @@ std::pair<std::vector<Response>, bool> Wear::execute() {
 
     // Wear item (drops item from inventory)
     characterController->characterWearItem(username, objectID);
+    interactions.clear();
 
     // Error checking for state after wear
     if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
@@ -1027,6 +1028,7 @@ std::pair<std::vector<Response>, bool> Wear::interact() {
 
     // Wear item (drops item from inventory)
     characterController->characterWearItem(username, objectID);
+    interactions.clear();
 
     // Error checking for state after wear
     if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
@@ -1108,9 +1110,11 @@ std::pair<std::vector<Response>, bool> Takeoff::execute() {
         return std::make_pair(res, false);
     }
 
-    // Drop item from user wear (adds item to inventory)
     ID objectID = characterController->getItemIDFromCharacterWearing(username, objectName);
+
+    // Drop item from user wear (adds item to inventory)
     characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
+    interactions.clear();
 
     // Error checking for state after takeoff
     if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
@@ -1159,6 +1163,7 @@ std::pair<std::vector<Response>, bool> Takeoff::interact() {
 
     // Drop item from user wear (adds item to inventory)
     characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
+    interactions.clear();
 
     // Error checking for state after takeoff
     if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
