@@ -244,6 +244,7 @@ std::pair<std::vector<Response>, bool> PigeonMail::callback() {
         message << "Pigeon has delivered your items to " << characterController->getCharName(targetUsername) << "\n";
         message << "Thank you for using Pigeon Mail Delivery Services. :)";
         res.emplace_back(message.str(), username);
+        message.str(std::string());
         message.clear();
         message << characterController->getCharName(username) << " has delivered you items. \n";
         message << "Thank you for using Pigeon Mail Delivery Services. :)";
