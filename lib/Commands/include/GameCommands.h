@@ -327,30 +327,7 @@ public:
     void removeTargets(std::vector<std::string> &characterList, Name username);
 };
 
-//move
-class DPADMove : public Command
-{
-private:
-    Name username;
-    Input direction;
-    std::vector<std::string> interactions;
-    RoomController* roomController;
-public:
-    explicit
-    DPADMove(CharacterController* characterController,RoomController* roomController, Name username = "", Input direction = "", Connection connection = Connection{})
-            : username(std::move(username)), direction(std::move(direction)) {
-        this->characterController = characterController;
-        this->roomController = roomController;;
-    };
 
-    ~DPADMove() = default;
-    std::pair<std::vector<Response>, bool> execute() override;
-    std::unique_ptr<Command> clone() const override;
-    std::unique_ptr<Command> clone(Name username, Input target, Connection connection) const override;
-    std::string help() override;
-
-    void removeTargets(std::vector<std::string> &characterList, Name username);
-};
 
 
 #endif //ALTERSPACE_GAMECOMMANDS_H

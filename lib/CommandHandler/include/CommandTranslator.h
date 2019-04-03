@@ -24,7 +24,6 @@ enum CommandType
 
     //MOVEMENT
     MOVE,
-    DPADMOVE,
     NORTH,
     SOUTH,
     WEST,

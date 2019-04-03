@@ -169,38 +169,37 @@
             position: absolute;
         }
 
-        .up {
+        .north {
             left: 29px;
             top: -3px;
             border-radius: .25em .25em 0 0;
         }
 
-        .up:hover, .left:hover, .right:hover, .down:hover,#lookBtn:hover,#combatBtn:hover,
-        #helpBtn:hover,#inventoryBtn:hover,#tttBtn:hover,#clearBtn:hover
-        {
+        .north:hover, .west:hover, .east:hover, .south:hover, #lookBtn:hover, #combatBtn:hover,
+        #helpBtn:hover, #inventoryBtn:hover, #tttBtn:hover, #clearBtn:hover {
             cursor: pointer;
             color: red;
         }
 
-        .right {
+        .east {
             top: 25px;
             right: -2px;
             border-radius: 0 .25em .25em 0;
         }
 
-        .down {
+        .south {
             left: 27px;
             bottom: -1px;
             border-radius: 0 0 .25em .25em;
         }
 
-        .left {
+        .west {
             top: 26px;
             left: 0px;
             border-radius: .25em 0 0 .25em;
         }
 
-        #lookBtn{
+        #lookBtn {
             position: absolute;
             left: 85px;
         }
@@ -346,23 +345,23 @@
                 sendGameMessage.value = "";
             });
 
-            $('#d-up').click(function () {
-                ws.send("/DPADMOVE NorthUp");
+            $('#d-north').click(function () {
+                ws.send("/move north");
                 sendGameMessage.value = "";
             });
 
-            $('#d-down').click(function () {
-                ws.send("/DPADMOVE SouthDown");
+            $('#d-south').click(function () {
+                ws.send("/move south");
                 sendGameMessage.value = "";
             });
 
-            $('#d-left').click(function () {
-                ws.send("/DPADMOVE west");
+            $('#d-west').click(function () {
+                ws.send("/move west");
                 sendGameMessage.value = "";
             });
 
-            $('#d-right').click(function () {
-                ws.send("/DPADMOVE east");
+            $('#d-east').click(function () {
+                ws.send("/move east");
                 sendGameMessage.value = "";
             });
 
@@ -585,22 +584,24 @@ Chat Server: <input id="uri" size="40">
 <div class="controls">
 
     <div class="d-pad">
-        <div id="d-up" class="button d up" style="font-size: 24px;" onclick="upBtn()"><span class="label">&#9650;</span>
+        <div id="d-north" class="button d north" style="font-size: 24px;" onclick="upBtn()"><span
+                class="label">&#9650;</span>
         </div>
-        <div id="d-right" class="button d right" style="font-size: 24px;" onclick="rightBtn()"><span class="label">&#9654;</span>
+        <div id="d-east" class="button d east" style="font-size: 24px;" onclick="rightBtn()"><span
+                class="label">&#9654;</span>
         </div>
-        <div id="d-down" class="button d down" style="font-size: 24px;" onclick="downBtn()"><span class="label"
-                                                                                                  style="font-size: 24px;">&#9660;</span>
+        <div id="d-south" class="button d south" style="font-size: 24px;" onclick="downBtn()"><span class="label"
+                                                                                                    style="font-size: 24px;">&#9660;</span>
         </div>
-        <div id="d-left" class="button d left" style="font-size: 24px;" onclick="leftBtn()"><span
+        <div id="d-west" class="button d west" style="font-size: 24px;" onclick="leftBtn()"><span
                 class="label">&#9664;</span></div>
     </div>
-    <div id="lookBtn" style="font-size: 24px;" ><span class="label">&#128065;</span> </div>
-    <div id="combatBtn" style="font-size: 24px; color: gray" ><span class="label">&#9876;</span> </div>
-    <div id="helpBtn" style="font-size: 24px;"><span class="label">&#10067;</span> </div>
-    <div id="inventoryBtn" style="font-size: 24px;"  ><span class="label">&#128176;</span> </div>
-    <div id="tttBtn" style="font-size: 24px; color: white" ><span class="label">#</span> </div>
-    <div id="clearBtn" style="font-size: 24px;" ><span class="label">&#10060;</span> </div>
+    <div id="lookBtn" style="font-size: 24px;"><span class="label">&#128065;</span></div>
+    <div id="combatBtn" style="font-size: 24px; color: gray"><span class="label">&#9876;</span></div>
+    <div id="helpBtn" style="font-size: 24px;"><span class="label">&#10067;</span></div>
+    <div id="inventoryBtn" style="font-size: 24px;"><span class="label">&#128176;</span></div>
+    <div id="tttBtn" style="font-size: 24px; color: white"><span class="label">#</span></div>
+    <div id="clearBtn" style="font-size: 24px;"><span class="label">&#10060;</span></div>
 
 
 </div>

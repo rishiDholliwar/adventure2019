@@ -20,7 +20,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
 
     //MOVEMENT
     {MOVE, "MOVE"},
-    {DPADMOVE, "DPADMOVE"},
     {NORTH, "NORTH"},
     {SOUTH, "SOUTH"},
     {WEST, "WEST"},
