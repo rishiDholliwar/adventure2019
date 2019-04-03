@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <sstream>
 #include <Inventory.h>
-#include <JSONObjects.h>
+// #include <JSONObjects.h>
 
 void Inventory::addItem(Object object) {
     objects.push_back(object);
@@ -10,8 +10,8 @@ void Inventory::addItem(Object object) {
 std::vector<Object>::iterator Inventory::getItemIterator(ID objectID)
 {
     auto it = find_if(objects.begin(), objects.end(),
-                      [ objectID ] ( Object const& obj )->bool {
-                          return obj.getID() == objectID;
+                      [ objectID ] ( Object const& obj ) {
+                          return objectID == obj.getID();
                         });
 
     return it;

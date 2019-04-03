@@ -2,6 +2,7 @@
 #define ALTERSPACE_OBJECTCONTROLLER_H
 
 #include <string>
+#include <iostream>
 #include <unordered_map>
 
 #include <AlterSpace.h>
@@ -17,7 +18,11 @@ private:
     std::unordered_map<ID, Object> objects;
 
 public:
-    ObjectController();
+    ObjectController() = default;
+
+    explicit ObjectController(std::vector<Object> objVect); 
+
+    void addObjectsToList(const std::vector<Object> objs);
 
     bool addObjectToList(const Object &object);
 
@@ -32,6 +37,8 @@ public:
     bool doesObjectExist(const ID objectID);
 
     bool doesObjectOfThisNameExist(const Name objectName);
+
+    Object getObjectFromListByJSONObjectID(const ID jsonObjectID) const;
 
     /* Get Object By Name:
      *

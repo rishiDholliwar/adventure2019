@@ -4,30 +4,30 @@ Name Object::getName() const {
     return objectName;
 }
 
+ID Object::getObjectID() const {
+	return objectID;
+}
+
 ID Object::getID() const {
     return id;
 }
 
-std::unordered_map<Property, Value> Object::getAbilities() {
-  return abilities;
-}
+// std::unordered_map<Property, Value> Object::getAbilities() {
+//   return abilities;
+// }
 
-std::vector<std::string> Object::getKeywords() {
+const std::vector<std::string> Object::getKeywords() const {
     return keywords;
 }
 
-std::string Object::getShortDesc() {
+const std::string Object::getShortDesc() const {
     return shortdesc;
 }
 
-std::vector<std::string> Object::getLongDesc() {
+const std::vector<std::string> Object::getLongDesc() const {
     return longdesc;
 }
 
-std::vector<std::string> Object::getExtraKeywords() {
-    return extra.keywords;
-}
-
-std::vector<std::string> Object::getExtraDesc() {
-    return extra.desc;
+std::vector<Extra> Object::getExtra() const {
+    return extra;
 }

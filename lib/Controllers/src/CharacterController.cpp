@@ -1,11 +1,10 @@
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <algorithm>
 #include <CharacterController.h>
 #include <RoomController.h>
 #include <Utility.h>
-
-
-CharacterController::CharacterController() = default;
 
 void CharacterController::addCharacter(Name &username, RoomController &roomController, ObjectController &objectController) {
 
@@ -13,11 +12,28 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
     Character defaultCharacter(username, ROOM_ID);
     roomController.addCharacterToRoom(defaultCharacter.getName(), defaultCharacter.getRoomID());
 
-    defaultCharacter.addItemToInventory(Object("Basic Sword"));
-    objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));
+    // defaultCharacter.addItemToInventory(Object("Basic Sword"));
+    // objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Sword"));
 
-    defaultCharacter.addItemToInventory(Object("Basic Armor"));
-    objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Armor"));
+    // std::vector<std::string> keywords;
+    // keywords.push_back("Basic ");
+    // keywords.push_back("Armor");
+
+    // std::vector<std::string> longdesc;
+    // longdesc.push_back("armor long desc1");
+    // longdesc.push_back("armor long desc2");
+
+    // std::vector<Extra> extra;
+
+    // Extra e1{keywords, longdesc};
+
+    // extra.push_back(e1);
+
+    // defaultCharacter.addItemToInventory(Object(12, keywords, "armor short desc", longdesc, extra));
+    // objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Armor"));
+
+    defaultCharacter.addItemToInventory(objectController.getObjectFromList("sword"));
+    defaultCharacter.addItemToInventory(objectController.getObjectFromList("cloak"));
 
     _characters.emplace(username,defaultCharacter).second;
 }
@@ -28,8 +44,35 @@ void CharacterController::addCharacter(Character &aCharacter) {
     _characters.emplace(username, aCharacter).second;
 }
 
+void CharacterController::addNPC(Character aNPC) {
+
+    aNPC.setNPC();
+
+    std::stringstream ss;
+    ss << aNPC.getName() << "-" << aNPC.getID();
+    Name npcKey = ss.str();
+
+    _characters.emplace(npcKey, aNPC);
+}
+
 void CharacterController::removeCharacter(Name &username){
     _characters.erase(username);
+}
+
+ID CharacterController::getNPCID(Name &npcKey) {
+    return _characters.find(npcKey)->second.getID();
+}
+
+std::vector<Name> CharacterController::getUsernamesOfCharacter(Name characterName) {
+    std::vector<Name> usernames{};
+
+    for (auto&character : _characters) {
+        if (character.second.getName() == characterName) {
+            usernames.push_back(character.first);
+        }
+    }
+
+    return usernames;
 }
 
 Name CharacterController::getCharName(Name &username) {
@@ -50,7 +93,7 @@ Character &CharacterController::getCharacter(Name &username) {
 // }
 
 Name CharacterController::getUsernameOfCharacter(Name &charName){
-    auto it = find_if(_characters.begin(), _characters.end(),
+    auto it = std::find_if(_characters.begin(), _characters.end(),
                         [&charName] (auto const& character) {
                             return charName == character.second.getName();
                         });
@@ -60,6 +103,10 @@ Name CharacterController::getUsernameOfCharacter(Name &charName){
 
 bool CharacterController::doesCharacterExist(Name &username) {
     return _characters.find(username) != _characters.end();
+}
+
+bool CharacterController::isCharacterNPC(Name &npcKey) {
+    return _characters.find(npcKey)->second.isNPC();
 }
 
 std::vector<Name> CharacterController::getAllCharacterNames() {
@@ -72,12 +119,12 @@ std::vector<Name> CharacterController::getAllCharacterNames() {
 
 std::string CharacterController::lookCharacter(Name &userName) {
     auto character = getCharacter(userName);
-    return utility::extractStringVector(character.getDescriptions());
+    return utility::extractStringVector(character.getDescription());
 }
 
 std::string CharacterController::examineCharacter(Name &userName) {
     auto character = getCharacter(userName);
-    auto extDescriptions = character.getExtendedDescriptions();
+    auto extDescriptions = character.getLongDesc();
     if (extDescriptions.empty()){
         return lookCharacter(userName);
     }

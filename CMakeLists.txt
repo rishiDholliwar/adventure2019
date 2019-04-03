@@ -35,7 +35,7 @@ FOREACH(PATCH ${SERVER_PATCHES})
 ENDFOREACH(PATCH)
 
 set(DATA_FILES
-		"DataFiles/mirkwood.json"
+		"DataFiles/"
 		)
 
 file(COPY

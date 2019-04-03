@@ -8,17 +8,50 @@ Name Character::getName() const {
     return this->name;
 }
 
+ID Character::getCharacterID() const {
+	return this->characterID;
+}
+
 ID Character::getRoomID() const {
     return this->roomID;
+}
+
+bool Character::isNPC() const {
+	return this->characterType == CharacterType::NON_PLAYABLE;
+}
+
+void Character::setNPC() {
+	this->characterType = CharacterType::NON_PLAYABLE;
 }
 
 ID Character::getID() const {
     return id;
 }
 
+std::vector<std::string> const& Character::getKeywords() const{ 
+	return keywords;
+}
+
+std::string const& Character::getShortDesc() const{
+	return shortdesc;
+}
+
+std::vector<std::string> const& Character::getLongDesc() const{
+	return longdesc;
+}
+
+std::vector<std::string> const& Character::getDescription() const{
+	return description;
+}
+
 std::string Character::getInfo() const {
 
   std::stringstream retString;
+
+  if (isNPC()) {
+  	retString << "Type: NPC\n";
+  }
+  
   retString << "ID: " << getID() << "\n" << "Name: " << getName() << "\n" << "Wearing: \n" << listWearing() << "Room ID: " << getRoomID() << "\n";
 
 
@@ -42,7 +75,7 @@ void Character::addItemToInventory(Object obj) {
 }
 
 void Character::setRoomID(ID roomID) {
-    Character::roomID = roomID;
+    this->roomID = roomID;
 }
 
 bool Character::hasItem(ID objectId) {
@@ -85,8 +118,12 @@ bool Character::isWearing(Name objectName) {
 }
 
 void Character::wear(ID objectId) {
+	std::cout << "wear entered" << std::endl;
+	std::cout << "unique id is " << objectId << std::endl;
     wearing.push_back(getItemFromInventory(objectId));
+    std::cout << "yo" << std::endl;
     dropItem(objectId);
+    std::cout << "wear done" << std::endl;
 }
 
 ID Character::getWearingID(Name objectName) {

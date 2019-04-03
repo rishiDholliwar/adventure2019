@@ -1,0 +1,79 @@
+{
+    "EN": {
+        "/LOGIN": "LOGIN",
+        "/LOGOUT": "LOGOUT",
+        "/SIGNUP": "SIGNUP",
+
+        "/SAY": "SAY",
+        "/YELL": "YELL",
+        "/BROADCAST": "BROADCAST",
+        "/TELL": "TELL",
+        "/WHISPER": "WHISPER",
+
+        "/MOVE": "MOVE",
+        "/NORTH": "NORTH",
+        "/SOUTH": "SOUTH",
+        "/WEST": "WEST",
+        "/EAST": "EAST",
+        "/NORTHWEST": "NORTHWEST",
+        "/NORTHEAST": "NORTHEAST",
+        "/SOUTHWEST": "SOUTHWEST",
+        "/SOUTHEAST": "SOUTHEAST",
+
+        "/HELP": "HELP",
+        "/INFO": "INFO",
+        "/LOOK": "LOOK",
+        "/EXAMINE": "EXAMINE",
+        "/INVENTORY": "INVENTORY",
+
+        "/PICKUP": "PICKUP",
+        "/DROP": "DROP",
+        "/GIVE": "GIVE",
+        "/WEAR": "WEAR",
+        "/TAKEOFF": "TAKEOFF",
+
+        "/SWAP": "SWAP",
+        "/CONFUSE": "CONFUSE",
+        "/DECOY": "DECOY"
+    },
+    "FR": {
+        "/dire": "SAY"
+    },
+    "EMOJI": {
+        "/😀": "LOGIN",
+        "/🙃": "LOGOUT",
+        "/😃": "SIGNUP",
+
+        "/💬": "SAY",
+        "/💥": "YELL",
+        "/👻": "BROADCAST",
+        "/💭": "TELL",
+        "/😉": "WHISPER",
+
+        "/🚶": "MOVE",
+        "/⬆": "NORTH",
+        "/⬇": "SOUTH",
+        "/⬅": "WEST",
+        "/➡": "EAST",
+        "/↖": "NORTHWEST",
+        "/↗": "NORTHEAST",
+        "/↙": "SOUTHWEST",
+        "/↘": "SOUTHEAST",
+
+        "/🚑": "HELP",
+        "/ℹ️": "INFO",
+        "/👁️": "LOOK",
+        "/👀": "EXAMINE",
+        "/🛍️": "INVENTORY",
+
+        "/👆": "PICKUP",
+        "/👇": "DROP",
+        "/🤝": "GIVE",
+        "/😒": "WEAR",
+        "/😏": "TAKEOFF",
+
+        "/😈": "SWAP",
+        "/🥴": "CONFUSE",
+        "/😶": "DECOY"
+    }
+}

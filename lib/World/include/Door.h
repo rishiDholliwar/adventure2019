@@ -13,7 +13,7 @@ using AlterSpace::ID;
 
 class Door {
 public:
-    const static ID unfoundDoorId = 0;
+    const static ID unfoundDoorId = 999999;
 
     enum DoorStatus{
         LOCKED = 0,
@@ -21,6 +21,11 @@ public:
     };
 
     Door(ID  id, ID  targetRoomID, const std::string& direction);
+
+    Door() = default;
+
+    Door(const std::string &direction, const std::vector<std::string> &descriptions,
+         const std::vector<std::string> &keywords, ID designatedRoomID);
 
     // Adders
     void addDescription(const std::string& description);
@@ -51,9 +56,10 @@ private:
     ID id;
     ID designatedRoomID;
     std::string  direction;
-    DoorStatus status;
-    std::vector<std::string> descriptions;
     std::vector<std::string> keywords;
+    std::vector<std::string> descriptions;
+    DoorStatus status;
+
 
 };
 
