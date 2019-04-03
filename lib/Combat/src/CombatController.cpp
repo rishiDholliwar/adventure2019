@@ -38,14 +38,13 @@ bool CombatController::battleReady(const Name &fighter1, const Name &fighter2) {
 
 bool CombatController::checkDuplicateSendRequest(const Name &instigator, const Name &target) {
     if (isBattleAssociation(instigator, target)) {
-        std::cout << "cdr: is true\n";
         auto &battle = getBattle(instigator, target);
 
         if (battle.getInstigator().getName() == instigator && battle.isPendingState()) {
             return true;
         }
     }
-    std::cout << "cdr: is false\n";
+
     return false;
 }
 
