@@ -90,7 +90,7 @@ public:
 
     std::string logout(const Name &loser);
 
-    std::string flee(const Name &surrenderer);
+    std::string flee(const Name &winner);
 
 private :
 

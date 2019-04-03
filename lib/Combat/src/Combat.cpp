@@ -211,31 +211,26 @@ void Combat::setTargetLogoutState() {
 }
 
 std::string Combat::logout(const Name &winner) {
-    Character winnerCharacter;
+    std::stringstream output;
     if (winner != getInstigatorName()) {
-        winnerCharacter = fighterInstigator;
+        output << printWinner(fighterInstigator);
     } else {
-        winnerCharacter = fighterOpponent;
+        output << printWinner(fighterOpponent);
     }
 
-    std::stringstream output;
-    output << printWinner(winnerCharacter);
     isGameOver = true;
     return output.str();
-
 }
 
-std::string Combat::flee(const Name &surrenderer) {
-    Character winner;
-    if (surrenderer != getInstigatorName()) {
-        winner = fighterInstigator;
-    } else {
-        winner = fighterOpponent;
-    }
-    isFlee = true;
+std::string Combat::flee(const Name &winner) {
     std::stringstream output;
-    output << printWinner(winner);
+    if (winner != getInstigatorName()) {
+        output << printWinner(fighterInstigator);
+    } else {
+        output << printWinner(fighterOpponent);
+    }
+
+    isFlee = true;
     isGameOver = true;
     return output.str();
-
 }
