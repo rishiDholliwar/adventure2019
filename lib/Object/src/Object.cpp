@@ -12,9 +12,9 @@ ID Object::getID() const {
     return id;
 }
 
-std::unordered_map<Property, Value> Object::getAbilities() {
-  return abilities;
-}
+// std::unordered_map<Property, Value> Object::getAbilities() {
+//   return abilities;
+// }
 
 const std::vector<std::string> Object::getKeywords() const {
     return keywords;

@@ -122,17 +122,20 @@ private:
 
     Name username;
     Input input;
+    RoomController* roomController;
     ObjectController* objectController;
-    std::vector<Object> interactions;
-
+    std::vector<Name> interactionsCharacters;
+    std::vector<Object> interactionsGifts;
+    
     // int interactItemChoice;
-    Name interactTarget;
+    Name interactCharacterTarget;
+    Name interactGiftTarget;
 
-    void setInteractions(std::vector<Object> i, Name interactT);
+    void setInteractions(std::vector<Name> iC, std::vector<Object> iG, Name interactC, Name interactG);
 public:
     explicit
-    Give(CharacterController* characterController, ObjectController* objectController, Name username = "", Input input = "", Connection connection = Connection{})
-        : objectController(objectController), username(std::move(username)), input(std::move(input)) {
+    Give(CharacterController* characterController, RoomController* roomController, ObjectController* objectController, Name username = "", Input input = "", Connection connection = Connection{})
+        : roomController(roomController), objectController(objectController), username(std::move(username)), input(std::move(input)) {
             this->characterController = characterController;
             registerInteraction = true;
            };
@@ -179,20 +182,28 @@ private:
 
     const unsigned int TARGET_CHARACTER_NAME = 0;
 
+    RoomController* roomController;
+
     Name username;
     Input target;
-    void setInteractions(std::vector<std::string> i, Name interactT);
+    void setInteractions(std::vector<std::string> i);
 
     std::vector<Name> interactions;
-    Name interactTarget;
+
+    Name originalUsername;
+    Name originalTargetUsername;
+
+    Name swappedCharacterName;
+    Name swappedTargetCharacterName;
+
 public:
     explicit
-    Swap(CharacterController* characterController, Name username = "", Input target = "", Connection connection = Connection{})
-        : username(std::move(username)), target(std::move(target)) {
+    Swap(CharacterController* characterController, RoomController* roomController, Name username = "", Input target = "", Connection connection = Connection{})
+        : roomController(roomController), username(std::move(username)), target(std::move(target)) {
             this->characterController = characterController;
             registerInteraction = true;
             registerCallback = true;
-            callbackAfterHeartbeats = 300;
+            callbackAfterHeartbeats = 150;
            };
 
     ~Swap() = default;
@@ -209,11 +220,16 @@ public:
 class Look : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
     RoomController* roomController;
     ObjectController* objectController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
+
+    void setInteractions(std::vector<std::string> i);
 public:
     explicit
     Look(CharacterController* characterController, RoomController* roomController, ObjectController* objectController,
@@ -236,11 +252,15 @@ public:
 class Examine : public Command
 {
 private:
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int INTERACT_CHOICE = 1;
+
     RoomController* roomController;
     ObjectController* objectController;
     Name username;
     Input target;
     std::vector<std::string> interactions;
+
     void setInteractions(std::vector<std::string> i);
 public:
     explicit

@@ -88,7 +88,7 @@ void Character::addItemToInventory(Object obj) {
 }
 
 void Character::setRoomID(ID roomID) {
-    Character::roomID = roomID;
+    this->roomID = roomID;
 }
 
 bool Character::hasItem(ID objectId) {
