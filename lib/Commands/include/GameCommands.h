@@ -124,14 +124,14 @@ private:
     Input input;
     RoomController* roomController;
     ObjectController* objectController;
-    std::vector<Name> interactionsCharacters;
+    std::vector<ID> interactionsCharacters;
     std::vector<Object> interactionsGifts;
 
     // int interactItemChoice;
-    Name interactCharacterTarget;
+    ID interactCharacterTargetID;
     Name interactGiftTarget;
 
-    void setInteractions(std::vector<Name> iC, std::vector<Object> iG, Name interactC, Name interactG);
+    void setInteractions(std::vector<ID> iC, std::vector<Object> iG, ID interactC, Name interactG);
 public:
     explicit
     Give(CharacterController* characterController, RoomController* roomController, ObjectController* objectController, Name username = "", Input input = "", Connection connection = Connection{})
