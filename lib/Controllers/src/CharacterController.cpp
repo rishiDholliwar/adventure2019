@@ -75,6 +75,22 @@ std::vector<Name> CharacterController::getUsernamesOfCharacter(Name characterNam
     return usernames;
 }
 
+std::vector<ID> CharacterController::getUniqueIDsOfCharacter(Name characterName) {
+    std::vector<ID> uniqeIDs{};
+
+    for (auto&character : _characters) {
+        if (character.second.getName() == characterName) {
+            uniqeIDs.push_back(character.second.getID());
+        }
+    }
+
+    return uniqeIDs;
+}
+
+ID CharacterController::getCharID(Name &username) {
+    return getCharacter(username).getID();
+}
+
 Name CharacterController::getCharName(Name &username) {
     return getCharacter(username).getName();
 }
@@ -92,10 +108,19 @@ Character &CharacterController::getCharacter(Name &username) {
 //     return it->second;
 // }
 
-Name CharacterController::getUsernameOfCharacter(Name &charName){
+Name CharacterController::getUsernameOfCharacter(Name &charName) {
     auto it = std::find_if(_characters.begin(), _characters.end(),
                         [&charName] (auto const& character) {
                             return charName == character.second.getName();
+                        });
+
+    return it->first;
+}
+
+Name CharacterController::getUsernameOfCharacter(ID charID) {
+    auto it = std::find_if(_characters.begin(), _characters.end(),
+                        [charID] (auto const& character) {
+                            return charID == character.second.getID();
                         });
 
     return it->first;

@@ -215,6 +215,7 @@ std::pair<std::vector<Response>, bool> Give::execute() {
     }
 
     std::vector<Name> v = characterController->getUsernamesOfCharacter(targetCharName);
+    std::vector<ID> targetIDs;
     std::vector<Object> giftItems = characterController->getItemsFromCharacterInventory(username, giftName);
 
     for (auto charName = v.begin(); charName != v.end(); ) {
@@ -224,6 +225,8 @@ std::pair<std::vector<Response>, bool> Give::execute() {
             charName = v.erase(charName);
         }
         else {
+            ID targetID = characterController->getCharID(*charName);
+            targetIDs.push_back(targetID);
             ++charName;
         }
     }
@@ -244,15 +247,15 @@ std::pair<std::vector<Response>, bool> Give::execute() {
 
     std::cout << "v.size is " << v.size() << std::endl;
 
-    if (v.size() > 1 || giftItems.size() > 1) {
+    if ((v.size() > 1 && targetIDs.size() > 1 ) || giftItems.size() > 1) {
         std::stringstream ss;
 
-        if (v.size() > 1) {
-            interactionsCharacters = v;
+        if (v.size() > 1 && targetIDs.size() > 1) {
+            interactionsCharacters = targetIDs;
             ss << "There is more than 1 charcter named " << targetCharName << ". Which character would you like to give to?\n";
 
             int counter = 0;
-            for (auto &name : interactionsCharacters) {
+            for (auto &name : v) {
                 ss << "\t" << ++counter << ". " << name << "\n";
             }
         }
@@ -267,7 +270,7 @@ std::pair<std::vector<Response>, bool> Give::execute() {
             }
         }
 
-        interactCharacterTarget = v.front();
+        interactCharacterTargetID = targetIDs.front();
         interactGiftTarget = giftItems.front().getName();
         
         Response userResponse = Response(ss.str(), username);
@@ -344,12 +347,13 @@ std::pair<std::vector<Response>, bool> Give::interact() {
 
     std::cout << "after if loops " << std::endl;
 
+    Name targetUserName = characterController->getUsernameOfCharacter(interactCharacterTargetID);
+    Name interactCharacterTarget = characterController->getCharName(targetUserName);
+
     std::cout << "interactCharacterTarget : " << interactCharacterTarget << std::endl;
     std::cout << "interactGiftTarget : " << interactGiftTarget << std::endl;
 
     std::cout << "size of getUsernamesOfCharacter(interactCharacterTarget) : " << characterController->getUsernamesOfCharacter(interactCharacterTarget).size() << std::endl;
-
-    Name targetUserName = interactCharacterTarget;
 
     std::cout << "targetUserName : " << targetUserName << std::endl;
 
@@ -376,7 +380,7 @@ std::pair<std::vector<Response>, bool> Give::interact() {
             return std::make_pair(res, false);
         }
 
-        targetUserName = interactionsCharacters.at(charIndex);
+        targetUserName = characterController->getUsernameOfCharacter(interactionsCharacters.at(charIndex));
         giftID = interactionsGifts.at(giftIndex).getID();
 
         if (!characterController->doesCharacterExist(targetUserName)) {
@@ -404,7 +408,7 @@ std::pair<std::vector<Response>, bool> Give::interact() {
             return std::make_pair(res, false);
         }
 
-        targetUserName = interactionsCharacters.at(charIndex);
+        targetUserName = characterController->getUsernameOfCharacter(interactionsCharacters.at(charIndex));
 
         if (!characterController->doesCharacterExist(targetUserName)) {
             Response userResponse = Response("Character name " + interactCharacterTarget + " does not exist for you to gift to.", username);
@@ -485,13 +489,13 @@ std::pair<std::vector<Response>, bool> Give::interact() {
 
 std::unique_ptr<Command> Give::clone(Name username, Input input, Connection connection = Connection{}) const {
     auto give = std::make_unique<Give>(this->characterController, this->roomController, this->objectController, username, input);
-    give->setInteractions(this->interactionsCharacters, this->interactionsGifts, this->interactCharacterTarget, this->interactGiftTarget);
+    give->setInteractions(this->interactionsCharacters, this->interactionsGifts, this->interactCharacterTargetID, this->interactGiftTarget);
     return std::move(give);
 }
 
 std::unique_ptr<Command> Give::clone() const {
     auto give = std::make_unique<Give>(this->characterController, this->roomController, this->objectController, this->username, this->input);
-    give->setInteractions(this->interactionsCharacters, this->interactionsGifts, this->interactCharacterTarget, this->interactGiftTarget);
+    give->setInteractions(this->interactionsCharacters, this->interactionsGifts, this->interactCharacterTargetID, this->interactGiftTarget);
     return std::move(give);
 }
 
@@ -499,10 +503,10 @@ std::string Give::help() {
     return "/give [target's character name] [item name] - give item to a player";
 }
 
-void Give::setInteractions(std::vector<Name> iC, std::vector<Object> iG, Name interactC, Name interactG) {
+void Give::setInteractions(std::vector<ID> iC, std::vector<Object> iG, ID interactC, Name interactG) {
     interactionsCharacters = iC;
     interactionsGifts = iG;
-    interactCharacterTarget = interactC;
+    interactCharacterTargetID = interactC;
     interactGiftTarget = interactG;
 }
 

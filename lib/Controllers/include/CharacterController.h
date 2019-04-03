@@ -49,6 +49,10 @@ public:
 
     std::vector<Name> getUsernamesOfCharacter(Name characterName);
 
+    std::vector<Name> getUsernamesOfCharacter(ID charID);
+
+    std::vector<ID> getUniqueIDsOfCharacter(Name characterName);
+
     /*
      * Returns a character object of the specified username
      *
@@ -60,9 +64,13 @@ public:
 
     Name getUsernameOfCharacter(Name &charName);
 
+    Name getUsernameOfCharacter(ID charID);
+
     // Character &getCharacterByCharName(Name &charName);
 
     Name getCharName(Name &username);
+
+    ID getCharID(Name &username);
 
     bool isCharacterNPC(Name &npcKey);
 
