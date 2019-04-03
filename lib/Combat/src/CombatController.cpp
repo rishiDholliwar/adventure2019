@@ -38,13 +38,14 @@ bool CombatController::battleReady(const Name &fighter1, const Name &fighter2) {
 
 bool CombatController::checkDuplicateSendRequest(const Name &instigator, const Name &target) {
     if (isBattleAssociation(instigator, target)) {
+        std::cout << "cdr: is true\n";
         auto &battle = getBattle(instigator, target);
 
         if (battle.getInstigator().getName() == instigator && battle.isPendingState()) {
             return true;
         }
     }
-
+    std::cout << "cdr: is false\n";
     return false;
 }
 
@@ -182,14 +183,20 @@ std::string CombatController::printAllBattles() {
 
     if (!battleList.empty()) {
         for (auto &battle: battleList) {
+            if (battle.isPendingState()) {
+                output << "\t Instigator: " << battle.getInstigatorName() << "\n";
+                output << "\t Pending requests to: " << battle.getOpponentName() << "\n\n";
+                continue;
+            }
+
             if (battle.isCombatState()) {
                 output << "\t " << battle.getInstigatorName() << " is fighting " << battle.getOpponentName() << "\n\n";
                 continue;
 
             }
 
-            output << "\t Instigator: " << battle.getInstigatorName() << "\n";
-            output << "\t Pending requests to: " << battle.getOpponentName() << "\n\n";
+            output << "battle print error for " << battle.getInstigatorName() << "\n\n";
+
         }
     } else {
         output << "\tNo battles\n";
@@ -197,6 +204,7 @@ std::string CombatController::printAllBattles() {
 
     return output.str();
 }
+
 
 //Private:
 Combat &CombatController::getBattle(const Name fighter1, const Name fighter2) {

@@ -46,6 +46,7 @@ public:
 
     Combat() {
         srand(static_cast<unsigned int>(time(0)));
+        setState(STATE::PENDING);
     };
 
     void addInstigator(Character &instigator);

@@ -193,7 +193,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character &targetCharacter = characterController->getCharacter(targetName);
-
+        std::cout << "--target in room\n";
         //check if user is in battle state
         if (combatController->isBattleState(username)) {
             Name targetName = combatController->getTargetName(username);
