@@ -132,15 +132,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
     std::vector<Response> res;
     std::cout << "\n\n--------------------------------Combat Begin-----------------------------\n";
 
-    // check if npc
-    if (isCharacterNPCS()) {
-        this->registerCallback = false;
-        std::cout << "rc to false\n";
-        Response userResponse = Response("npcs not available", username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, true);
-    }
-
     //check if a fighter has logged out
     if (combatController->isTargetLogoutState(username)) {
 
@@ -169,6 +160,15 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
                 return std::make_pair(res, true);
             }
         }
+        return std::make_pair(res, true);
+    }
+
+    // check if npc
+    if (isCharacterNPCS()) {
+        this->registerCallback = false;
+        std::cout << "rc to false\n";
+        Response userResponse = Response("npcs not available", username);
+        auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
 
