@@ -14,41 +14,98 @@ static const std::string CHARACTER_SEPARATOR = " ";
 //if user types /examineCombat then print all characters in the room
 //else print the names the user has entered
 std::pair<std::vector<Response>, bool> CombatExamine::execute() {
-    Character &character = characterController->getCharacter(username);
-    std::vector<Response> res;
+    std::stringstream ss;
+    ID roomId = characterController->getCharacterRoomID(username);
 
-    std::stringstream output;
-    output << "combat examine: \n";
+    auto characterList = roomController->getCharacterList(roomId);
 
-    bool whiteSpacesOnly = std::all_of(input.begin(), input.end(), isspace);
-    if (input == "" || whiteSpacesOnly) {
+    std::string line = "---------------------------\n";
 
-        for (auto name:  roomController->getCharacterList(characterController->getCharacterRoomID(username))) {
-            output << characterController->getCharacter(name).examineCombat();
-            output << "\n";
+    ss << line;
+    std::vector<Character> toExamine;
+    std::vector<Name> npcNames;
+
+    // with no argument
+    if (input.empty()) {
+        std::cout << "no target\n";
+
+        for (auto &characterName : characterList) {
+            if (!characterController->doesCharacterExist(characterName) &&
+                !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                std::cout << "in  if\n";
+                npcNames = characterController->getUsernamesOfCharacter(characterName);
+                std::cout << npcNames.size() << std::endl;
+
+                for (auto npcName = npcNames.begin(); npcName != npcNames.end();) {
+                    if (characterController->getCharacterRoomID(*npcName) != roomId) {
+                        npcName = npcNames.erase(npcName);
+                    } else {
+                        ++npcName;
+                    }
+                }
+            } else {
+                toExamine.push_back(characterController->getCharacter(characterName));
+                std::cout << "in else\n";
+            }
         }
 
-        res.emplace_back(output.str(), username);
+        for (auto &character:  toExamine) {
+            Name n = character.getName();
+            ss << characterController->getCharacter(n).examineCombat();
+            ss << "\n";
+        }
+
+        for (auto &character:  npcNames) {
+            std::cout << "npc: " << character << std::endl;
+            ss << characterController->getCharacter(character).examineCombat();
+            ss << "\n";
+        }
+
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
+
     }
 
-    removeExtraWhiteSpaces(input);
+    //specific target
+    std::cout << "specific target\n";
 
-    std::vector<std::string> inputs;
-    boost::split(inputs, input, boost::is_any_of(CHARACTER_SEPARATOR));
+    for (auto &characterName : characterList) {
 
-    //print characters the user has entered
-    for (auto &targetName: inputs) {
-        if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
-            Character &targetCharacter = characterController->getCharacter(targetName);
-            output << targetCharacter.examineCombat();
-            output << "\n";
-        } else {
-            output << combatController->sendCharacterNotFoundMsg(targetName);
+        if (characterName == input) {
+
+            if (!characterController->doesCharacterExist(characterName) &&
+                !characterController->getUsernamesOfCharacter(characterName).empty()) {
+                npcNames = characterController->getUsernamesOfCharacter(characterName);
+                std::cout << npcNames.size() << std::endl;
+
+                for (auto npcName = npcNames.begin(); npcName != npcNames.end();) {
+                    if (characterController->getCharacterRoomID(*npcName) != roomId) {
+                        npcName = npcNames.erase(npcName);
+                    } else {
+                        ++npcName;
+                    }
+                }
+            } else {
+                toExamine.push_back(characterController->getCharacter(characterName));
+            }
         }
     }
 
-    res.emplace_back(output.str(), username);
+    for (auto &character:  toExamine) {
+        Name n = character.getName();
+        ss << characterController->getCharacter(n).examineCombat();
+        ss << "\n";
+    }
+
+    for (auto &character:  npcNames) {
+        std::cout << "npc: " << character << std::endl;
+        ss << characterController->getCharacter(character).examineCombat();
+        ss << "\n";
+    }
+
+    Response userResponse = Response(ss.str(), username);
+    auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
 }
 
