@@ -159,7 +159,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     // check if npc
     if (isCharacterNPCS()) {
-        this->registerCallback = false;
         std::cout << "rc to false\n";
         Response userResponse = Response("npcs not available", username);
         auto res = formulateResponse(userResponse);
@@ -190,7 +189,7 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     if (roomController->isTargetInRoom(username, character.getRoomID(), targetName)) {
         Character &targetCharacter = characterController->getCharacter(targetName);
-        std::cout << "--target in room\n";
+
         //check if user is in battle state
         if (combatController->isBattleState(username)) {
             Name targetName = combatController->getTargetName(username);
@@ -266,7 +265,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
         }
     } else {
         //character is not in the room
-
         commandName += combatController->sendCharacterNotFoundMsg(targetName);
         res.emplace_back(commandName, username);
         return std::make_pair(res, true);
