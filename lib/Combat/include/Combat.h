@@ -40,7 +40,7 @@ private:
 
 public:
 
-    Combat(Character &instigator,Character &opponent) {
+    Combat(Character &instigator, Character &opponent) {
         srand(static_cast<unsigned int>(time(0)));
         setState(STATE::PENDING);
 
@@ -98,9 +98,9 @@ private :
 
     double attackMultiplier();
 
-    int getNetDamage(unsigned int damage, unsigned int defence);
+    int updateNetDamage(unsigned int damage, unsigned int defence);
 
-    int getDefenderHP(Character &defender, unsigned int netDamage);
+    int updateDefenderHP(Character &defender, unsigned int netDamage);
 
     Character &getAttacker(int i);
 

@@ -18,7 +18,6 @@ const Name Combat::getOpponentName() {
     return fighterOpponent.getName();
 }
 
-//todo refactor
 bool Combat::nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2) {
     if (getInstigatorName() == fighter1 && getOpponentName() == fighter2) {
         return true;
@@ -112,17 +111,17 @@ std::string Combat::attack(Character &attacker, Character &defender) {
     unsigned int defence = std::round(defender.getDefense() * attackMultiplier());
     attackString << printDefenderDefence(defender, defence);
 
-    int netDamage = getNetDamage(damage, defence);
+    int netDamage = updateNetDamage(damage, defence);
     attackString << printNetDamage(netDamage);
 
-    int defenderHP = getDefenderHP(defender, netDamage);
+    int defenderHP = updateDefenderHP(defender, netDamage);
     defender.setCurrentHP(defenderHP);
     attackString << printDefenderHP(defender);
 
     return attackString.str();
 }
 
-int Combat::getNetDamage(unsigned int damage, unsigned int defence) {
+int Combat::updateNetDamage(unsigned int damage, unsigned int defence) {
     int netDamage = damage - defence;
     if (netDamage < 0) {
         netDamage = 0;
@@ -131,11 +130,12 @@ int Combat::getNetDamage(unsigned int damage, unsigned int defence) {
     return netDamage;
 }
 
-int Combat::getDefenderHP(Character &defender, unsigned int netDamage) {
+int Combat::updateDefenderHP(Character &defender, unsigned int netDamage) {
     int defenderHP = defender.getCurrentHP() - netDamage;
     if (defenderHP < 0) {
         defenderHP = 0;
     }
+
     return defenderHP;
 }
 
