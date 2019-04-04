@@ -53,7 +53,7 @@ bool Combat::battleReady() {
 
 void Combat::updateFighters(Character &fighter1, Character &fighter2) {
     if (fighter1.getName() == fighterInstigator.getName()) {
-       fighterInstigator = fighter1;
+        fighterInstigator = fighter1;
         fighterOpponent = fighter2;
     } else {
         fighterInstigator = fighter2;
@@ -77,7 +77,7 @@ std::string Combat::runBattleRound() {
 
         if (defender.getCurrentHP() == 0) {
             output << printWinner(attacker);
-           // setState(STATE::END); //todo this breaks the code, no idea why??
+            // setState(STATE::END); //todo this breaks the code, no idea why??
             isGameOver = true;
             return output.str();
         }
@@ -144,33 +144,47 @@ int Combat::getDefenderHP(Character &defender, unsigned int netDamage) {
 }
 
 std::string Combat::printWinner(const Character &character) {
-    return "\t" + character.getName() + " wins the fight\n";
+    std::stringstream ss;
+    ss << "\t" << character.getName() << " wins the fight\n";
+    return ss.str();
 }
 
 std::string Combat::printRoundNumber(int number) {
-    return "\tRound:" + std::to_string(number) + "\n";
+    std::stringstream ss;
+    ss << "\tRound:" << std::to_string(number) << "\n";
+    return ss.str();
 }
 
 std::string Combat::printAttackInfo(Character &attacker, Character &defender) {
-    return "\t\t" + attacker.getName() + " attacks " + defender.getName() + " with "
-           + std::to_string(defender.getCurrentHP()) + "hp" + "\n";
+    std::stringstream ss;
+    ss << "\t\t" << attacker.getName() << " attacks " << defender.getName() << " with "
+       << std::to_string(defender.getCurrentHP()) << "hp" << "\n";
+    return ss.str();
 }
 
 std::string Combat::printAttackerDamage(Character &attacker, unsigned int damage) {
-    return "\t\t" + attacker.getName() + " damage is " + std::to_string(damage) + "\n";
+    std::stringstream ss;
+    ss << "\t\t" << attacker.getName() << " damage is " << std::to_string(damage) << "\n";
+    return ss.str();
 }
 
 std::string Combat::printDefenderDefence(Character &defender, unsigned int defence) {
-    return "\t\t" + defender.getName() + " defence is " + std::to_string(defence) + "\n";
+    std::stringstream ss;
+    ss << "\t\t" << defender.getName() << " defence is " << std::to_string(defence) << "\n";
+    return ss.str();
 }
 
 std::string Combat::printNetDamage(unsigned int netDamage) {
-    return "\t\tNet Damage is " + std::to_string(netDamage) + "\n";
+    std::stringstream ss;
+    ss << "\t\tNet Damage is " << std::to_string(netDamage) << "\n";
+    return ss.str();
 }
 
 std::string Combat::printDefenderHP(Character &defender) {
-    return "\t\t" + defender.getName() + " health is now " + std::to_string(defender.getCurrentHP()) + "hp"
-           + "\n";
+    std::stringstream ss;
+    ss << "\t\t" << defender.getName() << " health is now " << std::to_string(defender.getCurrentHP()) << "hp"
+       << "\n";
+    return ss.str();
 }
 
 void Combat::setState(STATE state) {
@@ -186,7 +200,7 @@ bool Combat::isCombatState() {
 }
 
 bool Combat::isGameOverState() {
-   // return this->currentState == STATE::END;
+    // return this->currentState == STATE::END;
     return isGameOver;
 }
 

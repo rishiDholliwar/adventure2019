@@ -6,7 +6,7 @@ bool CombatController::isNewBattle(const Name &instigator, const Name &target) {
 }
 
 void CombatController::createNewBattle(Character &instigator, Character &target) {
-    battleList.push_back(Combat(instigator,target));
+    battleList.push_back(Combat(instigator, target));
 }
 
 std::string CombatController::sendRoundBattleRequest(const Character &fighter1, const Character &fighter2) {
@@ -244,32 +244,28 @@ bool CombatController::isBattleAssociation(const Name fighter1, const Name fight
 }
 
 //Public messages:
-
 std::string CombatController::sendCharacterNotFoundMsg(const Name &target) {
-    return "\tCharacter " + target + " not found\n\n";
+    std::stringstream ss;
+    ss << "\tCharacter " << target << " not found\n\n";
+    return ss.str();
 }
 
 std::string CombatController::sendRoundInvitationMsg(const Name &inviterName) {
-    std::string output = "\n\t" + inviterName + " wants to attack you \n" +
-                         "\tEnter '/attack " + inviterName + "' to battle\n";
+    std::stringstream ss;
+    ss << "\n\t" << inviterName << " wants to attack you \n" <<
+       "\tEnter '/attack " << inviterName << "' to battle\n";
     //"\tEnter '/flee " + inviterName + "' to surrender.\n";
-    return output;
+    return ss.str();
 }
 
 std::string CombatController::sendDuplicateRequestMsg(const Name &joiner) {
-    return "Combat Request with " + joiner + " is still pending";
+    std::stringstream ss;
+    ss << "Combat Request with " << joiner << " is still pending";
+    return ss.str();
 }
 
 std::string CombatController::sendThreatMsg() {
     return " sent threat ";
-}
-
-std::string CombatController::sendOwnerFightingMsg(const Name &target) {
-    return " you are now fighting " + target + "\n";
-}
-
-std::string CombatController::sendTargetFightingMsg(const Name &target) {
-    return target + " accepts the fight\n";
 }
 
 std::string CombatController::selfAttackMsg() {
@@ -277,12 +273,9 @@ std::string CombatController::selfAttackMsg() {
 }
 
 std::string CombatController::sendTargetInCombatState(const Name &target) {
-    return target + " is in combat, send attack request later.";
-}
-
-std::string CombatController::sendSelfInCombatState() {
-    return "You cannot attack another player while in  combat.\n"
-           "Enter '/flee' to escape (not implemented)";
+    std::stringstream ss;
+    ss << target << " is in combat, send attack request later.";
+    return ss.str();
 }
 
 std::string CombatController::sendBattleStartedMsg() {
