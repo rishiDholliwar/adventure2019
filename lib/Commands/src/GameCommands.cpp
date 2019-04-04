@@ -85,28 +85,27 @@ std::pair<std::vector<Response>, bool> Yell::execute() {
     std::vector<std::string> recipients;
 
     //Get list of usernames in current room
-    for(auto& value : roomController->getCharacterList(characterRoomID)){
+    for(auto& value : roomController->getCharacterList(characterRoomID)) {
         Name characterName = value;
         auto recepientUsername = characterController->getUsernameOfCharacter(characterName);
         std::cout << characterName;
-        if(recepientUsername!=username)
+        if (recepientUsername != username) {
             recipients.push_back(recepientUsername);
+        }
     }
 
     //For each adjacent room connected by a door
     //Add characternames to list of recepients to yell at
     for(auto &roomID: roomController->adjacentRoomIDs(characterRoomID)){
-        for(auto& value : roomController->getCharacterList(roomID)){
-            Name characterName = value;
+        for(auto& characterNames : roomController->getCharacterList(roomID)){
+            Name characterName = characterNames;
             Name recepientUsername = characterController->getUsernameOfCharacter(characterName);
             recipients.push_back(recepientUsername);
         }
     }
 
     //Yell command makes all input to uppercase
-    for(int i = 0; input[i]; i++){
-        input[i] = toupper(input[i]);
-    }
+    transform(input.begin(), input.end(), input.begin(), ::toupper);
     Response userResponse = Response("Me: " + input, username);
 
     std::string genericMessage = username + ": " + input;
