@@ -254,7 +254,6 @@ std::string CombatController::sendRoundInvitationMsg(const Name &inviterName) {
     std::stringstream ss;
     ss << "\n\t" << inviterName << " wants to attack you \n" <<
        "\tEnter '/attack " << inviterName << "' to battle\n";
-    //"\tEnter '/flee " + inviterName + "' to surrender.\n";
     return ss.str();
 }
 

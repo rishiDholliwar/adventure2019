@@ -74,13 +74,7 @@ public:
 
     std::string sendCharacterNotFoundMsg(const Name &target);
 
-    std::string sendOwnerFightingMsg(const Name &target);
-
-    std::string sendTargetFightingMsg(const Name &target);
-
     std::string sendTargetInCombatState(const Name &target);
-
-    std::string sendSelfInCombatState();
 
     std::string sendTargetOfflineMsg();
 

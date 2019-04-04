@@ -5,7 +5,7 @@
 #include <Server.h>
 #include <boost/algorithm/string.hpp>
 #include <regex>
-#include <algorithm>    // std::random_shuffle
+#include <algorithm>
 
 using networking::Connection;
 using AlterSpace::ID;
@@ -159,7 +159,6 @@ std::pair<std::vector<Response>, bool> CombatAttack::execute() {
 
     // check if npc
     if (isCharacterNPCS()) {
-        std::cout << "rc to false\n";
         Response userResponse = Response("npcs not available", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
