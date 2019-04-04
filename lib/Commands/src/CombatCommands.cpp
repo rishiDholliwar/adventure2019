@@ -119,7 +119,7 @@ std::unique_ptr<Command> CombatExamine::clone() const {
 
 std::string CombatExamine::help() {
     return "/combat: Displays combat information for all players in room.\n"
-           "/combat [target]: Displays combat information for [name].";
+           "/combat [target]: Displays combat information for [target].";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
