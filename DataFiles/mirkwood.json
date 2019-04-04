@@ -2408,12 +2408,6 @@
       "room": 8800
     },
     {
-      "action": "npc",
-      "id": 8800,
-      "limit": 1,
-      "room": 8800
-    },
-    {
       "action": "give",
       "id": 8808
     },
