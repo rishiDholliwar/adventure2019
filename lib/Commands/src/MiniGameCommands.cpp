@@ -51,7 +51,7 @@ std::unique_ptr<Command> tttTerminal::clone() const {
 
 std::string tttTerminal::help() {
     return "/tttt - Opens tic tac toe game in terminal\n"
-           "/tttt [0-2,0-2] - Make move on the game board\n"
+           "/tttt [0-2,0-2] - Make move on the game board. Coordinates are x,y\n"
            "/tttt reset -  Resets the game board\n"
            "/tttt quitGame - Quits the game\n";
 }
