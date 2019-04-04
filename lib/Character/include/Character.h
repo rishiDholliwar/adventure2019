@@ -110,6 +110,8 @@ public:
 
     std::vector<Object> getItemsFromInventory(Name objectName);
 
+    std::vector<Object> getItemsFromWearing(Name objectName);
+
     Object getItemFromInventory(Name objectName);
 
     Object getItemFromInventory(ID objectId);

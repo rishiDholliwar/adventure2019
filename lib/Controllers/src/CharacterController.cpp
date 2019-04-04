@@ -206,6 +206,10 @@ std::vector<Object> CharacterController::getItemsFromCharacterInventory(Name &us
     return getCharacter(username).getItemsFromInventory(itemName);
 }
 
+std::vector<Object> CharacterController::getItemsFromCharacterWearing(Name &username, Name itemName) {
+    return getCharacter(username).getItemsFromWearing(itemName);
+}
+
 Object CharacterController::getItemFromCharacterInventory(Name &username, Name itemName) {
     return getCharacter(username).getItemFromInventory(itemName);
 }
@@ -226,8 +230,7 @@ bool CharacterController::characterIsWearingItem(Name &username, Name itemName) 
     return getCharacter(username).isWearing(itemName);
 }
 
-void CharacterController::characterWearItem(Name &username, Name itemName) {
-    ID itemID = getItemIDFromCharacterInventory(username, itemName);
+void CharacterController::characterWearItem(Name &username, ID itemID) {
     getCharacter(username).wear(itemID);
 }
 

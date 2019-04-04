@@ -62,6 +62,19 @@ std::vector<Object> Character::getItemsFromInventory(Name objectName) {
     return inventory.getItems(objectName);
 }
 
+std::vector<Object> Character::getItemsFromWearing(Name objectName) {
+  
+    std::vector<Object> items;
+
+    for (auto &item : wearing) {
+        if (item.getName() == objectName) {
+            items.push_back(item);
+        }
+    }
+
+    return items;
+}
+
 Object Character::getItemFromInventory(Name objectName) {
     return inventory.getItem(objectName);
 }
@@ -136,7 +149,6 @@ void Character::remove(Object obj) {
       addItemToInventory(obj);
     }
 }
-
 
 void Character::dropItem(ID objectId) {
     inventory.removeItem(objectId);
