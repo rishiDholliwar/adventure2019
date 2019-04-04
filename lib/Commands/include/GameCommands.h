@@ -354,7 +354,6 @@ public:
 class Wear : public Command
 {
 private:
-    const unsigned int OBJECT_NAME = 0;
     const unsigned int CHECK_INTERACT = 0;
     const unsigned int MULTIPLE_ITEMS = 1;
     const unsigned int INTERACT_CHOICE = 1;
@@ -384,7 +383,6 @@ public:
 class Takeoff : public Command
 {
 private:
-    const unsigned int OBJECT_NAME = 0;
     const unsigned int CHECK_INTERACT = 0;
     const unsigned int MULTIPLE_ITEMS = 1;
     const unsigned int INTERACT_CHOICE = 1;
