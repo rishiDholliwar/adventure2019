@@ -1164,7 +1164,7 @@ std::string Help::help() {
     return "/help - 911 what is your emergency?";
 }
 
-// move
+// Move
 std::pair<std::vector<Response>, bool> Move::execute() {
 
     std::cout << "Move: " << direction << std::endl;
@@ -1235,3 +1235,294 @@ void Move::removeTargets(std::vector<std::string> &characterList, Name username)
             characterList.end());
 }
 
+//Info
+std::pair<std::vector<Response>, bool> Info::execute() {
+    Response userResponse = Response(characterController->getCharacterInfo(username), username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Info::clone() const {
+    auto info = std::make_unique<Info>(this->characterController, this->username, this->input);
+    return std::move(info);
+}
+
+std::unique_ptr<Command> Info::clone(Name username, Input input, Connection connection) const {
+    auto info = std::make_unique<Info>(this->characterController, username, input);
+    return std::move(info);
+}
+
+std::string Info::help() {
+    return "/info - Get character details";
+}
+
+//Wear
+std::pair<std::vector<Response>, bool> Wear::execute() {
+
+    std::vector<std::string> inputStrings = utility::popFront(input);
+
+    // Check if user specifies an interaction
+    if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+        return this->interact();
+    }
+
+    Name objectName = input;
+
+    // Validate user input format
+    if (objectName.empty()) {
+        Response userResponse = Response("You must provide the name of the object you would like to wear", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Error checking for state before wear
+    if (!characterController->characterHasItem(username, objectName)) {
+        Response userResponse = Response(objectName + " is not in your inventory", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Check for multiple objects of the same name
+    std::vector<Object> objectsOfName = characterController->getItemsFromCharacterInventory(username, objectName);
+
+    if (objectsOfName.size() > MULTIPLE_ITEMS) {
+
+        interactions = objectsOfName;
+
+        std::stringstream ss;
+
+        ss << "You have more than 1 item named " << objectName << ". Which item would you like to wear?\n";
+
+        int counter = 0;
+        for (auto &obj : interactions) {
+            ss << "\t" << ++counter << ". " << obj.getName() << ", ID: " << obj.getID() << "\n";
+        }
+
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    ID objectID = characterController->getItemIDFromCharacterInventory(username, objectName);
+
+    // Wear item (drops item from inventory)
+    characterController->characterWearItem(username, objectID);
+    interactions.clear();
+
+    // Error checking for state after wear
+    if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
+        Response userResponse = Response("Wearing item has failed.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Generate success response
+    Response userResponse = Response("You are now wearing " + objectName, username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::pair<std::vector<Response>, bool> Wear::interact() {
+
+    std::vector<std::string> v = utility::tokenizeString(input);
+
+    if ( v.size() != 2 ) {
+        Response userResponse = Response("Please enter /wear interact {index number of the item you want to wear}.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    std::stringstream ss{v.at(INTERACT_CHOICE)};
+    int index = -1;
+    ss >> index;
+    index--;
+    if ( index >= interactions.size() || index < 0 ) {
+        Response userResponse = Response("Please enter /wear interact {index number of the item you want to wear}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+    Name objectName = interactions.at(index).getName();
+    ID objectID = interactions.at(index).getID();
+
+    // Error checking for state before wear
+    if (!characterController->characterHasItem(username, objectID)) {
+        Response userResponse = Response(objectName + "is not in your inventory", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Wear item (drops item from inventory)
+    characterController->characterWearItem(username, objectID);
+    interactions.clear();
+
+    // Error checking for state after wear
+    if (characterController->characterHasItem(username, objectID) || !characterController->characterIsWearingItem(username, objectID)) {
+        Response userResponse = Response("Wearing item has failed.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Generate success response
+    Response userResponse = Response("You are now wearing " + objectName, username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Wear::clone() const {
+    auto wear = std::make_unique<Wear>(this->characterController, this->username, this->input);
+    wear->setInteractions(this->interactions);
+    return std::move(wear);
+}
+
+std::unique_ptr<Command> Wear::clone(Name username, Input input, Connection connection) const {
+    auto wear = std::make_unique<Wear>(this->characterController, username, input);
+    wear->setInteractions(this->interactions);
+    return std::move(wear);
+}
+
+std::string Wear::help() {
+    return "/wear [item name] - wear item";
+}
+
+void Wear::setInteractions(std::vector<Object> i) {
+    interactions = i;
+}
+
+//Takeoff
+std::pair<std::vector<Response>, bool> Takeoff::execute() {
+
+    std::vector<std::string> inputStrings = utility::popFront(input);
+
+    // Check if user specifies an interaction
+    if ((inputStrings.at(CHECK_INTERACT) == "interact") && !(interactions.empty())) {
+        return this->interact();
+    }
+
+    Name objectName = input;
+
+    // Validate user input format
+    if (objectName.empty()) {
+        Response userResponse = Response("You must provide the name of the object you would like to take off", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Error checking for state before takeoff
+    if (!characterController->characterIsWearingItem(username, objectName)) {
+        Response userResponse = Response("You are not wearing " + objectName, username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Check for character wearing multiple objects of the same name
+    std::vector<Object> objectsOfName = characterController->getItemsFromCharacterWearing(username, objectName);
+
+    if (objectsOfName.size() > MULTIPLE_ITEMS) {
+
+        interactions = objectsOfName;
+
+        std::stringstream ss;
+
+        ss << "You are wearing more than 1 item named " << objectName << ". Which item would you like to take off?\n";
+
+        int counter = 0;
+        for (auto &obj : interactions) {
+            ss << "\t" << ++counter << ". " << obj.getName() << ", ID: " << obj.getID() << "\n";
+        }
+
+        Response userResponse = Response(ss.str(), username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    ID objectID = characterController->getItemIDFromCharacterWearing(username, objectName);
+
+    // Drop item from user wear (adds item to inventory)
+    characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
+    interactions.clear();
+
+    // Error checking for state after takeoff
+    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
+        Response userResponse = Response("Taking off item has failed.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Generate success response
+    Response userResponse = Response("You have taken off " + objectName, username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::pair<std::vector<Response>, bool> Takeoff::interact() {
+
+    std::vector<std::string> v = utility::tokenizeString(input);
+
+    if ( v.size() != 2) {
+        Response userResponse = Response("Please enter /takeoff interact {index number of the item you wish to take off}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+    std::stringstream ss{v.at(INTERACT_CHOICE)};
+    int index = -1;
+    ss >> index;
+    index--;
+    if ( index >= interactions.size() || index < 0) {
+        Response userResponse = Response("Please enter /takeoff interact {index number of the item you wish to take off}.", username);
+        auto res = formulateResponse(userResponse);
+
+        return std::make_pair(res, false);
+    }
+
+    ID objectID = interactions.at(index).getID();
+    Name objectName = interactions.at(index).getName();
+
+    // Error checking for state before takeoff
+    if (!characterController->characterIsWearingItem(username, objectName)) {
+        Response userResponse = Response("You are not wearing " + objectName, username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Drop item from user wear (adds item to inventory)
+    characterController->characterRemoveItem(username, objectController->getObjectFromList(objectID));
+    interactions.clear();
+
+    // Error checking for state after takeoff
+    if (characterController->characterIsWearingItem(username, objectID) || !characterController->characterHasItem(username, objectID)) {
+        Response userResponse = Response("Taking off item has failed.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    // Generate success response
+    Response userResponse = Response("You have taken off " + objectName, username);
+    auto res = formulateResponse(userResponse);
+    return std::make_pair(res, true);
+}
+
+std::unique_ptr<Command> Takeoff::clone() const {
+
+    auto takeoff = std::make_unique<Takeoff>(this->characterController, this->objectController, this->username, this->input);
+    takeoff->setInteractions(interactions);
+    return std::move(takeoff);
+}
+
+std::unique_ptr<Command> Takeoff::clone(Name username, Input input, Connection connection) const {
+
+    auto takeoff = std::make_unique<Takeoff>(this->characterController, this->objectController, username, input);
+    takeoff->setInteractions(interactions);
+    return std::move(takeoff);
+}
+
+std::string Takeoff::help() {
+    return "/takeoff [item name] - take off item";
+}
+
+void Takeoff::setInteractions(std::vector<Object> i) {
+    interactions = i;
+}

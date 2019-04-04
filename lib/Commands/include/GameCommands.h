@@ -330,6 +330,87 @@ public:
     void removeTargets(std::vector<std::string> &characterList, Name username);
 };
 
+// Info
+class Info : public Command
+{
+private:
+    Name username;
+    Input input;
+public:
+    explicit
+    Info(CharacterController* characterController, Name username = "", Input input = "", Connection connection = Connection{})
+        : username(std::move(username)), input(std::move(input)) {
+            this->characterController = characterController;
+           };
+
+    ~Info() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
+    std::string help() override;
+};
+
+// Wear
+class Wear : public Command
+{
+private:
+    const unsigned int OBJECT_NAME = 0;
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int MULTIPLE_ITEMS = 1;
+    const unsigned int INTERACT_CHOICE = 1;
+
+    Name username;
+    Input input;
+    std::vector<Object> interactions;
+    void setInteractions(std::vector<Object> i);
+
+public:
+    explicit
+    Wear(CharacterController* characterController, Name username = "", Input input = "", Connection connection = Connection{})
+        : username(std::move(username)), input(std::move(input)) {
+            this->characterController = characterController;
+            registerInteraction = true;
+           };
+
+    ~Wear() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> interact();
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
+    std::string help() override;
+};
+
+// Takeoff
+class Takeoff : public Command
+{
+private:
+    const unsigned int OBJECT_NAME = 0;
+    const unsigned int CHECK_INTERACT = 0;
+    const unsigned int MULTIPLE_ITEMS = 1;
+    const unsigned int INTERACT_CHOICE = 1;
+
+    Name username;
+    Input input;
+    ObjectController* objectController;
+    std::vector<Object> interactions;
+    void setInteractions(std::vector<Object> i);
+
+public:
+    explicit
+    Takeoff(CharacterController* characterController, ObjectController* objectController, Name username = "", Input input = "", Connection connection = Connection{})
+        : username(std::move(username)), input(std::move(input)) {
+            this->characterController = characterController;
+            this->objectController = objectController;
+            registerInteraction = true;
+           };
+    ~Takeoff() = default;
+    std::pair<std::vector<Response>, bool> execute() override;
+    std::pair<std::vector<Response>, bool> interact();
+    std::unique_ptr<Command> clone() const override;
+    std::unique_ptr<Command> clone(Name username, Input input, Connection connection) const override;
+    std::string help() override;
+};
+
 
 
 

@@ -364,7 +364,7 @@ std::vector<Response> GameController::wear(Name username, Input itemName) {
     ID itemID = characterController.getItemIDFromCharacterInventory(username, itemName);
 
     //wear item
-    if (!characterController.characterWearItem(username, itemName)) {
+    if (!characterController.characterWearItem(username, itemID)) {
         Response userResponse = Response("Wearing " + itemName + " has failed!", username);
         return formulateResponse(userResponse);
     }

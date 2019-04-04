@@ -161,6 +161,8 @@ public:
 
     std::vector<Object> getItemsFromCharacterInventory(Name &username, Name itemName);
 
+    std::vector<Object> getItemsFromCharacterWearing(Name &username, Name itemName);
+
     /*
      * obtain item from users inventory
      *
@@ -195,7 +197,7 @@ public:
      *
      * Post-Condition: Returns true if the item is equipped
     */
-    void characterWearItem(Name &username, Name itemName);
+    void characterWearItem(Name &username, ID itemID);
 
     /*
      * unequips the specified item
