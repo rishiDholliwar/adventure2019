@@ -881,7 +881,7 @@ std::string Examine::help() {
 std::pair<std::vector<Response>, bool> Pickup::execute(){
 
     if(target.empty()){
-        Response userResponse = Response("Please input a target.\n", username);
+        Response userResponse = Response(help(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, true);
     }
@@ -938,6 +938,7 @@ std::pair<std::vector<Response>, bool> Pickup::interact() {
 
     std::vector<std::string> v = utility::tokenizeString(target);
 
+
     if ( v.size() != 2 ) {
         std::cout << "Too many arguments..." << std::endl;
         Response userResponse = Response("Please enter /pickup interact {index number of the item you wish to pickup}.", username);
@@ -949,6 +950,12 @@ std::pair<std::vector<Response>, bool> Pickup::interact() {
     int index = -1;
     ss >> index;
     index--;
+    if(interactions.size() == 0){
+        Response userResponse = Response("There is nothing to interact with.", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
     if ( index >= interactions.size() || index < 0 ) {
         Response userResponse = Response("Please enter /pickup interact {index number of the item you wish to pickup}.", username);
         auto res = formulateResponse(userResponse);
@@ -957,19 +964,29 @@ std::pair<std::vector<Response>, bool> Pickup::interact() {
 
     ID interactionID = interactions.at(index).getID();
     Name interactionName = interactions.at(index).getName();
+    ID characterRoomID = characterController->getCharacterRoomID(username);
 
-    Name charName = characterController->getCharName(username);
-
-
-    //DO LOGIC
+    Object item = objectController->getObjectFromList(interactionName);
 
     //generate response
-    Object item = objectController->getObjectFromList(interactionName);
-    characterController->addItemToCharacterInventory(username,item);
-    roomController->removeObjectFromRoom(interactionID,characterController->getCharacterRoomID(username));
-    Response userResponse = Response(interactionName + " has been added to your inventory.\n", username);
-    auto res = formulateResponse(userResponse);
-    return std::make_pair(res, true);
+    if(std::find(roomController->getObjectList(characterRoomID).begin(),
+            roomController->getObjectList(characterRoomID).end(), item.getID())
+            != roomController->getObjectList(characterRoomID).end()) {
+        //Room contains item
+        characterController->addItemToCharacterInventory(username,item);
+        roomController->removeObjectFromRoom(interactionID,characterController->getCharacterRoomID(username));
+        Response userResponse = Response(interactionName + " has been added to your inventory.\n", username);
+        interactions.clear();
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    } else {
+        /* room does not contain x */
+        interactions.clear();
+        Response userResponse = Response("You can't find that item.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
+
 }
 
 
@@ -1085,6 +1102,7 @@ std::pair<std::vector<Response>, bool> Drop::interact() {
     characterController->dropItemFromCharacterInventory(username,item.getID());
     roomController->addObjectToRoom(interactionID,characterController->getCharacterRoomID(username));
     Response userResponse = Response(interactionName + " has been dropped from your inventory.\n", username);
+    interactions.clear();
     auto res = formulateResponse(userResponse);
     return std::make_pair(res, true);
 }
