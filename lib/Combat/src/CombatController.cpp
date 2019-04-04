@@ -84,7 +84,6 @@ CombatController::executeBattleRound(Character &fighter1, Character &fighter2, c
     return battle.runBattleRound();
 }
 
-
 Character &CombatController::getFighter(Name &fighter) {
     auto &battle = getBattleInCombatState(fighter);
 
@@ -201,7 +200,6 @@ std::string CombatController::printAllBattles() {
 
     return output.str();
 }
-
 
 //Private:
 Combat &CombatController::getBattle(const Name fighter1, const Name fighter2) {
