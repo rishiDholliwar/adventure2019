@@ -20,16 +20,12 @@ const Name Combat::getOpponentName() {
 
 //todo refactor
 bool Combat::nameIsPendingWithInstigator(const Name &fighter1, const Name &fighter2) {
-    if (getInstigatorName() == fighter1) {
-        if (getOpponentName() == fighter2) {
-            return true;
-        }
+    if (getInstigatorName() == fighter1 && getOpponentName() == fighter2) {
+        return true;
     }
 
-    if (getInstigatorName() == fighter2) {
-        if (getOpponentName() == fighter1) {
-            return true;
-        }
+    if (getInstigatorName() == fighter2 && getOpponentName() == fighter1) {
+        return true;
     }
 
     return false;
