@@ -76,6 +76,11 @@ namespace utility {
         return data;
     }
 
+    static std::string toUpper(std::string data){
+        transform(data.begin(), data.end(), data.begin(), ::toupper);
+        return data;
+    }
+
 }
 
 

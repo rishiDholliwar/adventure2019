@@ -259,11 +259,10 @@ Door* RoomController::searchDoor(ID roomId, const std::string &direction) {
 
 std::vector<ID> RoomController::adjacentRoomIDs(ID roomID) {
     auto room = RoomController::searchRoom(roomID);
-    if (room == nullptr){
-        static std::vector<ID> emptyIDVector;
-        return emptyIDVector;
-    }
     std::vector<ID> adjacentRoomID;
+    if (room == nullptr){
+      return adjacentRoomID;
+    }
     for(auto& door: room->getDoorList()){
         adjacentRoomID.push_back(door.getDesignatedRoomId());
     }

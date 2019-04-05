@@ -105,10 +105,10 @@ std::pair<std::vector<Response>, bool> Yell::execute() {
     }
 
     //Yell command makes all input to uppercase
-    transform(input.begin(), input.end(), input.begin(), ::toupper);
-    Response userResponse = Response("Me: " + input, username);
+    std::string upperCaseInput = utility::toUpper(input);
+    Response userResponse = Response("Me: " + upperCaseInput, username);
 
-    std::string genericMessage = username + ": " + input;
+    std::string genericMessage = username + ": " + upperCaseInput;
     auto res = formulateResponse(userResponse, recipients, genericMessage);
 
     return std::make_pair(res, true);
