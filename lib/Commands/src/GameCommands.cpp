@@ -915,7 +915,6 @@ std::pair<std::vector<Response>, bool> Pickup::execute(){
         for (auto &obj : interactions) {
             ss << "\t" << ++counter << ". " << obj.getName() << ", ID: " << obj.getID() << "\n";
         }
-
         Response userResponse = Response(ss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
@@ -969,9 +968,8 @@ std::pair<std::vector<Response>, bool> Pickup::interact() {
     Object item = objectController->getObjectFromList(interactionName);
 
     //generate response
-    if(std::find(roomController->getObjectList(characterRoomID).begin(),
-            roomController->getObjectList(characterRoomID).end(), item.getID())
-            != roomController->getObjectList(characterRoomID).end()) {
+    std::vector<ID> objectIDList = roomController->getObjectList(characterRoomID);
+    if(std::find(objectIDList.begin(),objectIDList.end(), item.getID())!= objectIDList.end()) {
         //Room contains item
         characterController->addItemToCharacterInventory(username,item);
         roomController->removeObjectFromRoom(interactionID,characterController->getCharacterRoomID(username));
@@ -1052,7 +1050,7 @@ std::pair<std::vector<Response>, bool> Drop::execute(){
         Response userResponse = Response(ss.str(), username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
-    } else if(interactableItems.size() == 1){
+    } else if(interactableItems.size() == 1 && characterController->characterHasItem(username,interactableItems[0].getID())){
         std::cout << "DROPPING ITEM OF SIZE 1 NO INTERACTION";
         Object item = objectController->getObjectFromList(interactableItems[0].getName());
         characterController->dropItemFromCharacterInventory(username,interactableItems[0].getID());
@@ -1091,20 +1089,26 @@ std::pair<std::vector<Response>, bool> Drop::interact() {
 
     ID interactionID = interactions.at(index).getID();
     Name interactionName = interactions.at(index).getName();
-
     Name charName = characterController->getCharName(username);
 
 
     //DO LOGIC
 
     //generate response
-    Object item = objectController->getObjectFromList(interactionName);
-    characterController->dropItemFromCharacterInventory(username,item.getID());
-    roomController->addObjectToRoom(interactionID,characterController->getCharacterRoomID(username));
-    Response userResponse = Response(interactionName + " has been dropped from your inventory.\n", username);
-    interactions.clear();
-    auto res = formulateResponse(userResponse);
-    return std::make_pair(res, true);
+    if(characterController->characterHasItem(username,interactionID)){
+        Object item = objectController->getObjectFromList(interactionName);
+        characterController->dropItemFromCharacterInventory(username,item.getID());
+        roomController->addObjectToRoom(interactionID,characterController->getCharacterRoomID(username));
+        Response userResponse = Response(interactionName + " has been dropped from your inventory.\n", username);
+        interactions.clear();
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    } else {
+        interactions.clear();
+        Response userResponse = Response("You don't own that item.\n", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, true);
+    }
 }
 
 
