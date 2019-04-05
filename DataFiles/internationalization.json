@@ -35,7 +35,15 @@
 
         "/SWAP": "SWAP",
         "/CONFUSE": "CONFUSE",
-        "/DECOY": "DECOY"
+        "/DECOY": "DECOY",
+
+        "/COMBAT": "COMBAT",
+        "/ATTACK": "ATTACK",
+        "/BATTLES": "BATTLES",
+        "/FLEE": "FLEE",
+
+        "/TTT": "TTT",
+        "/TTTT": "TTTT"
     },
     "FR": {
         "/dire": "SAY"

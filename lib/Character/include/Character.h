@@ -29,6 +29,15 @@ private:
     Inventory inventory;
     std::vector<Object> wearing;
     bool confused;
+    bool combat = false;
+
+    //For combat
+    unsigned int maxHP = 10;
+    unsigned int maxMP = 10;
+    unsigned int currentHP = maxHP; //todo need to set this to correct value with json
+    unsigned int currentMP;
+    unsigned int attack = 5;
+    unsigned int defense = 1;
 
     std::vector<std::string> keywords;
 
@@ -201,6 +210,32 @@ public:
     std::string examine();
 
     void confuse();
+
+    //For combat:
+    void giveFullHP();
+
+    unsigned int getCurrentHP() const;
+
+    void setCurrentHP(unsigned int currentHP);
+
+    unsigned int getAttack() const;
+
+    void setAttack(unsigned int attack);
+
+    unsigned int getDefense() const;
+
+    void setDefense(unsigned int defense);
+
+    unsigned int getMaxHP() const;
+
+    void setMaxHP(unsigned int maxHP);
+
+    std::string examineCombat();
+
+    bool isInCombat();
+
+    void setCombatState(bool state);
+
 };
 
 

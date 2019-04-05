@@ -10,6 +10,7 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
 
     // Default Data for all first time users
     Character defaultCharacter(username, ROOM_ID);
+    defaultCharacter.giveFullHP();
     roomController.addCharacterToRoom(defaultCharacter.getName(), defaultCharacter.getRoomID());
 
     // defaultCharacter.addItemToInventory(Object("Basic Sword"));
@@ -149,6 +150,7 @@ bool CharacterController::doesCharacterExist(Name &username) {
 }
 
 bool CharacterController::isCharacterNPC(Name &npcKey) {
+    std::cout << "is npc: " << npcKey << std::endl;
     return _characters.find(npcKey)->second.isNPC();
 }
 
@@ -172,6 +174,15 @@ std::string CharacterController::examineCharacter(Name &userName) {
         return lookCharacter(userName);
     }
     return utility::extractStringVector(extDescriptions);
+}
+
+std::string CharacterController::examineCombatCharacter(Name &userName){
+    auto character = getCharacter(userName);
+
+//    if (extDescriptions.empty()){
+//        return lookCharacter(userName);
+//    }
+    return getCharacter(userName).examineCombat();
 }
 
 std::string CharacterController::getCharacterInfo(Name &username) {
@@ -261,4 +272,21 @@ void CharacterController::confuseCharacter(Name &targetCharacterName){
 
 bool CharacterController::isCharacterConfused(Name &username) {
     return getCharacter(username).isConfused();
+}
+
+void CharacterController::setCharacterHP( Name &username,unsigned int hp){
+    getCharacter(username).setCurrentHP(hp);
+}
+
+bool CharacterController::isCharacterInCombat(Name &username){
+    return getCharacter(username).isInCombat();
+}
+
+void CharacterController::setCharacterCombat(Name &username, Name &targetname, bool state){
+    getCharacter(username).setCombatState(state);
+    getCharacter(targetname).setCombatState(state);
+}
+
+void CharacterController::setCharacterCombat(Name &username,bool state){
+    getCharacter(username).setCombatState(state);
 }

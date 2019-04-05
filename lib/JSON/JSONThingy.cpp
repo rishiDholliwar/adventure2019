@@ -47,7 +47,20 @@ NLOHMANN_JSON_SERIALIZE_ENUM( CommandType, {
     //SPELLS
     {SWAP, "SWAP"},
     {CONFUSE, "CONFUSE"},
-    {DECOY, "DECOY"}
+    {DECOY, "DECOY"},
+
+    //COMBAT
+    {COMBAT, "COMBAT"},
+    {ATTACK, "ATTACK"},
+    {BATTLES, "BATTLES"},
+    {FLEE, "FLEE"},
+
+    //MINI GAME
+    {TTT, "TTT"},
+    {TTTT, "TTTT"}
+
+
+
 })
 
 //Resets
@@ -214,6 +227,7 @@ void JSONThingy::load(Name characterToLoad, Character &aCharacter) {
         fs >> j;
         fs.close();
         Character tmpChar = j.get<Character>();
+        tmpChar.giveFullHP(); //todo change later
         aCharacter = tmpChar;
 
     }

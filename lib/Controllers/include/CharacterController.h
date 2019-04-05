@@ -221,6 +221,7 @@ public:
 
     // look and examine
     std::string lookCharacter(Name& userName);
+    std::string examineCombatCharacter(Name& userName);
     std::string examineCharacter(Name& userName);
 
     void swapCharacter(Name &userCharacterName, Name &targetCharacterName);
@@ -228,6 +229,16 @@ public:
     void confuseCharacter(Name &targetCharacterName);
 
     bool isCharacterConfused(Name &username);
+
+    //for combat
+    void setCharacterHP(Name &username,unsigned int hp);
+
+    bool isCharacterInCombat(Name &username);
+
+    void setCharacterCombat(Name &username, Name &targetname,bool state);
+
+    void setCharacterCombat(Name &username,bool state);
+
 };
 
 

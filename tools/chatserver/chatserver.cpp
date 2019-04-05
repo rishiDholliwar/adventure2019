@@ -22,9 +22,13 @@
 
 #include <GameCommands.h>
 #include <UserCommands.h>
+#include <CombatCommands.h>
+#include <MiniGameCommands.h>
+
 #include <ResetCommand.h>
 #include <PigeonCommand.h>
 #include <JSONThingy.h>
+
 
 void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::SAY, Say(&_characterController, &_roomController).clone());
@@ -45,6 +49,17 @@ void Game::registerCommands() {
     _commandHandler.registerCommand(CommandType::INFO, Info(&_characterController).clone());
     _commandHandler.registerCommand(CommandType::WEAR, Wear(&_characterController).clone());
     _commandHandler.registerCommand(CommandType::TAKEOFF, Takeoff(&_characterController, &_objectController).clone());
+
+    //For combat
+    _commandHandler.registerCommand(CommandType::COMBAT, CombatExamine(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::ATTACK, CombatAttack(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::BATTLES, CombatBattles(&_characterController, &_roomController, &_combatController).clone());
+    _commandHandler.registerCommand(CommandType::FLEE, CombatFlee(&_characterController, &_roomController, &_combatController).clone());
+
+    //For mini game
+    _commandHandler.registerCommand(CommandType::TTT, tttBrowser(&_characterController,  &_miniGameController).clone());
+    _commandHandler.registerCommand(CommandType::TTTT, tttTerminal(&_characterController,  &_miniGameController).clone());
+
 }
 
 void
@@ -62,6 +77,13 @@ Game::removeConnection(Connection c) {
         _scheduler->schedule(forcedLogout, 0);
         //save character data here, maybe?
         std::cout << "logged out yo" << std::endl;
+
+        if(_combatController.isBattleState(username)){
+            Name targetName = _combatController.getTargetName(username);
+            _combatController.setTargetLogoutState(targetName);
+            std::cout << "delete combat for: " << username << std::endl;
+        }
+
 
     }
     auto eraseBegin = std::remove(std::begin(_clients), std::end(_clients), c);
@@ -108,12 +130,26 @@ Game::processMessages(const std::deque<Message> &incoming, bool &quit) {
             std::vector<std::string> tempInputParser = utility::tokenizeString(text);
 
             if (tempInputParser.size() != 2) {
-                result.push_back(Message{message.connection, std::string{"System: temp input size is not 2"}});
+                result.push_back(Message{message.connection, std::string{"Fill in all fields"}});
                 return result;
             }
 
             username = tempInputParser.at(0);
             text = tempInputParser.at(1);
+        }
+
+      //  PERMISSIONS COULD BE CHECKED HERE
+        if(invocation != CommandType::LOGIN && invocation != CommandType::SIGNUP){
+           // _characterController.toggleCharacterCombat(username);
+            if(_characterController.isCharacterInCombat(username)){
+                std::cout <<  "---------User: " << username << " is in combat---------\n";
+                if(invocation != CommandType::FLEE){
+                    std::cout << "You are in combat. You can only flee";
+                    result.push_back(Message{message.connection, std::string{"You are in combat. You can only flee"}});
+                    return result;
+                }
+
+            }
         }
 
         auto command = _commandHandler.getCommand(username, invocation, text, message.connection);
@@ -207,57 +243,7 @@ main(int argc, char *argv[]) {
         return 1;
     }
     using namespace std;
-////////////////////////////
 
-    std::string fileName = "mirkwood";
-
-    // if (JSONObjects::fileExists(fileName)) {
-    //     cout << "file exists\n";
-    // } else {
-    //     cout << "error, no such file\n";
-    // }
-
-    // std::vector<Object> objects = JSONObjects::getObjects(fileName);
-
-    // for (auto &obj : objects) {
-    //     std::cout << "ID: " << obj.getID() << std::endl;
-
-    //     std::cout << "Type: " << obj.getName() << std::endl;
-
-    //     std::cout << "Abilities: " << std::endl;
-    //     for (auto &a : obj.getAbilities()) {
-    //       std::cout << "\t" << a.first << ", " << a.second << std::endl;
-    //     }
-
-    //     std::cout << " Keywords: " << std::endl;
-    //     for (auto &kw : obj.getKeywords()) {
-    //         std::cout << "\t" << kw << std::endl;
-    //     }
-
-    //     std::cout << " Shortdesc: " << obj.getShortDesc() << std::endl;
-
-    //     std::cout << " Longdesc: " << std::endl;
-    //     for (auto &ld : obj.getLongDesc()) {
-    //         std::cout << "\t" << ld << std::endl;
-    //     }
-
-    //     std::cout << " Extra: " << std::endl;
-    //     std::cout << "\tKeywords: " << std::endl;
-    //     for (auto &ekw : obj.getExtraKeywords()) {
-    //         std::cout << " \t" << ekw << std::endl;
-    //     }
-
-    //     std::cout << std::endl;
-
-    //     std::cout << "\tDesc: " << std::endl;
-    //     for (auto &ed : obj.getExtraDesc()) {
-    //         std::cout << " \t" << ed << std::endl;
-    //     }
-
-    //     std::cout << std::endl;
-    // }
-
-/////////////////////////////
     unsigned short port = std::stoi(argv[1]);
     auto webpage = getHTTPMessage(argv[2]);
 

@@ -63,7 +63,7 @@ std::vector<Object> Character::getItemsFromInventory(Name objectName) {
 }
 
 std::vector<Object> Character::getItemsFromWearing(Name objectName) {
-  
+
     std::vector<Object> items;
 
     for (auto &item : wearing) {
@@ -150,6 +150,7 @@ void Character::remove(Object obj) {
     }
 }
 
+
 void Character::dropItem(ID objectId) {
     inventory.removeItem(objectId);
 }
@@ -199,3 +200,65 @@ const Inventory &Character::getInventory() const {
 void Character::setInventory(const Inventory &inventory) {
     Character::inventory = inventory;
 }
+
+//For combat:
+
+void Character::giveFullHP() {
+    currentHP = maxHP;
+}
+
+unsigned int Character::getCurrentHP() const {
+    return currentHP;
+}
+
+void Character::setCurrentHP(unsigned int currentHP) {
+    if (currentHP < 0) {
+        currentHP = 0;
+    }
+
+    this->currentHP = currentHP;
+}
+
+unsigned int Character::getAttack() const {
+    return attack;
+}
+
+void Character::setAttack(unsigned int attack) {
+    this->attack = attack;
+}
+
+unsigned int Character::getDefense() const {
+    return defense;
+}
+
+void Character::setDefense(unsigned int defense) {
+    this->defense = defense;
+}
+
+unsigned int Character::getMaxHP() const {
+    return maxHP;
+}
+
+void Character::setMaxHP(unsigned int maxHP) {
+    this->maxHP = maxHP;
+}
+
+std::string Character::examineCombat() {
+    std::stringstream output;
+
+    output << "\tName: " << name << "\n"
+           << "\tHP: " << std::to_string(currentHP) + "/" + std::to_string(maxHP) + "\n"
+           << "\tAttack: " << attack << "\n"
+           << "\tDefence: " << defense << "\n";
+
+    return output.str();
+}
+
+bool  Character::isInCombat(){
+  return combat;
+}
+
+void Character::setCombatState(bool state){
+   combat = state;
+}
+

@@ -3,6 +3,8 @@ add_library(commands
   src/GameCommands.cpp
   src/UserCommands.cpp
   src/PigeonCommand.cpp
+  src/CombatCommands.cpp include/MiniGameCommands.h src/MiniGameCommands.cpp
+  src/UserCommands.cpp
   src/ResetCommand.cpp)
 
 find_package(Boost 1.66 COMPONENTS system REQUIRED)
@@ -27,6 +29,8 @@ PRIVATE
     networking
     userController
     utility
+    combat
+    miniGame
     ${Boost_LIBRARIES}
 )
 

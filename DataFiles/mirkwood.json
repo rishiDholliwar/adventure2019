@@ -295,9 +295,9 @@
     {
       "id": 8806,
       "abilities": {
-          "minDamage": "2",
-          "maxDamage": "5",
-          "equipSlot": "hands"
+        "minDamage": "2",
+        "maxDamage": "5",
+        "equipSlot": "hands"
       },
       "keywords": [
         "scimitar"

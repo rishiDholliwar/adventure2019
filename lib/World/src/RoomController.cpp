@@ -280,6 +280,16 @@ const std::vector<Room> &RoomController::getRoomList() const {
     return roomList;
 }
 
+//todo refactor to use find_if
+bool RoomController::isTargetInRoom( Name &instigator,ID instigatorRoomID ,Name &target) {
+    for (auto &ch : getCharacterList(instigatorRoomID)) {
+        if (ch == target) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 
 

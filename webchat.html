@@ -1,88 +1,686 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Web Chat</title>
+    <meta charset="utf-8"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js "></script>
+    <title>Web Chat</title>
 
-  <style>
-    body, input, select, textarea {
-      background: #031e11;
-      color: #10fd60;
-    }
+    <style>
 
-    #messages {
-      width: 80em;
-      height: 40em;
-      border: solid 1px #cccccc;
-      margin-bottom: 5px;
-      overflow-y: hidden;
-    }
-  </style>
-
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      function appendText(text) {
-        $('#messages').append(text);
-        $('#messages').scrollTop($('#messages')[0].scrollHeight);
-      }
-
-      var ws = null;
-      var uriPieces = window.location.href.split('/');
-      var wsLocation = 'ws://' + uriPieces[2];
-      $('#uri:text').val(wsLocation);
-      
-      $('#connect').click(function() {
-        ws = new WebSocket(uri.value);
-        ws.onopen = function(ev) {
-          appendText("Connected!\n");
-        };
-        ws.onclose = function(ev) {
-          appendText("Disconnected!\n");
-        };
-        ws.onmessage = function(ev) {
-          appendText(ev.data + "\n");
-        };
-        ws.onerror = function(ev) {
-          appendText("[error]\n");
-          console.log(ev);
-        };
-      });
-
-      $('#disconnect').click(function () {
-        ws.close();
-      });
-
-      $('#send').click(function () {
-        ws.send(sendMessage.value);
-        sendMessage.value = "";
-      });
-
-      $('#sendMessage').keyup(function(e) {
-        e.preventDefault();
-        if (e.keyCode === 13) {
-          $('#send').click();
+        body, input, select, textarea {
+            background: #031e11;
+            color: #10fd60;
         }
-      });
-    });
-  </script>
+
+        #messages {
+            width: 70em;
+            height: 40em;
+            border: solid 1px #cccccc;
+            margin-right: 15px;
+            overflow-y: scroll;
+            float: left;
+        }
+
+        #gameTextArea {
+            width: 20em;
+            height: 14em;
+            border: solid 1px #cccccc;
+            margin-top: 12px;
+            overflow-y: hidden;
+        }
+
+        .gameWindow {
+            position: absolute;
+            display: none;
+            margin-left: 880px;
+        }
+
+        #windows {
+            display: inline-block;
+        }
+
+        #d_overlay {
+            display: none;
+            opacity: .8;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            background: #FFF;
+            width: 100%;
+            z-index: 10;
+        }
+
+        #d_box {
+            font-family: sans-serif;
+            display: none;
+            position: fixed;
+            background-color: cadetblue;
+            border-radius: 1px;
+            width: 320px;
+            height: 410px;
+            z-index: 10;
+        }
+
+        #d_box > div {
+            background-color: cadetblue;
+            margin: 8px;
+        }
+
+        #d_boxhead {
+            font-size: 19px;
+            padding: 3px;
+            background-color: cadetblue;
+            text-align: center;
+
+        }
+
+        #d_boxbody {
+            background-color: cadetblue;
+            padding-left: 20px;
+            color: #FFF;
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+
+        #d_boxbody input {
+            border: none;
+            border-bottom: 1px solid #fff;
+            background: transparent;
+            outline: none;
+            height: 40px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        #d_boxfoot {
+            background-color: cadetblue;
+            margin-top: 15px;
+            margin-left: 15px;
+            padding: 5px;
+            font-family: sans-serif;
+        }
+
+        #d_boxfoot button {
+            border: none;
+            outline: none;
+            height: 40px;
+            width: 110px;
+            background: #fb2525;
+            color: #fff;
+            font-size: 18px;
+            border-radius: 20px;
+            margin: 10px;
+            margin-bottom: 20px;
+        }
+
+        #d_boxfoot button:hover {
+            cursor: pointer;
+            background: #ffc107;
+            color: #000;
+        }
+
+        #d_boxfoot a {
+            text-decoration: none;
+            text-align: center;
+            font-size: 18px;
+            line-height: 20px;
+            color: darkgray;
+        }
+
+        #d_boxfoot a:hover {
+            color: #ffc107;
+        }
+
+        .logoutBtn {
+            color: white;
+            background-color: red;
+            border-color: red;
+            position: absolute;
+            top: 10px;
+            right: 50px;
+        }
+
+        #welcomeMessage {
+            font-family: sans-serif;
+            font-size: 15px;
+            position: absolute;
+            top: 20px;
+            right: 50px;
+        }
+
+        .controls {
+            top: 500px;
+            left: 880px;
+            position: absolute;
+            padding-bottom: 20px;
+        }
+
+        /* Used code from https://codepen.io/sloveland/pen/AJFaE?editors=1100 */
+
+        .d-pad {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+        }
+
+        .d {
+            width: 27px;
+            height: 27px;
+            position: absolute;
+        }
+
+        .north {
+            left: 29px;
+            top: -3px;
+            border-radius: .25em .25em 0 0;
+        }
+
+        .north:hover, .west:hover, .east:hover, .south:hover, #lookBtn:hover, #combatBtn:hover,
+        #helpBtn:hover, #inventoryBtn:hover, #tttBtn:hover, #clearBtn:hover, #upBtn:hover, #downBtn:hover,
+        #northWestBtn:hover, #northEastBtn:hover, #southWestBtn:hover, #southEastBtn:hover {
+            cursor: pointer;
+            color: red;
+        }
+
+        .east {
+            top: 25px;
+            right: -2px;
+            border-radius: 0 .25em .25em 0;
+        }
+
+        .south {
+            left: 27px;
+            bottom: -1px;
+            border-radius: 0 0 .25em .25em;
+        }
+
+        .west {
+            top: 26px;
+            left: 0px;
+            border-radius: .25em 0 0 .25em;
+        }
+
+        #lookBtn {
+            position: absolute;
+            left: 85px;
+        }
+
+        #combatBtn {
+            position: absolute;
+            left: 85px;
+            top: 25px;
+        }
+
+        #helpBtn {
+            position: absolute;
+            left: 85px;
+            top: 55px;
+        }
+
+        #inventoryBtn {
+            position: absolute;
+            left: 125px;
+
+        }
+
+        #tttBtn {
+            position: absolute;
+            left: 125px;
+            top: 30px;
+        }
+
+        #clearBtn {
+            position: absolute;
+            left: 125px;
+            top: 55px;
+        }
+
+        #upBtn {
+            position: absolute;
+            left: 28px;
+            top: -35px;
+        }
+
+        #downBtn {
+            position: absolute;
+            left: 25px;
+            top: 76px;
+        }
+
+        #northWestBtn {
+            position: absolute;
+            left: 5px;
+            top: -5px;
+        }
+
+        #northEastBtn {
+            position: absolute;
+            left: 50px;
+            top: -5px;
+        }
+
+        #southWestBtn {
+            position: absolute;
+            left: 5px;
+            top: 46px;
+        }
+
+        #southEastBtn {
+            position: absolute;
+            left: 48px;
+            top: 46px;
+        }
+
+    </style>
+
+
+    <script>
+        function tttInstructions() {
+            alert("Instuctions:\n" +
+                "Moves are made by entering coordinates from 0 - 2. Coordinates are y,x\n" +
+                " Example: 0,1");
+        }
+
+        var Prompt;
+        var Logout;
+
+        $(document).ready(function () {
+
+            //Fix css in chrome
+            if (navigator.appVersion.indexOf("Chrome/") != -1) {
+                $('.gameWindow').css("margin-left", "800px");
+                $('.gameWindow button').css("margin", "1px");
+                $('.gameWindow input').css("width", "50px");
+            }
+
+            function appendText(text) {
+                checkLogin(text);
+                var gameBoard = text.substring(text.indexOf(' ') + 1);
+                var splitText = text.split(" ");
+
+                if (splitText[0] == "quitGame") {
+                    $('.gameWindow')[0].style.display = 'none';
+                } else if (splitText[0] == "-GAME") {
+                    $('.gameWindow')[0].style.display = 'block';
+                    $('#gameTextArea').text("");
+                    $('#gameTextArea').append(gameBoard);
+                } else {
+                    $('#messages').append(text);
+                    $('#messages').scrollTop($('#messages')[0].scrollHeight);
+                }
+            }
+
+            function checkLogin(text) {
+                origText = text;
+                text = text.replace(/\s/g, '');  //not sure how to do it a better way
+
+                if (text == "Loggedinsuccesfully" ||
+                    text == "Succesfullycreatedcharacter") {
+                    Prompt.cancel();
+                    $('.loginBtn').css('visibility', 'hidden');
+                    $('.signupBtn').css('visibility', 'hidden');
+                    $('.logoutBtn').css("display", "block");
+                    $("#welcomeMessage").css("display", "block");
+                    $(".controls").css("display", "block");
+                    $('#sendMessage').focus();
+                }
+                if (text == "Usernamedoesnotexist" ||
+                    text == "Incorrectpassword" ||
+                    text == "Usernamealreadytaken" ||
+                    text == "Userisactive" ||
+                    text == "Fillinallfields") {
+
+                    $('#em').remove();
+                    $('#d_boxbody').before("<span id='em' style='color: red;'>" + origText + "<br><br></span>");
+
+                }
+            }
+
+            var ws = null;
+            var uriPieces = window.location.href.split('/');
+            var wsLocation = 'ws://' + uriPieces[2];
+            $('#uri:text').val(wsLocation);
+
+            $('.connect').click(function () {
+                ws = new WebSocket(uri.value);
+                ws.onopen = function (ev) {
+                    appendText("Connected!\n");
+                };
+                ws.onclose = function (ev) {
+                    appendText("Disconnected!\n");
+                };
+                ws.onmessage = function (ev) {
+                    appendText(ev.data + "\n");
+                };
+                ws.onerror = function (ev) {
+                    appendText("[error]\n");
+                    console.log(ev);
+                };
+            });
+
+            $('#disconnect').click(function () {
+                ws.close();
+            });
+
+            $('.send').click(function () {
+                ws.send(sendMessage.value);
+                sendMessage.value = "";
+            });
+
+            $('.sendGame').click(function () {
+                ws.send("/ttt " + sendGameMessage.value);
+                sendGameMessage.value = "";
+            });
+
+            $('#resetGame').click(function () {
+                ws.send("/ttt reset " + sendGameMessage.value);
+                sendGameMessage.value = "";
+            });
+
+            $('#quitGame').click(function () {
+                ws.send("/ttt quitGame");
+                sendGameMessage.value = "";
+            });
+
+            $('#d-north').click(function () {
+                ws.send("/move north");
+                sendGameMessage.value = "";
+            });
+
+            $('#d-south').click(function () {
+                ws.send("/move south");
+                sendGameMessage.value = "";
+            });
+
+            $('#d-west').click(function () {
+                ws.send("/move west");
+                sendGameMessage.value = "";
+            });
+
+            $('#d-east').click(function () {
+                ws.send("/move east");
+                sendGameMessage.value = "";
+            });
+
+            $('#lookBtn').click(function () {
+                ws.send("/look");
+                sendGameMessage.value = "";
+            });
+
+            $('#combatBtn').click(function () {
+                ws.send("/combat");
+                sendGameMessage.value = "";
+            });
+
+            $('#helpBtn').click(function () {
+                ws.send("/help");
+                sendGameMessage.value = "";
+            });
+
+            $('#inventoryBtn').click(function () {
+                ws.send("/inventory");
+                sendGameMessage.value = "";
+            });
+
+            $('#tttBtn').click(function () {
+                ws.send("/ttt " + sendGameMessage.value);
+                sendGameMessage.value = "";
+            });
+
+            $('#clearBtn').click(function () {
+                $("#messages").text("");
+                sendGameMessage.value = "";
+            });
+
+            $('#upBtn').click(function () {
+                ws.send("/move up");
+                sendGameMessage.value = "";
+            });
+
+            $('#downBtn').click(function () {
+                ws.send("/move down");
+                sendGameMessage.value = "";
+            });
+
+            $('#northWestBtn').click(function () {
+                ws.send("/move northwest");
+                sendGameMessage.value = "";
+            });
+
+            $('#northEastBtn').click(function () {
+                ws.send("/move northeast");
+                sendGameMessage.value = "";
+            });
+
+            $('#southWestBtn').click(function () {
+                ws.send("/move southwest");
+                sendGameMessage.value = "";
+            });
+
+            $('#southEastBtn').click(function () {
+                ws.send("/move southeast");
+                sendGameMessage.value = "";
+            });
+
+            $('#sendMessage').keyup(function (e) {
+                e.preventDefault();
+                if (e.keyCode === 13) {
+                    $('.send').click();
+                }
+            });
+
+            $('#sendGameMessage').keyup(function (e) {
+                e.preventDefault();
+                if (e.keyCode === 13) {
+                    $('.send').click();
+                }
+            });
+
+            $('.logoutBtn').css("display", "none");
+            $("#welcomeMessage").css("display", "none");
+            $(".controls").css("display", "none");
+
+            Prompt = new CustomPrompt();
+
+            function CustomPrompt() {
+
+                this.makeBoxBody = function () {
+                    $('#d_boxbody').append("Username");
+                    $('#d_boxbody').append("<br><input id='usernameVal' placeholder=\"Enter Username\"><br><br>");
+                    $('#usernameVal').focus();
+                    $('#d_boxbody').append("Password");
+                    $('#d_boxbody').append("<br><input id='passwordVal' placeholder=\"Enter Password\">");
+                    $('#d_boxbody').append("<br><input type='checkbox' onclick='passwordDisplayToggle()'><span style='font-size: 16px;font-weight:normal;'>Show Password</span>");
+                    document.getElementById("passwordVal").type = "password";
+                };
+
+                this.render = function (title, errorMessage, isLogin) {
+                    var winW = window.innerWidth;
+                    var winH = window.innerHeight;
+                    var d_overlay = $('#d_overlay').get(0);
+                    var d_box = $('#d_box').get(0);
+
+                    d_overlay.style.display = "block";
+                    d_overlay.style.height = winH + "px";
+
+                    var width = $('#d_box').width();
+
+                    //centering
+                    d_box.style.left = (winW / 2) - (width * .5) + "px";
+                    d_box.style.top = "100px";
+                    d_box.style.display = "block";
+
+                    $('#em').remove();
+
+                    $('#d_boxhead').html("<h1>" + title + "</h1>");
+                    $('#d_boxhead').css("font-size", "12px");
+                    $('#d_boxhead').css("color", "white");
+                    document.getElementById('d_boxbody').innerHTML = '';
+
+                    this.makeBoxBody();
+
+                    if (isLogin) {
+                        $('#d_boxfoot').html("<button onclick=\"Prompt.cancel()\">Cancel</button>" +
+                            "<button onclick=\"Prompt.login()\" id='enterLogin'>Login</button>");
+
+
+                        $("#d_boxbody").keyup(function (event) {
+                            if (event.keyCode === 13) {
+                                //$("#id_of_button").click();
+                                $('#enterLogin').click();
+                            }
+                        });
+
+                        // $('#d_boxfoot').append("<br><br><a href=\"#\">Dont have an account?</a>")
+                    } else {
+                        $('#d_boxfoot').html("<button onclick=\"Prompt.cancel()\">Cancel</button>" +
+                            "<button onclick=\"Prompt.signup()\" id='enterSignup'>Signup</button>");
+
+                        $("#d_boxbody").keyup(function (event) {
+                            if (event.keyCode === 13) {
+                                $('#enterSignup').click();
+                            }
+                        });
+                    }
+                };
+
+                this.cancel = function () {
+                    $('#d_box').css("display", "none");
+                    $('#d_overlay').css("display", "none");
+
+                };
+
+                this.login = function () {
+                    var usernameValue = $('#usernameVal').val();
+                    var passwordValue = $('#passwordVal').val();
+
+                    var login = "/login " + usernameValue + " " + passwordValue;
+                    ws.send(login);
+
+                    $("#welcomeMessage").css("display", "none");
+                    $("#welcomeMessage").text("Welcome " + usernameValue);
+                };
+
+                this.signup = function () {
+                    var usernameValue = $('#usernameVal').val();
+                    var passwordValue = $('#passwordVal').val();
+
+                    var signup = "/signup " + usernameValue + " " + passwordValue;
+                    ws.send(signup);
+
+                    $("#welcomeMessage").css("display", "none");
+                    $("#welcomeMessage").text("Welcome " + usernameValue);
+                }
+            }
+
+            Logout = new logout();
+
+            function logout() {
+                this.doLogout = function () {
+                    $('.loginBtn').css('visibility', 'visible');
+                    $('.signupBtn').css('visibility', 'visible');
+                    $('.logoutBtn').css("display", "none");
+                    $("#welcomeMessage").css("display", "none");
+                    $(".controls").css("display", "none");
+                    $('#username').html('');
+                    $('#password').html('');
+                    $('.gameWindow')[0].style.display = 'none';
+                };
+            }
+        });
+
+        function passwordDisplayToggle() {
+            var x = document.getElementById("passwordVal");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+
+    </script>
 </head>
 
 <body>
 
-  <h1>Web Chat</h1>
+<h1>Web Chat</h1>
 
-  Chat Server: <input id="uri" size="40">
-  <button id="connect">Connect</button>
-  <button id="disconnect">Disconnect</button><br />
+Chat Server: <input id="uri" size="40">
 
-  <pre id="messages"></pre>
+<button class="connect loginBtn" onclick="Prompt.render('Login','',true)">Login</button>
+<button class="connect signupBtn" onclick="Prompt.render('Signup','',false)">Signup</button>
+<span><button id="disconnect" class="logoutBtn" onclick="Logout.doLogout()">Logout</button>
+    <p id="welcomeMessage"> id="welcomeMessage"</p></span>
 
-  <div style="margin-bottom: 5px;">
-    Enter Message:<br />
-    <input id="sendMessage" size="80" value="" />
-    <button id="send">Send</button>
-  </div>
+
+<div id="d_overlay"></div>
+<div id="d_box">
+    <div>
+        <div id="d_boxhead"></div>
+        <div id="d_boxbody"></div>
+        <div id="d_boxfoot"></div>
+    </div>
+</div>
+
+
+<br/>
+<div id="windows">
+    <pre id="messages"></pre>
+
+    <div class="gameWindow">
+        <textarea id="gameTextArea" readonly></textarea>
+        <br>
+        <input id="sendGameMessage" size="1" value=""/>
+        <button class="sendGame">Make Move</button>
+        <button id="resetGame" style="background-color: #f44336;border-color: #f44336;">Reset</button>
+        <br>
+        <button id="tttIns" onclick="tttInstructions()">Instructions</button>
+        <button id="quitGame">Quit</button>
+    </div>
+</div>
+<div style="margin-bottom: 5px;">
+
+    Enter Message:<br/>
+    <input id="sendMessage" size="80" value=""/>
+
+    <button class="send">Send</button>
+</div>
+
+
+<!--Used code from https://codepen.io/sloveland/pen/AJFaE?editors=1100 -->
+<div class="controls">
+
+    <div class="d-pad">
+        <div id="d-north" class="button d north" style="font-size: 24px;" onclick="upBtn()"><span
+                class="label">&#9650;</span>
+        </div>
+        <div id="d-east" class="button d east" style="font-size: 24px;" onclick="rightBtn()"><span
+                class="label">&#9654;</span>
+        </div>
+        <div id="d-south" class="button d south" style="font-size: 24px;" onclick="downBtn()"><span class="label"
+                                                                                                    style="font-size: 24px;">&#9660;</span>
+        </div>
+        <div id="d-west" class="button d west" style="font-size: 24px;" onclick="leftBtn()"><span
+                class="label">&#9664;</span></div>
+    </div>
+    <div id="lookBtn" style="font-size: 24px;"><span class="label">&#128065;</span></div>
+    <div id="combatBtn" style="font-size: 24px; color: gray"><span class="label">&#9876;</span></div>
+    <div id="helpBtn" style="font-size: 24px;"><span class="label">&#10067;</span></div>
+    <div id="inventoryBtn" style="font-size: 24px;"><span class="label">&#128176;</span></div>
+    <div id="tttBtn" style="font-size: 24px; color: white"><span class="label">#</span></div>
+    <div id="clearBtn" style="font-size: 24px;"><span class="label">&#10060;</span></div>
+
+    <div id="upBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+    <div id="downBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+
+    <div id="northWestBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+    <div id="northEastBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+
+    <div id="southWestBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+    <div id="southEastBtn" style="font-size: 36px;"><span class="label">&#8226;</span></div>
+
+
+</div>
 
 </body>
 </html>

@@ -52,6 +52,18 @@ enum CommandType
     SWAP,
     CONFUSE,
     DECOY,
+
+    //COMBAT
+    COMBAT,
+    ATTACK,
+    BATTLES,
+    FLEE,
+
+    //MINI GAME
+    TTT,
+    TTTT,
+
+
     UNKNOWN = -1
 };
 
