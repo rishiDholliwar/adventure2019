@@ -77,5 +77,6 @@ public:
     std::vector<Extra> getExtra() const;
 };
 
+bool operator==(const Object& t, const Object& o);
 
 #endif //ALTERSPACE_OBJECT_H

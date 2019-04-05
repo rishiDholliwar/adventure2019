@@ -31,3 +31,7 @@ const std::vector<std::string> Object::getLongDesc() const {
 std::vector<Extra> Object::getExtra() const {
     return extra;
 }
+
+bool operator==(const Object& t, const Object& o) {
+	return (t.getID() == o.getID());
+}

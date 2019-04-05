@@ -198,30 +198,53 @@ std::pair<std::vector<Response>, bool> Give::execute() {
     Name targetCharName = inputStrings.at(TARGET_CHARACTER_NAME);
     Name giftName = inputStrings.at(GIFT_NAME);
 
-    for (auto &charName : charInRoom ) {
-        if (input.find(charName) == 0) {
-            targetCharName = charName;
-            giftName = input.substr(charName.size() + 1);
+    std::vector<Name> v{};
+    std::vector<Object> giftItems{};
+
+    std::vector<std::string> inputs = utility::tokenizeString(input);
+    auto itr = inputs.begin();
+
+    for( ; itr != inputs.end(); itr++ ) {
+    
+        std::vector<Name> possibleUserVector(inputs.begin(), itr);
+        std::vector<Name> possibleItemVector(itr, inputs.end());
+    
+        auto possibleName = boost::algorithm::join(possibleUserVector, " ");
+        auto possibleItem = boost::algorithm::join(possibleItemVector, " ");
+
+        std::cout << "possibleName:" << possibleName << "." << std::endl;
+        std::cout << "possibleItem:" << possibleItem << "." << std::endl;
+    
+        auto usernames = characterController->getUsernamesOfCharacter(possibleName);
+
+        std::cout << "after getUsernamesOfCharacter" << std::endl;
+    
+        if( !usernames.empty() &&
+    
+            characterController->characterHasItem(username, possibleItem) ) {
+            auto objects = characterController->getItemsFromCharacterInventory(username, possibleItem);
+
+            std::cout << "usernames isn't empty and character has item" << std::endl;
+    
+            for( const auto& obj : objects ) {
+
+                for( const auto& user : usernames ) {
+
+                    if ( std::find(v.begin(), v.end(), user) == v.end() ) {
+                        v.push_back(user);
+                        std::cout << "user : " << user << std::endl;
+                    }
+
+                    if ( std::find(giftItems.begin(), giftItems.end(), obj) == giftItems.end() ) {
+                        giftItems.push_back(obj);
+                        std::cout << "obj : " << obj.getName() << std::endl;
+                    }
+                }
+            }
         }
     }
 
-    //check if user input format is incorrect
-    if (targetCharName.empty() || giftName.empty()) {
-        Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, false);
-    }
-
-    //check if gift item exists in user inventory
-    if (!characterController->characterHasItem(username, giftName)) {
-        Response userResponse = Response("Item name " + giftName + " does not exist for you to give.", username);
-        auto res = formulateResponse(userResponse);
-        return std::make_pair(res, false);
-    }
-
-    std::vector<Name> v = characterController->getUsernamesOfCharacter(targetCharName);
     std::vector<ID> targetIDs;
-    std::vector<Object> giftItems = characterController->getItemsFromCharacterInventory(username, giftName);
 
     for (auto charName = v.begin(); charName != v.end(); ) {
         std::cout << *charName << std::endl;
@@ -246,6 +269,23 @@ std::pair<std::vector<Response>, bool> Give::execute() {
     if (giftItems.empty()) {
         Response userResponse = Response("Item " + giftName + " doesn't exist in your inventory, sorry!", username);
 
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    targetCharName = characterController->getCharName(v.front());
+    giftName = giftItems.front().getName();
+
+    //check if user input format is incorrect
+    if (targetCharName.empty() || giftName.empty()) {
+        Response userResponse = Response("You must type in the {username of the character you wish to gift to}, {item name}", username);
+        auto res = formulateResponse(userResponse);
+        return std::make_pair(res, false);
+    }
+
+    //check if gift item exists in user inventory
+    if (!characterController->characterHasItem(username, giftName)) {
+        Response userResponse = Response("Item name " + giftName + " does not exist for you to give.", username);
         auto res = formulateResponse(userResponse);
         return std::make_pair(res, false);
     }

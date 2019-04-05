@@ -1,0 +1,31 @@
+{
+    "inventory": {
+        "objects": [
+            {
+                "extra": [],
+                "id": 8801,
+                "keywords": [
+                    "sword"
+                ],
+                "longdesc": [
+                    "A beautiful sword has been left here."
+                ],
+                "shortdesc": "an elvish sword"
+            },
+            {
+                "extra": [],
+                "id": 8802,
+                "keywords": [
+                    "cloak"
+                ],
+                "longdesc": [
+                    "A plain, but practical, Elven cloak lies here."
+                ],
+                "shortdesc": "a plain elven cloak"
+            }
+        ]
+    },
+    "name": "a",
+    "roomID": 8800,
+    "wearing": []
+}

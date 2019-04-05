@@ -32,8 +32,13 @@ void CharacterController::addCharacter(Name &username, RoomController &roomContr
     // defaultCharacter.addItemToInventory(Object(12, keywords, "armor short desc", longdesc, extra));
     // objectController.addObjectToList(defaultCharacter.getItemFromInventory("Basic Armor"));
 
-    defaultCharacter.addItemToInventory(objectController.getObjectFromList("sword"));
-    defaultCharacter.addItemToInventory(objectController.getObjectFromList("cloak"));
+    Object sword = objectController.getObjectFromListByJSONObjectID(8801);
+    objectController.addObjectToList(sword);
+    Object cloak = objectController.getObjectFromListByJSONObjectID(8802);
+    objectController.addObjectToList(cloak);
+
+    defaultCharacter.addItemToInventory(sword);
+    defaultCharacter.addItemToInventory(cloak);
 
     _characters.emplace(username,defaultCharacter).second;
 }
