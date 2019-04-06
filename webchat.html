@@ -288,9 +288,11 @@
 
             //Fix css in chrome
             if (navigator.appVersion.indexOf("Chrome/") != -1) {
-                $('.gameWindow').css("margin-left", "800px");
+                $('.gameWindow').css("margin-left", "945px");
                 $('.gameWindow button').css("margin", "1px");
                 $('.gameWindow input').css("width", "50px");
+                $('.controls').css("left", "930px");
+                $(' #upBtn, #downBtn,#northWestBtn, #northEastBtn, #southWestBtn, #southEastBtn').css('left', '+=7');
             }
 
             function appendText(text) {
