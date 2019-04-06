@@ -1,82 +1,106 @@
+README
 
-# Single Threaded Web Socket Networking
+How to run the server:
 
-This repository contains an example library for single threaded client/server
-programs based on web sockets using boost beast. Multiple clients and the server
-can transfer simple string messages back and forth. Because the API is single
-threaded, it integrates easily into a main feedUpdate loop, e.g. for a game.
-Because it is web socket based, it supports both native and browser based
-clients at the same time. Examples of both are provided.
+	./build.sh 
 
-*Note:* Both the creation of the communication channel as well as all
-communication between the client and the server is insecure. It is trivially
-subject to interception and alteration, and it should not be used to transmit
-sensitive information of any sort.
+additional options are available with:
+	
+	./build.sh -h/--help
 
-In addition, a simple chat server with NCurses and browser based chat clients
-demonstrate how to use this API.
+	Usage:
+	./build.sh [PORT=####] [JOBS=#] [SERVER=FALSE] [CLEAN=TRUE]
+	PORT 	 - Set the server port
+	         DEFAULT: 4000
+	JOBS 	 - Builds faster, sets the number of cores to use when building
+	         DEFAULT: 0
+	SERVER - Set it to FALSE to not run server at the end
+	         DEFAULT: TRUE
+	CLEAN  - Removes previous networkbuild directory before building
+	         DEFAULT: FALSE
+	Example: ./build.sh PORT=9999 JOBS=4
 
-## Dependencies
+Accessing the client:
+	
+	- you can access the client through the webpage at:
 
-This project requires:
+		localhost:4000
 
-1. C++17 or newer
-2. Boost >= 1.66
-3. CMake >= 3.12
-4. NCurses (only tested with 6.1)
+Alternatively, you could access the client through the terminal by running the following in another terminal from the server:
 
-## Building with CMake
+	- networkbuild/bin/chatclient localhost 4000
 
-1. Clone the repository.
+Initial start:
 
-        git clone https://github.com/nsumner/web-socket-networking.git
+You want to run the signup command as follows:
+	
+	/signup [username] [password]
 
-2. Create a new directory for building.
+		- This resisters your user in the game and you can log back in another time using the login command
 
-        mkdir networkbuild
+	/login [username] [password]
 
-3. Change into the new directory.
+		- This restores the last saved version of your character and you may continue where you left off.
 
-        cd networkbuild
+Once in the game you may use the help command to see the commands available to you:
+	
+	/help
 
-4. Run CMake with the path to the source.
+	Commands:
+		/login [username] [password] - login as user with password
+		/logout - logout user
+		/signup [username] [password] - signup as user with password
+		/say [message] - sends message to other players in the room
+		/tell [target] [message] - Send a message to a specific player in the world
+		/whisper [target] [message] - Send a message to a specific player in the world ... but beware of prying ears
+		/move [direction] - move to the target direction
+		/help - 911 what is your emergency?
+		/look [target] - get short description of the target, or use /look to get short description about the room.
+		/examine [target] - get detailed description of the target.
+		/inventory - displays your inventory
+		/give [target's character name] [item name] - give item to a player
+		/PigeonMail deliver [target name] [item] - delivers an item to the target
+		/PigeonMail status [tracking number] - track your package
+		/swap [target username] - swap with the target character with this username
+		/confuse [target] - confuses a target and they see weird things
 
-        cmake ../web-socket-networking/
 
-5. Run make inside the build directory:
-
-        make
-
-This produces `chatserver` and `chatclient` tools called `bin/chatserver` and
-`bin/chatclient` respectively. The library for single threaded clients and
-servers is built in `lib/`.
-
-Note, building with a tool like ninja can be done by adding `-G Ninja` to
-the cmake invocation and running `ninja` instead of `make`.
+You are all set to go!
 
 
-## Running the Example Chat Client and Chat Server
 
-First run the chat server on an unused port of the server machine. The server
-also takes an HTML file that it will server to standard http requests for
-`index.html`.
+Edit (ReadMe made before these changes):
+`Master` branch also contains
+	- Combat
+	- MiniGame (Tic Tac Toe, and Tic Tac Toe Terminal)
+	- Login/Signup GUI (Does not work with internalization)
 
-    bin/chatserver 4000 ../web-socket-networking/webchat.html
+`64-drop-to-room` branch:
+	- /Drop [item] - drops an item from your inventory
 
-In separate terminals, run multiple instances of the chat client using:
+`44-refactor-yell` branch:
+	- /Yell [message] - Adjacent rooms can hear you screaming
 
-    bin/chatclient localhost 4000
 
-This will connect to the given port (4000 in this case) of the local machine.
-Connecting to a remote machine can be done by explicitly using the remote
-machine's IP address instead of `localhost`. Inside the chat client, you can
-enter commands or chat with other clients by typing text and hitting the
-ENTER key. You can disconnect from the server by typing `quit`. You can shut
-down the server and disconnect all clients by typing `shutdown`. Typing
-anything else will send a chat message to other clients.
 
-A browser based interface can be accessed by opening the URL
-`http://localhost:4000/index.html`. The server will respond with the
-specified web page above. By clicking `Connect`, the page gains access to
-chat on the server via web sockets in browsers that support web sockets.
+Last thorough tested commit id: `28c8db0b95dfbab1c30c2639055b827db8a5bbeb`
+(We do not have automated tests)
 
+Known issues:
+1. Multiple swaps fail with NPCs of the same name
+	- Solution: swap by unique ID
+
+2. Look and examine does not work properly when swapped
+	- Shows swapped person's descriptions `NPC only`
+	- Solution: search by character name instead of username in look/examine
+
+3. Swapping with Pigeon (pigeon mail carrier) `SEG FAULT`
+	- Solution: Don't murder the pigeon until after unswap happens
+				Pigeon is removed from the game and the player cannot unswap
+
+4. Closing the window while swapped does not allow the user to log back in until 	unswapped. 
+	- This was originally a feature (Not a great one to the user but to developers)
+	- Solution: Allow user to log back in but do not load their character
+
+5. Clicking connect multiple times allows the user to log in as multiple people `Web client`
+	- Solution: Remove the connect button 
