@@ -66,9 +66,9 @@ Once in the game you may use the help command to see the commands available to y
 
 
 You are all set to go!
-
-
-
+  
+  
+  
 Edit (ReadMe made before these changes):
 `Master` branch also contains
 	- Combat
@@ -80,9 +80,9 @@ Edit (ReadMe made before these changes):
 
 `44-refactor-yell` branch:
 	- /Yell [message] - Adjacent rooms can hear you screaming
-
-
-
+  
+  
+  
 Last thorough tested commit id: `28c8db0b95dfbab1c30c2639055b827db8a5bbeb`
 (We do not have automated tests)
 
