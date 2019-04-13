@@ -93,7 +93,7 @@ int PigeonEXE::calculate(ID fromRoom, ID toRoom) {
         }
         return min->second;
     } else if( shortestMap[fromRoom][toRoom].second == -1 ) {
-        std::cout << "fromRoom: " << fromRoom << std::endl;
+        // std::cout << "fromRoom: " << fromRoom << std::endl;
         shortestMap[fromRoom].erase(toRoom);
     }
 

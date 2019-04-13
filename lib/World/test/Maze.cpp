@@ -123,6 +123,10 @@ int main(){
         }
         roomID = rc.getDoorDesignatedRoomId(roomID, direction);
     }
+
+    //Go back to the last room from the first room
+    //This should be all done in constant time since
+    //The calculations were all done above for it
     while(roomID != SIZE - 1)
     {
         std::cout << roomID << std::endl;
