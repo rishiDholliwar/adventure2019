@@ -22,6 +22,8 @@ public:
 
     Door(ID  id, ID  targetRoomID, const std::string& direction);
 
+    Door(ID  targetRoomID, const std::string& direction) : designatedRoomID(targetRoomID), direction(direction) {};
+
     Door() = default;
 
     Door(const std::string &direction, const std::vector<std::string> &descriptions,
@@ -55,7 +57,7 @@ public:
 private:
     ID id;
     ID designatedRoomID;
-    std::string  direction;
+    std::string direction;
     std::vector<std::string> keywords;
     std::vector<std::string> descriptions;
     DoorStatus status;

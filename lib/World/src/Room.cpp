@@ -53,6 +53,10 @@ bool Room::addDoor(ID doorId, ID designatedRoomId, const std::string &direction)
     return size != this->doorList.size();
 }
 
+void Room::addDoor(ID designatedRoomId, const std::string &direction) {
+    this->doorList.emplace_back(designatedRoomId, direction);
+}
+
 bool Room::removeDoor(ID doorId) {
     auto list= this->doorList;
 

@@ -8,6 +8,9 @@ add_library(world
 add_executable(RoomControllerTest
         test/RoomControllerTest.cpp)
 
+add_executable(Maze
+        test/Maze.cpp)
+
 target_include_directories(world
         PUBLIC
         $<INSTALL_INTERFACE:include>
@@ -23,6 +26,12 @@ set_target_properties(world
                       CXX_STANDARD 17
 )
 
+set_target_properties(Maze
+                      PROPERTIES
+                      LINKER_LANGUAGE CXX
+                      CXX_STANDARD 17
+)
+
 target_link_libraries(world
         utility)
 
@@ -33,3 +42,5 @@ install(TARGETS world
 target_link_libraries(RoomControllerTest
         world)
 
+target_link_libraries(Maze
+        world)

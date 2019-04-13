@@ -30,7 +30,7 @@ int PigeonEXE::calculate(ID fromRoom, ID toRoom) {
     if( fromRoom == toRoom ) {
         auto fromMap = &shortestMap.emplace(fromRoom, std::unordered_map<ID, DirectionDistance>{}).first->second;
         fromMap->emplace(toRoom, std::make_pair("", 0));
-        return 0;
+        return 1;
     }
 
     // std::cout << fromRoom << " : " << toRoom << std::endl;
@@ -44,10 +44,16 @@ int PigeonEXE::calculate(ID fromRoom, ID toRoom) {
         auto toRoomID = door.getDesignatedRoomId();
         fromMap->insert_or_assign(toRoomID, std::make_pair(direction, 1));
         auto toRoomItr = shortestMap.find(toRoomID);
-        if( toRoomItr != shortestMap.end() &&
-            toRoomItr->second.find(fromRoom) != toRoomItr->second.end() ) {
+        if( toRoomItr != shortestMap.end() ) {
             if( toRoomItr->second.find(toRoom) != toRoomItr->second.end() ) {
-                if( toRoomItr->second[toRoom].second != -1 ) {
+                auto toDirection = toRoomItr->second[toRoom].first;
+                auto toDistance = toRoomItr->second[toRoom].second;
+                if(toDirection.empty())
+                {
+                    continue;
+                }
+                auto toID = _roomController->searchDoor(toRoomID, toDirection)->getDesignatedRoomId();
+                if( toDistance != -1 && toID != fromRoom ) {
                     directionDistances.emplace_back(direction, shortestMap[toRoomID][toRoom].second + 1);
                 }
                 continue;
@@ -70,13 +76,34 @@ int PigeonEXE::calculate(ID fromRoom, ID toRoom) {
             [](const DirectionDistance& a, const DirectionDistance& b) {
                 return a.second < b.second;
             });
-        // std::cout << fromRoom << std::endl;
-        // std::cout << "Added: " << toRoom << " " << min->first << " " << min->second << std::endl;
         fromMap->insert_or_assign(toRoom, *min);
+        for( auto& door : doorList ) {
+            auto toRoomID = door.getDesignatedRoomId();
+            auto itr = shortestMap.find(toRoomID);
+            int distance = 0;
+            if( itr != shortestMap.end() ) {
+                if( itr->second.find(toRoom) != itr->second.end() ) {
+                    distance = shortestMap[toRoomID][toRoom].second;
+                }
+            }
+            if( distance > min->second + 1 ) {
+                // std::cout << toRoomID << std::endl;
+                calculate(toRoomID, toRoom);
+            }
+        }
         return min->second;
     } else if( shortestMap[fromRoom][toRoom].second == -1 ) {
+        std::cout << "fromRoom: " << fromRoom << std::endl;
         shortestMap[fromRoom].erase(toRoom);
     }
 
     return 0;
+}
+
+void PigeonEXE::printDistances() {
+    for( auto [fromRoom, toRoomMap] : shortestMap ) {
+        for( auto [toRoom, directionDistance] : toRoomMap ) {
+            std::cout << fromRoom << " -> " << toRoom << ": " << directionDistance.first << ", " << directionDistance.second << std::endl;
+        }
+    }
 }

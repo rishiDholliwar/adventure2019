@@ -25,6 +25,7 @@ public:
     PigeonEXE(RoomController* _roomController) : _roomController(_roomController) {};
 
     DirectionDistance getShortestDirection(ID fromRoom, ID toRoom);
+    void printDistances();
 
 
 };

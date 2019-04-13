@@ -13,6 +13,8 @@ public:
 
     Room() = default;
 
+    Room(ID id) : id(id) {};
+
     Room(ID id, const Name &name, const std::vector<std::string> &descriptions, const std::vector<Door> &doorList,
          const std::vector<ExtendedDescription> &extendedDescriptions);
 
@@ -43,6 +45,7 @@ public:
     void addObject(ID objectId);
     void addCharacter(const Name &userName);
     bool addDoor(ID doorId, ID designatedRoomId, const std::string& direction);
+    void addDoor(ID designatedRoomId, const std::string& direction);
     bool addUserName(const Name &userName);
 
     /*

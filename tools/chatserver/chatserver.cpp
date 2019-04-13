@@ -214,7 +214,8 @@ Game::Game(Config config)
     jt.load("mirkwood", _resetController);
 
     _pigeonEXE = PigeonEXE(&_roomController);
-    _pigeonEXE.getShortestDirection(8865, 8865);
+    _pigeonEXE.getShortestDirection(8800, 8865);
+    _pigeonEXE.printDistances();
 
     this->registerCommands();
     _scheduler->schedule(std::make_shared<ResetCommand>(&_resetController, 300), 0);
